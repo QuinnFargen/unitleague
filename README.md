@@ -4,7 +4,7 @@ Project to collect sports data to work with postgres, dbt, kestra & streamlit. P
 
 ---
 
-## Features
+## Goals
 
 ### 1. Historical Data
 
@@ -25,42 +25,41 @@ Project to collect sports data to work with postgres, dbt, kestra & streamlit. P
 - Add analysts to a private or public league  
 - Track head-to-head results over time  
 - Scoring models to simulate league standings
-
-### 4. Predictive Models
-
 - Team-level betting predictions with optional social media automation  
-- Player prop predictions (requires integration with odds feeds)
 
 ---
 
-## Data Structure
-
-### Core Grains
+## Data Grains
 
 - **Game Results**  
-  - Outcomes, scoring by period
+  - Outcomes, scoring by period/qtr/inn
+  - Betting odds (spread, total, moneyline)
+  - Analyst/Pundit betting picks tracked
 
 - **Box Scores**  
-  - Player-level stats (rebounds, assists, etc.)
+  - Team stats
+  - Player stats (rebounds, assists, etc.)
+  - Meta Data (weather, time, coach, ref)
 
-- **Team Stats**  
-  - Aggregated per game or season
+- **Feature Engineered** 
+  - dbt models
+  - Trends & Patterns
+  - Season running avg
 
-- **Meta Data**  
-  - Coach, referee, and weather context
-
-- **Player-Level Granularity**  
-  - Supports player prop modeling
-
-- **Play-by-Play Data** *(planned)*  
-  - Fine-grained event tracking
+- **Play-by-Play Data** 
+  - Unlikely this granular
 
 ---
 
 ## Roadmap
 
-- [ ] Automate scraping for player props and odds  
+- [x] Historic Betting Odds Collected (2020)
+- [ ] Historic Games & Boxscores Collected (2011)
+- [x] Automate Odds & Weather Collection
+- [ ] Automate Game Outcome & Boxscore Collection
+- [x] Automate Odds Collection
+- [ ] Setup dbt for feature & trend datasets
+- [ ] Setup postgresML extention for betting predictions
 - [ ] Finalize Streamlit dashboard for fantasy-style league interface  
-- [ ] Integrate model training and evaluation  
-- [ ] Add play-by-play data for select sports  
-- [ ] Expand DBT models for analyst performance KPIs
+- [ ] Automate Analyst/Podcast betting picks into league
+- [ ] Social media automated trends and picks posted

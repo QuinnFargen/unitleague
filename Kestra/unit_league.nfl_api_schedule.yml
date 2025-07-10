@@ -1,0 +1,95 @@
+id: nfl_api_schedule
+namespace: unit_league
+
+tasks:
+  - id: python_nfl_schedule
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "nfl_schedule.csv"
+    beforeCommands:
+      - pip install pandas
+      - pip install requests
+    script: |
+      import requests
+      import pandas as pd
+      import time
+
+      all_games = []
+
+      def fetch_games(year, week, seasontype):
+          url = f"https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={year}&seasontype={seasontype}&week={week}"
+          print(f"Fetching: {url}")
+          resp = requests.get(url)
+          if resp.status_code != 200:
+              print(f"Failed to fetch {url}")
+              return []
+
+          data = resp.json()
+          events = data.get("events", [])
+          games = []
+
+          for event in events:
+              event_id = event.get("id")
+              game_date = event.get("date", "")
+              game_name = event.get("name", "")
+
+              away_team = home_team = ""
+              if " at " in game_name:
+                  parts = game_name.split(" at ")
+                  away_team = parts[0].strip()
+                  home_team = parts[1].strip()
+
+              games.append({
+                  "event_id": event_id,
+                  "date": game_date,
+                  "away_team": away_team,
+                  "home_team": home_team,
+                  "year": year,
+                  "week": week,
+                  "season_type": "postseason" if seasontype == 3 else "regular"
+              })
+
+          return games
+
+      for year in range(2010, 2011):
+          for week in range(1, 19):  # Regular season
+              all_games += fetch_games(year, week, seasontype=2)
+              time.sleep(1)
+          for week in range(1, 6):  # Postseason (Wild Card to Super Bowl)
+              all_games += fetch_games(year, week, seasontype=3)
+              time.sleep(1)
+
+      df = pd.DataFrame(all_games)
+      df.to_csv("nfl_schedule.csv", index=False)
+
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "api"."stg_nfl_sched" ;
+
+  - id: pg_copyin_stg_bats
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nfl_schedule.outputFiles['nfl_schedule.csv'] }}"
+    table: api.stg_nfl_sched  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  # - id: pg_exec_sp
+  #   type: io.kestra.plugin.jdbc.postgresql.Query
+  #   sql: |
+  #     CALL "api"."sp_stg_mlb_sched_to_game"(); ;
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+
+disabled: true

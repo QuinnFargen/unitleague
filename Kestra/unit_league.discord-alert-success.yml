@@ -1,0 +1,17 @@
+id: discord-alert-success
+namespace: unit_league
+
+tasks:
+  - id: send_discord_message
+    type: io.kestra.plugin.notifications.discord.DiscordExecution
+    url: "https://discord.com/api/webhooks/1361516647470469220/FVhDsI1scwTRRBdswxs7S9jFbDZNQZp_T2LKcJmxUn8L20N4AdIIjRh44KYluM0ZTh4I"
+    executionId: "{{ trigger.executionId }}"
+
+triggers:
+  - id: failed_prod_workflows
+    type: io.kestra.plugin.core.trigger.Flow
+    conditions:
+      - type: io.kestra.plugin.core.condition.ExecutionStatus
+        in:
+          - SUCCESS
+disabled: true

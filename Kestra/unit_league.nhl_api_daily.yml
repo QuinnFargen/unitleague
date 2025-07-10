@@ -1,0 +1,136 @@
+id: nhl_api_daily
+namespace: unit_league
+
+tasks:
+  - id: python_nhl_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "final_box.csv"
+      - "final_goalie.csv"
+    beforeCommands:
+      - pip install nhl-api-py
+      - pip install pandas
+    warningOnStdErr: false
+    script: | 
+              from datetime import date, timedelta
+              import pandas as pd
+              from nhlpy import NHLClient
+
+              def normalize_boxscore(game_data):
+                  boxscore = []
+                  boxscore_goalie = []
+                  game_id = game_data['id']
+                  date = game_data['gameDate']
+                  
+                  for team_key in ['homeTeam', 'awayTeam']:
+                      team = game_data[team_key]
+                      team_abbrev = team['abbrev']
+                      
+                      for position_group in ['forwards', 'defense']:
+                          for player in game_data['playerByGameStats'][team_key].get(position_group, []):
+                              boxscore.append({
+                                  'GameID': game_id,
+                                  'Date': date,
+                                  'Team': team_abbrev,
+                                  'PlayerID': player['playerId'],
+                                  'PlayerName': player['name']['default'],
+                                  'Position': player['position'],
+                                  'Goals': player.get('goals', 0),
+                                  'Assists': player.get('assists', 0),
+                                  'Points': player.get('points', 0),
+                                  'plusMinus': player.get('plusMinus', 0),
+                                  'PIM': player.get('pim', 0),
+                                  'Hits': player.get('hits', 0),
+                                  'SOG': player.get('sog', 0),
+                                  'blockedShots': player.get('blockedShots', 0),
+                                  'Giveaways': player.get('giveaways', 0),
+                                  'Takeaways': player.get('takeaways', 0),
+                                  'TimeonIce': player.get('toi', '00:00'),
+                                  'shifts': player.get('shifts', 0),
+                                  'faceoffWinningPctg': player.get('faceoffWinningPctg', 0.0)
+                              })
+
+                      for position_group in ['goalies']:
+                          for player in game_data['playerByGameStats'][team_key].get(position_group, []):
+                              boxscore_goalie.append({
+                                  'GameID': game_id,
+                                  'Date': date,
+                                  'Team': team_abbrev,
+                                  'PlayerID': player['playerId'],
+                                  'PlayerName': player['name']['default'],
+                                  'Position': player['position'],
+                                  'evenStrengthShotsAgainst': player.get('evenStrengthShotsAgainst', 0),
+                                  'powerPlayShotsAgainst': player.get('powerPlayShotsAgainst', 0),
+                                  'shorthandedShotsAgainst': player.get('shorthandedShotsAgainst', 0),
+                                  'saveShotsAgainst': player.get('saveShotsAgainst', 0),
+                                  'savePctg': player.get('savePctg', 0),
+                                  'evenStrengthGoalsAgainst': player.get('evenStrengthGoalsAgainst', 0),
+                                  'powerPlayGoalsAgainst': player.get('powerPlayGoalsAgainst', 0),
+                                  'shorthandedGoalsAgainst': player.get('shorthandedGoalsAgainst', 0),
+                                  'pim': player.get('pim', 0),
+                                  'goalsAgainst': player.get('goalsAgainst', 0),
+                                  'TimeonIce': player.get('toi', '00:00'),
+                                  'shotsAgainst': player.get('shotsAgainst', 0),
+                                  'saves': player.get('saves', 0.0)
+                              })
+                  
+                  df = pd.DataFrame(boxscore)
+                  df2 = pd.DataFrame(boxscore_goalie)
+                  return df, df2
+
+              client = NHLClient()
+              yesterday = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+              schedule = client.schedule.get_schedule(date=yesterday)
+
+              # Extract game IDs
+              game_ids = [game['id'] for game in schedule['games']]
+
+              # Initialize an empty list to store box score data
+              all_box = []
+              all_goalies = []
+
+              # Loop through each game ID and fetch box score data
+              for game_id in game_ids:
+                  game_data = client.game_center.boxscore(game_id)
+                  box_score, goalie_score = normalize_boxscore(game_data)
+                  all_box.append(box_score)
+                  all_goalies.append(goalie_score)
+
+              # Combine all DataFrames into a single DataFrame
+              final_box = pd.concat(all_box, ignore_index=True)
+              final_goalie = pd.concat(all_goalies, ignore_index=True)
+
+              # Optional: Save to CSV
+              final_box.to_csv("final_box.csv", index=False)
+              final_goalie.to_csv("final_goalie.csv", index=False)  
+
+  - id: pg_copyin_stg_box
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nhl_api.outputFiles['final_box.csv'] }}"
+    table: api.nhl_api_box_score  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_copyin_stg_goalie
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nhl_api.outputFiles['final_goalie.csv'] }}"
+    table: api.nhl_api_goalie_box_score  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "5 11 * * *"
+    recoverMissedSchedules: NONE
+
+disabled: true

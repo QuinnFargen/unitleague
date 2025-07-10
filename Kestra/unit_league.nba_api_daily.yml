@@ -1,0 +1,56 @@
+id: nba_api_daily
+namespace: unit_league
+
+tasks:
+  - id: python_nba_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "box.csv"
+    beforeCommands:
+      - pip install nba_api
+      - pip install pandas
+    warningOnStdErr: false
+    script: | 
+      from nba_api.stats.endpoints import ScoreboardV2, BoxScoreTraditionalV2
+      from datetime import datetime, timedelta
+      import pandas as pd
+
+      yesterday = datetime.today() - timedelta(days=1)
+      yesterday = yesterday.strftime('%Y-%m-%d')
+
+      scoreboard = ScoreboardV2(game_date=yesterday)
+      games = scoreboard.get_dict()['resultSets'][0]['rowSet']
+
+      game_ids = [game[2] for game in games]
+
+      box = []
+      for id in game_ids:
+          box_score = BoxScoreTraditionalV2(game_id=id)
+          df = box_score.get_data_frames()[0]
+          box.append(df)
+
+      box_all = pd.concat(box, ignore_index=True)
+      box_all.to_csv('box.csv', index=False)    
+
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nba_api.outputFiles['box.csv'] }}"
+    table: api.nba_api_traditional_box_score  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+    recoverMissedSchedules: NONE
+
+disabled: true

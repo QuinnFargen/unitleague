@@ -1,0 +1,68 @@
+id: mlb_api_schedule
+namespace: unit_league
+
+
+tasks:
+  - id: python_mlb_schedule
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "mlb_schedule.csv"
+    beforeCommands:
+      - pip install MLB-StatsAPI
+      - pip install pandas
+    warningOnStdErr: false
+    script: |
+      import statsapi
+      import pandas as pd
+      from datetime import date
+
+      # Define season date range (modify year as needed)
+      start_date = "2025-03-01"
+      end_date = "2025-10-15"
+
+      schedule = statsapi.schedule(start_date=start_date, end_date=end_date, sportId=1)
+
+      rows = []
+      for game in schedule:
+          rows.append({
+              "gameID": game["game_id"],
+              "gameDate": game["game_date"],
+              "gameTime": game.get("game_datetime", ""),  # May be empty if TBD
+              "homeTeam": game["home_name"],
+              "awayTeam": game["away_name"]
+          })
+
+      df = pd.DataFrame(rows)
+      df.to_csv("mlb_schedule.csv", index=False)
+
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "api"."stg_mlb_sched" ;
+
+  - id: pg_copyin_stg_bats
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_mlb_schedule.outputFiles['mlb_schedule.csv'] }}"
+    table: api.stg_mlb_sched  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_exec_sp
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "api"."sp_stg_mlb_sched_to_game"(); ;
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+
+disabled: true

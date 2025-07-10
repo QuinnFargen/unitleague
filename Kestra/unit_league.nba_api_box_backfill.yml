@@ -1,0 +1,76 @@
+id: nba_api_box_backfill
+namespace: unit_league
+
+tasks:
+  - id: fetch_dates
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      -- select CURRENT_DATE -1 as "GAME_DT"
+      -- union ALL
+      select s."GAME_DT"
+      from "SPORT"."BALL"."SCHED" s 
+      where s."LEAGUE_ID" = 1
+      group by s."GAME_DT"
+      limit 2;
+    fetchType: STORE
+
+  - id: ion_to_csv
+    type: "io.kestra.plugin.serdes.csv.IonToCsv"
+    from: "{{ outputs.fetch_dates.uri }}"
+
+  - id: python_nba_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "box.csv"
+    beforeCommands:
+      - pip install nba_api
+      - pip install pandas
+    inputFiles:
+      input.csv: "{{outputs.ion_to_csv.uri}}"
+    warningOnStdErr: false
+    script: | 
+      from nba_api.stats.endpoints import ScoreboardV2, BoxScoreTraditionalV2
+      import pandas as pd
+
+      input_df = pd.read_csv('input.csv')
+      dates = pd.to_datetime(input_df['GAME_DT'])
+      box = []
+      for dt in dates:
+          # yesterday = datetime.today() - timedelta(days=1)
+          day = dt.strftime('%Y-%m-%d')
+
+          scoreboard = ScoreboardV2(game_date=day)
+          games = scoreboard.get_dict()['resultSets'][0]['rowSet']
+
+          game_ids = [game[2] for game in games]
+
+          for id in game_ids:
+              box_score = BoxScoreTraditionalV2(game_id=id)
+              df = box_score.get_data_frames()[0]
+              box.append(df)
+
+      box_all = pd.concat(box, ignore_index=True)
+      box_all.to_csv('box.csv', index=False)     
+
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nba_api.outputFiles['box.csv'] }}"
+    table: api.nba_api_traditional_box_score  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+    recoverMissedSchedules: NONE
+
+disabled: true

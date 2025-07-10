@@ -1,0 +1,35 @@
+id: conditional-postgres
+namespace: unit_league
+tasks:
+  - id: check_condition
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      select case 
+      when exists (	select "LEAGUE_ID"	from "SPORT"."BALL"."SEASON"
+              where "LEAGUE_ID" = 1 and CURRENT_DATE between "REG_START_DT" and "CHAMP_DT" + 7 ) 
+      then true else false end league_active;
+    fetchOne: true
+
+# If league active then normal scoop of yesterday.
+# Regardless if active league or not, do some back data scooping?
+
+  - id: run_if_true
+    type: io.kestra.plugin.core.flow.Switch
+    value: "{{ outputs.check_condition.row.league_active }}"
+    cases:
+      true:
+        - id: task_if_true
+          type: io.kestra.plugin.core.debug.Echo
+          format: "Condition was TRUE, running this task"
+      false:
+        - id: task_if_false
+          type: io.kestra.plugin.core.debug.Echo
+          format: "Condition was FALSE, skipping true path"
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"

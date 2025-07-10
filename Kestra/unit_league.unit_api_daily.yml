@@ -1,0 +1,81 @@
+id: unit_api_daily
+namespace: unit_league
+
+tasks:
+  - id: python_the_odds_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "odds.csv"
+    beforeCommands:
+      - pip install requests
+    warningOnStdErr: false
+    script: |      
+      import requests
+      import json 
+      import csv
+      odds_api_key = '{{secret('ODDS_API_KEY')}}'
+      def oddsApi_get(sport):
+          # sport = 'americanfootball_nfl'
+          regions = '/odds?regions=us'
+          oddsFormat = '&oddsFormat=decimal'
+          markets = '&markets=h2h,spreads,totals'
+          dateFormat = '&dateFormat=iso'
+          url = "https://api.the-odds-api.com/v4/sports/"+sport+regions+oddsFormat+markets+dateFormat+"&apiKey="+odds_api_key+""
+          response = requests.request("GET", url)
+          result_list = json.loads(response.text)
+          return result_list
+      results = []
+      def sport_pg_insert(odds_result):
+          for i in range(len(odds_result) - 1):
+              id = odds_result[i]["id"]
+              sport_key = odds_result[i]["sport_key"]
+              sport_title = odds_result[i]["sport_title"]
+              commence_time = odds_result[i]["commence_time"]
+              home_team = odds_result[i]["home_team"]
+              away_team = odds_result[i]["away_team"]
+              full_json = odds_result[i]["bookmakers"]
+              results.append([
+                            id, sport_key, sport_title, commence_time, home_team, away_team,
+                            json.dumps(full_json) 
+                        ])
+      sports = ['americanfootball_nfl', 'icehockey_nhl', 'basketball_nba', 'basketball_ncaab', 'americanfootball_ncaaf', 'baseball_mlb']
+      for sport in range(len(sports)):
+          sport = sports[sport]
+          odds_result = oddsApi_get(sport)
+          sport_pg_insert(odds_result)
+      with open("odds.csv", "w", newline="") as outfile:
+          writer = csv.writer(outfile)
+          writer.writerow(["id", "sport_key", "sport_title", "commence_time", "home_team", "away_team", "full_json"])
+          writer.writerows(results)
+ 
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "api"."stg_the_odds_api" ;
+
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_the_odds_api.outputFiles['odds.csv'] }}"
+    table: api.stg_the_odds_api  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_exec_sp
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "api"."sp_stg_the_odds_daily"(); ;
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 13 * * *"
+    recoverMissedSchedules: NONE

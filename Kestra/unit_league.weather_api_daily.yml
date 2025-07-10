@@ -1,0 +1,96 @@
+id: weather_api_daily
+namespace: unit_league
+
+tasks:
+  - id: pg_query_latlon
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      select distinct t."REGION_LAT", t."REGION_LON"
+      from "SPORT"."BALL"."GAME" g 
+      join "SPORT"."BALL"."TEAM" t on g."HOME_TEAM_ID" = t."TEAM_ID" 
+      where g."GAME_DT" between CURRENT_DATE and CURRENT_DATE + (case when t."WEATHER" = 0::bit then 1 else 7 end)
+      ;
+    fetchType: STORE
+
+  - id: ion_to_csv
+    type: "io.kestra.plugin.serdes.csv.IonToCsv"
+    from: "{{ outputs.pg_query_latlon.uri }}"
+
+  - id: python_weather_api
+    type: io.kestra.plugin.scripts.python.Script
+    inputFiles:
+      loc.csv: "{{outputs.ion_to_csv.uri}}"
+    outputFiles:
+      - "weather.csv"
+    beforeCommands:
+      - pip install requests
+    warningOnStdErr: false
+    script: |      
+      import csv
+      import requests
+      import json
+
+      API_KEY = "{{secret('WEATHER_API_KEY')}}"
+      BASE_URL = "https://api.openweathermap.org/data/3.0/onecall"
+
+      # Read input CSV
+      with open("loc.csv", "r") as infile:
+          reader = csv.reader(infile)
+          header = next(reader)  # Skip header if needed
+          locations = [row for row in reader]
+
+      # Fetch weather data
+      results = []
+      for lat, lon in locations:
+          params = {
+              "lat": lat,
+              "lon": lon,
+              "appid": API_KEY,
+              "units": "imperial",
+              "exclude": "minutely,hourly,alerts"
+          }
+          response = requests.get(BASE_URL, params=params)
+          data = response.json()
+          results.append([
+              lat, lon,
+              data["current"]["dt"],
+              json.dumps(data["current"]),
+              json.dumps(data["daily"]) 
+          ])
+
+      # Write to output CSV
+      with open("weather.csv", "w", newline="") as outfile:
+          writer = csv.writer(outfile)
+          writer.writerow(["LAT", "LON", "CURRENT_EPOCH", "CURRENT_JSON", "DAILY_JSON"])
+          writer.writerows(results)
+  
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "api"."stg_open_weather" ;
+
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_weather_api.outputFiles['weather.csv'] }}"
+    table: API.STG_OPEN_WEATHER  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_exec_sp
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "api"."sp_stg_open_weather_daily"(); ;
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "30 12 * * *"
+    recoverMissedSchedules: NONE

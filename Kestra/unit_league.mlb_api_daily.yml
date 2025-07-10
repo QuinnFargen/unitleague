@@ -1,0 +1,245 @@
+id: mlb_api_daily
+namespace: unit_league
+
+tasks:
+  - id: python_mlb_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "bats.csv"
+      - "meta.csv"
+      - "pitchs.csv"
+    beforeCommands:
+      - pip install MLB-StatsAPI
+      - pip install pandas
+    warningOnStdErr: false
+    script: |
+            import statsapi
+            import pandas as pd
+            from datetime import date, timedelta
+
+            def metaing(boxscore_data, gamePk, gamedate):
+                gameBoxInfo = boxscore_data["gameBoxInfo"]
+                umpires = next((item['value'] for item in gameBoxInfo if item.get('label') == 'Umpires'), None)
+                weather = next((item['value'] for item in gameBoxInfo if item.get('label') == 'Weather'), None)
+                wind = next((item['value'] for item in gameBoxInfo if item.get('label') == 'Wind'), None)
+                df = pd.DataFrame([{
+                    'gamePk': str(gamePk),
+                    'gamedate': str(gamedate),
+                    'Umpires': umpires,
+                    'Weather': weather,
+                    'Wind': wind
+                }])
+                return df
+
+            def batting(boxscore_data, gamePk, gamedate):
+                # Extract team IDs
+                away_id = boxscore_data['teamInfo']['away']['id']
+                home_id = boxscore_data['teamInfo']['home']['id']
+
+                # Extract batting notes and map them
+                def extract_notes(notes_data):
+                    return {str(value).split('-')[0] + '-': value for key, value in notes_data.items()}
+                
+                away_notes = extract_notes(boxscore_data.get('awayBattingNotes', {}))
+                home_notes = extract_notes(boxscore_data.get('homeBattingNotes', {}))
+
+                # Function to process batters and match their notes
+                def extract_batting_data(batters, team_id, notes):
+                    processed_batters = []
+                    for bat in batters: 
+                        if bat.get("ab") != "AB":
+                            note_key = bat.get("note", "")
+                            bat_data = {
+                                'gamePk': str(gamePk),
+                                'gamedate': str(gamedate),
+                                'team_id': team_id,
+                                "personId": bat["personId"],
+                                "name": bat["name"],
+                                "position": bat["position"],
+                                "battingOrder": bat["battingOrder"],
+                                "ab": bat["ab"],
+                                "r": bat["r"],
+                                "h": bat["h"],
+                                "doubles": bat["doubles"],
+                                "triples": bat["triples"],
+                                "hr": bat["hr"],
+                                "rbi": bat["rbi"],
+                                "sb": bat["sb"],
+                                "bb": bat["bb"],
+                                "k": bat["k"],
+                                "lob": bat["lob"],
+                                "avg": bat["avg"],
+                                "obp": bat["obp"],
+                                "slg": bat["slg"],
+                                "substitution": bat["substitution"],
+                                "note": bat["note"],  # Keep original note reference
+                                "note_description": notes.get(note_key, "")  # Append matched note description
+                            }
+                            processed_batters.append(bat_data)
+                    return processed_batters
+
+                # Process batters for both teams
+                batters = extract_batting_data(boxscore_data.get('awayBatters', []), away_id, away_notes) + \
+                          extract_batting_data(boxscore_data.get('homeBatters', []), home_id, home_notes)
+
+                # Process batting totals separately (excluding batting notes)
+                def extract_batting_totals(batting_totals, team_id):
+                    if not batting_totals:
+                        return []
+                    return [{
+                        'gamePk': str(gamePk),
+                        'gamedate': str(gamedate),
+                        'team_id': team_id,
+                        "personId": batting_totals["personId"],
+                        "name": batting_totals["name"],
+                        "position": batting_totals["position"],
+                        "battingOrder": batting_totals["battingOrder"],
+                        "ab": batting_totals["ab"],
+                        "r": batting_totals["r"],
+                        "h": batting_totals["h"],
+                        "doubles": '',
+                        "triples": '',
+                        "hr": batting_totals["hr"],
+                        "rbi": batting_totals["rbi"],
+                        "sb": '',
+                        "bb": batting_totals["bb"],
+                        "k": batting_totals["k"],
+                        "lob": batting_totals["lob"],
+                        "avg": batting_totals["avg"],
+                        "obp": batting_totals["obp"],
+                        "slg": batting_totals["slg"],
+                        "substitution": batting_totals["substitution"],
+                        "note": batting_totals["note"],
+                        "note_description": ''  # No note descriptions for totals
+                    }]
+
+                # Add team batting totals
+                batters += extract_batting_totals(boxscore_data.get('awayBattingTotals', {}), away_id)
+                batters += extract_batting_totals(boxscore_data.get('homeBattingTotals', {}), home_id)
+
+                return pd.DataFrame(batters)
+
+            def pitching(boxscore_data, gamePk, gamedate):
+                def extract_pitching_data(pitchers, team_id):
+                    """Extracts individual pitcher stats."""
+                    return [{
+                        'gamePk': str(gamePk),
+                        'gamedate': str(gamedate),
+                        'team_id': team_id,
+                        "personId": pitch.get("personId", ''),
+                        "name": pitch.get("name", ''),
+                        "ip": pitch.get("ip", 0.0),
+                        "h": pitch.get("h", 0),
+                        "r": pitch.get("r", 0),
+                        "er": pitch.get("er", 0),
+                        "bb": pitch.get("bb", 0),
+                        "k": pitch.get("k", 0),
+                        "hr": pitch.get("hr", 0),
+                        "p": pitch.get("p", 0),
+                        "s": pitch.get("s", 0),
+                        "era": pitch.get("era", 0.0),
+                        "note": pitch.get("note", '')
+                    } for pitch in pitchers if pitch.get("ip") != "IP"]  # Filter out header rows
+
+                def extract_team_totals(team_totals, team_id):
+                    """Extracts team total pitching stats (single entry)."""
+                    if not team_totals:
+                        return []
+                    return [{
+                        'gamePk': str(gamePk),
+                        'gamedate': str(gamedate),
+                        'team_id': team_id,
+                        "personId": team_totals.get("personId", ''),
+                        "name": team_totals.get("name", 'Team Total'),
+                        "ip": team_totals.get("ip", 0.0),
+                        "h": team_totals.get("h", 0),
+                        "r": team_totals.get("r", 0),
+                        "er": team_totals.get("er", 0),
+                        "bb": team_totals.get("bb", 0),
+                        "k": team_totals.get("k", 0),
+                        "hr": team_totals.get("hr", 0),
+                        "p": team_totals.get("p", 0),
+                        "s": team_totals.get("s", 0),
+                        "era": team_totals.get("era", 0.0),
+                        "note": team_totals.get("note", '')
+                    }]
+
+                away_id = boxscore_data['teamInfo']['away']['id']
+                home_id = boxscore_data['teamInfo']['home']['id']
+
+                # Extract individual pitchers
+                pitchers = extract_pitching_data(boxscore_data.get('awayPitchers', []), away_id) + \
+                          extract_pitching_data(boxscore_data.get('homePitchers', []), home_id)
+
+                # Extract team totals (single dictionary entry)
+                pitchers += extract_team_totals(boxscore_data.get('awayPitchingTotals', {}), away_id)
+                pitchers += extract_team_totals(boxscore_data.get('homePitchingTotals', {}), home_id)
+
+                return pd.DataFrame(pitchers)
+
+
+            # Get yesterday's date in YYYY-MM-DD format
+            yesterday = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+
+            # Fetch all games from yesterday
+            schedule = statsapi.schedule(date=yesterday, start_date=None, end_date=None, team="", opponent="", sportId=1, game_id=None)
+
+            # Extract game IDs
+            game_ids = [game['game_id'] for game in schedule]
+
+            all_meta = []
+            all_bats = []
+            all_pitch = []
+
+            for game_id in game_ids:
+                boxscore_data = statsapi.boxscore_data(game_id, timecode=None)
+                all_meta.append(metaing(boxscore_data, game_id, yesterday))
+                all_bats.append(batting(boxscore_data, game_id, yesterday))
+                all_pitch.append(pitching(boxscore_data, game_id, yesterday))
+
+            final_meta = pd.concat(all_meta, ignore_index=True)
+            final_bats = pd.concat(all_bats, ignore_index=True)
+            final_pitch = pd.concat(all_pitch, ignore_index=True)
+
+
+            final_meta.to_csv('meta.csv', index=False)
+            final_bats.to_csv('bats.csv', index=False)
+            final_pitch.to_csv('pitchs.csv', index=False)
+
+
+  - id: pg_copyin_stg_bats
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_mlb_api.outputFiles['bats.csv'] }}"
+    table: api.mlb_api_batting  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_copyin_stg_meta
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_mlb_api.outputFiles['meta.csv'] }}"
+    table: api.mlb_api_meta  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+  - id: pg_copyin_stg_pitchs
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_mlb_api.outputFiles['pitchs.csv'] }}"
+    table: api.mlb_api_pitching  # Lowercase in DB
+    header: true
+    delimiter: ","
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+    recoverMissedSchedules: NONE

@@ -81,6 +81,11 @@ CREATE TABLE "api"."stg_open_weather" (
 
 
 
+
+---------------------------------------------
+-- MLB
+
+
 CREATE TABLE "api"."stg_mlb_sched" (
 	"GAME_ID" int4,
 	"GAME_DT" date NOT NULL,
@@ -100,3 +105,167 @@ CREATE TABLE "api"."stg_mlb_sched_unknown" (
 );
 
 
+
+-- DROP TABLE api.mlb_api_batting;
+
+CREATE TABLE api.mlb_api_batting (
+	gamepk varchar(20) NOT NULL,
+	gamedate date NOT NULL,
+	team_id int4 NOT NULL,
+	personid int4 NOT NULL,
+	"name" text NOT NULL,
+	"position" text NULL,
+	battingorder text NULL,
+	ab int4 NULL,
+	r int4 NULL,
+	h int4 NULL,
+	doubles int4 NULL,
+	triples int4 NULL,
+	hr int4 NULL,
+	rbi int4 NULL,
+	sb int4 NULL,
+	bb int4 NULL,
+	k int4 NULL,
+	lob int4 NULL,
+	avg numeric(4, 3) NULL,
+	obp numeric(4, 3) NULL,
+	slg numeric(4, 3) NULL,
+	substitution text NULL,
+	note text NULL,
+	note_description text NULL,
+	CONSTRAINT mlb_api_batting_pkey PRIMARY KEY (gamepk, gamedate, team_id, personid)
+);
+
+
+-- DROP TABLE api.mlb_api_meta;
+
+CREATE TABLE api.mlb_api_meta (
+	gamepk varchar(20) NOT NULL,
+	gamedate date NOT NULL,
+	umpires text NULL,
+	weather text NULL,
+	wind text NULL,
+	CONSTRAINT mlb_api_meta_pkey PRIMARY KEY (gamepk, gamedate)
+);
+
+
+-- DROP TABLE api.mlb_api_pitching;
+
+CREATE TABLE api.mlb_api_pitching (
+	gamepk varchar(20) NOT NULL,
+	gamedate date NOT NULL,
+	team_id int4 NOT NULL,
+	personid int4 NOT NULL,
+	"name" text NOT NULL,
+	ip numeric(4, 1) NULL,
+	h int4 NULL,
+	r int4 NULL,
+	er int4 NULL,
+	bb int4 NULL,
+	k int4 NULL,
+	hr int4 NULL,
+	p int4 NULL,
+	s int4 NULL,
+	era numeric(5, 2) NULL,
+	note text NULL,
+	CONSTRAINT mlb_api_pitching_pkey PRIMARY KEY (gamepk, gamedate, team_id, personid)
+);
+
+
+
+---------------------------------------------
+-- NBA
+
+
+-- DROP TABLE api.nba_api_traditional_box_score;
+
+CREATE TABLE api.nba_api_traditional_box_score (
+	game_id varchar(15) NOT NULL,
+	team_id int4 NOT NULL,
+	team_abbreviation text NOT NULL,
+	team_city text NOT NULL,
+	player_id int4 NOT NULL,
+	player_name text NOT NULL,
+	nickname text NULL,
+	start_position bpchar(2) NULL,
+	"comment" text NULL,
+	minutes_played varchar(25) NULL,
+	field_goals_made numeric(4, 1) NULL,
+	field_goals_attempted numeric(4, 1) NULL,
+	field_goal_pct numeric(4, 3) NULL,
+	three_pointers_made numeric(4, 1) NULL,
+	three_pointers_attempted numeric(4, 1) NULL,
+	three_point_pct numeric(4, 3) NULL,
+	free_throws_made numeric(4, 1) NULL,
+	free_throws_attempted numeric(4, 1) NULL,
+	free_throw_pct numeric(4, 3) NULL,
+	offensive_rebounds numeric(4, 1) NULL,
+	defensive_rebounds numeric(4, 1) NULL,
+	total_rebounds numeric(4, 1) NULL,
+	assists numeric(4, 1) NULL,
+	steals numeric(4, 1) NULL,
+	blocks numeric(4, 1) NULL,
+	turnovers numeric(4, 1) NULL,
+	personal_fouls numeric(4, 1) NULL,
+	points numeric(4, 1) NULL,
+	plus_minus numeric(4, 1) NULL,
+	CONSTRAINT nba_api_traditional_box_score_pkey PRIMARY KEY (game_id, player_id)
+);
+
+
+
+
+---------------------------------------------
+-- NHL
+
+
+-- DROP TABLE api.nhl_api_box_score;
+
+CREATE TABLE api.nhl_api_box_score (
+	gameid int4 NOT NULL,
+	"date" date NOT NULL,
+	team varchar(10) NOT NULL,
+	playerid int4 NOT NULL,
+	playername varchar(100) NOT NULL,
+	"position" varchar(10) NOT NULL,
+	goals int4 NULL,
+	assists int4 NULL,
+	points int4 NULL,
+	plusminus int4 NULL,
+	pim int4 NULL,
+	hits int4 NULL,
+	sog int4 NULL,
+	blockedshots int4 NULL,
+	giveaways int4 NULL,
+	takeaways int4 NULL,
+	timeonice interval NULL,
+	shifts int4 NULL,
+	faceoffwinningpctg numeric(5, 2) NULL,
+	CONSTRAINT nhl_api_box_score_pkey PRIMARY KEY (gameid, playerid)
+);
+
+
+-- DROP TABLE api.nhl_api_goalie_box_score;
+
+CREATE TABLE api.nhl_api_goalie_box_score (
+	gameid int4 NOT NULL,
+	"date" date NOT NULL,
+	team varchar(10) NOT NULL,
+	playerid int4 NOT NULL,
+	playername varchar(100) NOT NULL,
+	"position" varchar(10) NOT NULL,
+	evenstrengthshotsagainst varchar(10) NULL,
+	powerplayshotsagainst varchar(10) NULL,
+	shorthandedshotsagainst varchar(10) NULL,
+	saveshotsagainst varchar(10) NULL,
+	savepctg numeric(5, 3) NULL,
+	evenstrengthgoalsagainst int4 NULL,
+	powerplaygoalsagainst int4 NULL,
+	shorthandedgoalsagainst int4 NULL,
+	pim int4 NULL,
+	goalsagainst int4 NULL,
+	timeonice varchar(10) NULL,
+	shotsagainst int4 NULL,
+	saves int4 NULL,
+	CONSTRAINT nhl_api_goalie_box_score_pkey PRIMARY KEY (gameid, playerid)
+);

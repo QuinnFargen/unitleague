@@ -1,4 +1,4 @@
-REATE SCHEMA "BALL";	-- Combined BALL, will have Sport specific schema for box/pbp
+CREATE SCHEMA "BALL";	-- Combined BALL, will have Sport specific schema for box/pbp
 
 	-- SCD1
 CREATE TABLE "BALL"."LEAGUE" (

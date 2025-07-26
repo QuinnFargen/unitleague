@@ -93,47 +93,46 @@ def collapse_games(df):
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)  Chrome/58.0.3029.110 Safari/537.3"}
 dfs = []
 
+    # 2014 having issues so not going back to 2011
 for year in range(2015, 2025):
+    url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}'
+    jsonData = requests.get(url, headers=headers).json()
+    calendar = jsonData['content']['calendar']
 
-year = 2024
-url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}'
-jsonData = requests.get(url, headers=headers).json()
-calendar = jsonData['content']['calendar']
-
-for each in calendar:
-    seasontype = each['value']
-    seasontypeLabel = each['label']
-    if seasontype != '4':
-        weeks = each['entries']
-        for eachWeek in weeks:
-            weekNo = eachWeek['value']
-            weekLabel = eachWeek['label']
-            if seasontype == '3':
-                url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}&seasontype={seasontype}'
-            else:
-                url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}&seasontype={seasontype}&week={weekNo}'
-            jsonData = requests.get(url, headers=headers).json()
-            schedules = jsonData['content']['schedule']
-            
-            print(f'Aquiring {year} {seasontypeLabel}: {weekLabel}')
-
-            for k,v in schedules.items():
-                games = v['games']
+    for each in calendar:
+        seasontype = each['value']
+        seasontypeLabel = each['label']
+        if seasontype != '4':
+            weeks = each['entries']
+            for eachWeek in weeks:
+                weekNo = eachWeek['value']
+                weekLabel = eachWeek['label']
+                if seasontype == '3':
+                    url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}&seasontype={seasontype}'
+                else:
+                    url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}&seasontype={seasontype}&week={weekNo}'
+                jsonData = requests.get(url, headers=headers).json()
+                schedules = jsonData['content']['schedule']
                 
-                df = merge_data(games)
-                df['seasontype'] = seasontype
-                df['seasontypeLabel'] = seasontypeLabel
-                df['week'] = weekNo
-                df['weekLabel'] = weekLabel
-                
-                dfs.append(df)
+                print(f'Aquiring {year} {seasontypeLabel}: {weekLabel}')
 
-            time.sleep(.5)
+                for k,v in schedules.items():
+                    games = v['games']
+                    
+                    df = merge_data(games)
+                    df['seasontype'] = seasontype
+                    df['seasontypeLabel'] = seasontypeLabel
+                    df['week'] = weekNo
+                    df['weekLabel'] = weekLabel
+                    
+                    dfs.append(df)
+
+                time.sleep(.5)
 
 
 results = pd.concat(dfs)
 games = collapse_games(results)
 
-games.to_csv("cfb_schedule_15_24.csv", index=False)
+games.to_csv("cfb_schedule.csv", index=False)
 
 

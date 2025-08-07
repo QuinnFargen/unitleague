@@ -1,8 +1,3 @@
-# #!/usr/bin/env python3
-# import argparse
-# import csv
-# import json
-# import os
 from typing import Any, Dict, Iterable, List, Optional
 
 import pandas as pd
@@ -52,12 +47,9 @@ def build_row_from_athlete_block(
         "team_id": safe_get(team, "id"),
         "team_abbr": safe_get(team, "abbreviation"),
         "team_name": safe_get(team, "displayName"),
-        "category": category,
-        "block_name": block.get("name"),
         "athlete_id": safe_get(athlete, "athlete", "id"),
         "athlete_name": safe_get(athlete, "athlete", "displayName"),
         "athlete_jersey": safe_get(athlete, "athlete", "jersey"),
-        # "athlete_uid": safe_get(athlete, "athlete", "uid"),
     }
     keys = block.get("keys", [])
     stats_vals = athlete.get("stats", [])
@@ -111,49 +103,8 @@ def extract_all_stat_rows(event_id: str, js: Dict[str, Any]):
     return offense_rows, defense_rows, st_rows
 
 
-# def extract_game_meta(event_id: str, js: Dict[str, Any]) -> Dict[str, Any]:
-#     competitions = safe_get(js, "header", "competitions", default=[]) or []
-#     comp = competitions[0] if competitions else {}
-#     situation = safe_get(js, "situation", default={})
-
-#     # Scores/teams
-#     teams = safe_get(comp, "competitors", default=[]) or []
-#     away, home = None, None
-#     for t in teams:
-#         if t.get("homeAway") == "home":
-#             home = t
-#         elif t.get("homeAway") == "away":
-#             away = t
-
-#     meta = {
-#         "event_id": event_id,
-#         "game_id": comp.get("id"),
-#         "date": comp.get("date"),
-#         "season": safe_get(comp, "season", "year"),
-#         "season_type": safe_get(comp, "season", "type"),
-#         "week": safe_get(comp, "week", "number"),
-#         "venue_full_name": safe_get(comp, "venue", "fullName"),
-#         "venue_city": safe_get(comp, "venue", "address", "city"),
-#         "venue_state": safe_get(comp, "venue", "address", "state"),
-#         "attendance": safe_get(js, "gameInfo", "attendance"),
-#         "game_duration": safe_get(js, "gameInfo", "gameDuration"),
-#         "status_type": safe_get(comp, "status", "type", "name"),
-#         "status_detail": safe_get(comp, "status", "type", "detail"),
-#         "neutral_site": safe_get(comp, "neutralSite"),
-#         "conference_competition": safe_get(comp, "conferenceCompetition"),
-#         "home_team_id": safe_get(home, "team", "id"),
-#         "home_team_abbr": safe_get(home, "team", "abbreviation"),
-#         "home_team_score": safe_get(home, "score"),
-#         "away_team_id": safe_get(away, "team", "id"),
-#         "away_team_abbr": safe_get(away, "team", "abbreviation"),
-#         "away_team_score": safe_get(away, "score"),
-#         "spread": safe_get(js, "pickcenter", 0, "spread"),  # usually first entry
-#         "over_under": safe_get(js, "pickcenter", 0, "overUnder"),
-#         "last_play_text": safe_get(situation, "lastPlay", "text"),
-#     }
-#     return meta
-
 def extract_game_meta(event_id: str, js: Dict[str, Any]) -> List[Dict[str, Any]]:
+    header = safe_get(js, "header", default=[]) or []
     competitions = safe_get(js, "header", "competitions", default=[]) or []
     comp = competitions[0] if competitions else {}
 
@@ -173,14 +124,16 @@ def extract_game_meta(event_id: str, js: Dict[str, Any]) -> List[Dict[str, Any]]
             "event_id": event_id,
             # "game_id": comp.get("id"),
             "date": comp.get("date"),
-            "season": safe_get(comp, "season", "year"),
-            "season_type": safe_get(comp, "season", "type"),
-            "week": safe_get(comp, "week", "number"),
-            "venue_full_name": safe_get(comp, "venue", "fullName"),
-            "venue_city": safe_get(comp, "venue", "address", "city"),
-            "venue_state": safe_get(comp, "venue", "address", "state"),
+            "season": safe_get(header, "season", "year"),
+            "season_type": safe_get(header, "season", "type"),
+            "week": safe_get(header, "week"),
+            "venue_full_name": safe_get(js, "gameInfo", "venue", "fullName"),
+            "venue_city": safe_get(js, "gameInfo", "venue", "address", "city"),
+            "venue_state": safe_get(js, "gameInfo", "venue", "address", "state"),
+            "venue_zip": safe_get(js, "gameInfo", "venue", "address", "zipCode"),
+            "venue_country": safe_get(js, "gameInfo", "venue", "address", "country"),
+            "venue_grass": safe_get(js, "gameInfo", "venue", "grass"),
             "attendance": safe_get(js, "gameInfo", "attendance"),
-            "game_duration": safe_get(js, "gameInfo", "gameDuration"),
             "status_type": safe_get(comp, "status", "type", "name"),
             "status_detail": safe_get(comp, "status", "type", "detail"),
             "neutral_site": safe_get(comp, "neutralSite"),
@@ -206,6 +159,32 @@ def extract_game_meta(event_id: str, js: Dict[str, Any]) -> List[Dict[str, Any]]
     return meta_rows
 
 
+def split_fraction_columns(df: pd.DataFrame):
+    # Define mapping of columns to split -> [new_column_1, new_column_2]
+    fraction_map = {
+        "completions_passingAttempts": ["passingCompletions", "passingAttempts"],   #offense
+        "sacks_sackYardsLost": ["sacks", "sackYardsLost"],                          #offense
+        "completionAttempts": ["passingCompletions", "passingAttempts"],            #games
+        "thirdDownEff": ["thirddownSuccess", "thirddownAttempts"],                  #games
+        "fourthDownEff": ["fourthdownSuccess", "fourthdownAttempts"],               #games
+        "sacksYardsLost": ["sacks", "sackYardsLost"],                               #games
+        "redZoneAttempts": ["redZoneSuccess", "redZoneAttempts"],                   #games
+        "totalPenaltiesYards": ["Penalties", "PenaltyYards"],                       #games
+        "extraPointsMade_extraPointAttempts": ["xpSuccess", "xpAttempts"],          #special
+        "fieldGoalsMade_fieldGoalAttempts": ["fgSuccess", "fgAttempts"]             #special     
+    }
+    for col, new_cols in fraction_map.items():
+        if col in df.columns:
+            # Ensure correct delimiter: "/" or "-"
+            df[col] = df[col].astype(str).str.replace("-", "/", regex=False)
+            df[new_cols] = df[col].str.split("/", expand=True)
+            df.drop(columns=[col], inplace=True)
+    return df
+
+
+def merge_duplicate_athletes(df: pd.DataFrame):
+    merge_cols = ['event_id', 'team_id', 'team_abbr', 'team_name', 'athlete_id', 'athlete_name', 'athlete_jersey']
+    return df.groupby(merge_cols, dropna=False, as_index=False).first()
 
 
 
@@ -228,8 +207,22 @@ for eid in tqdm(event_ids, desc="Processing events"):
     all_games.extend(extract_game_meta(eid, js))
 
 
-pd.DataFrame(all_offense).to_csv("offense.csv", index=False)
-pd.DataFrame(all_defense).to_csv("defense.csv", index=False)
-pd.DataFrame(all_special).to_csv("special.csv", index=False)
-pd.DataFrame(all_games).to_csv("games.csv", index=False)
+df_off = pd.DataFrame(all_offense)
+df_def = pd.DataFrame(all_defense)
+df_spe = pd.DataFrame(all_special)
+df_gam = pd.DataFrame(all_games)
+
+
+df_off = merge_duplicate_athletes(df_off)
+df_def = merge_duplicate_athletes(df_def)
+
+df_off = split_fraction_columns(df_off)
+df_spe = split_fraction_columns(df_spe)
+df_gam = split_fraction_columns(df_gam)
+
+
+df_off.to_csv("offense.csv", index=False)
+df_def.to_csv("defense.csv", index=False)
+df_spe.to_csv("special.csv", index=False)
+df_gam.to_csv("games.csv", index=False)
 

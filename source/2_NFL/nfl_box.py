@@ -2,6 +2,7 @@ from typing import Any, Dict, Iterable, List, Optional
 
 import pandas as pd
 import requests
+import time
 from tqdm import tqdm
 
 SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event={event_id}"
@@ -188,7 +189,10 @@ def merge_duplicate_athletes(df: pd.DataFrame):
 
 
 
-event_ids = [401671937,401671878,401326315]
+nfl_sched = pd.read_csv('/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL/nfl_schedule.csv')
+event_ids = nfl_sched["game.id"].tolist()
+# event_ids = [401671937,401671878,401326315]
+# len(event_ids) # 5003
 
 all_offense: List[Dict[str, Any]] = []
 all_defense: List[Dict[str, Any]] = []
@@ -199,6 +203,8 @@ for eid in tqdm(event_ids, desc="Processing events"):
     js = request_summary(eid)
     if js is None:
         continue
+
+    time.sleep(.5)
 
     offense_rows, defense_rows, special_rows = extract_all_stat_rows(eid, js)
     all_offense.extend(offense_rows)
@@ -221,8 +227,8 @@ df_spe = split_fraction_columns(df_spe)
 df_gam = split_fraction_columns(df_gam)
 
 
-df_off.to_csv("offense.csv", index=False)
-df_def.to_csv("defense.csv", index=False)
-df_spe.to_csv("special.csv", index=False)
-df_gam.to_csv("games.csv", index=False)
+df_off.to_csv("nfl_offense.csv", index=False)
+df_def.to_csv("nfl_defense.csv", index=False)
+df_spe.to_csv("nfl_special.csv", index=False)
+df_gam.to_csv("nfl_games.csv", index=False)
 

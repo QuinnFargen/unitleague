@@ -192,7 +192,7 @@ def merge_duplicate_athletes(df: pd.DataFrame):
 
 nfl_sched = pd.read_csv('/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB/cfb_schedule.csv')
 event_ids = nfl_sched["game.id"].tolist()
-# event_ids = [400603839, 400603840, 400756882]
+# event_ids = [401013059, 401301012, 401426542]
 len(event_ids) # 8795
 
 all_offense: List[Dict[str, Any]] = []
@@ -212,6 +212,8 @@ for eid in tqdm(event_ids, desc="Processing events"):
     all_defense.extend(defense_rows)
     all_special.extend(special_rows)
     all_games.extend(extract_game_meta(eid, js))
+
+    # 401013059, 401301012, 401426542
 
 
 df_off = pd.DataFrame(all_offense)

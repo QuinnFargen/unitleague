@@ -221,14 +221,18 @@ df_gam = pd.DataFrame(all_games)
 
 df_off = merge_duplicate_athletes(df_off)
 df_def = merge_duplicate_athletes(df_def)
+df_spe = merge_duplicate_athletes(df_spe)
 
 df_off = split_fraction_columns(df_off)
 df_spe = split_fraction_columns(df_spe)
 df_gam = split_fraction_columns(df_gam)
 
+# avoid issue on insert into db:
+df_off['adjQBR'] = df_off['adjQBR'].replace('--', '')
+df_gam = df_gam.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
 
 df_off.to_csv("nfl_offense.csv", index=False)
 df_def.to_csv("nfl_defense.csv", index=False)
 df_spe.to_csv("nfl_special.csv", index=False)
-df_gam.to_csv("nfl_games.csv", index=False)
+df_gam.to_csv("nfl_games2.csv", index=False)
 

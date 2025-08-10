@@ -192,8 +192,11 @@ def merge_duplicate_athletes(df: pd.DataFrame):
 
 nfl_sched = pd.read_csv('/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB/cfb_schedule.csv')
 event_ids = nfl_sched["game.id"].tolist()
+event_ids = list(set(event_ids))    # seems to be 50ih duplicates
 # event_ids = [401013059, 401301012, 401426542]
 len(event_ids) # 8795
+len(event_ids) # 8749
+
 
 all_offense: List[Dict[str, Any]] = []
 all_defense: List[Dict[str, Any]] = []
@@ -224,14 +227,22 @@ df_gam = pd.DataFrame(all_games)
 
 df_off = merge_duplicate_athletes(df_off)
 df_def = merge_duplicate_athletes(df_def)
+df_spe = merge_duplicate_athletes(df_spe)
 
 df_off = split_fraction_columns(df_off)
 df_spe = split_fraction_columns(df_spe)
 df_gam = split_fraction_columns(df_gam)
 
+# avoid issue on insert into db:
+df_off['adjQBR'] = df_off['adjQBR'].replace('--', '')
+df_gam = df_gam.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
+df_off = df_off[~((df_off['event_id'] == 401677184) & (df_off['athlete_jersey'] == -1.0))]
+    # Player has two rows with one with a -1 jersey #
+    # 401677184,87,ND,Notre Dame Fighting Irish,4683243,Mitchell Evans,-1.0,,,,,,,,,,,3.0,22.0,7.3,0.0,11.0,,
 
-df_off.to_csv("cfb_offense.csv", index=False)
+
+df_off.to_csv("cfb_offense2.csv", index=False)
 df_def.to_csv("cfb_defense.csv", index=False)
 df_spe.to_csv("cfb_special.csv", index=False)
-df_gam.to_csv("cfb_games.csv", index=False)
+df_gam.to_csv("cfb_games2.csv", index=False)
 

@@ -24,6 +24,7 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
+
 def clean_value(val):
     """Convert pandas NaN/None to None for Postgres."""
     if pd.isna(val) or (isinstance(val, str) and val.strip().lower() == "nan"):
@@ -60,18 +61,15 @@ insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "cfb_special.csv", "src.foot_special_teams_box",5)
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "cfb_games.csv", "src.foot_game_team_summary",5)
 
-cur.execute(f"""
-    ALTER TABLE ball.team ALTER COLUMN weather TYPE INTEGER
-    USING weather::integer;
-""")
+insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL", "nfl_schedule.csv", "src.foot_schedule",2)
+insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "cfb_schedule.csv", "src.foot_schedule",5)
+
+cur.execute('ALTER TABLE ball.team ALTER COLUMN weather TYPE INTEGER USING weather::integer;')
 conn.commit()
 
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_team.csv", 'ball.team')
 
-cur.execute(f"""
-    ALTER TABLE ball.team ALTER COLUMN weather TYPE BIT(1)
-    USING LPAD(weather::bit(1)::text, 1, '0')::bit(1);
-""")
+cur.execute('ALTER TABLE ball.team ALTER COLUMN weather TYPE BIT(1) USING LPAD(weather::bit(1)::text, 1, "0")::bit(1);')
 conn.commit()
 
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_season.csv", 'ball.season')

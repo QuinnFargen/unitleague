@@ -94,7 +94,7 @@ headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 dfs = []
 
     # 2014 having issues so not going back to 2011
-for year in range(2015, 2025):
+for year in range(2015, 2026):
     url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}'
     jsonData = requests.get(url, headers=headers).json()
     calendar = jsonData['content']['calendar']
@@ -133,6 +133,12 @@ for year in range(2015, 2025):
 results = pd.concat(dfs)
 games = collapse_games(results)
 
-games.to_csv("cfb_schedule.csv", index=False)
+games = pd.read_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB/cfb_schedule.csv")
 
+games = games[~(games['name'] == 'TBD TBD at TBD TBD')]
+games.columns = games.columns.str.replace('.', '_', regex=False)
+games = games.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
+games = games.drop_duplicates(subset='game_id', keep='first')
+
+games.to_csv("cfb_schedule2.csv", index=False)
 

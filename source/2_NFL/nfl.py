@@ -83,7 +83,7 @@ def collapse_games(df):
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)  Chrome/58.0.3029.110 Safari/537.3"}
 dfs = []
 
-for year in range(2010, 2025):
+for year in range(2010, 2026):
 
     url = f'https://cdn.espn.com/core/nfl/schedule?xhr=1&year={year}'
     jsonData = requests.get(url, headers=headers).json()
@@ -121,6 +121,13 @@ for year in range(2010, 2025):
 results = pd.concat(dfs)
 games = collapse_games(results)
 
-games.to_csv("nfl_schedule.csv", index=False)
+games = pd.read_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL/nfl_schedule.csv")
+
+games = games[~(games['name'] == 'TBD TBD at TBD TBD')]
+games.columns = games.columns.str.replace('.', '_', regex=False)
+games = games.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
+games = games.drop_duplicates(subset='game_id', keep='first')
+
+games.to_csv("nfl_schedule2.csv", index=False)
 
 

@@ -64,17 +64,8 @@ insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL", "nfl_schedule.csv", "src.foot_schedule",2)
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "cfb_schedule.csv", "src.foot_schedule",5)
 
-cur.execute('ALTER TABLE ball.team ALTER COLUMN weather TYPE INTEGER USING weather::integer;')
-conn.commit()
-
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_team.csv", 'ball.team')
-
-cur.execute('ALTER TABLE ball.team ALTER COLUMN weather TYPE BIT(1) USING LPAD(weather::bit(1)::text, 1, "0")::bit(1);')
-conn.commit()
-
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_season.csv", 'ball.season')
-
-
 
 
 cur.close()

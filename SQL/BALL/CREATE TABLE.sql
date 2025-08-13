@@ -31,9 +31,10 @@ CREATE TABLE ball.team (
   div varchar(20),		-- 100	Increment
   lat decimal(8,6),
   lon decimal(9,6),
-  weather bit,	-- 0 = Dome
+  weather smallint,	-- 0 = Dome
   region_lat decimal(8,6),	-- Generalized Lat for less redundant weather api calls
-  region_lon decimal(9,6)  	-- Generalized Lon for less redundant weather api calls
+  region_lon decimal(9,6), 	-- Generalized Lon for less redundant weather api calls
+  source_team_id int
 );
 
 	-- SCD1

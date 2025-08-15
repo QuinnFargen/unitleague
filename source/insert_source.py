@@ -67,6 +67,8 @@ insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/5_CFB", "
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_team.csv", 'ball.team')
 insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "ball_season.csv", 'ball.season')
 
+insert_from_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source", "the_odds_api_teamname.csv", 'ball.team_name')
+
 
 cur.close()
 conn.close()

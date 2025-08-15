@@ -1,0 +1,171 @@
+league_id,team_id,name,source
+5,50701,Akron Zips,the_odds_api
+5,51003,Alabama Crimson Tide,the_odds_api
+5,,Albany,the_odds_api
+5,51101,Appalachian State Mountaineers,the_odds_api
+5,50402,Arizona State Sun Devils,the_odds_api
+5,50401,Arizona Wildcats,the_odds_api
+5,51001,Arkansas Razorbacks,the_odds_api
+5,51102,Arkansas State Red Wolves,the_odds_api
+5,51002,Auburn Tigers,the_odds_api
+5,50702,Ball State Cardinals,the_odds_api
+5,50403,Baylor Bears,the_odds_api
+5,50802,Boise State Broncos,the_odds_api
+5,,Bryant Bulldogs,the_odds_api
+5,50704,Buffalo Bulls,the_odds_api
+5,50404,BYU Cougars,the_odds_api
+5,50202,California Golden Bears,the_odds_api
+5,50705,Central Michigan Chippewas,the_odds_api
+5,,Charleston Southern Buccaneers,the_odds_api
+5,50102,Charlotte 49ers,the_odds_api
+5,50405,Cincinnati Bearcats,the_odds_api
+5,50203,Clemson Tigers,the_odds_api
+5,51103,Coastal Carolina Chanticleers,the_odds_api
+5,50406,Colorado Buffaloes,the_odds_api
+5,50803,Colorado State Rams,the_odds_api
+5,50204,Duke Blue Devils,the_odds_api
+5,50103,East Carolina Pirates,the_odds_api
+5,50706,Eastern Michigan Eagles,the_odds_api
+5,,Elon Phoenix,the_odds_api
+5,50104,Florida Atlantic Owls,the_odds_api
+5,51004,Florida Gators,the_odds_api
+5,50205,Florida State Seminoles,the_odds_api
+5,,Fresno State Bulldogs,the_odds_api
+5,51015,Georgia Bulldogs,the_odds_api
+5,51104,Georgia Southern Eagles,the_odds_api
+5,51105,Georgia State Panthers,the_odds_api
+5,50206,Georgia Tech Yellow Jackets,the_odds_api
+5,50805,Hawaii Rainbow Warriors,the_odds_api
+5,,Idaho State Bengals,the_odds_api
+5,,Idaho Vandals,the_odds_api
+5,50301,Illinois Fighting Illini,the_odds_api
+5,,Illinois State Redbirds,the_odds_api
+5,50302,Indiana Hoosiers,the_odds_api
+5,50303,Iowa Hawkeyes,the_odds_api
+5,50407,Iowa State Cyclones,the_odds_api
+5,50502,Jacksonville State Gamecocks,the_odds_api
+5,51106,James Madison Dukes,the_odds_api
+5,50409,Kansas Jayhawks,the_odds_api
+5,50408,Kansas State Wildcats,the_odds_api
+5,50503,Kennesaw State Owls,the_odds_api
+5,51005,Kentucky Wildcats,the_odds_api
+5,50504,Liberty Flames,the_odds_api
+5,51107,Louisiana Ragin Cajuns,the_odds_api
+5,50505,Louisiana Tech Bulldogs,the_odds_api
+5,50207,Louisville Cardinals,the_odds_api
+5,51006,LSU Tigers,the_odds_api
+5,,Maine Black Bears,the_odds_api
+5,51108,Marshall Thundering Herd,the_odds_api
+5,50304,Maryland Terrapins,the_odds_api
+5,50708,Miami (OH) RedHawks,the_odds_api
+5,50208,Miami Hurricanes,the_odds_api
+5,50306,Michigan State Spartans,the_odds_api
+5,50307,Michigan Wolverines,the_odds_api
+5,50305,Minnesota Golden Gophers,the_odds_api
+5,51008,Mississippi State Bulldogs,the_odds_api
+5,,Missouri State Bears,the_odds_api
+5,51007,Missouri Tigers,the_odds_api
+5,,Montana State Bobcats,the_odds_api
+5,50210,NC State Wolfpack,the_odds_api
+5,50308,Nebraska Cornhuskers,the_odds_api
+5,50807,Nevada Wolf Pack,the_odds_api
+5,50806,New Mexico Lobos,the_odds_api
+5,50507,New Mexico State Aggies,the_odds_api
+5,,Nicholls State Colonels,the_odds_api
+5,50209,North Carolina Tar Heels,the_odds_api
+5,,North Dakota Fighting Hawks,the_odds_api
+5,,Northern Arizona Lumberjacks,the_odds_api
+5,50309,Northwestern Wildcats,the_odds_api
+5,50603,Notre Dame Fighting Irish,the_odds_api
+5,50710,Ohio Bobcats,the_odds_api
+5,50311,Ohio State Buckeyes,the_odds_api
+5,51009,Oklahoma Sooners,the_odds_api
+5,50410,Oklahoma State Cowboys,the_odds_api
+5,51109,Old Dominion Monarchs,the_odds_api
+5,51010,Ole Miss Rebels,the_odds_api
+5,50310,Oregon Ducks,the_odds_api
+5,50901,Oregon State Beavers,the_odds_api
+5,50312,Penn State Nittany Lions,the_odds_api
+5,50211,Pittsburgh Panthers,the_odds_api
+5,,Portland State Vikings,the_odds_api
+5,50313,Purdue Boilermakers,the_odds_api
+5,50108,Rice Owls,the_odds_api
+5,50314,Rutgers Scarlet Knights,the_odds_api
+5,50508,Sam Houston State Bearkats,the_odds_api
+5,50808,San Diego State Aztecs,the_odds_api
+5,50809,San Jose State Spartans,the_odds_api
+5,50212,SMU Mustangs,the_odds_api
+5,51011,South Carolina Gamecocks,the_odds_api
+5,,South Dakota Coyotes,the_odds_api
+5,50113,South Florida Bulls,the_odds_api
+5,,Southeast Missouri State Redhawks,the_odds_api
+5,,Southeastern Louisiana Lions,the_odds_api
+5,51110,Southern Mississippi Golden Eagles,the_odds_api
+5,50213,Stanford Cardinal,the_odds_api
+5,,Stony Brook Seawolves,the_odds_api
+5,50214,Syracuse Orange,the_odds_api
+5,50411,TCU Horned Frogs,the_odds_api
+5,50109,Temple Owls,the_odds_api
+5,51012,Tennessee Volunteers,the_odds_api
+5,51014,Texas A&M Aggies,the_odds_api
+5,51013,Texas Longhorns,the_odds_api
+5,51112,Texas State Bobcats,the_odds_api
+5,50412,Texas Tech Red Raiders,the_odds_api
+5,50711,Toledo Rockets,the_odds_api
+5,51111,Troy Trojans,the_odds_api
+5,50110,Tulane Green Wave,the_odds_api
+5,50413,UCF Knights,the_odds_api
+5,50315,UCLA Bruins,the_odds_api
+5,50602,UMass Minutemen,the_odds_api
+5,50810,UNLV Rebels,the_odds_api
+5,50316,USC Trojans,the_odds_api
+5,,UT Martin Skyhawks,the_odds_api
+5,50811,Utah State Aggies,the_odds_api
+5,50415,Utah Utes,the_odds_api
+5,50509,UTEP Miners,the_odds_api
+5,50114,UTSA Roadrunners,the_odds_api
+5,51016,Vanderbilt Commodores,the_odds_api
+5,50215,Virginia Cavaliers,the_odds_api
+5,50216,Virginia Tech Hokies,the_odds_api
+5,50217,Wake Forest Demon Deacons,the_odds_api
+5,50317,Washington Huskies,the_odds_api
+5,50902,Washington State Cougars,the_odds_api
+5,,Weber State Wildcats,the_odds_api
+5,50416,West Virginia Mountaineers,the_odds_api
+5,,Western Illinois Leathernecks,the_odds_api
+5,50510,Western Kentucky Hilltoppers,the_odds_api
+5,50712,Western Michigan Broncos,the_odds_api
+5,50318,Wisconsin Badgers,the_odds_api
+5,50812,Wyoming Cowboys,the_odds_api
+2,22801,Arizona Cardinals,the_odds_api
+2,22701,Atlanta Falcons,the_odds_api
+2,21201,Baltimore Ravens,the_odds_api
+2,21101,Buffalo Bills,the_odds_api
+2,22702,Carolina Panthers,the_odds_api
+2,22601,Chicago Bears,the_odds_api
+2,21202,Cincinnati Bengals,the_odds_api
+2,21203,Cleveland Browns,the_odds_api
+2,22501,Dallas Cowboys,the_odds_api
+2,21401,Denver Broncos,the_odds_api
+2,22602,Detroit Lions,the_odds_api
+2,22603,Green Bay Packers,the_odds_api
+2,21301,Houston Texans,the_odds_api
+2,21302,Indianapolis Colts,the_odds_api
+2,21303,Jacksonville Jaguars,the_odds_api
+2,21402,Kansas City Chiefs,the_odds_api
+2,21403,Las Vegas Raiders,the_odds_api
+2,21404,Los Angeles Chargers,the_odds_api
+2,22802,Los Angeles Rams,the_odds_api
+2,21102,Miami Dolphins,the_odds_api
+2,22604,Minnesota Vikings,the_odds_api
+2,21103,New England Patriots,the_odds_api
+2,22703,New Orleans Saints,the_odds_api
+2,22502,New York Giants,the_odds_api
+2,21104,New York Jets,the_odds_api
+2,22503,Philadelphia Eagles,the_odds_api
+2,21204,Pittsburgh Steelers,the_odds_api
+2,22803,San Francisco 49ers,the_odds_api
+2,22804,Seattle Seahawks,the_odds_api
+2,22704,Tampa Bay Buccaneers,the_odds_api
+2,21304,Tennessee Titans,the_odds_api
+2,22504,Washington Commanders,the_odds_api

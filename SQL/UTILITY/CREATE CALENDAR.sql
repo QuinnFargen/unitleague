@@ -2,55 +2,56 @@
 
 -- https://medium.com/justdataplease/building-a-dynamic-date-calendar-in-postgresql-a-step-by-step-guide-20c8edfc3bf7
 
-create schema "UTILITY";
+create schema utility;
 
 -- Create date calendar
-DROP TABLE if exists "UTILITY"."CALENDAR";
+DROP TABLE if exists utility.calendar;
 
-CREATE TABLE "UTILITY"."CALENDAR" (
-DATE_ID INT NOT NULL,
-THEDATE DATE NOT NULL,
-START_OF_WEEK DATE NOT NULL,
-START_OF_MONTH DATE NOT NULL,
-START_OF_MIDMONTH DATE NOT NULL,
-START_OF_QTR DATE NOT NULL,
-START_OF_YEAR DATE NOT NULL,
-END_OF_WEEK DATE NOT NULL,
-END_OF_MONTH DATE NOT NULL,
-END_OF_QTR DATE NOT NULL,
-END_OF_YEAR DATE NOT NULL,
-EPOCH BIGINT NOT NULL,
-DAY_SUFFIX VARCHAR(4) NOT NULL,
-DAY_NAME VARCHAR(9) NOT NULL,
-DAY_NAME_ABBR VARCHAR(9) NOT NULL,
-DAY_OF_WEEK INT NOT NULL,
-DAY_OF_MONTH INT NOT NULL,
-DAY_OF_QTR INT NOT NULL,
-DAY_OF_YEAR INT NOT NULL,
-WEEK_OF_MONTH INT NOT NULL,
-WEEK_OF_YEAR INT NOT NULL,
-WEEK_OF_YEAR_ISO CHAR(10) NOT NULL,
-MONTH_INT INT NOT NULL,
-MONTH_NAME VARCHAR(9) NOT NULL,
-MONTH_NAME_ABBR CHAR(3) NOT NULL,
-QTR_INT INT NOT NULL,
-QTR_NAME VARCHAR(9) NOT NULL,
-YEAR_INT INT NOT NULL,
-YYYYMM VARCHAR NOT NULL,
-YYYYMMDD VARCHAR NOT NULL,
-YEAR_VAR VARCHAR,
-MONTH_VAR VARCHAR,
-QTR_VAR VARCHAR,
-WEEK_MONDAY VARCHAR,
-IS_WEEKEND INT2 NOT NULL);
+CREATE TABLE utility.calendar (
+    date_id INT NOT NULL,
+    thedate DATE NOT NULL,
+    start_of_week DATE NOT NULL,
+    start_of_month DATE NOT NULL,
+    start_of_midmonth DATE NOT NULL,
+    start_of_qtr DATE NOT NULL,
+    start_of_year DATE NOT NULL,
+    end_of_week DATE NOT NULL,
+    end_of_month DATE NOT NULL,
+    end_of_qtr DATE NOT NULL,
+    end_of_year DATE NOT NULL,
+    epoch BIGINT NOT NULL,
+    day_suffix VARCHAR(4) NOT NULL,
+    day_name VARCHAR(9) NOT NULL,
+    day_name_abbr VARCHAR(9) NOT NULL,
+    day_of_week INT NOT NULL,
+    day_of_month INT NOT NULL,
+    day_of_qtr INT NOT NULL,
+    day_of_year INT NOT NULL,
+    week_of_month INT NOT NULL,
+    week_of_year INT NOT NULL,
+    week_of_year_iso CHAR(10) NOT NULL,
+    month_int INT NOT NULL,
+    month_name VARCHAR(9) NOT NULL,
+    month_name_abbr CHAR(3) NOT NULL,
+    qtr_int INT NOT NULL,
+    qtr_name VARCHAR(9) NOT NULL,
+    year_int INT NOT NULL,
+    yyyymm VARCHAR NOT NULL,
+    yyyymmdd VARCHAR NOT NULL,
+    year_var VARCHAR,
+    month_var VARCHAR,
+    qtr_var VARCHAR,
+    week_monday VARCHAR,
+    is_weekend INT2 NOT NULL
+);
 
-ALTER TABLE "UTILITY"."CALENDAR" ADD CONSTRAINT date_calendar_date_pk PRIMARY KEY (DATE_ID);
-CREATE INDEX date_calendar_date_ac_idx ON "UTILITY"."CALENDAR"(THEDATE);
+ALTER TABLE utility.calendar ADD CONSTRAINT date_calendar_date_pk PRIMARY KEY (date_id);
+CREATE INDEX date_calendar_date_ac_idx ON utility.calendar(thedate);
 
 
 
-INSERT INTO "UTILITY"."CALENDAR"
-SELECT TO_CHAR(datum,'yyyymmdd')::INT AS DATE_ID,
+INSERT INTO utility.calendar
+SELECT TO_CHAR(datum,'yyyymmdd')::INT AS date_id,
 datum AS date,
 DATE_TRUNC('week', datum)::date AS start_of_week,
 DATE_TRUNC('month', datum)::date AS start_of_month,
@@ -76,7 +77,7 @@ datum - DATE_TRUNC('quarter',datum)::DATE +1 AS day_of_quarter,
 EXTRACT(doy FROM datum) AS day_of_year,
 TO_CHAR(datum,'W')::INT AS week_of_month,
 EXTRACT(week FROM datum) AS week_of_year,
-TO_CHAR(datum,'YYYY"-W"IW-D') AS week_of_year_iso,
+TO_CHAR(datum,'YYYY-WIW-D') AS week_of_year_iso,
 EXTRACT(MONTH FROM datum) AS month_,
 TO_CHAR(datum,'Month') AS month_name,
 TO_CHAR(datum,'Mon') AS month_name_abbr,
@@ -86,10 +87,10 @@ EXTRACT(year FROM datum)::int year_,
 --EXTRACT(isoyear FROM datum) AS year_,
 TO_CHAR(datum,'yyyymm') AS yyyymm,
 TO_CHAR(datum,'yyyymmdd') AS yyyymmdd,
-EXTRACT(year FROM datum) "Year",
-CONCAT(EXTRACT(year FROM datum),'-',TO_CHAR(datum,'Mon'))  "Month",
-CONCAT(EXTRACT(year FROM datum),'-Q',EXTRACT(quarter FROM datum)) "Quarter",
-DATE_TRUNC('week', datum)::date "Week Monday",
+EXTRACT(year FROM datum) Year,
+CONCAT(EXTRACT(year FROM datum),'-',TO_CHAR(datum,'Mon'))  Month,
+CONCAT(EXTRACT(year FROM datum),'-Q',EXTRACT(quarter FROM datum)) Quarter,
+DATE_TRUNC('week', datum)::date Week Monday,
 CASE WHEN EXTRACT(isodow FROM datum) IN (6,7) THEN 1 ELSE 0 END AS is_weekend 
 FROM (SELECT datum::date FROM GENERATE_SERIES (
     DATE '2000-01-01', 
@@ -98,19 +99,19 @@ FROM (SELECT datum::date FROM GENERATE_SERIES (
 ) AS datum) dates_series;
 -- 11323
 
-SELECT * FROM "UTILITY"."CALENDAR";
+SELECT * FROM utility.calendar;
 
 
-SELECT A.year_int, COUNT(*) FROM "UTILITY"."CALENDAR" A group by A.year_int order by 1;
-SELECT A.year_var, COUNT(*) FROM "UTILITY"."CALENDAR" A group by A.year_var order by 1;
+SELECT A.year_int, COUNT(*) FROM utility.calendar A group by A.year_int order by 1;
+SELECT A.year_var, COUNT(*) FROM utility.calendar A group by A.year_var order by 1;
 
 
 select * 
-FROM "UTILITY"."CALENDAR" A 
+FROM utility.calendar A 
 where A.year_int = 2009 and A.month_int = 1
 order by A.thedate ;
 
 
-SELECT A.month_int, COUNT(*) FROM "UTILITY"."CALENDAR" A where A.year_int = 2009 group by A.month_int order by 1 ;
+SELECT A.month_int, COUNT(*) FROM utility.calendar A where A.year_int = 2009 group by A.month_int order by 1 ;
 
 

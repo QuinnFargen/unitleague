@@ -29,10 +29,11 @@ begin
 		select 
 			s.*
 			,md5(bookmaker || s.game_id::text || coalesce(s.team_id::text,'') || bet_type) as bet_hash
-			,g.game_concat || '_' || s.bet_type || '_' || s.bookmaker as bet_concat
+			,g.game_concat || '_' || case when t.abbr is not null then t.abbr else s.bet_type end || '_' || s.bookmaker as bet_concat
 			,row_number() OVER(partition by s.game_id, s.team_id, s.bet_type, s.bookmaker, s.price, s.points order by s.start_dt ) as unique_bet
 		from src s
 		join ball.game g on s.game_id = g.game_id 
+		left join ball.team t on s.team_id = t.team_id
 	
 	),
 	changed AS (
@@ -65,11 +66,11 @@ begin
 	-- 3. Insert new versions
 	INSERT INTO odd.bet (
 	    bet_source_id, bet_hash, game_id, bet_type, bookmaker, team_id, bet_concat,
-	    price, points, start_dt, end_dt
+	    price, points, start_dt, end_dt, active
 	)
 	SELECT
 	    bet_source_id, bet_hash, game_id, bet_type, bookmaker, team_id, bet_concat,
-	    price, points, start_dt, end_dt
+	    price, points, start_dt, end_dt, case when end_dt is not null then false else true end
 	FROM new_odds;
 	
 

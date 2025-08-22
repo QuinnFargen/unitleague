@@ -229,6 +229,10 @@ df_gam = split_fraction_columns(df_gam)
 
 # avoid issue on insert into db:
 df_off['adjQBR'] = df_off['adjQBR'].replace('--', '')
+df_off['sacks'] = df_off['sacks'].replace('None', '')
+df_off['passingCompletions'] = df_off['passingCompletions'].replace('None', '')
+df_spe['xpSuccess'] = df_spe['xpSuccess'].replace('None', '')
+df_spe['fgSuccess'] = df_spe['fgSuccess'].replace('None', '')
 df_gam = df_gam.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
 
 df_off.to_csv("nfl_offense.csv", index=False)

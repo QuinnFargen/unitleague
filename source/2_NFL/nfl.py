@@ -121,13 +121,13 @@ for year in range(2010, 2026):
 results = pd.concat(dfs)
 games = collapse_games(results)
 
-games = pd.read_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL/nfl_schedule.csv")
+# games = pd.read_csv("/Users/quinnfargen/Documents/GitHub/unitleague/source/2_NFL/nfl_schedule.csv")
 
 games = games[~(games['name'] == 'TBD TBD at TBD TBD')]
 games.columns = games.columns.str.replace('.', '_', regex=False)
 games = games.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
 games = games.drop_duplicates(subset='game_id', keep='first')
 
-games.to_csv("nfl_schedule2.csv", index=False)
+games.to_csv("nfl_schedule.csv", index=False)
 
 

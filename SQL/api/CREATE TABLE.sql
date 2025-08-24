@@ -465,7 +465,41 @@ CREATE TABLE api.stg_nfl_game_team_summary (
 );
 
 
-
+CREATE TABLE api.stg_nfl_schedule (
+	gamedate timestamptz NULL,
+	"name" varchar(250) NULL,
+	shortname varchar(100) NULL,
+	week_number int4 NULL,
+	season_year int4 NULL,
+	season_type int4 NULL,
+	season_slug varchar(50) NULL,
+	status_period int4 NULL,
+	home_score int4 NULL,
+	home_team varchar(100) NULL,
+	home_abbr varchar(100) NULL,
+	home_short varchar(100) NULL,
+	home_team_id int4 NULL,
+	game_id int8 NOT NULL,
+	seasontype int4 NULL,
+	seasontypelabel varchar(100) NULL,
+	gameweek int4 NULL,
+	weeklabel varchar(100) NULL,
+	q1_home int4 NULL,
+	q2_home int4 NULL,
+	q3_home int4 NULL,
+	q4_home int4 NULL,
+	q5_home int4 NULL,
+	away_score int4 NULL,
+	away_team varchar(100) NULL,
+	away_abbr varchar(100) NULL,
+	away_short varchar(100) NULL,
+	away_team_id int4 NULL,
+	q1_away int4 NULL,
+	q2_away int4 NULL,
+	q3_away int4 NULL,
+	q4_away int4 NULL,
+	q5_away int4 NULL
+);
 
 
 
@@ -619,5 +653,38 @@ CREATE TABLE api.stg_cfb_game_team_summary (
 );
 
 
-
-
+CREATE TABLE api.stg_cfb_schedule (
+	gamedate timestamptz NULL,
+	"name" varchar(250) NULL,
+	shortname varchar(100) NULL,
+	week_number int4 NULL,
+	season_year int4 NULL,
+	season_type int4 NULL,
+	season_slug varchar(50) NULL,
+	status_period int4 NULL,
+	home_score int4 NULL,
+	home_team varchar(100) NULL,
+	home_abbr varchar(100) NULL,
+	home_short varchar(100) NULL,
+	home_team_id int4 NULL,
+	game_id int8 NOT NULL,
+	seasontype int4 NULL,
+	seasontypelabel varchar(100) NULL,
+	gameweek int4 NULL,
+	weeklabel varchar(100) NULL,
+	q1_home int4 NULL,
+	q2_home int4 NULL,
+	q3_home int4 NULL,
+	q4_home int4 NULL,
+	q5_home int4 NULL,
+	away_score int4 NULL,
+	away_team varchar(100) NULL,
+	away_abbr varchar(100) NULL,
+	away_short varchar(100) NULL,
+	away_team_id int4 NULL,
+	q1_away int4 NULL,
+	q2_away int4 NULL,
+	q3_away int4 NULL,
+	q4_away int4 NULL,
+	q5_away int4 NULL
+);

@@ -9,7 +9,6 @@ import psycopg2.extras
 st.title(f"The Board")
 st.logo("logo.png")
 
-
 ##############################################
 league = st.sidebar.radio("Choose League", ["ALL", "🪖NFL", "🎓CFB"], index=0)
 league_map = {"🪖NFL": 2, "🎓CFB": 5}
@@ -79,22 +78,26 @@ else:
 ##############################################
 # Top Board
 
-st.subheader(f"{league}  Games {subconf}")
 selected_game_id = None
 
-# We'll create a column of buttons
-for idx, row in games_df.iterrows():
-    col1, col2, col3 = st.columns([3, 3, 1])
-    col1.write(f"{row['away_team']} @ {row['home_team']}")
-    col2.write(f"{row['game_dt']} {row['game_time']}")
-    if col3.button("Details", key=row['game_id']):
-        selected_game_id = row['game_id']
+with st.expander(label=f"{league}  Games {subconf}", width="stretch"):
+
+    # We'll create a column of buttons
+    for idx, row in games_df.iterrows():
+        col1, col2, col3 = st.columns([3, 3, 1])
+        col1.write(f"{row['away_team']} @ {row['home_team']}")
+        col2.write(f"{row['game_dt']} {row['game_time']}")
+        if col3.button("Details", key=row['game_id']):
+            selected_game_id = row['game_id']
 
 
 ##############################################
 # Single Game
 
-if selected_game_id:
-    st.subheader(f"Game Details for ID: {selected_game_id}")
-    details_df = run_query(detail_query, (selected_game_id,))
-    st.dataframe(details_df, use_container_width=True)
+with st.expander(label=f"Selected Game", width="stretch"):
+
+    if selected_game_id:
+        details_df = run_query(detail_query, (selected_game_id,))
+        column_order = ["home_team", "away_team", "game_dt", "h", "a"]
+        filtered_df = details_df[column_order]
+        st.dataframe(filtered_df, use_container_width=True)

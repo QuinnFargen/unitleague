@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:18.1
+    container_name: kestra_pg
+    volumes:
+      - /mnt/fast2/docker/data/kestra/kestra_pg:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: k3str4
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  kestra:
+    image: kestra/kestra:v1.0
+    container_name: kestra
+    pull_policy: always
+    # Note that this setup with a root user is intended for development purpose.
+    # Our base image runs without root, but the Docker Compose implementation needs root to access the Docker socket
+    user: "root"
+    command: server standalone
+    restart: always
+    volumes:
+      - /mnt/fast2/docker/data/kestra:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd    
+    environment:
+      SECRET_POSTGRES_USERNAME: secrets.py
+      SECRET_POSTGRES_PASSWORD: secrets.py
+      SECRET_POSTGRES_HOST: secrets.py
+      SECRET_POSTGRES_NEON_USERNAME: secrets.py
+      SECRET_POSTGRES_NEON_HOST: secrets.py
+      SECRET_POSTGRES_NEON_PASSWORD: secrets.py
+      SECRET_ODDS_API_KEY: secrets.py
+      SECRET_CFBD_API_KEY: secrets.py
+      SECRET_WEATHER_API_KEY: secrets.py
+      SECRET_DISCORD_FAIL_URL: secrets.py
+      SECRET_DISCORD_SUCCESS_URL: secrets.py
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://postgres:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: kestra
+            password: k3str4
+        kestra:        
+          server:
+            basic-auth:
+              enabled: true
+              username: quinnfargen@gmail.com
+              password: Sup3rs3cur3PW!
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              basePath: "/app/storage"
+          queue:
+            type: postgres
+          tutorial-flows:
+            enabled: false
+          tasks:
+            tmpDir:
+              path: /tmp/kestra-wd/tmp
+          url: http://localhost:8080/
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy

@@ -1,0 +1,15 @@
+CREATE TABLE api.stg_kalshi_market (
+  event_ticker varchar,
+  ticker varchar,
+  expected_expiration_time TIMESTAMPTZ,
+  title varchar,
+  yes_sub_title varchar,
+  volume INTEGER,
+  volume_24h INTEGER,
+  yes_ask INTEGER,
+  yes_bid INTEGER,
+  liquidity BIGINT,
+  open_interest INTEGER,
+  rules_primary varchar,
+  status varchar
+);

@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS api.stg_foot_box_defensive (
+	event_id int8 NOT NULL,
+	team_id int4 NOT NULL,
+	team_abbr varchar(10) NULL,
+	team_name varchar(100) NULL,
+	athlete_id int8 NULL,
+	athlete_name varchar(100) NULL,
+	athlete_jersey varchar(10) NULL,
+	totaltackles int4 NULL,
+	solotackles int4 NULL,
+	sacks numeric(4, 1) NULL,
+	tacklesforloss numeric(4, 1) NULL,
+	passesdefended int4 NULL,
+	qbhits int4 NULL,
+	defensivetouchdowns int4 NULL,
+	interceptions int4 NULL,
+	interceptionyards int4 NULL,
+	interceptiontouchdowns int4 NULL,
+	hurries int4 NULL
+);

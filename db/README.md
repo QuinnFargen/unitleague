@@ -1,7 +1,5 @@
 # Database Layout
-
 ## Schema
-
 ### etl
 - This is the location that kestra will land api and python pulled data into the database.
 - stg_ prefixed tables will be the initial tables that don't have PK's or insert dates. These are truncated and loaded with new data each time.
@@ -12,6 +10,7 @@
 - This is the cleaned & extracted data from the etl schema. 
 - dbt will query from this to populate the ball & odd schema.
 - Weather data for historical lat/long regions. Also will have locationally average values for null imputation.
+- If i'm able to publish the data in this format, it allows the usage of this db from this point on without needing the prior etl/kestra setup.
 
 ### utility
 - Calendar table will be the main static table.

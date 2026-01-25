@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# --------------------------------------
+# Load .env file if present
+# --------------------------------------
+if [ -f ".env" ]; then
+  echo "Loading environment variables from .env"
+  set -a
+  source .env
+  set +a
+fi
+
+# Validate required variables
+: "${PGHOST:?PGHOST not set}"
+: "${PGPORT:?PGPORT not set}"
+: "${PGDATABASE:?PGDATABASE not set}"
+: "${PGUSER:?PGUSER not set}"
+: "${PGPASSWORD:?PGPASSWORD not set}"
+: "${PGSSLMODE:?PGSSLMODE not set}"
+: "${PGCHANNELBINDING:?PGCHANNELBINDING not set}"
+
+export PGPASSWORD
+export PGSSLMODE
+export PGCHANNELBINDING
+
+
+SEED_DIR="/Users/quinnfargen/Documents/GitHub/unitleague/db/seed"    # folder where CSVs are stored
+
+
+psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
+TRUNCATE TABLE src.foot_espn_box_defensive;
+\copy src.foot_espn_box_defensive FROM '${SEED_DIR}/foot_espn_box_defensive.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE src.foot_espn_box_offensive;
+\copy src.foot_espn_box_offensive FROM '${SEED_DIR}/foot_espn_box_offensive.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE src.foot_espn_box_special;
+\copy src.foot_espn_box_special FROM '${SEED_DIR}/foot_espn_box_special.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE src.foot_espn_game_team_summary;
+\copy src.foot_espn_game_team_summary FROM '${SEED_DIR}/foot_espn_game_team_summary.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE src.foot_espn_schedule;
+\copy src.foot_espn_schedule FROM '${SEED_DIR}/foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
+EOF
+
+echo "All seeding completed."

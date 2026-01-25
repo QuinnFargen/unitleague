@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS api.stg_kalshi_market (
+CREATE TABLE IF NOT EXISTS etl.stg_kalshi_market (
   event_ticker varchar,
   ticker varchar,
   expected_expiration_time TIMESTAMPTZ,

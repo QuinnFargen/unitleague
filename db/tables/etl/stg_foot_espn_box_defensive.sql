@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS api.stg_foot_box_defensive (
+CREATE TABLE IF NOT EXISTS etl.stg_foot_box_defensive (
 	event_id int8 NOT NULL,
 	team_id int4 NOT NULL,
 	team_abbr varchar(10) NULL,

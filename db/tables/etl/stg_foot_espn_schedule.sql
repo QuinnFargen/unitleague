@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS api.stg_foot_espn_schedule (
+CREATE TABLE IF NOT EXISTS etl.stg_foot_espn_schedule (
 	gamedate timestamptz NULL,
 	"name" varchar(250) NULL,
 	shortname varchar(100) NULL,

@@ -208,3 +208,4 @@ __marimo__/
 docker/postgres.env
 .DS_Store
 .vscode/settings.json
+/seed

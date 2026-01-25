@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS api.stg_the_odds_api (
+CREATE TABLE IF NOT EXISTS etl.stg_the_odds_api (
   id varchar,
   sport_key varchar,
   sport_title varchar,

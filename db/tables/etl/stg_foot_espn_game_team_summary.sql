@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS api.stg_foot_espn_game_team_summary (
+CREATE TABLE IF NOT EXISTS etl.stg_foot_espn_game_team_summary (
 	event_id int8 NOT NULL,
 	gamedate timestamp NULL,
 	season int4 NULL,

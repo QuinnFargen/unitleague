@@ -1,4 +1,4 @@
-CREATE TABLE src.foot_espn_game_team_summary (
+CREATE TABLE IF NOT EXISTS src.foot_espn_game_team_summary (
     league_id                 INT NOT NULL,       -- Added on insert from csv, 2 NFL, 5 CFB
     event_id                  BIGINT NOT NULL,
     gamedate                  TIMESTAMP,

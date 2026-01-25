@@ -1,4 +1,4 @@
-CREATE TABLE src.foot_espn_box_offensive (
+CREATE TABLE IF NOT EXISTS src.foot_espn_box_offensive (
     league_id               INT NOT NULL,       -- Added on insert from csv, 2 NFL, 5 CFB
     event_id                BIGINT NOT NULL,
     team_id                 INT NOT NULL,

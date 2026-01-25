@@ -2,20 +2,21 @@
 
 ## Schema
 
-### api
+### etl
 - This is the location that kestra will land api and python pulled data into the database.
 - stg_ prefixed tables will be the initial tables that don't have PK's or insert dates. These are truncated and loaded with new data each time.
 - all_ prefixed tables will retain new unique data that was just landed into the stg_ tables.
-- If there is a population queried in the kestra job dynamically, there will be a view in this api schema that might query other schema's to know what data is needed.
+- If there is a population queried in the kestra job dynamically, there will be a view in this etl schema that might query other schema's to know what data is needed.
 
 ### src
-- This is the cleaned & extracted data from the api schema. 
+- This is the cleaned & extracted data from the etl schema. 
 - dbt will query from this to populate the ball & odd schema.
+- Weather data for historical lat/long regions. Also will have locationally average values for null imputation.
 
 ### utility
-- Currently this is similar to src but for ancillary data sources.
-- This has a calendar table and weather data. 
-- Weather data will be updated with new values but also will have locationally average values for potential nulls.
+- Calendar table will be the main static table.
+- Metadata on dynamically populated table sources.
+- Log tables for what ran where and when.
 
 ### ball
 - This is the main sports data model that has results and scores.
@@ -27,3 +28,6 @@
 - This is the store of odds and prediction market data.
 - bet table is the store of all possible bets offered on these platforms.
 - Other tables will be used to track hypothetical bets places in a future unitleague application.
+
+### mart
+- This will be features and trends rolled up from the ball and odd schema.

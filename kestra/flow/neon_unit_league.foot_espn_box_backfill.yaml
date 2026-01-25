@@ -1,0 +1,662 @@
+id: foot_espn_box_backfill
+namespace: neon_unit_league
+
+tasks:
+  - id: fetch_event_cfb
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |      
+      select s.source_game_id as event_id
+      from ball.game s 
+      where s.league_id = 5 -- CFB
+        and s.won_team_id is null
+        and s.game_dt < CURRENT_DATE
+        and s.game_dt > '2025-07-01'
+      order by s.game_dt;
+    fetchType: STORE
+
+  - id: cfb_csv_event
+    type: "io.kestra.plugin.serdes.csv.IonToCsv"
+    from: "{{ outputs.fetch_event_cfb.uri }}"
+
+  - id: fetch_event_nfl
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |      
+      select s.source_game_id as event_id
+      from ball.game s 
+      where s.league_id = 2 -- NFL
+        and s.won_team_id is null
+        and s.game_dt < CURRENT_DATE
+        and s.game_dt > '2025-07-01'
+      order by s.game_dt;
+    fetchType: STORE
+
+  - id: nfl_csv_event
+    type: "io.kestra.plugin.serdes.csv.IonToCsv"
+    from: "{{ outputs.fetch_event_nfl.uri }}"
+
+
+
+  - id: if_nfl
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ outputs['fetch_event_nfl'].size > 0 }}"
+    then:
+    - id: python_nfl_api
+      type: io.kestra.plugin.scripts.python.Script
+      outputFiles:
+        - "nfl_offense.csv"
+        - "nfl_defense.csv"
+        - "nfl_special.csv"
+        - "nfl_games.csv"
+      beforeCommands:
+        - pip install pandas
+        - pip install requests
+      inputFiles:
+        input.csv: "{{outputs.nfl_csv_event.uri}}"
+      warningOnStdErr: false
+      script: | 
+        from typing import Any, Dict, Iterable, List, Optional
+        import pandas as pd
+        import requests
+        import time
+
+        SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event={event_id}"
+        inputcsv = pd.read_csv('input.csv')
+        event_ids = inputcsv["event_id"].tolist()
+
+        # ---- helpers -----------------------------------------------------------------
+
+        def safe_get(d: Dict, *path, default=None):
+            cur = d
+            for p in path:
+                if isinstance(cur, dict) and p in cur:
+                    cur = cur[p]
+                elif isinstance(cur, list) and isinstance(p, int) and 0 <= p < len(cur):
+                    cur = cur[p]
+                else:
+                    return default
+            return cur
+
+        def request_summary(event_id: str, timeout: float = 20.0) -> Optional[Dict[str, Any]]:
+            url = SUMMARY_URL.format(event_id=event_id)
+            try:
+                r = requests.get(url, timeout=timeout)
+                r.raise_for_status()
+                return r.json()
+            except Exception as e:
+                print(f"[WARN] event {event_id}: {e}")
+                return None
+
+        def build_row_from_athlete_block(
+            event_id: str,
+            team: Dict[str, Any],
+            block: Dict[str, Any],
+            athlete: Dict[str, Any],
+            category: str,
+        ) -> Dict[str, Any]:
+            """
+            Map the parallel arrays (block['keys'] and athlete['stats']) into columns.
+            Keeps values as strings; you can cast later if desired.
+            """
+            row = {
+                "event_id": event_id,
+                "team_id": safe_get(team, "id"),
+                "team_abbr": safe_get(team, "abbreviation"),
+                "team_name": safe_get(team, "displayName"),
+                "athlete_id": safe_get(athlete, "athlete", "id"),
+                "athlete_name": safe_get(athlete, "athlete", "displayName"),
+                "athlete_jersey": safe_get(athlete, "athlete", "jersey"),
+            }
+            keys = block.get("keys", [])
+            stats_vals = athlete.get("stats", [])
+            for k, v in zip(keys, stats_vals):
+                # normalize key names a bit (remove slashes)
+                col = k.replace("/", "_").replace("-", "_")
+                row[col] = v
+            return row
+
+        def extract_stat_category(
+            event_id: str,
+            team_node: Dict[str, Any],
+            wanted_blocks: Iterable[str],
+        ) -> List[Dict[str, Any]]:
+            out: List[Dict[str, Any]] = []
+            team = team_node.get("team", {})
+            for block in team_node.get("statistics", []):
+                name = block.get("name")
+                if name not in wanted_blocks:
+                    continue
+                for athlete in block.get("athletes", []):
+                    out.append(
+                        build_row_from_athlete_block(
+                            event_id=event_id,
+                            team=team,
+                            block=block,
+                            athlete=athlete,
+                            category=name,
+                        )
+                    )
+            return out
+
+        def extract_all_stat_rows(event_id: str, js: Dict[str, Any]):
+            """
+            Returns three lists of dicts:
+              offense_rows, defense_rows, st_rows
+            """
+            offense_blocks = {"passing", "rushing", "receiving"}
+            defense_blocks = {"defensive", "interceptions"}  # interceptions could be empty often
+            special_blocks = {"kickReturns", "puntReturns", "kicking", "punting"}
+
+            offense_rows, defense_rows, st_rows = [], [], []
+
+            for team_node in safe_get(js, "boxscore", "players", default=[]):
+                offense_rows.extend(extract_stat_category(event_id, team_node, offense_blocks))
+                defense_rows.extend(extract_stat_category(event_id, team_node, defense_blocks))
+                st_rows.extend(extract_stat_category(event_id, team_node, special_blocks))
+
+            return offense_rows, defense_rows, st_rows
+
+        def extract_game_meta(event_id: str, js: Dict[str, Any]) -> List[Dict[str, Any]]:
+            header = safe_get(js, "header", default=[]) or []
+            competitions = safe_get(js, "header", "competitions", default=[]) or []
+            comp = competitions[0] if competitions else {}
+
+            meta_rows = []
+            teams = safe_get(comp, "competitors", default=[]) or []
+            team_stats = safe_get(js, "boxscore", "teams", default=[]) or []
+
+            # Map team_id -> stats for quick lookup
+            stats_map = {t.get("team", {}).get("id"): t for t in team_stats}
+
+            for t in teams:
+                team = t.get("team", {})
+                team_id = team.get("id")
+                team_stat_block = stats_map.get(team_id, {})
+
+                row = {
+                    "event_id": event_id,
+                    # "game_id": comp.get("id"),
+                    "date": comp.get("date"),
+                    "season": safe_get(header, "season", "year"),
+                    "season_type": safe_get(header, "season", "type"),
+                    "week": safe_get(header, "week"),
+                    "venue_full_name": safe_get(js, "gameInfo", "venue", "fullName"),
+                    "venue_city": safe_get(js, "gameInfo", "venue", "address", "city"),
+                    "venue_state": safe_get(js, "gameInfo", "venue", "address", "state"),
+                    "venue_zip": safe_get(js, "gameInfo", "venue", "address", "zipCode"),
+                    "venue_country": safe_get(js, "gameInfo", "venue", "address", "country"),
+                    "venue_grass": safe_get(js, "gameInfo", "venue", "grass"),
+                    "attendance": safe_get(js, "gameInfo", "attendance"),
+                    "status_type": safe_get(comp, "status", "type", "name"),
+                    "status_detail": safe_get(comp, "status", "type", "detail"),
+                    "neutral_site": safe_get(comp, "neutralSite"),
+                    "conference_competition": safe_get(comp, "conferenceCompetition"),
+                    "team_id": team_id,
+                    "team_abbr": team.get("abbreviation"),
+                    "team_name": team.get("displayName"),
+                    "home_away": t.get("homeAway"),
+                    "team_score": t.get("score"),
+                    "spread": safe_get(js, "pickcenter", 0, "spread"),
+                    "over_under": safe_get(js, "pickcenter", 0, "overUnder"),
+                }
+
+                # Add all statistics for this team
+                for stat in team_stat_block.get("statistics", []):
+                    label = stat.get("name")
+                    display_val = stat.get("displayValue")
+                    if label:
+                        row[label] = display_val
+
+                meta_rows.append(row)
+
+            return meta_rows
+
+        def split_fraction_columns(df: pd.DataFrame):
+            # Define mapping of columns to split -> [new_column_1, new_column_2]
+            fraction_map = {
+                "completions_passingAttempts": ["passingCompletions", "passingAttempts"],   #offense
+                "sacks_sackYardsLost": ["sacks", "sackYardsLost"],                          #offense
+                "completionAttempts": ["passingCompletions", "passingAttempts"],            #games
+                "thirdDownEff": ["thirddownSuccess", "thirddownAttempts"],                  #games
+                "fourthDownEff": ["fourthdownSuccess", "fourthdownAttempts"],               #games
+                "sacksYardsLost": ["sacks", "sackYardsLost"],                               #games
+                "redZoneAttempts": ["redZoneSuccess", "redZoneAttempts"],                   #games
+                "totalPenaltiesYards": ["Penalties", "PenaltyYards"],                       #games
+                "extraPointsMade_extraPointAttempts": ["xpSuccess", "xpAttempts"],          #special
+                "fieldGoalsMade_fieldGoalAttempts": ["fgSuccess", "fgAttempts"]             #special     
+            }
+            for col, new_cols in fraction_map.items():
+                if col in df.columns:
+                    # Ensure correct delimiter: "/" or "-"
+                    df[col] = df[col].astype(str).str.replace("-", "/", regex=False)
+                    df[new_cols] = df[col].str.split("/", expand=True)
+                    df.drop(columns=[col], inplace=True)
+            return df
+            
+        def merge_duplicate_athletes(df: pd.DataFrame):
+            merge_cols = ['event_id', 'team_id', 'team_abbr', 'team_name', 'athlete_id', 'athlete_name', 'athlete_jersey']
+            return df.groupby(merge_cols, dropna=False, as_index=False).first()
+
+
+        all_offense: List[Dict[str, Any]] = []
+        all_defense: List[Dict[str, Any]] = []
+        all_special: List[Dict[str, Any]] = []
+        all_games: List[Dict[str, Any]] = []
+
+        for eid in event_ids:
+            js = request_summary(eid)
+            if js is None:
+                continue
+
+            time.sleep(.5)
+
+            offense_rows, defense_rows, special_rows = extract_all_stat_rows(eid, js)
+            all_offense.extend(offense_rows)
+            all_defense.extend(defense_rows)
+            all_special.extend(special_rows)
+            all_games.extend(extract_game_meta(eid, js))
+
+
+        df_off = pd.DataFrame(all_offense)
+        df_def = pd.DataFrame(all_defense)
+        df_spe = pd.DataFrame(all_special)
+        df_gam = pd.DataFrame(all_games)
+
+        df_off = merge_duplicate_athletes(df_off)
+        df_def = merge_duplicate_athletes(df_def)
+        df_spe = merge_duplicate_athletes(df_spe)
+
+        df_off = split_fraction_columns(df_off)
+        df_spe = split_fraction_columns(df_spe)
+        df_gam = split_fraction_columns(df_gam)
+
+        # Defining the shape of src tables since cfb & nfl differ in columns available
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "totalTackles", "soloTackles", "sacks", "tacklesForLoss", "passesDefended", "QBHits", "defensiveTouchdowns", "interceptions", "interceptionYards", "interceptionTouchdowns", "hurries"]
+        foot_def = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "passingYards", "yardsPerPassAttempt", "passingTouchdowns", "interceptions", "adjQBR", "rushingAttempts", "rushingYards", "yardsPerRushAttempt", "rushingTouchdowns", "longRushing", "receptions", "receivingYards", "yardsPerReception", "receivingTouchdowns", "longReception", "receivingTargets", "QBRating", "passingCompletions", "passingAttempts", "sacks", "sackYardsLost"]
+        foot_off = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "kickReturns", "kickReturnYards", "yardsPerKickReturn", "longKickReturn", "kickReturnTouchdowns", "puntReturns", "puntReturnYards", "yardsPerPuntReturn", "longPuntReturn", "puntReturnTouchdowns", "fieldGoalPct", "longFieldGoalMade", "totalKickingPoints", "punts", "puntYards", "grossAvgPuntYards", "touchbacks", "puntsInside20", "longPunt", "xpSuccess", "xpAttempts", "fgSuccess", "fgAttempts"]
+        foot_spe = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "gamedate", "season", "season_type", "gameweek", "venue_full_name", "venue_city", "venue_state", "venue_zip", "venue_country", "venue_grass", "attendance", "status_type", "status_detail", "neutral_site", "conference_competition", "team_id", "team_abbr", "team_name", "home_away", "team_score", "spread", "over_under", "firstDowns", "firstDownsPassing", "firstDownsRushing", "firstDownsPenalty", "totalOffensivePlays", "totalYards", "yardsPerPlay", "totalDrives", "netPassingYards", "yardsPerPass", "interceptions", "rushingYards", "rushingAttempts", "yardsPerRushAttempt", "turnovers", "fumblesLost", "defensiveTouchdowns", "possessionTime", "passingCompletions", "passingAttempts", "thirddownSuccess", "thirddownAttempts", "fourthdownSuccess", "fourthdownAttempts", "sacks", "sackYardsLost", "redZoneSuccess", "penalties", "PenaltyYards"]
+        foot_gam = pd.DataFrame(columns=base_columns)
+
+
+        df_aligned = df_def.reindex(columns=foot_def.columns)
+        foot_def = pd.concat([foot_def, df_aligned], ignore_index=True)
+
+        df_aligned = df_off.reindex(columns=foot_off.columns)
+        foot_off = pd.concat([foot_off, df_aligned], ignore_index=True)
+
+        df_aligned = df_spe.reindex(columns=foot_spe.columns)
+        foot_spe = pd.concat([foot_spe, df_aligned], ignore_index=True)
+
+        df_aligned = df_gam.reindex(columns=foot_gam.columns)
+        foot_gam = pd.concat([foot_gam, df_aligned], ignore_index=True)
+
+
+        # avoid issue on insert into db:
+        foot_off['adjQBR'] = foot_off['adjQBR'].replace('--', '')
+        foot_off['sacks'] = foot_off['sacks'].replace('None', '')
+        foot_off['passingCompletions'] = foot_off['passingCompletions'].replace('None', '')
+        foot_spe['xpSuccess'] = foot_spe['xpSuccess'].replace('None', '')
+        foot_spe['fgSuccess'] = foot_spe['fgSuccess'].replace('None', '')
+        foot_gam = foot_gam.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
+
+        foot_off.to_csv("nfl_offense.csv", index=False)
+        foot_def.to_csv("nfl_defense.csv", index=False)
+        foot_spe.to_csv("nfl_special.csv", index=False)
+        foot_gam.to_csv("nfl_games.csv", index=False)
+
+    - id: pg_copyin_stg_def_nfl
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_nfl_api.outputFiles['nfl_defense.csv'] }}"
+      table: api.stg_foot_defensive_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_off_nfl
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_nfl_api.outputFiles['nfl_offense.csv'] }}"
+      table: api.stg_foot_offensive_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_spe_nfl
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_nfl_api.outputFiles['nfl_special.csv'] }}"
+      table: api.stg_foot_special_teams_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_sum_nfl
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_nfl_api.outputFiles['nfl_games.csv'] }}"
+      table: api.stg_foot_game_team_summary  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+
+
+
+  - id: if_cfb
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ outputs['fetch_event_cfb'].size > 0 }}"
+    then:
+    - id: python_cfb_api
+      type: io.kestra.plugin.scripts.python.Script
+      outputFiles:
+        - "cfb_offense.csv"
+        - "cfb_defense.csv"
+        - "cfb_special.csv"
+        - "cfb_games.csv"
+      beforeCommands:
+        - pip install pandas
+      inputFiles:
+        input.csv: "{{outputs.cfb_csv_event.uri}}"
+      warningOnStdErr: false
+      script: | 
+        from typing import Any, Dict, Iterable, List, Optional
+        import pandas as pd
+        import requests
+        import time
+
+        SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={event_id}"
+        inputcsv = pd.read_csv('input.csv')
+        event_ids = inputcsv["event_id"].tolist()
+
+        # ---- helpers -----------------------------------------------------------------
+
+        def safe_get(d: Dict, *path, default=None):
+            cur = d
+            for p in path:
+                if isinstance(cur, dict) and p in cur:
+                    cur = cur[p]
+                elif isinstance(cur, list) and isinstance(p, int) and 0 <= p < len(cur):
+                    cur = cur[p]
+                else:
+                    return default
+            return cur
+
+        def request_summary(event_id: str, timeout: float = 20.0) -> Optional[Dict[str, Any]]:
+            url = SUMMARY_URL.format(event_id=event_id)
+            try:
+                r = requests.get(url, timeout=timeout)
+                r.raise_for_status()
+                return r.json()
+            except Exception as e:
+                print(f"[WARN] event {event_id}: {e}")
+                return None
+
+        def build_row_from_athlete_block(
+            event_id: str,
+            team: Dict[str, Any],
+            block: Dict[str, Any],
+            athlete: Dict[str, Any],
+            category: str,
+        ) -> Dict[str, Any]:
+            """
+            Map the parallel arrays (block['keys'] and athlete['stats']) into columns.
+            Keeps values as strings; you can cast later if desired.
+            """
+            row = {
+                "event_id": event_id,
+                "team_id": safe_get(team, "id"),
+                "team_abbr": safe_get(team, "abbreviation"),
+                "team_name": safe_get(team, "displayName"),
+                "athlete_id": safe_get(athlete, "athlete", "id"),
+                "athlete_name": safe_get(athlete, "athlete", "displayName"),
+                "athlete_jersey": safe_get(athlete, "athlete", "jersey"),
+            }
+            keys = block.get("keys", [])
+            stats_vals = athlete.get("stats", [])
+            for k, v in zip(keys, stats_vals):
+                # normalize key names a bit (remove slashes)
+                col = k.replace("/", "_").replace("-", "_")
+                row[col] = v
+            return row
+
+        def extract_stat_category(
+            event_id: str,
+            team_node: Dict[str, Any],
+            wanted_blocks: Iterable[str],
+        ) -> List[Dict[str, Any]]:
+            out: List[Dict[str, Any]] = []
+            team = team_node.get("team", {})
+            for block in team_node.get("statistics", []):
+                name = block.get("name")
+                if name not in wanted_blocks:
+                    continue
+                for athlete in block.get("athletes", []):
+                    out.append(
+                        build_row_from_athlete_block(
+                            event_id=event_id,
+                            team=team,
+                            block=block,
+                            athlete=athlete,
+                            category=name,
+                        )
+                    )
+            return out
+
+        def extract_all_stat_rows(event_id: str, js: Dict[str, Any]):
+            """
+            Returns three lists of dicts:
+              offense_rows, defense_rows, st_rows
+            """
+            offense_blocks = {"passing", "rushing", "receiving"}
+            defense_blocks = {"defensive", "interceptions"}  # interceptions could be empty often
+            special_blocks = {"kickReturns", "puntReturns", "kicking", "punting"}
+
+            offense_rows, defense_rows, st_rows = [], [], []
+
+            for team_node in safe_get(js, "boxscore", "players", default=[]):
+                offense_rows.extend(extract_stat_category(event_id, team_node, offense_blocks))
+                defense_rows.extend(extract_stat_category(event_id, team_node, defense_blocks))
+                st_rows.extend(extract_stat_category(event_id, team_node, special_blocks))
+
+            return offense_rows, defense_rows, st_rows
+
+        def extract_game_meta(event_id: str, js: Dict[str, Any]) -> List[Dict[str, Any]]:
+            header = safe_get(js, "header", default=[]) or []
+            competitions = safe_get(js, "header", "competitions", default=[]) or []
+            comp = competitions[0] if competitions else {}
+
+            meta_rows = []
+            teams = safe_get(comp, "competitors", default=[]) or []
+            team_stats = safe_get(js, "boxscore", "teams", default=[]) or []
+
+            # Map team_id -> stats for quick lookup
+            stats_map = {t.get("team", {}).get("id"): t for t in team_stats}
+
+            for t in teams:
+                team = t.get("team", {})
+                team_id = team.get("id")
+                team_stat_block = stats_map.get(team_id, {})
+
+                row = {
+                    "event_id": event_id,
+                    # "game_id": comp.get("id"),
+                    "date": comp.get("date"),
+                    "season": safe_get(header, "season", "year"),
+                    "season_type": safe_get(header, "season", "type"),
+                    "week": safe_get(header, "week"),
+                    "venue_full_name": safe_get(js, "gameInfo", "venue", "fullName"),
+                    "venue_city": safe_get(js, "gameInfo", "venue", "address", "city"),
+                    "venue_state": safe_get(js, "gameInfo", "venue", "address", "state"),
+                    "venue_zip": safe_get(js, "gameInfo", "venue", "address", "zipCode"),
+                    "venue_country": safe_get(js, "gameInfo", "venue", "address", "country"),
+                    "venue_grass": safe_get(js, "gameInfo", "venue", "grass"),
+                    "attendance": safe_get(js, "gameInfo", "attendance"),
+                    "status_type": safe_get(comp, "status", "type", "name"),
+                    "status_detail": safe_get(comp, "status", "type", "detail"),
+                    "neutral_site": safe_get(comp, "neutralSite"),
+                    "conference_competition": safe_get(comp, "conferenceCompetition"),
+                    "team_id": team_id,
+                    "team_abbr": team.get("abbreviation"),
+                    "team_name": team.get("displayName"),
+                    "home_away": t.get("homeAway"),
+                    "team_score": t.get("score"),
+                    "spread": safe_get(js, "pickcenter", 0, "spread"),
+                    "over_under": safe_get(js, "pickcenter", 0, "overUnder"),
+                }
+
+                # Add all statistics for this team
+                for stat in team_stat_block.get("statistics", []):
+                    label = stat.get("name")
+                    display_val = stat.get("displayValue")
+                    if label:
+                        row[label] = display_val
+
+                meta_rows.append(row)
+
+            return meta_rows
+
+        def split_fraction_columns(df: pd.DataFrame):
+            # Define mapping of columns to split -> [new_column_1, new_column_2]
+            fraction_map = {
+                "completions_passingAttempts": ["passingCompletions", "passingAttempts"],   #offense
+                "sacks_sackYardsLost": ["sacks", "sackYardsLost"],                          #offense
+                "completionAttempts": ["passingCompletions", "passingAttempts"],            #games
+                "thirdDownEff": ["thirddownSuccess", "thirddownAttempts"],                  #games
+                "fourthDownEff": ["fourthdownSuccess", "fourthdownAttempts"],               #games
+                "sacksYardsLost": ["sacks", "sackYardsLost"],                               #games
+                "redZoneAttempts": ["redZoneSuccess", "redZoneAttempts"],                   #games
+                "totalPenaltiesYards": ["Penalties", "PenaltyYards"],                       #games
+                "extraPointsMade_extraPointAttempts": ["xpSuccess", "xpAttempts"],          #special
+                "fieldGoalsMade_fieldGoalAttempts": ["fgSuccess", "fgAttempts"]             #special     
+            }
+            for col, new_cols in fraction_map.items():
+                if col in df.columns:
+                    # Ensure correct delimiter: "/" or "-"
+                    df[col] = df[col].astype(str).str.replace("-", "/", regex=False)
+                    df[new_cols] = df[col].str.split("/", expand=True)
+                    df.drop(columns=[col], inplace=True)
+            return df
+            
+        def merge_duplicate_athletes(df: pd.DataFrame):
+            merge_cols = ['event_id', 'team_id', 'team_abbr', 'team_name', 'athlete_id', 'athlete_name', 'athlete_jersey']
+            return df.groupby(merge_cols, dropna=False, as_index=False).first()
+
+
+        all_offense: List[Dict[str, Any]] = []
+        all_defense: List[Dict[str, Any]] = []
+        all_special: List[Dict[str, Any]] = []
+        all_games: List[Dict[str, Any]] = []
+
+        for eid in event_ids:
+            js = request_summary(eid)
+            if js is None:
+                continue
+
+            time.sleep(.5)
+
+            offense_rows, defense_rows, special_rows = extract_all_stat_rows(eid, js)
+            all_offense.extend(offense_rows)
+            all_defense.extend(defense_rows)
+            all_special.extend(special_rows)
+            all_games.extend(extract_game_meta(eid, js))
+
+
+        df_off = pd.DataFrame(all_offense)
+        df_def = pd.DataFrame(all_defense)
+        df_spe = pd.DataFrame(all_special)
+        df_gam = pd.DataFrame(all_games)
+
+        df_off = merge_duplicate_athletes(df_off)
+        df_def = merge_duplicate_athletes(df_def)
+        df_spe = merge_duplicate_athletes(df_spe)
+
+        df_off = split_fraction_columns(df_off)
+        df_spe = split_fraction_columns(df_spe)
+        df_gam = split_fraction_columns(df_gam)
+
+        # Defining the shape of src tables since cfb & nfl differ in columns available
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "totalTackles", "soloTackles", "sacks", "tacklesForLoss", "passesDefended", "QBHits", "defensiveTouchdowns", "interceptions", "interceptionYards", "interceptionTouchdowns", "hurries"]
+        foot_def = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "passingYards", "yardsPerPassAttempt", "passingTouchdowns", "interceptions", "adjQBR", "rushingAttempts", "rushingYards", "yardsPerRushAttempt", "rushingTouchdowns", "longRushing", "receptions", "receivingYards", "yardsPerReception", "receivingTouchdowns", "longReception", "receivingTargets", "QBRating", "passingCompletions", "passingAttempts", "sacks", "sackYardsLost"]
+        foot_off = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "team_id", "team_abbr", "team_name", "athlete_id", "athlete_name", "athlete_jersey", "kickReturns", "kickReturnYards", "yardsPerKickReturn", "longKickReturn", "kickReturnTouchdowns", "puntReturns", "puntReturnYards", "yardsPerPuntReturn", "longPuntReturn", "puntReturnTouchdowns", "fieldGoalPct", "longFieldGoalMade", "totalKickingPoints", "punts", "puntYards", "grossAvgPuntYards", "touchbacks", "puntsInside20", "longPunt", "xpSuccess", "xpAttempts", "fgSuccess", "fgAttempts"]
+        foot_spe = pd.DataFrame(columns=base_columns)
+
+        base_columns = ["event_id", "gamedate", "season", "season_type", "gameweek", "venue_full_name", "venue_city", "venue_state", "venue_zip", "venue_country", "venue_grass", "attendance", "status_type", "status_detail", "neutral_site", "conference_competition", "team_id", "team_abbr", "team_name", "home_away", "team_score", "spread", "over_under", "firstDowns", "firstDownsPassing", "firstDownsRushing", "firstDownsPenalty", "totalOffensivePlays", "totalYards", "yardsPerPlay", "totalDrives", "netPassingYards", "yardsPerPass", "interceptions", "rushingYards", "rushingAttempts", "yardsPerRushAttempt", "turnovers", "fumblesLost", "defensiveTouchdowns", "possessionTime", "passingCompletions", "passingAttempts", "thirddownSuccess", "thirddownAttempts", "fourthdownSuccess", "fourthdownAttempts", "sacks", "sackYardsLost", "redZoneSuccess", "penalties", "PenaltyYards"]
+        foot_gam = pd.DataFrame(columns=base_columns)
+
+
+        df_aligned = df_def.reindex(columns=foot_def.columns)
+        foot_def = pd.concat([foot_def, df_aligned], ignore_index=True)
+
+        df_aligned = df_off.reindex(columns=foot_off.columns)
+        foot_off = pd.concat([foot_off, df_aligned], ignore_index=True)
+
+        df_aligned = df_spe.reindex(columns=foot_spe.columns)
+        foot_spe = pd.concat([foot_spe, df_aligned], ignore_index=True)
+
+        df_aligned = df_gam.reindex(columns=foot_gam.columns)
+        foot_gam = pd.concat([foot_gam, df_aligned], ignore_index=True)
+
+        # avoid issue on insert into db:
+        foot_off['adjQBR'] = foot_off['adjQBR'].replace('--', '')
+        # df_off['sacks'] = df_off['sacks'].replace('None', '')
+        foot_off['passingCompletions'] = foot_off['passingCompletions'].replace('None', '')
+        foot_spe['xpSuccess'] = foot_spe['xpSuccess'].replace('None', '')
+        foot_spe['fgSuccess'] = foot_spe['fgSuccess'].replace('None', '')
+        foot_gam = foot_gam.rename(columns={'date': 'gamedate', 'week': 'gameweek'})
+
+        foot_off.to_csv("cfb_offense.csv", index=False)
+        foot_def.to_csv("cfb_defense.csv", index=False)
+        foot_spe.to_csv("cfb_special.csv", index=False)
+        foot_gam.to_csv("cfb_games.csv", index=False)
+
+    - id: pg_copyin_stg_def
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_cfb_api.outputFiles['cfb_defense.csv'] }}"
+      table: api.stg_foot_defensive_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_off
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_cfb_api.outputFiles['cfb_offense.csv'] }}"
+      table: api.stg_foot_offensive_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_spe
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_cfb_api.outputFiles['cfb_special.csv'] }}"
+      table: api.stg_foot_special_teams_box  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+    - id: pg_copyin_stg_sum
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_cfb_api.outputFiles['cfb_games.csv'] }}"
+      table: api.stg_foot_game_team_summary  # Lowercase in DB
+      header: true
+      delimiter: ","
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
+      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 11 * * *"
+    recoverMissedSchedules: NONE

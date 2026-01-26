@@ -9,6 +9,5 @@ CREATE TABLE IF NOT EXISTS ball.season (
   champ_series_start_dt date,		-- Equal to CHAMP_DT for NFL, CHAMP_DT clinching game of 7 game series
   champ_dt date,
   yr_var varchar(10) NOT NULL,
-  yr smallint,		-- Football has year as Reg season YR, all others YR as Champ Dt
-  insert_ts timestamp not null default now()
+  yr smallint		-- Football has year as Reg season YR, all others YR as Champ Dt
 );

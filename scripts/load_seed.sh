@@ -30,19 +30,32 @@ SEED_DIR="/Users/quinnfargen/Documents/GitHub/unitleague/db/seed"    # folder wh
 
 psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
 TRUNCATE TABLE src.foot_espn_box_defensive;
-\copy src.foot_espn_box_defensive FROM '${SEED_DIR}/foot_espn_box_defensive.csv' DELIMITER ',' CSV HEADER;
+\copy src.foot_espn_box_defensive FROM '${SEED_DIR}/src.foot_espn_box_defensive.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE src.foot_espn_box_offensive;
-\copy src.foot_espn_box_offensive FROM '${SEED_DIR}/foot_espn_box_offensive.csv' DELIMITER ',' CSV HEADER;
+\copy src.foot_espn_box_offensive FROM '${SEED_DIR}/src.foot_espn_box_offensive.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE src.foot_espn_box_special;
-\copy src.foot_espn_box_special FROM '${SEED_DIR}/foot_espn_box_special.csv' DELIMITER ',' CSV HEADER;
+\copy src.foot_espn_box_special FROM '${SEED_DIR}/src.foot_espn_box_special.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE src.foot_espn_game_team_summary;
-\copy src.foot_espn_game_team_summary FROM '${SEED_DIR}/foot_espn_game_team_summary.csv' DELIMITER ',' CSV HEADER;
+\copy src.foot_espn_game_team_summary FROM '${SEED_DIR}/src.foot_espn_game_team_summary.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE src.foot_espn_schedule;
-\copy src.foot_espn_schedule FROM '${SEED_DIR}/foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
+\copy src.foot_espn_schedule FROM '${SEED_DIR}/src.foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
+
+
+TRUNCATE TABLE ball.league;
+\copy ball.league FROM '${SEED_DIR}/ball.league.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE ball.season;
+\copy ball.season FROM '${SEED_DIR}/ball.season.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE ball.team_name;
+\copy ball.team_name FROM '${SEED_DIR}/ball.team_name.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE ball.team;
+\copy ball.team FROM '${SEED_DIR}/ball.team.csv' DELIMITER ',' CSV HEADER;
 EOF
 
 echo "All seeding completed."

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS utility.job (
   target_table      VARCHAR(100) NOT NULL,
   transform_view    VARCHAR(200),
   load_type         VARCHAR(25) NOT NULL,
-  increment_key     VARCHAR(100),
+  unique_keys       VARCHAR(100),
   schedule          VARCHAR(50),
   is_active         BOOLEAN DEFAULT TRUE,
   insert_ts         timestamp not null default now()

@@ -7,9 +7,6 @@ CREATE TABLE IF NOT EXISTS etl.all_the_odds_api (
   home_team varchar,
   away_team varchar,   
   full_json json,
-  game_id bigint,
-  home_team_id int,
-  away_team_id int,
   imported boolean default (false),
   insert_ts timestamp not null default now()
 );

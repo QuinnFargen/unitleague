@@ -1,5 +1,5 @@
 id: all_odds_api_daily
-namespace: neon_unit_league
+namespace: local_unit_league
 
 tasks:
   - id: python_the_odds_api
@@ -38,8 +38,8 @@ tasks:
                             id, sport_key, sport_title, commence_time, home_team, away_team,
                             json.dumps(full_json) 
                         ])
-      # sports = ['americanfootball_nfl', 'icehockey_nhl', 'basketball_nba', 'basketball_ncaab', 'americanfootball_ncaaf', 'baseball_mlb']
-      sports = ['americanfootball_nfl','americanfootball_ncaaf']
+      sports = ['americanfootball_nfl', 'icehockey_nhl', 'basketball_nba', 'basketball_ncaab', 'americanfootball_ncaaf', 'baseball_mlb']
+      # sports = ['americanfootball_nfl','americanfootball_ncaaf']
       for sport in range(len(sports)):
           sport = sports[sport]
           odds_result = oddsApi_get(sport)
@@ -49,36 +49,50 @@ tasks:
           writer.writerow(["id", "sport_key", "sport_title", "commence_time", "home_team", "away_team", "full_json"])
           writer.writerows(results)
  
-  - id: pg_truncate_stg
-    type: io.kestra.plugin.jdbc.postgresql.Query
-    sql: |
-      truncate TABLE "api"."stg_the_odds_api" ;
 
-  - id: pg_copyin_stg
-    type: io.kestra.plugin.jdbc.postgresql.CopyIn
-    format: CSV
-    from: "{{ outputs.python_the_odds_api.outputFiles['odds.csv'] }}"
-    table: api.stg_the_odds_api  # Lowercase in DB
-    header: true
-    delimiter: ","
+  - id: if_odds_exist
+    type: io.kestra.plugin.core.flow.If
+    condition: "{{ outputs['odds'].size > 0 }}"
+    then:
+    - id: pg_truncate_stg
+      type: io.kestra.plugin.jdbc.postgresql.Query
+      sql: |
+        truncate TABLE "etl"."stg_the_odds_api" ;
 
-  - id: pg_exec_sp
-    type: io.kestra.plugin.jdbc.postgresql.Query
-    sql: |
-      CALL "api"."sp_stg_the_odds_daily"();
+    - id: pg_copyin_stg
+      type: io.kestra.plugin.jdbc.postgresql.CopyIn
+      format: CSV
+      from: "{{ outputs.python_the_odds_api.outputFiles['odds.csv'] }}"
+      table: etl.stg_the_odds_api
+      header: true
+      delimiter: ","
 
-  - id: pg_exec_sp_load
-    type: io.kestra.plugin.jdbc.postgresql.Query
-    sql: |
-      CALL "odd"."sp_load_api_to_oddbet_daily"();
+    - id: pg_exec_sp
+      type: io.kestra.plugin.jdbc.postgresql.Query
+      sql: |
+        CALL "utility"."run_etl_job"('etl all_the_odds_api');
+
+    - id: pg_exec_sp_bet
+      type: io.kestra.plugin.jdbc.postgresql.Query
+      sql: |
+        CALL "utility"."run_etl_job"('etl all_the_odds_api_bet');
+
+    - id: pg_update_imported
+      type: io.kestra.plugin.jdbc.postgresql.Query
+      sql: |     
+          UPDATE etl.all_the_odds_api A
+          SET imported = true
+          FROM ( SELECT DISTINCT A.the_odds_api_id AS imp_the_odds_api_id FROM etl.all_the_odds_api_bet A )  
+          WHERE the_odds_api_id = imp_the_odds_api_id;
+          
 
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
-      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
-      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
-      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
 
 triggers:
   - id: schedule

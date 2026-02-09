@@ -52,10 +52,16 @@ TRUNCATE TABLE ball.season;
 \copy ball.season FROM '${SEED_DIR}/ball.season.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE ball.meta;
-\copy ball.meta(league_id,meta_type,meta_key,meta_keyid,meta_value,meta_source) FROM '${SEED_DIR}/ball.meta__team_name.csv' DELIMITER ',' CSV HEADER;
+\copy ball.meta(league_id,meta_type,meta_keyid,meta_value,meta_source) FROM '${SEED_DIR}/ball.meta__team_name.csv' DELIMITER ',' CSV HEADER;
+\copy ball.meta(league_id,meta_type,meta_keyid,meta_value,meta_source) FROM '${SEED_DIR}/ball.meta__team_source_id.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE ball.team;
 \copy ball.team FROM '${SEED_DIR}/ball.team.csv' DELIMITER ',' CSV HEADER;
+
+TRUNCATE TABLE ball.game;
+TRUNCATE TABLE ball.sched;
+call utility.seed_ball_game_sched();
+
 EOF
 
 echo "All seeding completed."

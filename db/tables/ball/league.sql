@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS ball.league (
   league_id smallint primary key,
   abbr varchar(3),

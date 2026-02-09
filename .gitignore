@@ -209,3 +209,6 @@ docker/postgres.env
 .DS_Store
 .vscode/settings.json
 /seed
+terminal_script
+/venv
+archive

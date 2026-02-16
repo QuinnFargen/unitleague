@@ -22,8 +22,8 @@ BEGIN
 	--	,t.abbr , a.abbr , fs2.shortname, fs2.*
 	-- SELECT COUNT(*)
 	from src.foot_espn_schedule fs2 	-- 14940
-	left join ball.team t on fs2.league_id = t.league_id and fs2.home_team_id = t.source_team_id
-	left join ball.team a on fs2.league_id = a.league_id and fs2.away_team_id = a.source_team_id
+	left join ball.v_team t on fs2.league_id = t.league_id and fs2.home_team_id = t.espn_team_id
+	left join ball.v_team a on fs2.league_id = a.league_id and fs2.away_team_id = a.espn_team_id
 	where t.team_id  is not null or a.team_id is not null	-- 14923
 	order by fs2.game_id desc
 	;

@@ -1,6 +1,6 @@
-CREATE OR REPLACE PROCEDURE utility.run_etl_job(p_job_name TEXT)
-LANGUAGE plpgsql
-AS $$
+CREATE OR REPLACE PROCEDURE utility.run_etl_job(IN p_job_name text)
+ LANGUAGE plpgsql
+AS $procedure$
 DECLARE
     v_job              utility.job%ROWTYPE;
     v_view_schema      TEXT;
@@ -30,7 +30,7 @@ BEGIN
        Parse transform view schema/name
     --------------------------------------------------------- */
     v_view_schema := v_job.target_schema;
-    v_view_name   := 'v_' || v_job.target_table;
+    v_view_name   := v_job.transform_view;
     v_load_type   := v_job.load_type;
     v_target_loc  := format('%I.%I', v_job.target_schema, v_job.target_table);
 
@@ -63,7 +63,7 @@ BEGIN
         v_sql := format(
             'TRUNCATE TABLE %s;
              INSERT INTO %s (%s)
-             SELECT %s FROM %I.%I;',
+             SELECT %s FROM %I.%I src;',
             v_target_loc,
             v_target_loc,
             v_insert_cols,
@@ -82,7 +82,7 @@ BEGIN
     IF v_job.load_type = 'append' THEN
         v_sql := format(
              'INSERT INTO %s (%s)
-             SELECT %s FROM %I.%I;',
+             SELECT %s FROM %I.%I src;',
             v_target_loc,
             v_insert_cols,
             v_select_cols,
@@ -155,4 +155,5 @@ BEGIN
     RAISE EXCEPTION 'Unsupported load_type: %', v_job.load_type;
 
 END;
-$$;
+$procedure$
+;

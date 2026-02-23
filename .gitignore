@@ -212,3 +212,4 @@ docker/postgres.env
 terminal_script
 /venv
 archive
+db/seed/src.the_odds_api.csv

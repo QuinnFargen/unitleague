@@ -29,6 +29,11 @@ SEED_DIR="/Users/quinnfargen/Documents/GitHub/unitleague/db/seed"    # folder wh
 
 
 psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
+
+TRUNCATE TABLE src.espn_schedule;
+\copy src.espn_schedule FROM '${SEED_DIR}/src.espn_schedule.csv' DELIMITER ',' CSV HEADER;
+
+
 TRUNCATE TABLE src.foot_espn_box_defensive;
 \copy src.foot_espn_box_defensive FROM '${SEED_DIR}/src.foot_espn_box_defensive.csv' DELIMITER ',' CSV HEADER;
 
@@ -41,16 +46,10 @@ TRUNCATE TABLE src.foot_espn_box_special;
 TRUNCATE TABLE src.foot_espn_game_team_summary;
 \copy src.foot_espn_game_team_summary FROM '${SEED_DIR}/src.foot_espn_game_team_summary.csv' DELIMITER ',' CSV HEADER;
 
-TRUNCATE TABLE src.foot_espn_schedule;
-\copy src.foot_espn_schedule FROM '${SEED_DIR}/src.foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
-
-
-TRUNCATE TABLE src.basket_espn_schedule;
-\copy src.basket_espn_schedule FROM '${SEED_DIR}/src.foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
 
 
 TRUNCATE TABLE src.the_odds_api;
-\copy src.the_odds_api FROM '${SEED_DIR}/src.foot_espn_schedule.csv' DELIMITER ',' CSV HEADER;
+\copy src.the_odds_api FROM '${SEED_DIR}/src.the_odds_api.csv' DELIMITER ',' CSV HEADER;
 
 
 TRUNCATE TABLE ball.league;
@@ -60,7 +59,7 @@ TRUNCATE TABLE ball.season;
 \copy ball.season FROM '${SEED_DIR}/ball.season.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE ball.meta;
-\copy ball.meta(league_id,meta_type,meta_keyid,meta_value,meta_source) FROM '${SEED_DIR}/ball.meta.csv' DELIMITER ',' CSV HEADER;
+\copy ball.meta(league_id,meta_type,meta_key,meta_keyid,meta_value,meta_source) FROM '${SEED_DIR}/ball.meta.csv' DELIMITER ',' CSV HEADER;
 
 TRUNCATE TABLE ball.team;
 \copy ball.team FROM '${SEED_DIR}/ball.team.csv' DELIMITER ',' CSV HEADER;

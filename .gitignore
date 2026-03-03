@@ -213,3 +213,5 @@ terminal_script
 /venv
 archive
 db/seed/src.the_odds_api.csv
+/scripts/running.sh
+input.csv

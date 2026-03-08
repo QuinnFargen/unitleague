@@ -1,0 +1,110 @@
+id: all_openweather_api_daily
+namespace: local_unit_league
+
+tasks:
+  - id: pg_query_latlon
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |      
+          select 
+            region_lat
+            ,region_lon
+          from etl.v_fetch_game_latlon;
+    fetchType: STORE
+
+  - id: ion_to_csv
+    type: "io.kestra.plugin.serdes.csv.IonToCsv"
+    from: "{{ outputs.pg_query_latlon.uri }}"
+
+  - id: python_weather_api
+    type: io.kestra.plugin.scripts.python.Script
+    inputFiles:
+      loc.csv: "{{outputs.ion_to_csv.uri}}"
+    outputFiles:
+      - "weather.csv"
+    beforeCommands:
+      - pip install requests
+    warningOnStdErr: false
+    script: |      
+      import csv
+      import requests
+      import json
+
+      API_KEY = "{{secret('WEATHER_API_KEY')}}"
+      BASE_URL = "https://api.openweathermap.org/data/3.0/onecall"
+
+      # Read input CSV
+      with open("loc.csv", "r") as infile:
+          reader = csv.reader(infile)
+          header = next(reader)  # Skip header if needed
+          locations = [row for row in reader]
+
+      # Fetch weather data
+      results = []
+      for lat, lon in locations:
+          params = {
+              "lat": lat,
+              "lon": lon,
+              "appid": API_KEY,
+              "units": "imperial",
+              "exclude": "minutely,hourly,alerts"
+          }
+          response = requests.get(BASE_URL, params=params)
+          data = response.json()
+          # print(data)
+          results.append([
+              lat, lon,
+              data["current"]["dt"],
+              json.dumps(data["current"]),
+              json.dumps(data["daily"]) 
+          ])
+
+      # Write to output CSV
+      with open("weather.csv", "w", newline="") as outfile:
+          writer = csv.writer(outfile)
+          writer.writerow(["lat", "lon", "current_epoch", "current_json", "daily_json"])
+          writer.writerows(results)
+  
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "etl"."stg_open_weather" ;
+
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_weather_api.outputFiles['weather.csv'] }}"
+    table: etl.stg_open_weather
+    header: true
+    delimiter: ","
+
+  - id: pg_exec_sp_all
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('etl all_open_weather');
+
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src weather_forecast');
+
+  - id: pg_update_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |         
+          UPDATE etl.all_open_weather A
+          SET imported = B'1'
+          FROM ( SELECT DISTINCT A.lat as lat_src, A.lon as lon_src, A.daily_epoch FROM src.weather_forecast A )  
+          WHERE lat = lat_src and lon = lon_src and current_epoch = daily_epoch;
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 13 * * *"
+    recoverMissedSchedules: NONE

@@ -9,12 +9,12 @@ CREATE TABLE IF NOT EXISTS etl.all_kalshi_game (
 	away_kalshi_market_id int8 NULL,
 	home_team varchar NULL,
 	away_team varchar NULL,
-	home_yes int4 NULL,
-	home_volume int4 NULL,
-	home_liquidity int8 NULL,
-	away_yes int4 NULL,
-	away_volume int4 NULL,
-	away_liquidity int8 NULL,
+	home_yes float4 NULL,
+	home_volume float4 NULL,
+	home_liquidity float4 NULL,
+	away_yes float4 NULL,
+	away_volume float4 NULL,
+	away_liquidity float4 NULL,
 	imported boolean default (false),
 	insert_ts timestamp not null default now()
 );

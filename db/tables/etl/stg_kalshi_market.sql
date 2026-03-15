@@ -4,12 +4,12 @@ CREATE TABLE IF NOT EXISTS etl.stg_kalshi_market (
   expected_expiration_time TIMESTAMPTZ,
   title varchar,
   yes_sub_title varchar,
-  volume INTEGER,
-  volume_24h INTEGER,
-  yes_ask INTEGER,
-  yes_bid INTEGER,
-  liquidity BIGINT,
-  open_interest INTEGER,
+  volume float4,
+  volume_24h float4,
+  yes_ask float4,
+  yes_bid float4,
+  liquidity float4,
+  open_interest float4,
   rules_primary varchar,
   status varchar
 );

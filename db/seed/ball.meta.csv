@@ -1,846 +1,8 @@
 "league_id","meta_type","meta_key","meta_keyid","meta_value","meta_source"
-5,team_name,,50701,Akron Zips,the_odds_api
-5,team_name,,51003,Alabama Crimson Tide,the_odds_api
-5,team_name,,,Albany,the_odds_api
-5,team_name,,51101,Appalachian State Mountaineers,the_odds_api
-5,team_name,,50402,Arizona State Sun Devils,the_odds_api
-5,team_name,,50401,Arizona Wildcats,the_odds_api
-5,team_name,,51001,Arkansas Razorbacks,the_odds_api
-5,team_name,,51102,Arkansas State Red Wolves,the_odds_api
-5,team_name,,51002,Auburn Tigers,the_odds_api
-5,team_name,,50702,Ball State Cardinals,the_odds_api
-5,team_name,,50403,Baylor Bears,the_odds_api
-5,team_name,,50802,Boise State Broncos,the_odds_api
-5,team_name,,,Bryant Bulldogs,the_odds_api
-5,team_name,,50704,Buffalo Bulls,the_odds_api
-5,team_name,,50404,BYU Cougars,the_odds_api
-5,team_name,,50202,California Golden Bears,the_odds_api
-5,team_name,,50705,Central Michigan Chippewas,the_odds_api
-5,team_name,,,Charleston Southern Buccaneers,the_odds_api
-5,team_name,,50102,Charlotte 49ers,the_odds_api
-5,team_name,,50405,Cincinnati Bearcats,the_odds_api
-5,team_name,,50203,Clemson Tigers,the_odds_api
-5,team_name,,51103,Coastal Carolina Chanticleers,the_odds_api
-5,team_name,,50406,Colorado Buffaloes,the_odds_api
-5,team_name,,50803,Colorado State Rams,the_odds_api
-5,team_name,,50204,Duke Blue Devils,the_odds_api
-5,team_name,,50103,East Carolina Pirates,the_odds_api
-5,team_name,,50706,Eastern Michigan Eagles,the_odds_api
-5,team_name,,,Elon Phoenix,the_odds_api
-5,team_name,,50104,Florida Atlantic Owls,the_odds_api
-5,team_name,,51004,Florida Gators,the_odds_api
-5,team_name,,50205,Florida State Seminoles,the_odds_api
-5,team_name,,,Fresno State Bulldogs,the_odds_api
-5,team_name,,51015,Georgia Bulldogs,the_odds_api
-5,team_name,,51104,Georgia Southern Eagles,the_odds_api
-5,team_name,,51105,Georgia State Panthers,the_odds_api
-5,team_name,,50206,Georgia Tech Yellow Jackets,the_odds_api
-5,team_name,,50805,Hawaii Rainbow Warriors,the_odds_api
-5,team_name,,,Idaho State Bengals,the_odds_api
-5,team_name,,,Idaho Vandals,the_odds_api
-5,team_name,,50301,Illinois Fighting Illini,the_odds_api
-5,team_name,,,Illinois State Redbirds,the_odds_api
-5,team_name,,50302,Indiana Hoosiers,the_odds_api
-5,team_name,,50303,Iowa Hawkeyes,the_odds_api
-5,team_name,,50407,Iowa State Cyclones,the_odds_api
-5,team_name,,50502,Jacksonville State Gamecocks,the_odds_api
-5,team_name,,51106,James Madison Dukes,the_odds_api
-5,team_name,,50409,Kansas Jayhawks,the_odds_api
-5,team_name,,50408,Kansas State Wildcats,the_odds_api
-5,team_name,,50503,Kennesaw State Owls,the_odds_api
-5,team_name,,51005,Kentucky Wildcats,the_odds_api
-5,team_name,,50504,Liberty Flames,the_odds_api
-5,team_name,,51107,Louisiana Ragin Cajuns,the_odds_api
-5,team_name,,50505,Louisiana Tech Bulldogs,the_odds_api
-5,team_name,,50207,Louisville Cardinals,the_odds_api
-5,team_name,,51006,LSU Tigers,the_odds_api
-5,team_name,,,Maine Black Bears,the_odds_api
-5,team_name,,51108,Marshall Thundering Herd,the_odds_api
-5,team_name,,50304,Maryland Terrapins,the_odds_api
-5,team_name,,50708,Miami (OH) RedHawks,the_odds_api
-5,team_name,,50208,Miami Hurricanes,the_odds_api
-5,team_name,,50306,Michigan State Spartans,the_odds_api
-5,team_name,,50307,Michigan Wolverines,the_odds_api
-5,team_name,,50305,Minnesota Golden Gophers,the_odds_api
-5,team_name,,51008,Mississippi State Bulldogs,the_odds_api
-5,team_name,,,Missouri State Bears,the_odds_api
-5,team_name,,51007,Missouri Tigers,the_odds_api
-5,team_name,,,Montana State Bobcats,the_odds_api
-5,team_name,,50210,NC State Wolfpack,the_odds_api
-5,team_name,,50308,Nebraska Cornhuskers,the_odds_api
-5,team_name,,50807,Nevada Wolf Pack,the_odds_api
-5,team_name,,50806,New Mexico Lobos,the_odds_api
-5,team_name,,50507,New Mexico State Aggies,the_odds_api
-5,team_name,,,Nicholls State Colonels,the_odds_api
-5,team_name,,50209,North Carolina Tar Heels,the_odds_api
-5,team_name,,,North Dakota Fighting Hawks,the_odds_api
-5,team_name,,,Northern Arizona Lumberjacks,the_odds_api
-5,team_name,,50309,Northwestern Wildcats,the_odds_api
-5,team_name,,50603,Notre Dame Fighting Irish,the_odds_api
-5,team_name,,50710,Ohio Bobcats,the_odds_api
-5,team_name,,50311,Ohio State Buckeyes,the_odds_api
-5,team_name,,51009,Oklahoma Sooners,the_odds_api
-5,team_name,,50410,Oklahoma State Cowboys,the_odds_api
-5,team_name,,51109,Old Dominion Monarchs,the_odds_api
-5,team_name,,51010,Ole Miss Rebels,the_odds_api
-5,team_name,,50310,Oregon Ducks,the_odds_api
-5,team_name,,50901,Oregon State Beavers,the_odds_api
-5,team_name,,50312,Penn State Nittany Lions,the_odds_api
-5,team_name,,50211,Pittsburgh Panthers,the_odds_api
-5,team_name,,,Portland State Vikings,the_odds_api
-5,team_name,,50313,Purdue Boilermakers,the_odds_api
-5,team_name,,50108,Rice Owls,the_odds_api
-5,team_name,,50314,Rutgers Scarlet Knights,the_odds_api
-5,team_name,,50508,Sam Houston State Bearkats,the_odds_api
-5,team_name,,50808,San Diego State Aztecs,the_odds_api
-5,team_name,,50809,San Jose State Spartans,the_odds_api
-5,team_name,,50212,SMU Mustangs,the_odds_api
-5,team_name,,51011,South Carolina Gamecocks,the_odds_api
-5,team_name,,,South Dakota Coyotes,the_odds_api
-5,team_name,,50113,South Florida Bulls,the_odds_api
-5,team_name,,,Southeast Missouri State Redhawks,the_odds_api
-5,team_name,,,Southeastern Louisiana Lions,the_odds_api
-5,team_name,,51110,Southern Mississippi Golden Eagles,the_odds_api
-5,team_name,,50213,Stanford Cardinal,the_odds_api
-5,team_name,,,Stony Brook Seawolves,the_odds_api
-5,team_name,,50214,Syracuse Orange,the_odds_api
-5,team_name,,50411,TCU Horned Frogs,the_odds_api
-5,team_name,,50109,Temple Owls,the_odds_api
-5,team_name,,51012,Tennessee Volunteers,the_odds_api
-5,team_name,,51014,Texas A&M Aggies,the_odds_api
-5,team_name,,51013,Texas Longhorns,the_odds_api
-5,team_name,,51112,Texas State Bobcats,the_odds_api
-5,team_name,,50412,Texas Tech Red Raiders,the_odds_api
-5,team_name,,50711,Toledo Rockets,the_odds_api
-5,team_name,,51111,Troy Trojans,the_odds_api
-5,team_name,,50110,Tulane Green Wave,the_odds_api
-5,team_name,,50413,UCF Knights,the_odds_api
-5,team_name,,50315,UCLA Bruins,the_odds_api
-5,team_name,,50602,UMass Minutemen,the_odds_api
-5,team_name,,50810,UNLV Rebels,the_odds_api
-5,team_name,,50316,USC Trojans,the_odds_api
-5,team_name,,,UT Martin Skyhawks,the_odds_api
-5,team_name,,50811,Utah State Aggies,the_odds_api
-5,team_name,,50415,Utah Utes,the_odds_api
-5,team_name,,50509,UTEP Miners,the_odds_api
-5,team_name,,50114,UTSA Roadrunners,the_odds_api
-5,team_name,,51016,Vanderbilt Commodores,the_odds_api
-5,team_name,,50215,Virginia Cavaliers,the_odds_api
-5,team_name,,50216,Virginia Tech Hokies,the_odds_api
-5,team_name,,50217,Wake Forest Demon Deacons,the_odds_api
-5,team_name,,50317,Washington Huskies,the_odds_api
-5,team_name,,50902,Washington State Cougars,the_odds_api
-5,team_name,,,Weber State Wildcats,the_odds_api
-5,team_name,,50416,West Virginia Mountaineers,the_odds_api
-5,team_name,,,Western Illinois Leathernecks,the_odds_api
-5,team_name,,50510,Western Kentucky Hilltoppers,the_odds_api
-5,team_name,,50712,Western Michigan Broncos,the_odds_api
-5,team_name,,50318,Wisconsin Badgers,the_odds_api
-5,team_name,,50812,Wyoming Cowboys,the_odds_api
-2,team_name,,22801,Arizona Cardinals,the_odds_api
-2,team_name,,22701,Atlanta Falcons,the_odds_api
-2,team_name,,21201,Baltimore Ravens,the_odds_api
-2,team_name,,21101,Buffalo Bills,the_odds_api
-2,team_name,,22702,Carolina Panthers,the_odds_api
-2,team_name,,22601,Chicago Bears,the_odds_api
-2,team_name,,21202,Cincinnati Bengals,the_odds_api
-2,team_name,,21203,Cleveland Browns,the_odds_api
-2,team_name,,22501,Dallas Cowboys,the_odds_api
-2,team_name,,21401,Denver Broncos,the_odds_api
-2,team_name,,22602,Detroit Lions,the_odds_api
-2,team_name,,22603,Green Bay Packers,the_odds_api
-2,team_name,,21301,Houston Texans,the_odds_api
-2,team_name,,21302,Indianapolis Colts,the_odds_api
-2,team_name,,21303,Jacksonville Jaguars,the_odds_api
-2,team_name,,21402,Kansas City Chiefs,the_odds_api
-2,team_name,,21403,Las Vegas Raiders,the_odds_api
-2,team_name,,21404,Los Angeles Chargers,the_odds_api
-2,team_name,,22802,Los Angeles Rams,the_odds_api
-2,team_name,,21102,Miami Dolphins,the_odds_api
-2,team_name,,22604,Minnesota Vikings,the_odds_api
-2,team_name,,21103,New England Patriots,the_odds_api
-2,team_name,,22703,New Orleans Saints,the_odds_api
-2,team_name,,22502,New York Giants,the_odds_api
-2,team_name,,21104,New York Jets,the_odds_api
-2,team_name,,22503,Philadelphia Eagles,the_odds_api
-2,team_name,,21204,Pittsburgh Steelers,the_odds_api
-2,team_name,,22803,San Francisco 49ers,the_odds_api
-2,team_name,,22804,Seattle Seahawks,the_odds_api
-2,team_name,,22704,Tampa Bay Buccaneers,the_odds_api
-2,team_name,,21304,Tennessee Titans,the_odds_api
-2,team_name,,22504,Washington Commanders,the_odds_api
-5,team_name,,50505,LT,kalshi
-5,team_name,,50506,MTU,kalshi
-5,team_name,,50802,BSU,kalshi
-5,team_name,,51009,OKLA,kalshi
-5,team_name,,51011,SCAR,kalshi
-5,team_name,,51103,CCAR,kalshi
-5,team_name,,51107,ULL,kalshi
-2,team_name,,21303,JAC,kalshi
-2,team_name,,22802,LA,kalshi
-2,team_name,,11305,Washington Wizards,the_odds_api
-2,team_name,,12602,Houston Rockets,the_odds_api
-2,team_name,,12402,Minnesota Timberwolves,the_odds_api
-2,team_name,,12501,Golden State Warriors,the_odds_api
-2,team_name,,12502,Los Angeles Clippers,the_odds_api
-2,team_name,,12404,Portland Trail Blazers,the_odds_api
-2,team_name,,12601,Dallas Mavericks,the_odds_api
-2,team_name,,12603,Memphis Grizzlies,the_odds_api
-2,team_name,,12505,Sacramento Kings,the_odds_api
-2,team_name,,12604,New Orleans Pelicans,the_odds_api
-2,team_name,,11103,New York Knicks,the_odds_api
-2,team_name,,11104,Philadelphia 76ers,the_odds_api
-2,team_name,,11202,Cleveland Cavaliers,the_odds_api
-2,team_name,,11204,Indiana Pacers,the_odds_api
-2,team_name,,12405,Utah Jazz,the_odds_api
-2,team_name,,11303,Miami Heat,the_odds_api
-2,team_name,,11102,Brooklyn Nets,the_odds_api
-2,team_name,,12403,Oklahoma City Thunder,the_odds_api
-2,team_name,,12605,San Antonio Spurs,the_odds_api
-2,team_name,,11105,Toronto Raptors,the_odds_api
-2,team_name,,11203,Detroit Pistons,the_odds_api
-2,team_name,,11304,Orlando Magic,the_odds_api
-2,team_name,,11201,Chicago Bulls,the_odds_api
-2,team_name,,11101,Boston Celtics,the_odds_api
-2,team_name,,12504,Phoenix Suns,the_odds_api
-2,team_name,,12401,Denver Nuggets,the_odds_api
-2,team_name,,11301,Atlanta Hawks,the_odds_api
-2,team_name,,11205,Milwaukee Bucks,the_odds_api
-2,team_name,,12503,Los Angeles Lakers,the_odds_api
-2,team_name,,11302,Charlotte Hornets,the_odds_api
-3,team_name,,32307,Utah Mammoth,the_odds_api
-3,team_name,,32401,Anaheim Ducks,the_odds_api
-3,team_name,,31101,Boston Bruins,the_odds_api
-3,team_name,,31102,Buffalo Sabres,the_odds_api
-3,team_name,,31202,Columbus Blue Jackets,the_odds_api
-3,team_name,,32402,Calgary Flames,the_odds_api
-3,team_name,,32301,Chicago Blackhawks,the_odds_api
-3,team_name,,32302,Colorado Avalanche,the_odds_api
-3,team_name,,32303,Dallas Stars,the_odds_api
-3,team_name,,31104,Florida Panthers,the_odds_api
-3,team_name,,32404,Los Angeles Kings,the_odds_api
-3,team_name,,31203,New Jersey Devils,the_odds_api
-3,team_name,,31204,New York Islanders,the_odds_api
-3,team_name,,31205,New York Rangers,the_odds_api
-3,team_name,,31206,Philadelphia Flyers,the_odds_api
-3,team_name,,32406,Seattle Kraken,the_odds_api
-3,team_name,,31107,Tampa Bay Lightning,the_odds_api
-3,team_name,,31108,Toronto Maple Leafs,the_odds_api
-3,team_name,,32407,Vancouver Canucks,the_odds_api
-3,team_name,,32408,Vegas Golden Knights,the_odds_api
-3,team_name,,32308,Winnipeg Jets,the_odds_api
-3,team_name,,31208,Washington Capitals,the_odds_api
-5,team_name,,50101,Army Black Knights,the_odds_api
-5,team_name,,50105,Memphis Tigers,the_odds_api
-5,team_name,,50106,Navy Midshipmen,the_odds_api
-5,team_name,,50107,North Texas Mean Green,the_odds_api
-5,team_name,,50111,Tulsa Golden Hurricane,the_odds_api
-5,team_name,,50112,UAB Blazers,the_odds_api
-5,team_name,,50201,Boston College Eagles,the_odds_api
-5,team_name,,50414,Houston Cougars,the_odds_api
-5,team_name,,50501,Florida International Panthers,the_odds_api
-5,team_name,,50506,Middle Tennessee Blue Raiders,the_odds_api
-5,team_name,,50601,UConn Huskies,the_odds_api
-5,team_name,,50703,Bowling Green Falcons,the_odds_api
-5,team_name,,50707,Kent State Golden Flashes,the_odds_api
-5,team_name,,50709,Northern Illinois Huskies,the_odds_api
-5,team_name,,50801,Air Force Falcons,the_odds_api
-5,team_name,,50804,Fresno State Bulldogs,the_odds_api
-5,team_name,,51114,South Alabama Jaguars,the_odds_api
-5,team_name,,59001,Idaho Vandals,the_odds_api
-5,team_name,,59002,Portland State Vikings,the_odds_api
-5,team_name,,59003,Sacramento State Hornets,the_odds_api
-5,team_name,,59004,UC Davis Aggies,the_odds_api
-5,team_name,,59006,Montana State Bobcats,the_odds_api
-5,team_name,,59007,Weber State Wildcats,the_odds_api
-5,team_name,,59008,Cal Poly Mustangs,the_odds_api
-5,team_name,,59010,Idaho State Bengals,the_odds_api
-5,team_name,,59011,Northern Arizona Lumberjacks,the_odds_api
-5,team_name,,59012,Northern Colorado Bears,the_odds_api
-5,team_name,,59013,Gardner-Webb Runnin Bulldogs,the_odds_api
-5,team_name,,59014,Lindenwood Lions,the_odds_api
-5,team_name,,59015,Western Illinois Leathernecks,the_odds_api
-5,team_name,,59016,Charleston Southern Buccaneers,the_odds_api
-5,team_name,,59018,Southeast Missouri State Redhawks,the_odds_api
-5,team_name,,59020,Tennessee Tech Golden Eagles,the_odds_api
-5,team_name,,59022,Towson Tigers,the_odds_api
-5,team_name,,59023,William and Mary Tribe,the_odds_api
-5,team_name,,59024,Villanova Wildcats,the_odds_api
-5,team_name,,59025,Bryant Bulldogs,the_odds_api
-5,team_name,,59028,Campbell Fighting Camels,the_odds_api
-5,team_name,,59029,Stony Brook Seawolves,the_odds_api
-5,team_name,,59030,Rhode Island Rams,the_odds_api
-5,team_name,,59031,Elon Phoenix,the_odds_api
-5,team_name,,59034,New Hampshire Wildcats,the_odds_api
-5,team_name,,59035,Monmouth Hawks,the_odds_api
-5,team_name,,59036,Delaware Blue Hens,the_odds_api
-5,team_name,,59048,Howard Bison,the_odds_api
-5,team_name,,59050,Norfolk State Spartans,the_odds_api
-5,team_name,,59051,Morgan State Bears,the_odds_api
-5,team_name,,59052,South Carolina State Bulldogs,the_odds_api
-5,team_name,,59053,Delaware State Hornets,the_odds_api
-5,team_name,,59054,Indiana State Sycamores,the_odds_api
-5,team_name,,59055,Illinois State Redbirds,the_odds_api
-5,team_name,,59056,Murray State Racers,the_odds_api
-5,team_name,,59057,North Dakota Fighting Hawks,the_odds_api
-5,team_name,,59059,Northern Iowa Panthers,the_odds_api
-5,team_name,,59060,South Dakota Coyotes,the_odds_api
-5,team_name,,59062,Southern Illinois Salukis,the_odds_api
-5,team_name,,59063,Youngstown St Penguins,the_odds_api
-5,team_name,,59064,Robert Morris Colonials,the_odds_api
-5,team_name,,59065,Duquesne Dukes,the_odds_api
-5,team_name,,59067,Wagner Seahawks,the_odds_api
-5,team_name,,59068,Central Connecticut Blue Devils,the_odds_api
-5,team_name,,59072,St. Francis (PA) Red Flash,the_odds_api
-5,team_name,,59073,Bucknell Bison,the_odds_api
-5,team_name,,59074,Holy Cross Crusaders,the_odds_api
-5,team_name,,59076,Fordham Rams,the_odds_api
-5,team_name,,59077,Richmond Spiders,the_odds_api
-5,team_name,,59078,Colgate Raiders,the_odds_api
-5,team_name,,59079,Lafayette Leopards,the_odds_api
-5,team_name,,59093,Furman Paladins,the_odds_api
-5,team_name,,59095,Mercer Bears,the_odds_api
-5,team_name,,59096,VMI Keydets,the_odds_api
-5,team_name,,59097,Wofford Terriers,the_odds_api
-5,team_name,,59098,Samford Bulldogs,the_odds_api
-5,team_name,,59099,Chattanooga Mocs,the_odds_api
-5,team_name,,59100,Western Carolina Catamounts,the_odds_api
-5,team_name,,59101,Incarnate Word Cardinals,the_odds_api
-5,team_name,,59102,Stephen F. Austin Lumberjacks,the_odds_api
-5,team_name,,59103,Nicholls State Colonels,the_odds_api
-5,team_name,,59104,Southeastern Louisiana Lions,the_odds_api
-5,team_name,,59105,McNeese State Cowboys,the_odds_api
-5,team_name,,59106,Northwestern State Demons,the_odds_api
-5,team_name,,59107,Lamar Cardinals,the_odds_api
-5,team_name,,59110,East Texas A&M Lions,the_odds_api
-5,team_name,,59111,Florida A&M Rattlers,the_odds_api
-5,team_name,,59112,Prairie View A&M Panthers,the_odds_api
-5,team_name,,59113,Grambling State Tigers,the_odds_api
-5,team_name,,59114,Alabama A&M Bulldogs,the_odds_api
-5,team_name,,59115,Jackson State Tigers,the_odds_api
-5,team_name,,59116,Southern University Jaguars,the_odds_api
-5,team_name,,59117,Alcorn State Braves,the_odds_api
-5,team_name,,59118,Texas Southern Tigers,the_odds_api
-5,team_name,,59119,Bethune-Cookman Wildcats,the_odds_api
-5,team_name,,59120,Arkansas Pine Bluff Golden Lions,the_odds_api
-5,team_name,,59122,Alabama State Hornets,the_odds_api
-5,team_name,,59123,Central Arkansas Bears,the_odds_api
-5,team_name,,59124,Tarleton State Texans,the_odds_api
-5,team_name,,59127,Abilene Christian Wildcats,the_odds_api
-5,team_name,,59129,Austin Peay Governors,the_odds_api
-6,team_name,,60103,George Mason Patriots,the_odds_api
-6,team_name,,60105,La Salle Explorers,the_odds_api
-6,team_name,,60106,Loyola (Chi) Ramblers,the_odds_api
-6,team_name,,60107,Rhode Island Rams,the_odds_api
-6,team_name,,60108,Richmond Spiders,the_odds_api
-6,team_name,,60109,St. Bonaventure Bonnies,the_odds_api
-6,team_name,,60110,Saint Joseph's Hawks,the_odds_api
-6,team_name,,60111,Saint Louis Billikens,the_odds_api
-6,team_name,,60112,Massachusetts Minutemen,the_odds_api
-6,team_name,,60113,VCU Rams,the_odds_api
-6,team_name,,60202,Florida Atlantic Owls,the_odds_api
-6,team_name,,60203,Memphis Tigers,the_odds_api
-6,team_name,,60204,North Texas Mean Green,the_odds_api
-6,team_name,,60205,Rice Owls,the_odds_api
-6,team_name,,60206,SMU Mustangs,the_odds_api
-6,team_name,,60207,Temple Owls,the_odds_api
-6,team_name,,60208,Tulsa Golden Hurricane,the_odds_api
-6,team_name,,60209,UAB Blazers,the_odds_api
-6,team_name,,60211,UTSA Roadrunners,the_odds_api
-6,team_name,,60212,Wichita St Shockers,the_odds_api
-6,team_name,,60301,Boston College Eagles,the_odds_api
-6,team_name,,60302,California Golden Bears,the_odds_api
-6,team_name,,60303,Clemson Tigers,the_odds_api
-6,team_name,,60304,Duke Blue Devils,the_odds_api
-6,team_name,,60305,Florida St Seminoles,the_odds_api
-6,team_name,,60306,Georgia Tech Yellow Jackets,the_odds_api
-6,team_name,,60307,Louisville Cardinals,the_odds_api
-6,team_name,,60308,North Carolina Tar Heels,the_odds_api
-6,team_name,,60309,NC State Wolfpack,the_odds_api
-6,team_name,,60310,Notre Dame Fighting Irish,the_odds_api
-6,team_name,,60311,Pittsburgh Panthers,the_odds_api
-6,team_name,,60312,Stanford Cardinal,the_odds_api
-6,team_name,,60313,Syracuse Orange,the_odds_api
-6,team_name,,60314,Miami Hurricanes,the_odds_api
-6,team_name,,60315,Virginia Cavaliers,the_odds_api
-6,team_name,,60316,Virginia Tech Hokies,the_odds_api
-6,team_name,,60317,Wake Forest Demon Deacons,the_odds_api
-6,team_name,,60401,Albany Great Danes,the_odds_api
-6,team_name,,60403,Vermont Catamounts,the_odds_api
-6,team_name,,60501,Austin Peay Governors,the_odds_api
-6,team_name,,60502,Eastern Kentucky Colonels,the_odds_api
-6,team_name,,60503,Florida Gulf Coast Eagles,the_odds_api
-6,team_name,,60601,Iowa Hawkeyes,the_odds_api
-6,team_name,,60602,Illinois Fighting Illini,the_odds_api
-6,team_name,,60603,Indiana Hoosiers,the_odds_api
-6,team_name,,60604,Maryland Terrapins,the_odds_api
-6,team_name,,60605,Michigan Wolverines,the_odds_api
-6,team_name,,60606,Michigan St Spartans,the_odds_api
-6,team_name,,60607,Minnesota Golden Gophers,the_odds_api
-6,team_name,,60608,Nebraska Cornhuskers,the_odds_api
-6,team_name,,60609,Northwestern Wildcats,the_odds_api
-6,team_name,,60610,Ohio State Buckeyes,the_odds_api
-6,team_name,,60611,Oregon Ducks,the_odds_api
-6,team_name,,60612,Penn State Nittany Lions,the_odds_api
-6,team_name,,60615,UCLA Bruins,the_odds_api
-6,team_name,,60617,Washington Huskies,the_odds_api
-6,team_name,,60618,Wisconsin Badgers,the_odds_api
-6,team_name,,60701,Arizona Wildcats,the_odds_api
-6,team_name,,60702,Arizona St Sun Devils,the_odds_api
-6,team_name,,60703,Baylor Bears,the_odds_api
-6,team_name,,60704,BYU Cougars,the_odds_api
-6,team_name,,60705,Cincinnati Bearcats,the_odds_api
-6,team_name,,60706,Colorado Buffaloes,the_odds_api
-6,team_name,,60707,Houston Cougars,the_odds_api
-6,team_name,,60708,Iowa State Cyclones,the_odds_api
-6,team_name,,60709,Kansas Jayhawks,the_odds_api
-6,team_name,,60710,Kansas St Wildcats,the_odds_api
-6,team_name,,60711,Oklahoma St Cowboys,the_odds_api
-6,team_name,,60712,TCU Horned Frogs,the_odds_api
-6,team_name,,60713,Texas Tech Red Raiders,the_odds_api
-6,team_name,,60714,UCF Knights,the_odds_api
-6,team_name,,60716,West Virginia Mountaineers,the_odds_api
-6,team_name,,60801,Butler Bulldogs,the_odds_api
-6,team_name,,60802,UConn Huskies,the_odds_api
-6,team_name,,60803,Creighton Bluejays,the_odds_api
-6,team_name,,60804,DePaul Blue Demons,the_odds_api
-6,team_name,,60805,Georgetown Hoyas,the_odds_api
-6,team_name,,60806,Marquette Golden Eagles,the_odds_api
-6,team_name,,60807,Providence Friars,the_odds_api
-6,team_name,,60808,Seton Hall Pirates,the_odds_api
-6,team_name,,60809,St. John's Red Storm,the_odds_api
-6,team_name,,60810,Villanova Wildcats,the_odds_api
-6,team_name,,60811,Xavier Musketeers,the_odds_api
-6,team_name,,60901,Radford Highlanders,the_odds_api
-6,team_name,,60902,Winthrop Eagles,the_odds_api
-6,team_name,,61001,Eastern Washington Eagles,the_odds_api
-6,team_name,,61002,Montana Grizzlies,the_odds_api
-6,team_name,,61003,Northern Arizona Lumberjacks,the_odds_api
-5,source_team_id,,59127,"2000",cfbd
-5,source_team_id,,59114,"2010",cfbd
-5,source_team_id,,59122,"2011",cfbd
-5,source_team_id,,59117,"2016",cfbd
-5,source_team_id,,59120,"2029",cfbd
-5,source_team_id,,59129,"2046",cfbd
-5,source_team_id,,59119,"2065",cfbd
-5,source_team_id,,59040,"225",cfbd
-5,source_team_id,,59025,"2803",cfbd
-5,source_team_id,,59073,"2083",cfbd
-5,source_team_id,,59082,"2086",cfbd
-5,source_team_id,,59008,"13",cfbd
-5,source_team_id,,59028,"2097",cfbd
-5,source_team_id,,59123,"2110",cfbd
-5,source_team_id,,59068,"2115",cfbd
-5,source_team_id,,59016,"2127",cfbd
-5,source_team_id,,59099,"236",cfbd
-5,source_team_id,,59078,"2142",cfbd
-5,source_team_id,,59044,"171",cfbd
-5,source_team_id,,59043,"172",cfbd
-5,source_team_id,,59042,"159",cfbd
-5,source_team_id,,59087,"2166",cfbd
-5,source_team_id,,59085,"2168",cfbd
-5,source_team_id,,59053,"2169",cfbd
-5,source_team_id,,59084,"2181",cfbd
-5,source_team_id,,59065,"2184",cfbd
-5,source_team_id,,59019,"2197",cfbd
-5,source_team_id,,59125,"2198",cfbd
-5,source_team_id,,59005,"331",cfbd
-5,source_team_id,,59094,"2193",cfbd
-5,source_team_id,,59110,"2837",cfbd
-5,source_team_id,,59031,"2210",cfbd
-5,source_team_id,,59111,"50",cfbd
-5,source_team_id,,59076,"2230",cfbd
-5,source_team_id,,59093,"231",cfbd
-5,source_team_id,,59013,"2241",cfbd
-5,source_team_id,,59075,"46",cfbd
-5,source_team_id,,59113,"2755",cfbd
-5,source_team_id,,59033,"2261",cfbd
-5,source_team_id,,59041,"108",cfbd
-5,source_team_id,,59074,"107",cfbd
-5,source_team_id,,59108,"2277",cfbd
-5,source_team_id,,59048,"47",cfbd
-5,source_team_id,,59001,"70",cfbd
-5,source_team_id,,59010,"304",cfbd
-5,source_team_id,,59055,"2287",cfbd
-5,source_team_id,,59101,"2916",cfbd
-5,source_team_id,,59054,"282",cfbd
-5,source_team_id,,59115,"2296",cfbd
-5,source_team_id,,59079,"322",cfbd
-5,source_team_id,,59107,"2320",cfbd
-5,source_team_id,,59080,"2329",cfbd
-5,source_team_id,,59014,"2815",cfbd
-5,source_team_id,,59027,"311",cfbd
-5,source_team_id,,59089,"2368",cfbd
-5,source_team_id,,59105,"2377",cfbd
-5,source_team_id,,59095,"2382",cfbd
-5,source_team_id,,59070,"2385",cfbd
-5,source_team_id,,59039,"2771",cfbd
-5,source_team_id,,59121,"2400",cfbd
-5,source_team_id,,59035,"2405",cfbd
-5,source_team_id,,59009,"149",cfbd
-5,source_team_id,,59006,"147",cfbd
-5,source_team_id,,59081,"2413",cfbd
-5,source_team_id,,59051,"2415",cfbd
-5,source_team_id,,59056,"93",cfbd
-5,source_team_id,,59034,"160",cfbd
-5,source_team_id,,59071,"2441",cfbd
-5,source_team_id,,59103,"2447",cfbd
-5,source_team_id,,59050,"2450",cfbd
-5,source_team_id,,59128,"2453",cfbd
-5,source_team_id,,59032,"2448",cfbd
-5,source_team_id,,59049,"2428",cfbd
-5,source_team_id,,59057,"155",cfbd
-5,source_team_id,,59058,"2449",cfbd
-5,source_team_id,,59011,"2464",cfbd
-5,source_team_id,,59012,"2458",cfbd
-5,source_team_id,,59059,"2460",cfbd
-5,source_team_id,,59106,"2466",cfbd
-5,source_team_id,,59047,"219",cfbd
-5,source_team_id,,59002,"2502",cfbd
-5,source_team_id,,59112,"2504",cfbd
-5,source_team_id,,59088,"2506",cfbd
-5,source_team_id,,59045,"163",cfbd
-5,source_team_id,,59030,"227",cfbd
-5,source_team_id,,59077,"257",cfbd
-5,source_team_id,,59064,"2523",cfbd
-5,source_team_id,,59003,"16",cfbd
-5,source_team_id,,59038,"2529",cfbd
-5,source_team_id,,59098,"2535",cfbd
-5,source_team_id,,59086,"301",cfbd
-5,source_team_id,,59104,"2545",cfbd
-5,source_team_id,,59052,"2569",cfbd
-5,source_team_id,,59060,"233",cfbd
-5,source_team_id,,59061,"2571",cfbd
-5,source_team_id,,59018,"2546",cfbd
-5,source_team_id,,59116,"2582",cfbd
-5,source_team_id,,59062,"79",cfbd
-5,source_team_id,,59126,"253",cfbd
-5,source_team_id,,59102,"2617",cfbd
-5,source_team_id,,59090,"56",cfbd
-5,source_team_id,,59072,"2598",cfbd
-5,source_team_id,,59069,"284",cfbd
-5,source_team_id,,59029,"2619",cfbd
-5,source_team_id,,59091,"2900",cfbd
-5,source_team_id,,59124,"2627",cfbd
-5,source_team_id,,59021,"2634",cfbd
-5,source_team_id,,59020,"2635",cfbd
-5,source_team_id,,59118,"2640",cfbd
-5,source_team_id,,59092,"2643",cfbd
-5,source_team_id,,59022,"119",cfbd
-5,source_team_id,,59026,"399",cfbd
-5,source_team_id,,59004,"302",cfbd
-5,source_team_id,,59131,"3101",cfbd
-5,source_team_id,,59017,"2630",cfbd
-5,source_team_id,,59083,"2674",cfbd
-5,source_team_id,,59024,"222",cfbd
-5,source_team_id,,59096,"2678",cfbd
-5,source_team_id,,59067,"2681",cfbd
-5,source_team_id,,59007,"2692",cfbd
-5,source_team_id,,59100,"2717",cfbd
-5,source_team_id,,59015,"2710",cfbd
-5,source_team_id,,59130,"2698",cfbd
-5,source_team_id,,59023,"2729",cfbd
-5,source_team_id,,59097,"2747",cfbd
-5,source_team_id,,59046,"43",cfbd
-5,source_team_id,,59063,"2754",cfbd
-6,team_name,,61004,Portland St Vikings,the_odds_api
-6,team_name,,61005,Weber State Wildcats,the_odds_api
-6,team_name,,61101,CSU Fullerton Titans,the_odds_api
-6,team_name,,61102,CSU Northridge Matadors,the_odds_api
-6,team_name,,61103,Hawai'i Rainbow Warriors,the_odds_api
-6,team_name,,61104,Long Beach St 49ers,the_odds_api
-6,team_name,,61201,Delaware Blue Hens,the_odds_api
-6,team_name,,61202,Hampton Pirates,the_odds_api
-6,team_name,,61203,Hofstra Pride,the_odds_api
-6,team_name,,61204,Monmouth Hawks,the_odds_api
-6,team_name,,61205,Northeastern Huskies,the_odds_api
-6,team_name,,61301,Liberty Flames,the_odds_api
-6,team_name,,61302,Middle Tennessee Blue Raiders,the_odds_api
-6,team_name,,61303,New Mexico St Aggies,the_odds_api
-6,team_name,,61304,Sam Houston St Bearkats,the_odds_api
-6,team_name,,61306,Western Kentucky Hilltoppers,the_odds_api
-6,team_name,,61401,Cleveland St Vikings,the_odds_api
-6,team_name,,61402,Detroit Mercy Titans,the_odds_api
-6,team_name,,61403,Green Bay Phoenix,the_odds_api
-6,team_name,,61405,Milwaukee Panthers,the_odds_api
-6,team_name,,61406,Oakland Golden Grizzlies,the_odds_api
-6,team_name,,61407,Robert Morris Colonials,the_odds_api
-6,team_name,,61408,Wright St Raiders,the_odds_api
-6,team_name,,61501,Cornell Big Red,the_odds_api
-6,team_name,,61502,Harvard Crimson,the_odds_api
-6,team_name,,61503,Pennsylvania Quakers,the_odds_api
-6,team_name,,61504,Princeton Tigers,the_odds_api
-6,team_name,,61505,Yale Bulldogs,the_odds_api
-6,team_name,,61601,Iona Gaels,the_odds_api
-6,team_name,,61602,Manhattan Jaspers,the_odds_api
-6,team_name,,61603,Mt. St. Mary's Mountaineers,the_odds_api
-6,team_name,,61604,Niagara Purple Eagles,the_odds_api
-6,team_name,,61605,Siena Saints,the_odds_api
-6,team_name,,61606,Saint Peter's Peacocks,the_odds_api
-6,team_name,,61701,Akron Zips,the_odds_api
-6,team_name,,61702,Ball State Cardinals,the_odds_api
-6,team_name,,61703,Buffalo Bulls,the_odds_api
-6,team_name,,61704,Central Michigan Chippewas,the_odds_api
-6,team_name,,61705,Kent State Golden Flashes,the_odds_api
-6,team_name,,61706,Miami (OH) RedHawks,the_odds_api
-6,team_name,,61707,Ohio Bobcats,the_odds_api
-6,team_name,,61708,Western Michigan Broncos,the_odds_api
-6,team_name,,61801,Coppin St Eagles,the_odds_api
-6,team_name,,61802,Morgan St Bears,the_odds_api
-6,team_name,,61803,North Carolina A&T Aggies,the_odds_api
-6,team_name,,61804,North Carolina Central Eagles,the_odds_api
-6,team_name,,61805,Norfolk St Spartans,the_odds_api
-6,team_name,,61806,South Carolina St Bulldogs,the_odds_api
-6,team_name,,61901,Belmont Bruins,the_odds_api
-6,team_name,,61902,Bradley Braves,the_odds_api
-6,team_name,,61903,Drake Bulldogs,the_odds_api
-6,team_name,,61904,Indiana St Sycamores,the_odds_api
-6,team_name,,61905,Murray St Racers,the_odds_api
-6,team_name,,61906,Northern Iowa Panthers,the_odds_api
-6,team_name,,61907,Southern Illinois Salukis,the_odds_api
-6,team_name,,61908,Valparaiso Beacons,the_odds_api
-6,team_name,,62001,Air Force Falcons,the_odds_api
-6,team_name,,62002,Boise State Broncos,the_odds_api
-6,team_name,,62003,Colorado St Rams,the_odds_api
-6,team_name,,62004,Fresno St Bulldogs,the_odds_api
-6,team_name,,62005,New Mexico Lobos,the_odds_api
-6,team_name,,62006,Nevada Wolf Pack,the_odds_api
-6,team_name,,62007,San Diego St Aztecs,the_odds_api
-6,team_name,,62010,Wyoming Cowboys,the_odds_api
-6,team_name,,62101,Central Connecticut St Blue Devils,the_odds_api
-6,team_name,,62102,Fairleigh Dickinson Knights,the_odds_api
-6,team_name,,62104,Wagner Seahawks,the_odds_api
-6,team_name,,62201,Eastern Illinois Panthers,the_odds_api
-6,team_name,,62202,Morehead St Eagles,the_odds_api
-6,team_name,,62301,Bucknell Bison,the_odds_api
-6,team_name,,62302,Holy Cross Crusaders,the_odds_api
-6,team_name,,62303,Lafayette Leopards,the_odds_api
-6,team_name,,62304,Lehigh Mountain Hawks,the_odds_api
-6,team_name,,62305,Loyola (MD) Greyhounds,the_odds_api
-6,team_name,,62401,Alabama Crimson Tide,the_odds_api
-6,team_name,,62402,Arkansas Razorbacks,the_odds_api
-6,team_name,,62403,Auburn Tigers,the_odds_api
-6,team_name,,62404,Florida Gators,the_odds_api
-6,team_name,,62405,Georgia Bulldogs,the_odds_api
-6,team_name,,62406,Kentucky Wildcats,the_odds_api
-6,team_name,,62407,LSU Tigers,the_odds_api
-6,team_name,,62408,Missouri Tigers,the_odds_api
-6,team_name,,62409,Ole Miss Rebels,the_odds_api
-6,team_name,,62410,Mississippi St Bulldogs,the_odds_api
-6,team_name,,62411,Oklahoma Sooners,the_odds_api
-6,team_name,,62412,South Carolina Gamecocks,the_odds_api
-6,team_name,,62413,Tennessee Volunteers,the_odds_api
-6,team_name,,62414,Texas Longhorns,the_odds_api
-6,team_name,,62415,Texas A&M Aggies,the_odds_api
-6,team_name,,62416,Vanderbilt Commodores,the_odds_api
-6,team_name,,62501,Chattanooga Mocs,the_odds_api
-6,team_name,,62502,East Tennessee St Buccaneers,the_odds_api
-6,team_name,,62503,Mercer Bears,the_odds_api
-6,team_name,,62504,Samford Bulldogs,the_odds_api
-6,team_name,,62505,Wofford Terriers,the_odds_api
-6,team_name,,62601,Lamar Cardinals,the_odds_api
-6,team_name,,62602,McNeese Cowboys,the_odds_api
-6,team_name,,62603,Northwestern St Demons,the_odds_api
-6,team_name,,62604,Stephen F. Austin Lumberjacks,the_odds_api
-6,team_name,,62605,Texas A&M-CC Islanders,the_odds_api
-6,team_name,,62701,North Dakota St Bison,the_odds_api
-6,team_name,,62702,Oral Roberts Golden Eagles,the_odds_api
-6,team_name,,62703,South Dakota St Jackrabbits,the_odds_api
-6,team_name,,62704,North Dakota Fighting Hawks,the_odds_api
-6,team_name,,62705,South Dakota Coyotes,the_odds_api
-6,team_name,,62801,Appalachian St Mountaineers,the_odds_api
-6,team_name,,62802,Coastal Carolina Chanticleers,the_odds_api
-6,team_name,,62803,Georgia St Panthers,the_odds_api
-6,team_name,,62804,James Madison Dukes,the_odds_api
-6,team_name,,62805,Louisiana Ragin' Cajuns,the_odds_api
-6,team_name,,62806,Old Dominion Monarchs,the_odds_api
-6,team_name,,62807,Southern Miss Golden Eagles,the_odds_api
-6,team_name,,62808,Troy Trojans,the_odds_api
-6,team_name,,62809,South Alabama Jaguars,the_odds_api
-6,team_name,,62901,Alabama St Hornets,the_odds_api
-6,team_name,,62902,Alcorn St Braves,the_odds_api
-6,team_name,,62903,Florida A&M Rattlers,the_odds_api
-6,team_name,,62904,Jackson St Tigers,the_odds_api
-6,team_name,,62906,Southern Jaguars,the_odds_api
-6,team_name,,62907,Texas Southern Tigers,the_odds_api
-6,team_name,,63001,Gonzaga Bulldogs,the_odds_api
-6,team_name,,63002,Oregon St Beavers,the_odds_api
-6,team_name,,63003,Pacific Tigers,the_odds_api
-6,team_name,,63004,Pepperdine Waves,the_odds_api
-6,team_name,,63005,San Diego Toreros,the_odds_api
-6,team_name,,63006,Saint Mary's Gaels,the_odds_api
-6,team_name,,63007,Washington St Cougars,the_odds_api
-5,team_name,,59092,Citadel Bulldogs,the_odds_api
-5,team_name,,59027,Maine Black Bears,the_odds_api
-6,team_name,,60613,Purdue Boilermakers,the_odds_api
-6,team_name,,60210,South Florida Bulls,the_odds_api
-5,team_name,,51113,UL Monroe Warhawks,the_odds_api
-6,team_name,,62008,UNLV Rebels,the_odds_api
-6,team_name,,61305,UTEP Miners,the_odds_api
-1,source_team_id,Washington Wizards,11305,"27",espn
-1,source_team_id,World,10000,"111386",espn
-3,source_team_id,Boston Bruins,31101,"1",espn
-3,source_team_id,Buffalo Sabres,31102,"2",espn
-3,source_team_id,Calgary Flames,32402,"3",espn
-4,source_team_id,Los Angeles Angels,41302,"3",espn
-4,source_team_id,Milwaukee Brewers,42503,"8",espn
-6,source_team_id,Cal Poly Mustangs,60000,"13",espn
-6,source_team_id,USC Trojans,60616,"30",espn
-6,source_team_id,Yale Bulldogs,61505,"43",espn
-6,source_team_id,Western Kentucky Hilltoppers,61306,"98",espn
-6,source_team_id,Wake Forest Demon Deacons,60317,"154",espn
-6,source_team_id,Villanova Wildcats,60810,"222",espn
-6,source_team_id,Vanderbilt Commodores,62416,"238",espn
-6,source_team_id,UT Arlington Mavericks,60000,"250",espn
-6,source_team_id,Utah Utes,60715,"254",espn
-6,source_team_id,Virginia Cavaliers,60315,"258",espn
-6,source_team_id,Virginia Tech Hokies,60316,"259",espn
-5,source_team_id,TBD,50000,-2,espn
-5,source_team_id,Cal Poly Mustangs,59008,"13",espn
-5,source_team_id,Yale Bulldogs,59046,"43",espn
-5,source_team_id,Southern Illinois Salukis,59062,"79",espn
-5,source_team_id,Murray State Racers,59056,"93",espn
-5,source_team_id,Holy Cross Crusaders,59074,"107",espn
-5,source_team_id,Towson Tigers,59022,"119",espn
-5,source_team_id,Montana Grizzlies,59009,"149",espn
-5,source_team_id,North Dakota Fighting Hawks,59057,"155",espn
-5,source_team_id,New Hampshire Wildcats,59034,"160",espn
-5,source_team_id,Villanova Wildcats,59024,"222",espn
-5,source_team_id,Rhode Island Rams,59030,"227",espn
-5,source_team_id,Furman Paladins,59093,"231",espn
-5,source_team_id,South Dakota Coyotes,62705,"233",espn
-5,source_team_id,Chattanooga Mocs,59099,"236",espn
-5,source_team_id,Southern Utah Thunderbirds,59126,"253",espn
-5,source_team_id,Richmond Spiders,59077,"257",espn
-5,source_team_id,Indiana State Sycamores,59054,"282",espn
-5,source_team_id,San Diego Toreros,59086,"301",espn
-5,source_team_id,UC Davis Aggies,59004,"302",espn
-5,source_team_id,Idaho State Bengals,59010,"304",espn
-5,source_team_id,Maine Black Bears,59027,"311",espn
-5,source_team_id,Lafayette Leopards,59079,"322",espn
-5,source_team_id,Eastern Washington Eagles,59005,"331",espn
-5,source_team_id,Albany Great Danes,59026,"399",espn
-5,source_team_id,Abilene Christian Wildcats,59127,"2000",espn
-5,source_team_id,Alabama A&M Bulldogs,59114,"2010",espn
-5,source_team_id,Alabama State Hornets,59122,"2011",espn
-5,source_team_id,Alcorn State Braves,59117,"2016",espn
-5,source_team_id,Arkansas-Pine Bluff Golden Lions,59120,"2029",espn
-5,source_team_id,Austin Peay Governors,59129,"2046",espn
-5,source_team_id,Bethune-Cookman Wildcats,59119,"2065",espn
-5,source_team_id,Bucknell Bison,59073,"2083",espn
-5,source_team_id,Central Arkansas Bears,59123,"2110",espn
-5,source_team_id,Central Connecticut Blue Devils,59068,"2115",espn
-5,source_team_id,Charleston Southern Buccaneers,59016,"2127",espn
-5,source_team_id,Colgate Raiders,59078,"2142",espn
-5,source_team_id,Delaware State Hornets,59053,"2169",espn
-5,source_team_id,Drake Bulldogs,59084,"2181",espn
-5,source_team_id,Duquesne Dukes,59065,"2184",espn
-5,source_team_id,East Tennessee State Buccaneers,59094,"2193",espn
-5,source_team_id,Eastern Illinois Panthers,59019,"2197",espn
-5,source_team_id,Eastern Kentucky Colonels,59125,"2198",espn
-5,source_team_id,Elon Phoenix,59031,"2210",espn
-5,source_team_id,Fordham Rams,59076,"2230",espn
-5,source_team_id,Gardner-Webb Bulldogs,59013,"2241",espn
+1,source_team_id,ADELAIDE 36ers,10000,"111837",espn
 1,source_team_id,Eastern Conf All-Stars,10000,"31",espn
-1,source_team_id,Western Conf All-Stars,10000,"32",espn
-2,source_team_id,AFC,20000,"31",espn
-2,source_team_id,NFC,20000,"32",espn
-4,source_team_id,American All-Stars,40000,"31",espn
-4,source_team_id,National All-Stars,40000,"32",espn
-5,source_team_id,Sacramento State Hornets,59003,"16",espn
-5,source_team_id,Howard Bison,59048,"47",espn
-5,source_team_id,Delaware Blue Hens,59036,"48",espn
-5,source_team_id,Florida A&M Rattlers,59111,"50",espn
-5,source_team_id,Idaho Vandals,59001,"70",espn
-5,source_team_id,Montana State Bobcats,59006,"147",espn
-5,source_team_id,Missouri State Bears,59037,"2623",espn
-5,source_team_id,Hampton Pirates,59033,"2261",espn
-5,source_team_id,Houston Christian Huskies,59108,"2277",espn
-5,source_team_id,Illinois State Redbirds,59055,"2287",espn
-5,source_team_id,Jackson State Tigers,59115,"2296",espn
-5,source_team_id,Lamar Cardinals,59107,"2320",espn
-5,source_team_id,Lehigh Mountain Hawks,59080,"2329",espn
-5,source_team_id,Long Island University Sharks,50000,"2341",espn
-5,source_team_id,McNeese State Cowboys,59105,"2377",espn
-5,source_team_id,Mercer Bears,59095,"2382",espn
-5,source_team_id,Mississippi Valley State Delta Devils,59121,"2400",espn
-5,source_team_id,Monmouth Hawks,59035,"2405",espn
-5,source_team_id,Morgan State Bears,59051,"2415",espn
-5,source_team_id,North Carolina Central Eagles,59049,"2428",espn
-5,source_team_id,Nicholls State Colonels,59103,"2447",espn
-5,source_team_id,North Carolina A&T Aggies,59032,"2448",espn
-5,source_team_id,North Dakota State Bison,59058,"2449",espn
-5,source_team_id,Norfolk State Spartans,59050,"2450",espn
-5,source_team_id,North Alabama Lions,59128,"2453",espn
-5,source_team_id,Northern Colorado Bears,59012,"2458",espn
-5,source_team_id,Northern Iowa Panthers,59059,"2460",espn
-5,source_team_id,Northern Arizona Lumberjacks,59011,"2464",espn
-5,source_team_id,Northwestern State Demons,59106,"2466",espn
-5,source_team_id,Portland State Vikings,59002,"2502",espn
-5,source_team_id,Prairie View A&M Panthers,59112,"2504",espn
-5,source_team_id,Presbyterian College Blue Hose,59088,"2506",espn
-5,source_team_id,Robert Morris Colonials,59064,"2523",espn
-5,source_team_id,Sacred Heart Pioneers,59038,"2529",espn
-5,source_team_id,Samford Bulldogs,59098,"2535",espn
-5,source_team_id,Savannah State Tigers,50000,"2542",espn
-5,source_team_id,Southeastern Louisiana Lions,59104,"2545",espn
-5,source_team_id,Southeast Missouri State Redhawks,59018,"2546",espn
-5,source_team_id,South Carolina State Bulldogs,59052,"2569",espn
-5,source_team_id,South Dakota State Jackrabbits,59061,"2571",espn
-5,source_team_id,Southern Jaguars,59116,"2582",espn
-5,source_team_id,Saint Francis Red Flash,59072,"2598",espn
-5,source_team_id,Stephen F. Austin Lumberjacks,59102,"2617",espn
-5,source_team_id,Stony Brook Seawolves,59029,"2619",espn
-5,source_team_id,Tarleton State Texans,59124,"2627",espn
-5,source_team_id,Tennessee-Martin Skyhawks,59017,"2630",espn
-5,source_team_id,Tennessee State Tigers,59021,"2634",espn
-5,source_team_id,Tennessee Tech Golden Eagles,59020,"2635",espn
-5,source_team_id,Texas Southern Tigers,59118,"2640",espn
-5,source_team_id,The Citadel Bulldogs,59092,"2643",espn
-5,source_team_id,Valparaiso Beacons,59083,"2674",espn
-5,source_team_id,VMI Keydets,59096,"2678",espn
-5,source_team_id,Wagner Seahawks,59067,"2681",espn
-5,source_team_id,Weber State Wildcats,59007,"2692",espn
-5,source_team_id,Western Illinois Leathernecks,59015,"2710",espn
-5,source_team_id,Western Carolina Catamounts,59100,"2717",espn
-5,source_team_id,William & Mary Tribe,59023,"2729",espn
-5,source_team_id,Youngstown State Penguins,59063,"2754",espn
-5,source_team_id,Grambling State Tigers,59113,"2755",espn
-5,source_team_id,Merrimack Warriors,59039,"2771",espn
-5,source_team_id,Bryant Bulldogs,59025,"2803",espn
-5,source_team_id,Lindenwood Lions,59014,"2815",espn
-5,source_team_id,East Texas A&M Lions,59110,"2837",espn
-5,source_team_id,Incarnate Word Cardinals,59101,"2916",espn
-5,source_team_id,Utah Tech Trailblazers,59131,"3101",espn
-1,source_team_id,Atlanta Hawks,11301,"1",espn
-1,source_team_id,Boston Celtics,11101,"2",espn
-1,source_team_id,New Orleans Pelicans,12604,"3",espn
-1,source_team_id,Chicago Bulls,11201,"4",espn
-1,source_team_id,Cleveland Cavaliers,11202,"5",espn
-1,source_team_id,Dallas Mavericks,12601,"6",espn
-1,source_team_id,Denver Nuggets,12401,"7",espn
-1,source_team_id,Detroit Pistons,11203,"8",espn
-1,source_team_id,Golden State Warriors,12501,"9",espn
-1,source_team_id,Houston Rockets,12602,"10",espn
-1,source_team_id,Indiana Pacers,11204,"11",espn
-1,source_team_id,LA Clippers,12502,"12",espn
-1,source_team_id,Los Angeles Lakers,12503,"13",espn
-1,source_team_id,Miami Heat,11303,"14",espn
-1,source_team_id,Milwaukee Bucks,11205,"15",espn
-1,source_team_id,Minnesota Timberwolves,12402,"16",espn
-1,source_team_id,Brooklyn Nets,11102,"17",espn
-1,source_team_id,New York Knicks,11103,"18",espn
-1,source_team_id,Orlando Magic,11304,"19",espn
-1,source_team_id,Philadelphia 76ers,11104,"20",espn
-1,source_team_id,Phoenix Suns,12504,"21",espn
-1,source_team_id,Portland Trail Blazers,12404,"22",espn
-1,source_team_id,Sacramento Kings,12505,"23",espn
-1,source_team_id,San Antonio Spurs,12605,"24",espn
-1,source_team_id,Oklahoma City Thunder,12403,"25",espn
-1,source_team_id,Utah Jazz,12405,"26",espn
-1,source_team_id,Toronto Raptors,11105,"28",espn
-1,source_team_id,Memphis Grizzlies,12603,"29",espn
-1,source_team_id,Charlotte Hornets,11302,"30",espn
+1,source_team_id,World,10000,"111386",espn
+1,source_team_id,Team Giannis,10000,"112151",espn
 1,source_team_id,Real Madrid,10000,"132",espn
 1,source_team_id,Maccabi Haifa,10000,"142",espn
 1,source_team_id,Alba Berlin,10000,"145",espn
@@ -864,8 +26,6 @@
 1,source_team_id,Beijing Ducks,10000,"111834",espn
 1,source_team_id,Perth,10000,"111835",espn
 1,source_team_id,New Zealand Breakers,10000,"111836",espn
-1,source_team_id,ADELAIDE 36ers,10000,"111837",espn
-1,source_team_id,Team Giannis,10000,"112151",espn
 1,source_team_id,Franca,10000,"112638",espn
 1,source_team_id,Team Durant,10000,"123554",espn
 1,source_team_id,Melbourne Pnx,10000,"126120",espn
@@ -879,68 +39,168 @@
 1,source_team_id,Hapoel Jerusalem,10000,"131570",espn
 1,source_team_id,Team Stars,10000,"132374",espn
 1,source_team_id,Team Stripes,10000,"132375",espn
-2,source_team_id,Atlanta Falcons,22701,"1",espn
+1,source_team_id,Western Conf All-Stars,10000,"32",espn
+1,source_team_id,Boston Celtics,11101,"2",espn
+1,team_name,,11101,BOS,kalshi
+2,team_name,,11101,Boston Celtics,the_odds_api
+1,source_team_id,Brooklyn Nets,11102,"17",espn
+1,team_name,,11102,BKN,kalshi
+2,team_name,,11102,Brooklyn Nets,the_odds_api
+1,source_team_id,New York Knicks,11103,"18",espn
+1,team_name,,11103,NYK,kalshi
+2,team_name,,11103,New York Knicks,the_odds_api
+1,source_team_id,Philadelphia 76ers,11104,"20",espn
+1,team_name,,11104,PHI,kalshi
+2,team_name,,11104,Philadelphia 76ers,the_odds_api
+1,source_team_id,Toronto Raptors,11105,"28",espn
+1,team_name,,11105,TOR,kalshi
+2,team_name,,11105,Toronto Raptors,the_odds_api
+1,source_team_id,Chicago Bulls,11201,"4",espn
+1,team_name,,11201,CHI,kalshi
+2,team_name,,11201,Chicago Bulls,the_odds_api
+1,source_team_id,Cleveland Cavaliers,11202,"5",espn
+1,team_name,,11202,CLE,kalshi
+2,team_name,,11202,Cleveland Cavaliers,the_odds_api
+1,source_team_id,Detroit Pistons,11203,"8",espn
+1,team_name,,11203,DET,kalshi
+2,team_name,,11203,Detroit Pistons,the_odds_api
+1,source_team_id,Indiana Pacers,11204,"11",espn
+1,team_name,,11204,IND,kalshi
+2,team_name,,11204,Indiana Pacers,the_odds_api
+1,source_team_id,Milwaukee Bucks,11205,"15",espn
+1,team_name,,11205,MIL,kalshi
+2,team_name,,11205,Milwaukee Bucks,the_odds_api
+1,source_team_id,Atlanta Hawks,11301,"1",espn
+1,team_name,,11301,ATL,kalshi
+2,team_name,,11301,Atlanta Hawks,the_odds_api
+1,source_team_id,Charlotte Hornets,11302,"30",espn
+1,team_name,,11302,CHA,kalshi
+2,team_name,,11302,Charlotte Hornets,the_odds_api
+1,source_team_id,Miami Heat,11303,"14",espn
+1,team_name,,11303,MIA,kalshi
+2,team_name,,11303,Miami Heat,the_odds_api
+1,source_team_id,Orlando Magic,11304,"19",espn
+1,team_name,,11304,ORL,kalshi
+2,team_name,,11304,Orlando Magic,the_odds_api
+1,source_team_id,Washington Wizards,11305,"27",espn
+1,team_name,,11305,WAS,kalshi
+2,team_name,,11305,Washington Wizards,the_odds_api
+1,source_team_id,Denver Nuggets,12401,"7",espn
+1,team_name,,12401,DEN,kalshi
+2,team_name,,12401,Denver Nuggets,the_odds_api
+1,source_team_id,Minnesota Timberwolves,12402,"16",espn
+1,team_name,,12402,MIN,kalshi
+2,team_name,,12402,Minnesota Timberwolves,the_odds_api
+1,source_team_id,Oklahoma City Thunder,12403,"25",espn
+1,team_name,,12403,OKC,kalshi
+2,team_name,,12403,Oklahoma City Thunder,the_odds_api
+1,source_team_id,Portland Trail Blazers,12404,"22",espn
+1,team_name,,12404,POR,kalshi
+2,team_name,,12404,Portland Trail Blazers,the_odds_api
+1,source_team_id,Utah Jazz,12405,"26",espn
+1,team_name,,12405,UTA,kalshi
+2,team_name,,12405,Utah Jazz,the_odds_api
+1,source_team_id,Golden State Warriors,12501,"9",espn
+1,team_name,,12501,GSW,kalshi
+2,team_name,,12501,Golden State Warriors,the_odds_api
+1,source_team_id,LA Clippers,12502,"12",espn
+1,team_name,,12502,LAC,kalshi
+2,team_name,,12502,Los Angeles Clippers,the_odds_api
+1,source_team_id,Los Angeles Lakers,12503,"13",espn
+1,team_name,,12503,LAL,kalshi
+2,team_name,,12503,Los Angeles Lakers,the_odds_api
+1,source_team_id,Phoenix Suns,12504,"21",espn
+1,team_name,,12504,PHX,kalshi
+2,team_name,,12504,Phoenix Suns,the_odds_api
+1,source_team_id,Sacramento Kings,12505,"23",espn
+1,team_name,,12505,SAC,kalshi
+2,team_name,,12505,Sacramento Kings,the_odds_api
+1,source_team_id,Dallas Mavericks,12601,"6",espn
+1,team_name,,12601,DAL,kalshi
+2,team_name,,12601,Dallas Mavericks,the_odds_api
+1,source_team_id,Houston Rockets,12602,"10",espn
+1,team_name,,12602,HOU,kalshi
+2,team_name,,12602,Houston Rockets,the_odds_api
+1,source_team_id,Memphis Grizzlies,12603,"29",espn
+1,team_name,,12603,MEM,kalshi
+2,team_name,,12603,Memphis Grizzlies,the_odds_api
+1,source_team_id,New Orleans Pelicans,12604,"3",espn
+1,team_name,,12604,NOP,kalshi
+2,team_name,,12604,New Orleans Pelicans,the_odds_api
+1,source_team_id,San Antonio Spurs,12605,"24",espn
+1,team_name,,12605,SAS,kalshi
+2,team_name,,12605,San Antonio Spurs,the_odds_api
+2,source_team_id,AFC,20000,"31",espn
+2,source_team_id,NFC,20000,"32",espn
 2,source_team_id,Buffalo Bills,21101,"2",espn
-2,source_team_id,Chicago Bears,22601,"3",espn
-2,source_team_id,Cincinnati Bengals,21202,"4",espn
-2,source_team_id,Cleveland Browns,21203,"5",espn
-2,source_team_id,Dallas Cowboys,22501,"6",espn
-2,source_team_id,Denver Broncos,21401,"7",espn
-2,source_team_id,Detroit Lions,22602,"8",espn
-2,source_team_id,Green Bay Packers,22603,"9",espn
-2,source_team_id,Tennessee Titans,21304,"10",espn
-2,source_team_id,Indianapolis Colts,21302,"11",espn
-2,source_team_id,Kansas City Chiefs,21402,"12",espn
-2,source_team_id,Las Vegas Raiders,21403,"13",espn
-2,source_team_id,Los Angeles Rams,22802,"14",espn
+2,team_name,,21101,Buffalo Bills,the_odds_api
 2,source_team_id,Miami Dolphins,21102,"15",espn
-2,source_team_id,Minnesota Vikings,22604,"16",espn
+2,team_name,,21102,Miami Dolphins,the_odds_api
 2,source_team_id,New England Patriots,21103,"17",espn
-2,source_team_id,New Orleans Saints,22703,"18",espn
-2,source_team_id,New York Giants,22502,"19",espn
+2,team_name,,21103,New England Patriots,the_odds_api
 2,source_team_id,New York Jets,21104,"20",espn
-2,source_team_id,Philadelphia Eagles,22503,"21",espn
-2,source_team_id,Arizona Cardinals,22801,"22",espn
-2,source_team_id,Pittsburgh Steelers,21204,"23",espn
-2,source_team_id,Los Angeles Chargers,21404,"24",espn
-2,source_team_id,San Francisco 49ers,22803,"25",espn
-2,source_team_id,Seattle Seahawks,22804,"26",espn
-2,source_team_id,Tampa Bay Buccaneers,22704,"27",espn
-2,source_team_id,Washington Commanders,22504,"28",espn
-2,source_team_id,Carolina Panthers,22702,"29",espn
-2,source_team_id,Jacksonville Jaguars,21303,"30",espn
+2,team_name,,21104,New York Jets,the_odds_api
 2,source_team_id,Baltimore Ravens,21201,"33",espn
+2,team_name,,21201,Baltimore Ravens,the_odds_api
+2,source_team_id,Cincinnati Bengals,21202,"4",espn
+2,team_name,,21202,Cincinnati Bengals,the_odds_api
+2,source_team_id,Cleveland Browns,21203,"5",espn
+2,team_name,,21203,Cleveland Browns,the_odds_api
+2,source_team_id,Pittsburgh Steelers,21204,"23",espn
+2,team_name,,21204,Pittsburgh Steelers,the_odds_api
 2,source_team_id,Houston Texans,21301,"34",espn
-3,source_team_id,Chicago Blackhawks,32301,"4",espn
-3,source_team_id,Detroit Red Wings,31103,"5",espn
-3,source_team_id,Edmonton Oilers,32403,"6",espn
-3,source_team_id,Carolina Hurricanes,31201,"7",espn
-3,source_team_id,Los Angeles Kings,32404,"8",espn
-3,source_team_id,Dallas Stars,32303,"9",espn
-3,source_team_id,Montreal Canadiens,31105,"10",espn
-3,source_team_id,New Jersey Devils,31203,"11",espn
-3,source_team_id,New York Islanders,31204,"12",espn
-3,source_team_id,New York Rangers,31205,"13",espn
-3,source_team_id,Ottawa Senators,31106,"14",espn
-3,source_team_id,Philadelphia Flyers,31206,"15",espn
-3,source_team_id,Pittsburgh Penguins,31207,"16",espn
-3,source_team_id,Colorado Avalanche,32302,"17",espn
-3,source_team_id,San Jose Sharks,32405,"18",espn
-3,source_team_id,St. Louis Blues,32306,"19",espn
-3,source_team_id,Tampa Bay Lightning,31107,"20",espn
-3,source_team_id,Toronto Maple Leafs,31108,"21",espn
-3,source_team_id,Vancouver Canucks,32407,"22",espn
-3,source_team_id,Washington Capitals,31208,"23",espn
-3,source_team_id,Anaheim Ducks,32401,"25",espn
-3,source_team_id,Florida Panthers,31104,"26",espn
-3,source_team_id,Nashville Predators,32305,"27",espn
-3,source_team_id,Winnipeg Jets,32308,"28",espn
-3,source_team_id,Columbus Blue Jackets,31202,"29",espn
-3,source_team_id,Minnesota Wild,32304,"30",espn
-3,source_team_id,Vegas Golden Knights,32408,"37",espn
+2,team_name,,21301,Houston Texans,the_odds_api
+2,source_team_id,Indianapolis Colts,21302,"11",espn
+2,team_name,,21302,Indianapolis Colts,the_odds_api
+2,source_team_id,Jacksonville Jaguars,21303,"30",espn
+2,team_name,,21303,JAC,kalshi
+2,team_name,,21303,Jacksonville Jaguars,the_odds_api
+2,source_team_id,Tennessee Titans,21304,"10",espn
+2,team_name,,21304,Tennessee Titans,the_odds_api
+2,source_team_id,Denver Broncos,21401,"7",espn
+2,team_name,,21401,Denver Broncos,the_odds_api
+2,source_team_id,Kansas City Chiefs,21402,"12",espn
+2,team_name,,21402,Kansas City Chiefs,the_odds_api
+2,source_team_id,Las Vegas Raiders,21403,"13",espn
+2,team_name,,21403,Las Vegas Raiders,the_odds_api
+2,source_team_id,Los Angeles Chargers,21404,"24",espn
+2,team_name,,21404,Los Angeles Chargers,the_odds_api
+2,source_team_id,Dallas Cowboys,22501,"6",espn
+2,team_name,,22501,Dallas Cowboys,the_odds_api
+2,source_team_id,New York Giants,22502,"19",espn
+2,team_name,,22502,New York Giants,the_odds_api
+2,source_team_id,Philadelphia Eagles,22503,"21",espn
+2,team_name,,22503,Philadelphia Eagles,the_odds_api
+2,source_team_id,Washington Commanders,22504,"28",espn
+2,team_name,,22504,Washington Commanders,the_odds_api
+2,source_team_id,Chicago Bears,22601,"3",espn
+2,team_name,,22601,Chicago Bears,the_odds_api
+2,source_team_id,Detroit Lions,22602,"8",espn
+2,team_name,,22602,Detroit Lions,the_odds_api
+2,source_team_id,Green Bay Packers,22603,"9",espn
+2,team_name,,22603,Green Bay Packers,the_odds_api
+2,source_team_id,Minnesota Vikings,22604,"16",espn
+2,team_name,,22604,Minnesota Vikings,the_odds_api
+2,source_team_id,Atlanta Falcons,22701,"1",espn
+2,team_name,,22701,Atlanta Falcons,the_odds_api
+2,source_team_id,Carolina Panthers,22702,"29",espn
+2,team_name,,22702,Carolina Panthers,the_odds_api
+2,source_team_id,New Orleans Saints,22703,"18",espn
+2,team_name,,22703,New Orleans Saints,the_odds_api
+2,source_team_id,Tampa Bay Buccaneers,22704,"27",espn
+2,team_name,,22704,Tampa Bay Buccaneers,the_odds_api
+2,source_team_id,Arizona Cardinals,22801,"22",espn
+2,team_name,,22801,Arizona Cardinals,the_odds_api
+2,source_team_id,Los Angeles Rams,22802,"14",espn
+2,team_name,,22802,LA,kalshi
+2,team_name,,22802,Los Angeles Rams,the_odds_api
+2,source_team_id,San Francisco 49ers,22803,"25",espn
+2,team_name,,22803,San Francisco 49ers,the_odds_api
+2,source_team_id,Seattle Seahawks,22804,"26",espn
+2,team_name,,22804,Seattle Seahawks,the_odds_api
+3,source_team_id,Finland,30000,"47838",espn
 3,source_team_id,SC Bern,30000,"57",espn
 3,source_team_id,Canada,30000,"47836",espn
-3,source_team_id,Finland,30000,"47838",espn
 3,source_team_id,Sweden,30000,"47842",espn
 3,source_team_id,USA,30000,"47844",espn
 3,source_team_id,Team Foligno,30000,"109138",espn
@@ -949,40 +209,99 @@
 3,source_team_id,Metro,30000,"110063",espn
 3,source_team_id,Central,30000,"110064",espn
 3,source_team_id,Pacific,30000,"110065",espn
-3,source_team_id,Seattle Kraken,32406,"124292",espn
 3,source_team_id,Team Matthews,30000,"129029",espn
 3,source_team_id,Team McDavid,30000,"129030",espn
 3,source_team_id,Team MacKinnon,30000,"129031",espn
 3,source_team_id,Team Hughes,30000,"129032",espn
+3,source_team_id,Boston Bruins,31101,"1",espn
+3,team_name,,31101,BOS,kalshi
+3,team_name,,31101,Boston Bruins,the_odds_api
+3,source_team_id,Buffalo Sabres,31102,"2",espn
+3,team_name,,31102,BUF,kalshi
+3,team_name,,31102,Buffalo Sabres,the_odds_api
+3,source_team_id,Detroit Red Wings,31103,"5",espn
+3,team_name,,31103,DET,kalshi
+3,source_team_id,Florida Panthers,31104,"26",espn
+3,team_name,,31104,FLA,kalshi
+3,team_name,,31104,Florida Panthers,the_odds_api
+3,source_team_id,Montreal Canadiens,31105,"10",espn
+3,team_name,,31105,MTL,kalshi
+3,source_team_id,Ottawa Senators,31106,"14",espn
+3,team_name,,31106,OTT,kalshi
+3,source_team_id,Tampa Bay Lightning,31107,"20",espn
+3,team_name,,31107,TB,kalshi
+3,team_name,,31107,Tampa Bay Lightning,the_odds_api
+3,source_team_id,Toronto Maple Leafs,31108,"21",espn
+3,team_name,,31108,TOR,kalshi
+3,team_name,,31108,Toronto Maple Leafs,the_odds_api
+3,source_team_id,Carolina Hurricanes,31201,"7",espn
+3,team_name,,31201,CAR,kalshi
+3,source_team_id,Columbus Blue Jackets,31202,"29",espn
+3,team_name,,31202,CBJ,kalshi
+3,team_name,,31202,Columbus Blue Jackets,the_odds_api
+3,source_team_id,New Jersey Devils,31203,"11",espn
+3,team_name,,31203,NJ,kalshi
+3,team_name,,31203,New Jersey Devils,the_odds_api
+3,source_team_id,New York Islanders,31204,"12",espn
+3,team_name,,31204,NYI,kalshi
+3,team_name,,31204,New York Islanders,the_odds_api
+3,source_team_id,New York Rangers,31205,"13",espn
+3,team_name,,31205,NYR,kalshi
+3,team_name,,31205,New York Rangers,the_odds_api
+3,source_team_id,Philadelphia Flyers,31206,"15",espn
+3,team_name,,31206,PHI,kalshi
+3,team_name,,31206,Philadelphia Flyers,the_odds_api
+3,source_team_id,Pittsburgh Penguins,31207,"16",espn
+3,team_name,,31207,PIT,kalshi
+3,source_team_id,Washington Capitals,31208,"23",espn
+3,team_name,,31208,WSH,kalshi
+3,team_name,,31208,Washington Capitals,the_odds_api
+3,source_team_id,Chicago Blackhawks,32301,"4",espn
+3,team_name,,32301,CHI,kalshi
+3,team_name,,32301,Chicago Blackhawks,the_odds_api
+3,source_team_id,Colorado Avalanche,32302,"17",espn
+3,team_name,,32302,COL,kalshi
+3,team_name,,32302,Colorado Avalanche,the_odds_api
+3,source_team_id,Dallas Stars,32303,"9",espn
+3,team_name,,32303,DAL,kalshi
+3,team_name,,32303,Dallas Stars,the_odds_api
+3,source_team_id,Minnesota Wild,32304,"30",espn
+3,team_name,,32304,MIN,kalshi
+3,source_team_id,Nashville Predators,32305,"27",espn
+3,team_name,,32305,NSH,kalshi
+3,source_team_id,St. Louis Blues,32306,"19",espn
+3,team_name,,32306,STL,kalshi
 3,source_team_id,Utah Hockey Club,32307,"129764",espn
-4,source_team_id,Baltimore Orioles,41101,"1",espn
-4,source_team_id,Boston Red Sox,41102,"2",espn
-4,source_team_id,Chicago White Sox,41201,"4",espn
-4,source_team_id,Cleveland Guardians,41202,"5",espn
-4,source_team_id,Detroit Tigers,41203,"6",espn
-4,source_team_id,Kansas City Royals,41204,"7",espn
-4,source_team_id,Minnesota Twins,41205,"9",espn
-4,source_team_id,New York Yankees,41103,"10",espn
-4,source_team_id,Athletics,41303,"11",espn
-4,source_team_id,Seattle Mariners,41304,"12",espn
-4,source_team_id,Texas Rangers,41305,"13",espn
-4,source_team_id,Toronto Blue Jays,41105,"14",espn
-4,source_team_id,Atlanta Braves,42401,"15",espn
-4,source_team_id,Chicago Cubs,42501,"16",espn
-4,source_team_id,Cincinnati Reds,42502,"17",espn
-4,source_team_id,Houston Astros,41301,"18",espn
-4,source_team_id,Los Angeles Dodgers,42603,"19",espn
-4,source_team_id,Washington Nationals,42405,"20",espn
-4,source_team_id,New York Mets,42403,"21",espn
-4,source_team_id,Philadelphia Phillies,42404,"22",espn
-4,source_team_id,Pittsburgh Pirates,42504,"23",espn
-4,source_team_id,St. Louis Cardinals,42505,"24",espn
-4,source_team_id,San Diego Padres,42604,"25",espn
-4,source_team_id,San Francisco Giants,42605,"26",espn
-4,source_team_id,Colorado Rockies,42602,"27",espn
-4,source_team_id,Miami Marlins,42402,"28",espn
-4,source_team_id,Arizona Diamondbacks,42601,"29",espn
-4,source_team_id,Tampa Bay Rays,41104,"30",espn
+3,team_name,,32307,UTA,kalshi
+3,team_name,,32307,Utah Mammoth,the_odds_api
+3,source_team_id,Winnipeg Jets,32308,"28",espn
+3,team_name,,32308,WPG,kalshi
+3,team_name,,32308,Winnipeg Jets,the_odds_api
+3,source_team_id,Anaheim Ducks,32401,"25",espn
+3,team_name,,32401,ANA,kalshi
+3,team_name,,32401,Anaheim Ducks,the_odds_api
+3,source_team_id,Calgary Flames,32402,"3",espn
+3,team_name,,32402,CGY,kalshi
+3,team_name,,32402,Calgary Flames,the_odds_api
+3,source_team_id,Edmonton Oilers,32403,"6",espn
+3,team_name,,32403,EDM,kalshi
+3,source_team_id,Los Angeles Kings,32404,"8",espn
+3,team_name,,32404,LA,kalshi
+3,team_name,,32404,Los Angeles Kings,the_odds_api
+3,source_team_id,San Jose Sharks,32405,"18",espn
+3,team_name,,32405,SJ,kalshi
+3,source_team_id,Seattle Kraken,32406,"124292",espn
+3,team_name,,32406,SEA,kalshi
+3,team_name,,32406,Seattle Kraken,the_odds_api
+3,source_team_id,Vancouver Canucks,32407,"22",espn
+3,team_name,,32407,VAN,kalshi
+3,team_name,,32407,Vancouver Canucks,the_odds_api
+3,source_team_id,Vegas Golden Knights,32408,"37",espn
+3,team_name,,32408,VGK,kalshi
+3,team_name,,32408,Vegas Golden Knights,the_odds_api
+4,source_team_id,Northeastern Huskies,40000,"178",espn
+4,source_team_id,National All-Stars,40000,"32",espn
+4,source_team_id,American All-Stars,40000,"31",espn
 4,source_team_id,Boston College Eagles,40000,"40",espn
 4,source_team_id,Fla. Southern,40000,"42",espn
 4,source_team_id,Sacramento River Cats,40000,"52",espn
@@ -990,7 +309,6 @@
 4,source_team_id,Univ of Arizona Sun Devils,40000,"57",espn
 4,source_team_id,Florida Atlantic,40000,"171",espn
 4,source_team_id,Miami Florida,40000,"175",espn
-4,source_team_id,Northeastern Huskies,40000,"178",espn
 4,source_team_id,Greensboro Grasshoppers,40000,"184",espn
 4,source_team_id,Birmingham,40000,"186",espn
 4,source_team_id,Memphis,40000,"187",espn
@@ -1029,327 +347,720 @@
 4,source_team_id,Puerto Rico PUERTO RICO,40000,"261",espn
 4,source_team_id,LAS VEGAS  LAS VEGAS 51S,40000,"263",espn
 4,source_team_id,Omaha Storm Chasers,40000,"264",espn
-5,source_team_id,Auburn Tigers,51002,"2",espn
-5,source_team_id,UAB Blazers,50112,"5",espn
-5,source_team_id,South Alabama Jaguars,51114,"6",espn
-5,source_team_id,Arkansas Razorbacks,51001,"8",espn
-5,source_team_id,Arizona State Sun Devils,50402,"9",espn
-5,source_team_id,Arizona Wildcats,50401,"12",espn
-5,source_team_id,San Diego State Aztecs,50808,"21",espn
-5,source_team_id,San José State Spartans,50809,"23",espn
-5,source_team_id,Stanford Cardinal,50213,"24",espn
-5,source_team_id,California Golden Bears,50202,"25",espn
-5,source_team_id,UCLA Bruins,50315,"26",espn
-5,source_team_id,USC Trojans,50316,"30",espn
-5,source_team_id,Colorado State Rams,50803,"36",espn
-5,source_team_id,Colorado Buffaloes,50406,"38",espn
-5,source_team_id,UConn Huskies,50601,"41",espn
-5,source_team_id,Florida State Seminoles,50205,"52",espn
-5,source_team_id,Jacksonville State Gamecocks,50502,"55",espn
-5,source_team_id,Florida Gators,51004,"57",espn
-5,source_team_id,South Florida Bulls,50113,"58",espn
-5,source_team_id,Georgia Tech Yellow Jackets,50206,"59",espn
-5,source_team_id,Georgia Bulldogs,51015,"61",espn
-5,source_team_id,Hawai'i Rainbow Warriors,50805,"62",espn
-5,source_team_id,Iowa State Cyclones,50407,"66",espn
-5,source_team_id,Boise State Broncos,50802,"68",espn
-5,source_team_id,Northwestern Wildcats,50309,"77",espn
-5,source_team_id,Indiana Hoosiers,50302,"84",espn
-5,source_team_id,Notre Dame Fighting Irish,50603,"87",espn
-5,source_team_id,Kentucky Wildcats,51005,"96",espn
-5,source_team_id,Louisville Cardinals,50207,"97",espn
-5,source_team_id,Western Kentucky Hilltoppers,50510,"98",espn
-5,source_team_id,LSU Tigers,51006,"99",espn
-5,source_team_id,Boston College Eagles,50201,"103",espn
-5,source_team_id,Massachusetts Minutemen,50602,"113",espn
-5,source_team_id,Maryland Terrapins,50304,"120",espn
-5,source_team_id,Michigan State Spartans,50306,"127",espn
-5,source_team_id,Michigan Wolverines,50307,"130",espn
-5,source_team_id,Minnesota Golden Gophers,50305,"135",espn
-5,source_team_id,Missouri Tigers,51007,"142",espn
-5,source_team_id,Ole Miss Rebels,51010,"145",espn
-5,source_team_id,Duke Blue Devils,50204,"150",espn
-5,source_team_id,East Carolina Pirates,50103,"151",espn
-5,source_team_id,NC State Wolfpack,50210,"152",espn
-5,source_team_id,North Carolina Tar Heels,50209,"153",espn
-5,source_team_id,Wake Forest Demon Deacons,50217,"154",espn
-5,source_team_id,Nebraska Cornhuskers,50308,"158",espn
-5,source_team_id,Rutgers Scarlet Knights,50314,"164",espn
-5,source_team_id,New Mexico State Aggies,50507,"166",espn
-5,source_team_id,New Mexico Lobos,50806,"167",espn
-5,source_team_id,Syracuse Orange,50214,"183",espn
-5,source_team_id,Bowling Green Falcons,50703,"189",espn
-5,source_team_id,Miami (OH) RedHawks,50708,"193",espn
-5,source_team_id,Ohio State Buckeyes,50311,"194",espn
-5,source_team_id,Ohio Bobcats,50710,"195",espn
-5,source_team_id,Oklahoma State Cowboys,50410,"197",espn
-5,source_team_id,Oklahoma Sooners,51009,"201",espn
-5,source_team_id,Tulsa Golden Hurricane,50111,"202",espn
-5,source_team_id,Oregon State Beavers,50901,"204",espn
-5,source_team_id,Penn State Nittany Lions,50312,"213",espn
-5,source_team_id,Temple Owls,50109,"218",espn
-5,source_team_id,Pittsburgh Panthers,50211,"221",espn
-5,source_team_id,Clemson Tigers,50203,"228",espn
-5,source_team_id,Memphis Tigers,50105,"235",espn
-5,source_team_id,Vanderbilt Commodores,51016,"238",espn
-5,source_team_id,Baylor Bears,50403,"239",espn
-5,source_team_id,Rice Owls,50108,"242",espn
-5,source_team_id,Texas A&M Aggies,51014,"245",espn
-5,source_team_id,Houston Cougars,50414,"248",espn
-5,source_team_id,North Texas Mean Green,50107,"249",espn
-5,source_team_id,Texas Longhorns,51013,"251",espn
-5,source_team_id,BYU Cougars,50404,"252",espn
-5,source_team_id,Utah Utes,50415,"254",espn
-5,source_team_id,James Madison Dukes,51106,"256",espn
-5,source_team_id,Virginia Cavaliers,50215,"258",espn
-5,source_team_id,Virginia Tech Hokies,50216,"259",espn
-5,source_team_id,Washington Huskies,50317,"264",espn
-5,source_team_id,Washington State Cougars,50902,"265",espn
-5,source_team_id,Wisconsin Badgers,50318,"275",espn
-5,source_team_id,Marshall Thundering Herd,51108,"276",espn
-5,source_team_id,West Virginia Mountaineers,50416,"277",espn
-5,source_team_id,Fresno State Bulldogs,50804,"278",espn
-5,source_team_id,Georgia Southern Eagles,51104,"290",espn
-5,source_team_id,Old Dominion Monarchs,51109,"295",espn
-5,source_team_id,Louisiana Ragin' Cajuns,51107,"309",espn
-5,source_team_id,Coastal Carolina Chanticleers,51103,"324",espn
-5,source_team_id,Texas State Bobcats,51112,"326",espn
-5,source_team_id,Utah State Aggies,50811,"328",espn
-5,source_team_id,Alabama Crimson Tide,51003,"333",espn
-5,source_team_id,Kennesaw State Owls,50503,"338",espn
-5,source_team_id,Mississippi State Bulldogs,51008,"344",espn
-5,source_team_id,Army Black Knights,50101,"349",espn
-5,source_team_id,Illinois Fighting Illini,50301,"356",espn
-5,source_team_id,Air Force Falcons,50801,"2005",espn
-5,source_team_id,Akron Zips,50701,"2006",espn
-5,source_team_id,Appalachian State Mountaineers,51101,"2026",espn
-5,source_team_id,Arkansas State Red Wolves,51102,"2032",espn
-5,source_team_id,Ball State Cardinals,50702,"2050",espn
-5,source_team_id,Buffalo Bulls,50704,"2084",espn
+4,source_team_id,Baltimore Orioles,41101,"1",espn
+4,source_team_id,Boston Red Sox,41102,"2",espn
+4,team_name,,41102,BOS,kalshi
+4,source_team_id,New York Yankees,41103,"10",espn
+4,team_name,,41103,NYY,kalshi
+4,source_team_id,Tampa Bay Rays,41104,"30",espn
+4,team_name,,41104,TB,kalshi
+4,source_team_id,Toronto Blue Jays,41105,"14",espn
+4,source_team_id,Chicago White Sox,41201,"4",espn
+4,team_name,,41201,CWS,kalshi
+4,source_team_id,Cleveland Guardians,41202,"5",espn
+4,source_team_id,Detroit Tigers,41203,"6",espn
+4,source_team_id,Kansas City Royals,41204,"7",espn
+4,source_team_id,Minnesota Twins,41205,"9",espn
+4,source_team_id,Houston Astros,41301,"18",espn
+4,team_name,,41301,HOU,kalshi
+4,source_team_id,Los Angeles Angels,41302,"3",espn
+4,source_team_id,Athletics,41303,"11",espn
+4,team_name,,41303,ATH,kalshi
+4,source_team_id,Seattle Mariners,41304,"12",espn
+4,source_team_id,Texas Rangers,41305,"13",espn
+4,team_name,,41305,TEX,kalshi
+4,source_team_id,Atlanta Braves,42401,"15",espn
+4,source_team_id,Miami Marlins,42402,"28",espn
+4,source_team_id,New York Mets,42403,"21",espn
+4,team_name,,42403,NYM,kalshi
+4,source_team_id,Philadelphia Phillies,42404,"22",espn
+4,source_team_id,Washington Nationals,42405,"20",espn
+4,source_team_id,Chicago Cubs,42501,"16",espn
+4,team_name,,42501,CHC,kalshi
+4,source_team_id,Cincinnati Reds,42502,"17",espn
+4,source_team_id,Milwaukee Brewers,42503,"8",espn
+4,team_name,,42503,MIL,kalshi
+4,source_team_id,Pittsburgh Pirates,42504,"23",espn
+4,source_team_id,St. Louis Cardinals,42505,"24",espn
+4,team_name,,42505,STL,kalshi
+4,source_team_id,Arizona Diamondbacks,42601,"29",espn
+4,team_name,,42601,AZ,kalshi
+4,source_team_id,Colorado Rockies,42602,"27",espn
+4,source_team_id,Los Angeles Dodgers,42603,"19",espn
+4,team_name,,42603,LAD,kalshi
+4,source_team_id,San Diego Padres,42604,"25",espn
+4,team_name,,42604,SD,kalshi
+4,source_team_id,San Francisco Giants,42605,"26",espn
+5,source_team_id,Savannah State Tigers,50000,"2542",espn
+5,source_team_id,Long Island University Sharks,50000,"2341",espn
+5,source_team_id,TBD,50000,-2,espn
 5,source_team_id,Campbell Fighting Camels,50000,"2097",espn
-5,source_team_id,UCF Knights,50413,"2116",espn
-5,source_team_id,Central Michigan Chippewas,50705,"2117",espn
-5,source_team_id,Cincinnati Bearcats,50405,"2132",espn
-5,source_team_id,Eastern Michigan Eagles,50706,"2199",espn
-5,source_team_id,Florida Atlantic Owls,50104,"2226",espn
-5,source_team_id,Florida International Panthers,50501,"2229",espn
-5,source_team_id,Georgia State Panthers,51105,"2247",espn
-5,source_team_id,Iowa Hawkeyes,50303,"2294",espn
-5,source_team_id,Kansas Jayhawks,50409,"2305",espn
-5,source_team_id,Kansas State Wildcats,50408,"2306",espn
-5,source_team_id,Kent State Golden Flashes,50707,"2309",espn
-5,source_team_id,Liberty Flames,50504,"2335",espn
-5,source_team_id,Louisiana Tech Bulldogs,50505,"2348",espn
-5,source_team_id,Miami Hurricanes,50208,"2390",espn
-5,source_team_id,Middle Tennessee Blue Raiders,50506,"2393",espn
-5,source_team_id,Navy Midshipmen,50106,"2426",espn
+5,source_team_id,Army Black Knights,50101,"349",espn
+5,team_name,,50101,Army Black Knights,the_odds_api
 5,source_team_id,Charlotte 49ers,50102,"2429",espn
-5,source_team_id,UL Monroe Warhawks,51113,"2433",espn
-5,source_team_id,UNLV Rebels,50810,"2439",espn
-5,source_team_id,Nevada Wolf Pack,50807,"2440",espn
-5,source_team_id,Northern Illinois Huskies,50709,"2459",espn
-5,source_team_id,Oregon Ducks,50310,"2483",espn
-5,source_team_id,Purdue Boilermakers,50313,"2509",espn
-5,source_team_id,Sam Houston Bearkats,50508,"2534",espn
-5,source_team_id,SMU Mustangs,50212,"2567",espn
-5,source_team_id,Southern Mississippi Golden Eagles,51110,"2572",espn
-5,source_team_id,South Carolina Gamecocks,51011,"2579",espn
-5,source_team_id,TCU Horned Frogs,50411,"2628",espn
-5,source_team_id,Tennessee Volunteers,51012,"2633",espn
-5,source_team_id,UTSA Roadrunners,50114,"2636",espn
-5,source_team_id,UTEP Miners,50509,"2638",espn
-5,source_team_id,Texas Tech Red Raiders,50412,"2641",espn
-5,source_team_id,Toledo Rockets,50711,"2649",espn
-5,source_team_id,Troy Trojans,51111,"2653",espn
+5,team_name,,50102,Charlotte 49ers,the_odds_api
+5,source_team_id,East Carolina Pirates,50103,"151",espn
+5,team_name,,50103,East Carolina Pirates,the_odds_api
+5,source_team_id,Florida Atlantic Owls,50104,"2226",espn
+5,team_name,,50104,Florida Atlantic Owls,the_odds_api
+5,source_team_id,Memphis Tigers,50105,"235",espn
+5,team_name,,50105,Memphis Tigers,the_odds_api
+5,source_team_id,Navy Midshipmen,50106,"2426",espn
+5,team_name,,50106,Navy Midshipmen,the_odds_api
+5,source_team_id,North Texas Mean Green,50107,"249",espn
+5,team_name,,50107,North Texas Mean Green,the_odds_api
+5,source_team_id,Rice Owls,50108,"242",espn
+5,team_name,,50108,Rice Owls,the_odds_api
+5,source_team_id,Temple Owls,50109,"218",espn
+5,team_name,,50109,Temple Owls,the_odds_api
 5,source_team_id,Tulane Green Wave,50110,"2655",espn
+5,team_name,,50110,Tulane Green Wave,the_odds_api
+5,source_team_id,Tulsa Golden Hurricane,50111,"202",espn
+5,team_name,,50111,Tulsa Golden Hurricane,the_odds_api
+5,source_team_id,UAB Blazers,50112,"5",espn
+5,team_name,,50112,UAB Blazers,the_odds_api
+5,source_team_id,South Florida Bulls,50113,"58",espn
+5,team_name,,50113,South Florida Bulls,the_odds_api
+5,source_team_id,UTSA Roadrunners,50114,"2636",espn
+5,team_name,,50114,UTSA Roadrunners,the_odds_api
+5,source_team_id,Boston College Eagles,50201,"103",espn
+5,team_name,,50201,Boston College Eagles,the_odds_api
+5,source_team_id,California Golden Bears,50202,"25",espn
+5,team_name,,50202,California Golden Bears,the_odds_api
+5,source_team_id,Clemson Tigers,50203,"228",espn
+5,team_name,,50203,Clemson Tigers,the_odds_api
+5,source_team_id,Duke Blue Devils,50204,"150",espn
+5,team_name,,50204,Duke Blue Devils,the_odds_api
+5,source_team_id,Florida State Seminoles,50205,"52",espn
+5,team_name,,50205,Florida State Seminoles,the_odds_api
+5,source_team_id,Georgia Tech Yellow Jackets,50206,"59",espn
+5,team_name,,50206,Georgia Tech Yellow Jackets,the_odds_api
+5,source_team_id,Louisville Cardinals,50207,"97",espn
+5,team_name,,50207,Louisville Cardinals,the_odds_api
+5,source_team_id,Miami Hurricanes,50208,"2390",espn
+5,team_name,,50208,Miami Hurricanes,the_odds_api
+5,source_team_id,North Carolina Tar Heels,50209,"153",espn
+5,team_name,,50209,North Carolina Tar Heels,the_odds_api
+5,source_team_id,NC State Wolfpack,50210,"152",espn
+5,team_name,,50210,NC State Wolfpack,the_odds_api
+5,source_team_id,Pittsburgh Panthers,50211,"221",espn
+5,team_name,,50211,Pittsburgh Panthers,the_odds_api
+5,source_team_id,SMU Mustangs,50212,"2567",espn
+5,team_name,,50212,SMU Mustangs,the_odds_api
+5,source_team_id,Stanford Cardinal,50213,"24",espn
+5,team_name,,50213,Stanford Cardinal,the_odds_api
+5,source_team_id,Syracuse Orange,50214,"183",espn
+5,team_name,,50214,Syracuse Orange,the_odds_api
+5,source_team_id,Virginia Cavaliers,50215,"258",espn
+5,team_name,,50215,Virginia Cavaliers,the_odds_api
+5,source_team_id,Virginia Tech Hokies,50216,"259",espn
+5,team_name,,50216,Virginia Tech Hokies,the_odds_api
+5,source_team_id,Wake Forest Demon Deacons,50217,"154",espn
+5,team_name,,50217,Wake Forest Demon Deacons,the_odds_api
+5,source_team_id,Illinois Fighting Illini,50301,"356",espn
+5,team_name,,50301,Illinois Fighting Illini,the_odds_api
+5,source_team_id,Indiana Hoosiers,50302,"84",espn
+5,team_name,,50302,Indiana Hoosiers,the_odds_api
+5,source_team_id,Iowa Hawkeyes,50303,"2294",espn
+5,team_name,,50303,Iowa Hawkeyes,the_odds_api
+5,source_team_id,Maryland Terrapins,50304,"120",espn
+5,team_name,,50304,Maryland Terrapins,the_odds_api
+5,source_team_id,Minnesota Golden Gophers,50305,"135",espn
+5,team_name,,50305,Minnesota Golden Gophers,the_odds_api
+5,source_team_id,Michigan State Spartans,50306,"127",espn
+5,team_name,,50306,Michigan State Spartans,the_odds_api
+5,source_team_id,Michigan Wolverines,50307,"130",espn
+5,team_name,,50307,Michigan Wolverines,the_odds_api
+5,source_team_id,Nebraska Cornhuskers,50308,"158",espn
+5,team_name,,50308,Nebraska Cornhuskers,the_odds_api
+5,source_team_id,Northwestern Wildcats,50309,"77",espn
+5,team_name,,50309,Northwestern Wildcats,the_odds_api
+5,source_team_id,Oregon Ducks,50310,"2483",espn
+5,team_name,,50310,Oregon Ducks,the_odds_api
+5,source_team_id,Ohio State Buckeyes,50311,"194",espn
+5,team_name,,50311,Ohio State Buckeyes,the_odds_api
+5,source_team_id,Penn State Nittany Lions,50312,"213",espn
+5,team_name,,50312,Penn State Nittany Lions,the_odds_api
+5,source_team_id,Purdue Boilermakers,50313,"2509",espn
+5,team_name,,50313,Purdue Boilermakers,the_odds_api
+5,source_team_id,Rutgers Scarlet Knights,50314,"164",espn
+5,team_name,,50314,Rutgers Scarlet Knights,the_odds_api
+5,source_team_id,UCLA Bruins,50315,"26",espn
+5,team_name,,50315,UCLA Bruins,the_odds_api
+5,source_team_id,USC Trojans,50316,"30",espn
+5,team_name,,50316,USC Trojans,the_odds_api
+5,source_team_id,Washington Huskies,50317,"264",espn
+5,team_name,,50317,Washington Huskies,the_odds_api
+5,source_team_id,Wisconsin Badgers,50318,"275",espn
+5,team_name,,50318,Wisconsin Badgers,the_odds_api
+5,source_team_id,Arizona Wildcats,50401,"12",espn
+5,team_name,,50401,Arizona Wildcats,the_odds_api
+5,source_team_id,Arizona State Sun Devils,50402,"9",espn
+5,team_name,,50402,Arizona State Sun Devils,the_odds_api
+5,source_team_id,Baylor Bears,50403,"239",espn
+5,team_name,,50403,Baylor Bears,the_odds_api
+5,source_team_id,BYU Cougars,50404,"252",espn
+5,team_name,,50404,BYU Cougars,the_odds_api
+5,source_team_id,Cincinnati Bearcats,50405,"2132",espn
+5,team_name,,50405,Cincinnati Bearcats,the_odds_api
+5,source_team_id,Colorado Buffaloes,50406,"38",espn
+5,team_name,,50406,Colorado Buffaloes,the_odds_api
+5,source_team_id,Iowa State Cyclones,50407,"66",espn
+5,team_name,,50407,Iowa State Cyclones,the_odds_api
+5,source_team_id,Kansas State Wildcats,50408,"2306",espn
+5,team_name,,50408,Kansas State Wildcats,the_odds_api
+5,source_team_id,Kansas Jayhawks,50409,"2305",espn
+5,team_name,,50409,Kansas Jayhawks,the_odds_api
+5,source_team_id,Oklahoma State Cowboys,50410,"197",espn
+5,team_name,,50410,Oklahoma State Cowboys,the_odds_api
+5,source_team_id,TCU Horned Frogs,50411,"2628",espn
+5,team_name,,50411,TCU Horned Frogs,the_odds_api
+5,source_team_id,Texas Tech Red Raiders,50412,"2641",espn
+5,team_name,,50412,Texas Tech Red Raiders,the_odds_api
+5,source_team_id,UCF Knights,50413,"2116",espn
+5,team_name,,50413,UCF Knights,the_odds_api
+5,source_team_id,Houston Cougars,50414,"248",espn
+5,team_name,,50414,Houston Cougars,the_odds_api
+5,source_team_id,Utah Utes,50415,"254",espn
+5,team_name,,50415,Utah Utes,the_odds_api
+5,source_team_id,West Virginia Mountaineers,50416,"277",espn
+5,team_name,,50416,West Virginia Mountaineers,the_odds_api
+5,source_team_id,Florida International Panthers,50501,"2229",espn
+5,team_name,,50501,Florida International Panthers,the_odds_api
+5,source_team_id,Jacksonville State Gamecocks,50502,"55",espn
+5,team_name,,50502,Jacksonville State Gamecocks,the_odds_api
+5,source_team_id,Kennesaw State Owls,50503,"338",espn
+5,team_name,,50503,Kennesaw State Owls,the_odds_api
+5,source_team_id,Liberty Flames,50504,"2335",espn
+5,team_name,,50504,Liberty Flames,the_odds_api
+5,source_team_id,Louisiana Tech Bulldogs,50505,"2348",espn
+5,team_name,,50505,LT,kalshi
+5,team_name,,50505,Louisiana Tech Bulldogs,the_odds_api
+5,source_team_id,Middle Tennessee Blue Raiders,50506,"2393",espn
+5,team_name,,50506,MTU,kalshi
+5,team_name,,50506,Middle Tennessee Blue Raiders,the_odds_api
+5,source_team_id,New Mexico State Aggies,50507,"166",espn
+5,team_name,,50507,New Mexico State Aggies,the_odds_api
+5,source_team_id,Sam Houston Bearkats,50508,"2534",espn
+5,team_name,,50508,Sam Houston State Bearkats,the_odds_api
+5,source_team_id,UTEP Miners,50509,"2638",espn
+5,team_name,,50509,UTEP Miners,the_odds_api
+5,source_team_id,Western Kentucky Hilltoppers,50510,"98",espn
+5,team_name,,50510,Western Kentucky Hilltoppers,the_odds_api
+5,source_team_id,UConn Huskies,50601,"41",espn
+5,team_name,,50601,UConn Huskies,the_odds_api
+5,source_team_id,Massachusetts Minutemen,50602,"113",espn
+5,team_name,,50602,UMass Minutemen,the_odds_api
+5,source_team_id,Notre Dame Fighting Irish,50603,"87",espn
+5,team_name,,50603,Notre Dame Fighting Irish,the_odds_api
+5,source_team_id,Akron Zips,50701,"2006",espn
+5,team_name,,50701,Akron Zips,the_odds_api
+5,source_team_id,Ball State Cardinals,50702,"2050",espn
+5,team_name,,50702,Ball State Cardinals,the_odds_api
+5,source_team_id,Bowling Green Falcons,50703,"189",espn
+5,team_name,,50703,Bowling Green Falcons,the_odds_api
+5,source_team_id,Buffalo Bulls,50704,"2084",espn
+5,team_name,,50704,Buffalo Bulls,the_odds_api
+5,source_team_id,Central Michigan Chippewas,50705,"2117",espn
+5,team_name,,50705,Central Michigan Chippewas,the_odds_api
+5,source_team_id,Eastern Michigan Eagles,50706,"2199",espn
+5,team_name,,50706,Eastern Michigan Eagles,the_odds_api
+5,source_team_id,Kent State Golden Flashes,50707,"2309",espn
+5,team_name,,50707,Kent State Golden Flashes,the_odds_api
+5,source_team_id,Miami (OH) RedHawks,50708,"193",espn
+5,team_name,,50708,Miami (OH) RedHawks,the_odds_api
+5,source_team_id,Northern Illinois Huskies,50709,"2459",espn
+5,team_name,,50709,Northern Illinois Huskies,the_odds_api
+5,source_team_id,Ohio Bobcats,50710,"195",espn
+5,team_name,,50710,Ohio Bobcats,the_odds_api
+5,source_team_id,Toledo Rockets,50711,"2649",espn
+5,team_name,,50711,Toledo Rockets,the_odds_api
 5,source_team_id,Western Michigan Broncos,50712,"2711",espn
-5,source_team_id,Wofford Terriers,59097,"2747",espn
+5,team_name,,50712,Western Michigan Broncos,the_odds_api
+5,source_team_id,Air Force Falcons,50801,"2005",espn
+5,team_name,,50801,Air Force Falcons,the_odds_api
+5,source_team_id,Boise State Broncos,50802,"68",espn
+5,team_name,,50802,BSU,kalshi
+5,team_name,,50802,Boise State Broncos,the_odds_api
+5,source_team_id,Colorado State Rams,50803,"36",espn
+5,team_name,,50803,Colorado State Rams,the_odds_api
+5,source_team_id,Fresno State Bulldogs,50804,"278",espn
+5,team_name,,50804,Fresno State Bulldogs,the_odds_api
+5,source_team_id,Hawai'i Rainbow Warriors,50805,"62",espn
+5,team_name,,50805,Hawaii Rainbow Warriors,the_odds_api
+5,source_team_id,New Mexico Lobos,50806,"167",espn
+5,team_name,,50806,New Mexico Lobos,the_odds_api
+5,source_team_id,Nevada Wolf Pack,50807,"2440",espn
+5,team_name,,50807,Nevada Wolf Pack,the_odds_api
+5,source_team_id,San Diego State Aztecs,50808,"21",espn
+5,team_name,,50808,San Diego State Aztecs,the_odds_api
+5,source_team_id,San José State Spartans,50809,"23",espn
+5,team_name,,50809,San Jose State Spartans,the_odds_api
+5,source_team_id,UNLV Rebels,50810,"2439",espn
+5,team_name,,50810,UNLV Rebels,the_odds_api
+5,source_team_id,Utah State Aggies,50811,"328",espn
+5,team_name,,50811,Utah State Aggies,the_odds_api
 5,source_team_id,Wyoming Cowboys,50812,"2751",espn
+5,team_name,,50812,Wyoming Cowboys,the_odds_api
+5,source_team_id,Oregon State Beavers,50901,"204",espn
+5,team_name,,50901,Oregon State Beavers,the_odds_api
+5,source_team_id,Washington State Cougars,50902,"265",espn
+5,team_name,,50902,Washington State Cougars,the_odds_api
+5,source_team_id,Arkansas Razorbacks,51001,"8",espn
+5,team_name,,51001,Arkansas Razorbacks,the_odds_api
+5,source_team_id,Auburn Tigers,51002,"2",espn
+5,team_name,,51002,Auburn Tigers,the_odds_api
+5,source_team_id,Alabama Crimson Tide,51003,"333",espn
+5,team_name,,51003,Alabama Crimson Tide,the_odds_api
+5,source_team_id,Florida Gators,51004,"57",espn
+5,team_name,,51004,Florida Gators,the_odds_api
+5,source_team_id,Kentucky Wildcats,51005,"96",espn
+5,team_name,,51005,Kentucky Wildcats,the_odds_api
+5,source_team_id,LSU Tigers,51006,"99",espn
+5,team_name,,51006,LSU Tigers,the_odds_api
+5,source_team_id,Missouri Tigers,51007,"142",espn
+5,team_name,,51007,Missouri Tigers,the_odds_api
+5,source_team_id,Mississippi State Bulldogs,51008,"344",espn
+5,team_name,,51008,Mississippi State Bulldogs,the_odds_api
+5,source_team_id,Oklahoma Sooners,51009,"201",espn
+5,team_name,,51009,OKLA,kalshi
+5,team_name,,51009,Oklahoma Sooners,the_odds_api
+5,source_team_id,Ole Miss Rebels,51010,"145",espn
+5,team_name,,51010,Ole Miss Rebels,the_odds_api
+5,source_team_id,South Carolina Gamecocks,51011,"2579",espn
+5,team_name,,51011,SCAR,kalshi
+5,team_name,,51011,South Carolina Gamecocks,the_odds_api
+5,source_team_id,Tennessee Volunteers,51012,"2633",espn
+5,team_name,,51012,Tennessee Volunteers,the_odds_api
+5,source_team_id,Texas Longhorns,51013,"251",espn
+5,team_name,,51013,Texas Longhorns,the_odds_api
+5,source_team_id,Texas A&M Aggies,51014,"245",espn
+5,team_name,,51014,Texas A&M Aggies,the_odds_api
+5,source_team_id,Georgia Bulldogs,51015,"61",espn
+5,team_name,,51015,Georgia Bulldogs,the_odds_api
+5,source_team_id,Vanderbilt Commodores,51016,"238",espn
+5,team_name,,51016,Vanderbilt Commodores,the_odds_api
+5,source_team_id,Appalachian State Mountaineers,51101,"2026",espn
+5,team_name,,51101,Appalachian State Mountaineers,the_odds_api
+5,source_team_id,Arkansas State Red Wolves,51102,"2032",espn
+5,team_name,,51102,Arkansas State Red Wolves,the_odds_api
+5,source_team_id,Coastal Carolina Chanticleers,51103,"324",espn
+5,team_name,,51103,CCAR,kalshi
+5,team_name,,51103,Coastal Carolina Chanticleers,the_odds_api
+5,source_team_id,Georgia Southern Eagles,51104,"290",espn
+5,team_name,,51104,Georgia Southern Eagles,the_odds_api
+5,source_team_id,Georgia State Panthers,51105,"2247",espn
+5,team_name,,51105,Georgia State Panthers,the_odds_api
+5,source_team_id,James Madison Dukes,51106,"256",espn
+5,team_name,,51106,James Madison Dukes,the_odds_api
+5,source_team_id,Louisiana Ragin' Cajuns,51107,"309",espn
+5,team_name,,51107,ULL,kalshi
+5,team_name,,51107,Louisiana Ragin Cajuns,the_odds_api
+5,source_team_id,Marshall Thundering Herd,51108,"276",espn
+5,team_name,,51108,Marshall Thundering Herd,the_odds_api
+5,source_team_id,Old Dominion Monarchs,51109,"295",espn
+5,team_name,,51109,Old Dominion Monarchs,the_odds_api
+5,source_team_id,Southern Mississippi Golden Eagles,51110,"2572",espn
+5,team_name,,51110,Southern Mississippi Golden Eagles,the_odds_api
+5,source_team_id,Troy Trojans,51111,"2653",espn
+5,team_name,,51111,Troy Trojans,the_odds_api
+5,source_team_id,Texas State Bobcats,51112,"326",espn
+5,team_name,,51112,Texas State Bobcats,the_odds_api
+5,source_team_id,UL Monroe Warhawks,51113,"2433",espn
+5,team_name,,51113,UL Monroe Warhawks,the_odds_api
+5,source_team_id,South Alabama Jaguars,51114,"6",espn
+5,team_name,,51114,South Alabama Jaguars,the_odds_api
+5,source_team_id,,59001,"70",cfbd
+5,source_team_id,Idaho Vandals,59001,"70",espn
+5,team_name,,59001,Idaho Vandals,the_odds_api
+5,source_team_id,,59002,"2502",cfbd
+5,source_team_id,Portland State Vikings,59002,"2502",espn
+5,team_name,,59002,Portland State Vikings,the_odds_api
+5,source_team_id,,59003,"16",cfbd
+5,source_team_id,Sacramento State Hornets,59003,"16",espn
+5,team_name,,59003,Sacramento State Hornets,the_odds_api
+5,source_team_id,,59004,"302",cfbd
+5,source_team_id,UC Davis Aggies,59004,"302",espn
+5,team_name,,59004,UC Davis Aggies,the_odds_api
+5,source_team_id,,59005,"331",cfbd
+5,source_team_id,Eastern Washington Eagles,59005,"331",espn
+5,source_team_id,,59006,"147",cfbd
+5,source_team_id,Montana State Bobcats,59006,"147",espn
+5,team_name,,59006,Montana State Bobcats,the_odds_api
+5,source_team_id,,59007,"2692",cfbd
+5,source_team_id,Weber State Wildcats,59007,"2692",espn
+5,team_name,,59007,Weber State Wildcats,the_odds_api
+5,source_team_id,,59008,"13",cfbd
+5,source_team_id,Cal Poly Mustangs,59008,"13",espn
+5,team_name,,59008,Cal Poly Mustangs,the_odds_api
+5,source_team_id,,59009,"149",cfbd
+5,source_team_id,Montana Grizzlies,59009,"149",espn
+5,source_team_id,,59010,"304",cfbd
+5,source_team_id,Idaho State Bengals,59010,"304",espn
+5,team_name,,59010,Idaho State Bengals,the_odds_api
+5,source_team_id,,59011,"2464",cfbd
+5,source_team_id,Northern Arizona Lumberjacks,59011,"2464",espn
+5,team_name,,59011,Northern Arizona Lumberjacks,the_odds_api
+5,source_team_id,,59012,"2458",cfbd
+5,source_team_id,Northern Colorado Bears,59012,"2458",espn
+5,team_name,,59012,Northern Colorado Bears,the_odds_api
+5,source_team_id,,59013,"2241",cfbd
+5,source_team_id,Gardner-Webb Bulldogs,59013,"2241",espn
+5,team_name,,59013,Gardner-Webb Runnin Bulldogs,the_odds_api
+5,source_team_id,,59014,"2815",cfbd
+5,source_team_id,Lindenwood Lions,59014,"2815",espn
+5,team_name,,59014,Lindenwood Lions,the_odds_api
+5,source_team_id,,59015,"2710",cfbd
+5,source_team_id,Western Illinois Leathernecks,59015,"2710",espn
+5,team_name,,59015,Western Illinois Leathernecks,the_odds_api
+5,source_team_id,,59016,"2127",cfbd
+5,source_team_id,Charleston Southern Buccaneers,59016,"2127",espn
+5,team_name,,59016,Charleston Southern Buccaneers,the_odds_api
+5,source_team_id,,59017,"2630",cfbd
+5,source_team_id,Tennessee-Martin Skyhawks,59017,"2630",espn
+5,source_team_id,,59018,"2546",cfbd
+5,source_team_id,Southeast Missouri State Redhawks,59018,"2546",espn
+5,team_name,,59018,Southeast Missouri State Redhawks,the_odds_api
+5,source_team_id,,59019,"2197",cfbd
+5,source_team_id,Eastern Illinois Panthers,59019,"2197",espn
+5,source_team_id,,59020,"2635",cfbd
+5,source_team_id,Tennessee Tech Golden Eagles,59020,"2635",espn
+5,team_name,,59020,Tennessee Tech Golden Eagles,the_odds_api
+5,source_team_id,,59021,"2634",cfbd
+5,source_team_id,Tennessee State Tigers,59021,"2634",espn
+5,source_team_id,,59022,"119",cfbd
+5,source_team_id,Towson Tigers,59022,"119",espn
+5,team_name,,59022,Towson Tigers,the_odds_api
+5,source_team_id,,59023,"2729",cfbd
+5,source_team_id,William & Mary Tribe,59023,"2729",espn
+5,team_name,,59023,William and Mary Tribe,the_odds_api
+5,source_team_id,,59024,"222",cfbd
+5,source_team_id,Villanova Wildcats,59024,"222",espn
+5,team_name,,59024,Villanova Wildcats,the_odds_api
+5,source_team_id,,59025,"2803",cfbd
+5,source_team_id,Bryant Bulldogs,59025,"2803",espn
+5,team_name,,59025,Bryant Bulldogs,the_odds_api
+5,source_team_id,,59026,"399",cfbd
+5,source_team_id,Albany Great Danes,59026,"399",espn
+5,source_team_id,,59027,"311",cfbd
+5,source_team_id,Maine Black Bears,59027,"311",espn
+5,team_name,,59027,Maine Black Bears,the_odds_api
+5,source_team_id,,59028,"2097",cfbd
+5,team_name,,59028,Campbell Fighting Camels,the_odds_api
+5,source_team_id,,59029,"2619",cfbd
+5,source_team_id,Stony Brook Seawolves,59029,"2619",espn
+5,team_name,,59029,Stony Brook Seawolves,the_odds_api
+5,source_team_id,,59030,"227",cfbd
+5,source_team_id,Rhode Island Rams,59030,"227",espn
+5,team_name,,59030,Rhode Island Rams,the_odds_api
+5,source_team_id,,59031,"2210",cfbd
+5,source_team_id,Elon Phoenix,59031,"2210",espn
+5,team_name,,59031,Elon Phoenix,the_odds_api
+5,source_team_id,,59032,"2448",cfbd
+5,source_team_id,North Carolina A&T Aggies,59032,"2448",espn
+5,source_team_id,,59033,"2261",cfbd
+5,source_team_id,Hampton Pirates,59033,"2261",espn
+5,source_team_id,,59034,"160",cfbd
+5,source_team_id,New Hampshire Wildcats,59034,"160",espn
+5,team_name,,59034,New Hampshire Wildcats,the_odds_api
+5,source_team_id,,59035,"2405",cfbd
+5,source_team_id,Monmouth Hawks,59035,"2405",espn
+5,team_name,,59035,Monmouth Hawks,the_odds_api
+5,source_team_id,Delaware Blue Hens,59036,"48",espn
+5,team_name,,59036,Delaware Blue Hens,the_odds_api
+5,source_team_id,Missouri State Bears,59037,"2623",espn
+5,source_team_id,,59038,"2529",cfbd
+5,source_team_id,Sacred Heart Pioneers,59038,"2529",espn
+5,source_team_id,,59039,"2771",cfbd
+5,source_team_id,Merrimack Warriors,59039,"2771",espn
+5,source_team_id,,59040,"225",cfbd
+5,source_team_id,,59041,"108",cfbd
+5,source_team_id,,59042,"159",cfbd
+5,source_team_id,,59043,"172",cfbd
+5,source_team_id,,59044,"171",cfbd
+5,source_team_id,,59045,"163",cfbd
+5,source_team_id,,59046,"43",cfbd
+5,source_team_id,Yale Bulldogs,59046,"43",espn
+5,source_team_id,,59047,"219",cfbd
+5,source_team_id,,59048,"47",cfbd
+5,source_team_id,Howard Bison,59048,"47",espn
+5,team_name,,59048,Howard Bison,the_odds_api
+5,source_team_id,,59049,"2428",cfbd
+5,source_team_id,North Carolina Central Eagles,59049,"2428",espn
+5,source_team_id,,59050,"2450",cfbd
+5,source_team_id,Norfolk State Spartans,59050,"2450",espn
+5,team_name,,59050,Norfolk State Spartans,the_odds_api
+5,source_team_id,,59051,"2415",cfbd
+5,source_team_id,Morgan State Bears,59051,"2415",espn
+5,team_name,,59051,Morgan State Bears,the_odds_api
+5,source_team_id,,59052,"2569",cfbd
+5,source_team_id,South Carolina State Bulldogs,59052,"2569",espn
+5,team_name,,59052,South Carolina State Bulldogs,the_odds_api
+5,source_team_id,,59053,"2169",cfbd
+5,source_team_id,Delaware State Hornets,59053,"2169",espn
+5,team_name,,59053,Delaware State Hornets,the_odds_api
+5,source_team_id,,59054,"282",cfbd
+5,source_team_id,Indiana State Sycamores,59054,"282",espn
+5,team_name,,59054,Indiana State Sycamores,the_odds_api
+5,source_team_id,,59055,"2287",cfbd
+5,source_team_id,Illinois State Redbirds,59055,"2287",espn
+5,team_name,,59055,Illinois State Redbirds,the_odds_api
+5,source_team_id,,59056,"93",cfbd
+5,source_team_id,Murray State Racers,59056,"93",espn
+5,team_name,,59056,Murray State Racers,the_odds_api
+5,source_team_id,,59057,"155",cfbd
+5,source_team_id,North Dakota Fighting Hawks,59057,"155",espn
+5,team_name,,59057,North Dakota Fighting Hawks,the_odds_api
+5,source_team_id,,59058,"2449",cfbd
+5,source_team_id,North Dakota State Bison,59058,"2449",espn
+5,source_team_id,,59059,"2460",cfbd
+5,source_team_id,Northern Iowa Panthers,59059,"2460",espn
+5,team_name,,59059,Northern Iowa Panthers,the_odds_api
+5,source_team_id,,59060,"233",cfbd
+5,team_name,,59060,South Dakota Coyotes,the_odds_api
+5,source_team_id,,59061,"2571",cfbd
+5,source_team_id,South Dakota State Jackrabbits,59061,"2571",espn
+5,source_team_id,,59062,"79",cfbd
+5,source_team_id,Southern Illinois Salukis,59062,"79",espn
+5,team_name,,59062,Southern Illinois Salukis,the_odds_api
+5,source_team_id,,59063,"2754",cfbd
+5,source_team_id,Youngstown State Penguins,59063,"2754",espn
+5,team_name,,59063,Youngstown St Penguins,the_odds_api
+5,source_team_id,,59064,"2523",cfbd
+5,source_team_id,Robert Morris Colonials,59064,"2523",espn
+5,team_name,,59064,Robert Morris Colonials,the_odds_api
+5,source_team_id,,59065,"2184",cfbd
+5,source_team_id,Duquesne Dukes,59065,"2184",espn
+5,team_name,,59065,Duquesne Dukes,the_odds_api
+5,source_team_id,,59067,"2681",cfbd
+5,source_team_id,Wagner Seahawks,59067,"2681",espn
+5,team_name,,59067,Wagner Seahawks,the_odds_api
+5,source_team_id,,59068,"2115",cfbd
+5,source_team_id,Central Connecticut Blue Devils,59068,"2115",espn
+5,team_name,,59068,Central Connecticut Blue Devils,the_odds_api
+5,source_team_id,,59069,"284",cfbd
+5,source_team_id,,59070,"2385",cfbd
+5,source_team_id,,59071,"2441",cfbd
+5,source_team_id,,59072,"2598",cfbd
+5,source_team_id,Saint Francis Red Flash,59072,"2598",espn
+5,team_name,,59072,St. Francis (PA) Red Flash,the_odds_api
+5,source_team_id,,59073,"2083",cfbd
+5,source_team_id,Bucknell Bison,59073,"2083",espn
+5,team_name,,59073,Bucknell Bison,the_odds_api
+5,source_team_id,,59074,"107",cfbd
+5,source_team_id,Holy Cross Crusaders,59074,"107",espn
+5,team_name,,59074,Holy Cross Crusaders,the_odds_api
+5,source_team_id,,59075,"46",cfbd
+5,source_team_id,,59076,"2230",cfbd
+5,source_team_id,Fordham Rams,59076,"2230",espn
+5,team_name,,59076,Fordham Rams,the_odds_api
+5,source_team_id,,59077,"257",cfbd
+5,source_team_id,Richmond Spiders,59077,"257",espn
+5,team_name,,59077,Richmond Spiders,the_odds_api
+5,source_team_id,,59078,"2142",cfbd
+5,source_team_id,Colgate Raiders,59078,"2142",espn
+5,team_name,,59078,Colgate Raiders,the_odds_api
+5,source_team_id,,59079,"322",cfbd
+5,source_team_id,Lafayette Leopards,59079,"322",espn
+5,team_name,,59079,Lafayette Leopards,the_odds_api
+5,source_team_id,,59080,"2329",cfbd
+5,source_team_id,Lehigh Mountain Hawks,59080,"2329",espn
+5,source_team_id,,59081,"2413",cfbd
+5,source_team_id,,59082,"2086",cfbd
+5,source_team_id,,59083,"2674",cfbd
+5,source_team_id,Valparaiso Beacons,59083,"2674",espn
+5,source_team_id,,59084,"2181",cfbd
+5,source_team_id,Drake Bulldogs,59084,"2181",espn
+5,source_team_id,,59085,"2168",cfbd
+5,source_team_id,,59086,"301",cfbd
+5,source_team_id,San Diego Toreros,59086,"301",espn
+5,source_team_id,,59087,"2166",cfbd
+5,source_team_id,,59088,"2506",cfbd
+5,source_team_id,Presbyterian College Blue Hose,59088,"2506",espn
+5,source_team_id,,59089,"2368",cfbd
+5,source_team_id,,59090,"56",cfbd
+5,source_team_id,,59091,"2900",cfbd
+5,source_team_id,,59092,"2643",cfbd
+5,source_team_id,The Citadel Bulldogs,59092,"2643",espn
+5,team_name,,59092,Citadel Bulldogs,the_odds_api
+5,source_team_id,,59093,"231",cfbd
+5,source_team_id,Furman Paladins,59093,"231",espn
+5,team_name,,59093,Furman Paladins,the_odds_api
+5,source_team_id,,59094,"2193",cfbd
+5,source_team_id,East Tennessee State Buccaneers,59094,"2193",espn
+5,source_team_id,,59095,"2382",cfbd
+5,source_team_id,Mercer Bears,59095,"2382",espn
+5,team_name,,59095,Mercer Bears,the_odds_api
+5,source_team_id,,59096,"2678",cfbd
+5,source_team_id,VMI Keydets,59096,"2678",espn
+5,team_name,,59096,VMI Keydets,the_odds_api
+5,source_team_id,,59097,"2747",cfbd
+5,source_team_id,Wofford Terriers,59097,"2747",espn
+5,team_name,,59097,Wofford Terriers,the_odds_api
+5,source_team_id,,59098,"2535",cfbd
+5,source_team_id,Samford Bulldogs,59098,"2535",espn
+5,team_name,,59098,Samford Bulldogs,the_odds_api
+5,source_team_id,,59099,"236",cfbd
+5,source_team_id,Chattanooga Mocs,59099,"236",espn
+5,team_name,,59099,Chattanooga Mocs,the_odds_api
+5,source_team_id,,59100,"2717",cfbd
+5,source_team_id,Western Carolina Catamounts,59100,"2717",espn
+5,team_name,,59100,Western Carolina Catamounts,the_odds_api
+5,source_team_id,,59101,"2916",cfbd
+5,source_team_id,Incarnate Word Cardinals,59101,"2916",espn
+5,team_name,,59101,Incarnate Word Cardinals,the_odds_api
+5,source_team_id,,59102,"2617",cfbd
+5,source_team_id,Stephen F. Austin Lumberjacks,59102,"2617",espn
+5,team_name,,59102,Stephen F. Austin Lumberjacks,the_odds_api
+5,source_team_id,,59103,"2447",cfbd
+5,source_team_id,Nicholls State Colonels,59103,"2447",espn
+5,team_name,,59103,Nicholls State Colonels,the_odds_api
+5,source_team_id,,59104,"2545",cfbd
+5,source_team_id,Southeastern Louisiana Lions,59104,"2545",espn
+5,team_name,,59104,Southeastern Louisiana Lions,the_odds_api
+5,source_team_id,,59105,"2377",cfbd
+5,source_team_id,McNeese State Cowboys,59105,"2377",espn
+5,team_name,,59105,McNeese State Cowboys,the_odds_api
+5,source_team_id,,59106,"2466",cfbd
+5,source_team_id,Northwestern State Demons,59106,"2466",espn
+5,team_name,,59106,Northwestern State Demons,the_odds_api
+5,source_team_id,,59107,"2320",cfbd
+5,source_team_id,Lamar Cardinals,59107,"2320",espn
+5,team_name,,59107,Lamar Cardinals,the_odds_api
+5,source_team_id,,59108,"2277",cfbd
+5,source_team_id,Houston Christian Huskies,59108,"2277",espn
+5,source_team_id,,59110,"2837",cfbd
+5,source_team_id,East Texas A&M Lions,59110,"2837",espn
+5,team_name,,59110,East Texas A&M Lions,the_odds_api
+5,source_team_id,,59111,"50",cfbd
+5,source_team_id,Florida A&M Rattlers,59111,"50",espn
+5,team_name,,59111,Florida A&M Rattlers,the_odds_api
+5,source_team_id,,59112,"2504",cfbd
+5,source_team_id,Prairie View A&M Panthers,59112,"2504",espn
+5,team_name,,59112,Prairie View A&M Panthers,the_odds_api
+5,source_team_id,,59113,"2755",cfbd
+5,source_team_id,Grambling State Tigers,59113,"2755",espn
+5,team_name,,59113,Grambling State Tigers,the_odds_api
+5,source_team_id,,59114,"2010",cfbd
+5,source_team_id,Alabama A&M Bulldogs,59114,"2010",espn
+5,team_name,,59114,Alabama A&M Bulldogs,the_odds_api
+5,source_team_id,,59115,"2296",cfbd
+5,source_team_id,Jackson State Tigers,59115,"2296",espn
+5,team_name,,59115,Jackson State Tigers,the_odds_api
+5,source_team_id,,59116,"2582",cfbd
+5,source_team_id,Southern Jaguars,59116,"2582",espn
+5,team_name,,59116,Southern University Jaguars,the_odds_api
+5,source_team_id,,59117,"2016",cfbd
+5,source_team_id,Alcorn State Braves,59117,"2016",espn
+5,team_name,,59117,Alcorn State Braves,the_odds_api
+5,source_team_id,,59118,"2640",cfbd
+5,source_team_id,Texas Southern Tigers,59118,"2640",espn
+5,team_name,,59118,Texas Southern Tigers,the_odds_api
+5,source_team_id,,59119,"2065",cfbd
+5,source_team_id,Bethune-Cookman Wildcats,59119,"2065",espn
+5,team_name,,59119,Bethune-Cookman Wildcats,the_odds_api
+5,source_team_id,,59120,"2029",cfbd
+5,source_team_id,Arkansas-Pine Bluff Golden Lions,59120,"2029",espn
+5,team_name,,59120,Arkansas Pine Bluff Golden Lions,the_odds_api
+5,source_team_id,,59121,"2400",cfbd
+5,source_team_id,Mississippi Valley State Delta Devils,59121,"2400",espn
+5,source_team_id,,59122,"2011",cfbd
+5,source_team_id,Alabama State Hornets,59122,"2011",espn
+5,team_name,,59122,Alabama State Hornets,the_odds_api
+5,source_team_id,,59123,"2110",cfbd
+5,source_team_id,Central Arkansas Bears,59123,"2110",espn
+5,team_name,,59123,Central Arkansas Bears,the_odds_api
+5,source_team_id,,59124,"2627",cfbd
+5,source_team_id,Tarleton State Texans,59124,"2627",espn
+5,team_name,,59124,Tarleton State Texans,the_odds_api
+5,source_team_id,,59125,"2198",cfbd
+5,source_team_id,Eastern Kentucky Colonels,59125,"2198",espn
+5,source_team_id,,59126,"253",cfbd
+5,source_team_id,Southern Utah Thunderbirds,59126,"253",espn
+5,source_team_id,,59127,"2000",cfbd
+5,source_team_id,Abilene Christian Wildcats,59127,"2000",espn
+5,team_name,,59127,Abilene Christian Wildcats,the_odds_api
+5,source_team_id,,59128,"2453",cfbd
+5,source_team_id,North Alabama Lions,59128,"2453",espn
+5,source_team_id,,59129,"2046",cfbd
+5,source_team_id,Austin Peay Governors,59129,"2046",espn
+5,team_name,,59129,Austin Peay Governors,the_odds_api
+5,source_team_id,,59130,"2698",cfbd
+5,source_team_id,,59131,"3101",cfbd
+5,source_team_id,Utah Tech Trailblazers,59131,"3101",espn
+6,source_team_id,Westmont Warriors,60000,"2716",espn
+6,source_team_id,UT Arlington Mavericks,60000,"250",espn
+6,source_team_id,Cal Poly Mustangs,60000,"13",espn
 6,source_team_id,TBD,60000,-2,espn
 6,source_team_id,TBD,60000,-1,espn
 6,source_team_id,Alaska Anchorage Seawolves,60000,"1",espn
-6,source_team_id,Auburn Tigers,62403,"2",espn
-6,source_team_id,UAB Blazers,60209,"5",espn
-6,source_team_id,South Alabama Jaguars,62809,"6",espn
-6,source_team_id,Arkansas Razorbacks,62402,"8",espn
-6,source_team_id,Arizona State Sun Devils,60702,"9",espn
-6,source_team_id,Arizona Wildcats,60701,"12",espn
 6,source_team_id,Sacramento State Hornets,60000,"16",espn
-6,source_team_id,San Diego State Aztecs,62007,"21",espn
 6,source_team_id,San José State Spartans,60000,"23",espn
-6,source_team_id,Stanford Cardinal,60312,"24",espn
-6,source_team_id,California Golden Bears,60302,"25",espn
-6,source_team_id,UCLA Bruins,60615,"26",espn
 6,source_team_id,UC Riverside Highlanders,60000,"27",espn
 6,source_team_id,UC San Diego Tritons,60000,"28",espn
 6,source_team_id,Colby-Sawyer Chargers,60000,"35",espn
-6,source_team_id,Colorado State Rams,62003,"36",espn
-6,source_team_id,Colorado Buffaloes,60706,"38",espn
-6,source_team_id,UConn Huskies,60802,"41",espn
 6,source_team_id,Hartford Hawks,60000,"42",espn
-6,source_team_id,American University Eagles,62306,"44",espn
-6,source_team_id,George Washington Revolutionaries,60104,"45",espn
-6,source_team_id,Georgetown Hoyas,60805,"46",espn
 6,source_team_id,Howard Bison,60000,"47",espn
-6,source_team_id,Delaware Blue Hens,61201,"48",espn
-6,source_team_id,Florida A&M Rattlers,62903,"50",espn
-6,source_team_id,Florida State Seminoles,60305,"52",espn
 6,source_team_id,Jacksonville State Gamecocks,60000,"55",espn
 6,source_team_id,Stetson Hatters,60000,"56",espn
-6,source_team_id,Florida Gators,62404,"57",espn
-6,source_team_id,South Florida Bulls,60210,"58",espn
-6,source_team_id,Georgia Tech Yellow Jackets,60306,"59",espn
 6,source_team_id,Morehouse Maroon Tigers,60000,"60",espn
-6,source_team_id,Georgia Bulldogs,62405,"61",espn
-6,source_team_id,Hawai'i Rainbow Warriors,61103,"62",espn
 6,source_team_id,Buena Vista Beavers,60000,"63",espn
-6,source_team_id,Iowa State Cyclones,60708,"66",espn
-6,source_team_id,Boise State Broncos,62002,"68",espn
 6,source_team_id,Idaho Vandals,60000,"70",espn
-6,source_team_id,Bradley Braves,61902,"71",espn
 6,source_team_id,Illinois Tech Scarlet Hawks,60000,"73",espn
 6,source_team_id,North Park Vikings,60000,"75",espn
-6,source_team_id,Northwestern Wildcats,60609,"77",espn
-6,source_team_id,Southern Illinois Salukis,61907,"79",espn
-6,source_team_id,UIC Flames,61404,"82",espn
-6,source_team_id,Indiana Hoosiers,60603,"84",espn
 6,source_team_id,IU Indianapolis Jaguars,60000,"85",espn
-6,source_team_id,Notre Dame Fighting Irish,60310,"87",espn
 6,source_team_id,Southern Indiana Screaming Eagles,60000,"88",espn
 6,source_team_id,Bellarmine Knights,60000,"91",espn
-6,source_team_id,Murray State Racers,61905,"93",espn
 6,source_team_id,Northern Kentucky Norse,60000,"94",espn
-6,source_team_id,Kentucky Wildcats,62406,"96",espn
-6,source_team_id,Louisville Cardinals,60307,"97",espn
-6,source_team_id,LSU Tigers,62407,"99",espn
 6,source_team_id,Eureka Red Devils,60000,"101",espn
-6,source_team_id,Boston College Eagles,60301,"103",espn
 6,source_team_id,Boston University Terriers,60000,"104",espn
-6,source_team_id,Holy Cross Crusaders,62302,"107",espn
-6,source_team_id,Harvard Crimson,61502,"108",espn
 6,source_team_id,MIT Engineers,60000,"109",espn
-6,source_team_id,Northeastern Huskies,61205,"111",espn
-6,source_team_id,Massachusetts Minutemen,60112,"113",espn
-6,source_team_id,Mount St. Mary's Mountaineers,61603,"116",espn
 6,source_team_id,St. Mary's (MD) Seahawks,60000,"117",espn
 6,source_team_id,Towson Tigers,60000,"119",espn
-6,source_team_id,Maryland Terrapins,60604,"120",espn
-6,source_team_id,Michigan State Spartans,60606,"127",espn
 6,source_team_id,Northern Michigan Wildcats,60000,"128",espn
-6,source_team_id,Michigan Wolverines,60605,"130",espn
 6,source_team_id,Minnesota Duluth Bulldogs,60000,"134",espn
-6,source_team_id,Minnesota Golden Gophers,60607,"135",espn
-6,source_team_id,Saint Louis Billikens,60111,"139",espn
 6,source_team_id,Kansas City Roos,60000,"140",espn
-6,source_team_id,Missouri Tigers,62408,"142",espn
 6,source_team_id,Franklin Pierce Ravens,60000,"144",espn
-6,source_team_id,Ole Miss Rebels,62409,"145",espn
 6,source_team_id,Montana State Bobcats,60000,"147",espn
 6,source_team_id,Montana Tech Orediggers,60000,"148",espn
-6,source_team_id,Montana Grizzlies,61002,"149",espn
-6,source_team_id,Duke Blue Devils,60304,"150",espn
 6,source_team_id,East Carolina Pirates,60000,"151",espn
-6,source_team_id,NC State Wolfpack,60309,"152",espn
-6,source_team_id,North Carolina Tar Heels,60308,"153",espn
-6,source_team_id,North Dakota Fighting Hawks,62704,"155",espn
-6,source_team_id,Creighton Bluejays,60803,"156",espn
-6,source_team_id,Nebraska Cornhuskers,60608,"158",espn
 6,source_team_id,Dartmouth Big Green,60000,"159",espn
 6,source_team_id,New Hampshire Wildcats,60000,"160",espn
-6,source_team_id,Fairleigh Dickinson Knights,62102,"161",espn
-6,source_team_id,Princeton Tigers,61504,"163",espn
-6,source_team_id,Rutgers Scarlet Knights,60614,"164",espn
-6,source_team_id,New Mexico State Aggies,61303,"166",espn
-6,source_team_id,New Mexico Lobos,62005,"167",espn
 6,source_team_id,Columbia Lions,60000,"171",espn
-6,source_team_id,Cornell Big Red,61501,"172",espn
-6,source_team_id,St. Bonaventure Bonnies,60109,"179",espn
-6,source_team_id,Syracuse Orange,60313,"183",espn
 6,source_team_id,Bowling Green Falcons,60000,"189",espn
 6,source_team_id,Defiance Yellow Jackets,60000,"190",espn
-6,source_team_id,Miami (OH) RedHawks,61706,"193",espn
-6,source_team_id,Ohio State Buckeyes,60610,"194",espn
-6,source_team_id,Ohio Bobcats,61707,"195",espn
-6,source_team_id,Oklahoma State Cowboys,60711,"197",espn
-6,source_team_id,Oral Roberts Golden Eagles,62702,"198",espn
 6,source_team_id,Southeastern Oklahoma State Savage Storm,60000,"199",espn
 6,source_team_id,Southern Nazarene Crimson Storm,60000,"200",espn
-6,source_team_id,Oklahoma Sooners,62411,"201",espn
-6,source_team_id,Tulsa Golden Hurricane,60208,"202",espn
-6,source_team_id,Oregon State Beavers,63002,"204",espn
-6,source_team_id,Penn State Nittany Lions,60612,"213",espn
-6,source_team_id,Temple Owls,60207,"218",espn
-6,source_team_id,Pennsylvania Quakers,61503,"219",espn
-6,source_team_id,Pittsburgh Panthers,60311,"221",espn
 6,source_team_id,Brown Bears,60000,"225",espn
-6,source_team_id,Rhode Island Rams,60107,"227",espn
-6,source_team_id,Clemson Tigers,60303,"228",espn
 6,source_team_id,Francis Marion Patriots,60000,"230",espn
 6,source_team_id,Furman Paladins,60000,"231",espn
 6,source_team_id,Charleston Cougars,60000,"232",espn
-6,source_team_id,Memphis Tigers,60203,"235",espn
-6,source_team_id,Chattanooga Mocs,62501,"236",espn
-6,source_team_id,Baylor Bears,60703,"239",espn
 6,source_team_id,McMurry War Hawks,60000,"241",espn
-6,source_team_id,Rice Owls,60205,"242",espn
 6,source_team_id,St. Edward's Hilltoppers,60000,"244",espn
-6,source_team_id,Texas A&M Aggies,62415,"245",espn
-6,source_team_id,Houston Cougars,60707,"248",espn
-6,source_team_id,North Texas Mean Green,60204,"249",espn
-6,source_team_id,Texas Longhorns,62414,"251",espn
-6,source_team_id,BYU Cougars,60704,"252",espn
 6,source_team_id,Southern Utah Thunderbirds,60000,"253",espn
-6,source_team_id,James Madison Dukes,62804,"256",espn
-6,source_team_id,Richmond Spiders,60108,"257",espn
-6,source_team_id,Vermont Catamounts,60403,"261",espn
-6,source_team_id,Washington Huskies,60617,"264",espn
-6,source_team_id,Washington State Cougars,63007,"265",espn
-6,source_team_id,Marquette Golden Eagles,60806,"269",espn
-6,source_team_id,Milwaukee Panthers,61405,"270",espn
-6,source_team_id,Wisconsin Badgers,60618,"275",espn
 6,source_team_id,Marshall Thundering Herd,60000,"276",espn
-6,source_team_id,West Virginia Mountaineers,60716,"277",espn
-6,source_team_id,Fresno State Bulldogs,62004,"278",espn
-6,source_team_id,Pacific Tigers,63003,"279",espn
-6,source_team_id,Indiana State Sycamores,61904,"282",espn
 6,source_team_id,Stonehill Skyhawks,60000,"284",espn
 6,source_team_id,NC Wesleyan Battling Bishops,60000,"286",espn
 6,source_team_id,Lipscomb Bisons,60000,"288",espn
 6,source_team_id,Georgia Southern Eagles,60000,"290",espn
 6,source_team_id,UT Rio Grande Valley Vaqueros,60000,"292",espn
 6,source_team_id,Jacksonville Dolphins,60000,"294",espn
-6,source_team_id,Old Dominion Monarchs,62806,"295",espn
-6,source_team_id,Long Beach State Beach,61104,"299",espn
 6,source_team_id,UC Irvine Anteaters,60000,"300",espn
-6,source_team_id,San Diego Toreros,63005,"301",espn
 6,source_team_id,UC Davis Aggies,60000,"302",espn
 6,source_team_id,Idaho State Bengals,60000,"304",espn
-6,source_team_id,DePaul Blue Demons,60804,"305",espn
-6,source_team_id,Louisiana Ragin' Cajuns,62805,"309",espn
 6,source_team_id,Maryville University (MO) Maryville University (Mo),60000,"310",espn
 6,source_team_id,Maine Black Bears,60000,"311",espn
-6,source_team_id,Iona Gaels,61601,"314",espn
-6,source_team_id,Niagara Purple Eagles,61604,"315",espn
-6,source_team_id,Lafayette Leopards,62303,"322",espn
 6,source_team_id,Moravian Greyhounds,60000,"323",espn
-6,source_team_id,Coastal Carolina Chanticleers,62802,"324",espn
-6,source_team_id,Cleveland State Vikings,61401,"325",espn
 6,source_team_id,Texas State Bobcats,60000,"326",espn
-6,source_team_id,Utah State Aggies,62009,"328",espn
-6,source_team_id,Eastern Washington Eagles,61001,"331",espn
-6,source_team_id,Alabama Crimson Tide,62401,"333",espn
 6,source_team_id,Kennesaw State Owls,60000,"338",espn
 6,source_team_id,Evansville Purple Aces,60000,"339",espn
 6,source_team_id,Frostburg State Bobcats,60000,"341",espn
 6,source_team_id,Massachusetts College of Liberal Arts Mohawks,60000,"343",espn
-6,source_team_id,Mississippi State Bulldogs,62410,"344",espn
 6,source_team_id,Elmira Soaring Eagles,60000,"347",espn
 6,source_team_id,Army Black Knights,60000,"349",espn
 6,source_team_id,UNC Wilmington Seahawks,60000,"350",espn
 6,source_team_id,Olivet Comets,60000,"354",espn
 6,source_team_id,SUNY-Oneonta Red Dragons,60000,"355",espn
-6,source_team_id,Illinois Fighting Illini,60602,"356",espn
-6,source_team_id,Texas A&M-Corpus Christi Islanders,62605,"357",espn
 6,source_team_id,Ferrum Panthers,60000,"366",espn
 6,source_team_id,Anderson (SC) Trojans,60000,"380",espn
 6,source_team_id,UAlbany Great Danes,60000,"399",espn
@@ -1370,7 +1081,6 @@
 6,source_team_id,Crown College Polars,60000,"509",espn
 6,source_team_id,Dakota State Trojans,60000,"512",espn
 6,source_team_id,Dakota Wesleyan Tigers,60000,"513",espn
-6,source_team_id,Florida Gulf Coast Eagles,60503,"526",espn
 6,source_team_id,Hannibal-Lagrange Trojans,60000,"533",espn
 6,source_team_id,Houghton Highlanders,60000,"538",espn
 6,source_team_id,LaGrange Panthers,60000,"548",espn
@@ -1388,22 +1098,14 @@
 6,source_team_id,Valley City,60000,"628",espn
 6,source_team_id,Abilene Christian Wildcats,60000,"2000",espn
 6,source_team_id,Adams State Grizzlies,60000,"2001",espn
-6,source_team_id,Air Force Falcons,62001,"2005",espn
-6,source_team_id,Akron Zips,61701,"2006",espn
 6,source_team_id,Alabama A&M Bulldogs,60000,"2010",espn
-6,source_team_id,Alabama State Hornets,62901,"2011",espn
 6,source_team_id,Albany St (GA) Golden Rams,60000,"2013",espn
-6,source_team_id,Alcorn State Braves,62902,"2016",espn
 6,source_team_id,Allen University Yellow Jackets,60000,"2019",espn
-6,source_team_id,App State Mountaineers,62801,"2026",espn
 6,source_team_id,Arkansas-Pine Bluff Golden Lions,60000,"2029",espn
 6,source_team_id,Little Rock Trojans,60000,"2031",espn
 6,source_team_id,Arkansas State Red Wolves,60000,"2032",espn
-6,source_team_id,Austin Peay Governors,60501,"2046",espn
 6,source_team_id,Averett Cougars,60000,"2047",espn
-6,source_team_id,Ball State Cardinals,61702,"2050",espn
 6,source_team_id,Belhaven Blazers,60000,"2056",espn
-6,source_team_id,Belmont Bruins,61901,"2057",espn
 6,source_team_id,Belmont Abbey Crusaders,60000,"2058",espn
 6,source_team_id,Berea Mountaineers,60000,"2061",espn
 6,source_team_id,Bethel (TN) Wildcats,60000,"2064",espn
@@ -1415,9 +1117,6 @@
 6,source_team_id,Brewton-Parker Wildcats,60000,"2077",espn
 6,source_team_id,Bridgewater College (VA) Eagles,60000,"2079",espn
 6,source_team_id,Bryan (TN) Lions,60000,"2081",espn
-6,source_team_id,Bucknell Bison,62301,"2083",espn
-6,source_team_id,Buffalo Bulls,61703,"2084",espn
-6,source_team_id,Butler Bulldogs,60801,"2086",espn
 6,source_team_id,Cal State East Bay Pioneers,60000,"2093",espn
 6,source_team_id,Campbell Fighting Camels,60000,"2097",espn
 6,source_team_id,Campbellsville Tigers,60000,"2098",espn
@@ -1426,35 +1125,23 @@
 6,source_team_id,Carroll (MT) Fighting Saints,60000,"2104",espn
 6,source_team_id,Cedarville Yellow Jackets,60000,"2109",espn
 6,source_team_id,Central Arkansas Bears,60000,"2110",espn
-6,source_team_id,Central Connecticut Blue Devils,62101,"2115",espn
-6,source_team_id,UCF Knights,60714,"2116",espn
-6,source_team_id,Central Michigan Chippewas,61704,"2117",espn
 6,source_team_id,Central State (OH) Marauders,60000,"2119",espn
 6,source_team_id,Chadron State Eagles,60000,"2123",espn
 6,source_team_id,Chaminade Silverswords,60000,"2124",espn
 6,source_team_id,Charleston Southern Buccaneers,60000,"2127",espn
 6,source_team_id,Chicago State Cougars,60000,"2130",espn
-6,source_team_id,Cincinnati Bearcats,60705,"2132",espn
 6,source_team_id,Coe Kohawks,60000,"2141",espn
 6,source_team_id,Colgate Raiders,60000,"2142",espn
-6,source_team_id,Coppin State Eagles,61801,"2154",espn
 6,source_team_id,Cornell College (IA) Rams,60000,"2155",espn
 6,source_team_id,Covenant Fighting Scots,60000,"2157",espn
-6,source_team_id,Davidson Wildcats,60101,"2166",espn
 6,source_team_id,Davis & Elkins Senators,60000,"2167",espn
-6,source_team_id,Dayton Flyers,60102,"2168",espn
 6,source_team_id,Delaware State Hornets,60000,"2169",espn
 6,source_team_id,Denver Pioneers,60000,"2172",espn
-6,source_team_id,Detroit Mercy Titans,61402,"2174",espn
 6,source_team_id,Dillard Blue Devils,60000,"2176",espn
 6,source_team_id,District Of Columbia Firebirds,60000,"2177",espn
-6,source_team_id,Drake Bulldogs,61903,"2181",espn
 6,source_team_id,Drexel Dragons,60000,"2182",espn
 6,source_team_id,Duquesne Dukes,60000,"2184",espn
 6,source_team_id,Earlham College Quakers,60000,"2189",espn
-6,source_team_id,East Tennessee State Buccaneers,62502,"2193",espn
-6,source_team_id,Eastern Illinois Panthers,62201,"2197",espn
-6,source_team_id,Eastern Kentucky Colonels,60502,"2198",espn
 6,source_team_id,Eastern Michigan Eagles,60000,"2199",espn
 6,source_team_id,E. New Mexico Greyhounds,60000,"2201",espn
 6,source_team_id,Eastern Oregon Mountaineers,60000,"2202",espn
@@ -1468,149 +1155,91 @@
 6,source_team_id,Fairfield Stags,60000,"2217",espn
 6,source_team_id,FDU Florham Devils,60000,"2221",espn
 6,source_team_id,Fisk Bulldogs,60000,"2225",espn
-6,source_team_id,Florida Atlantic Owls,60202,"2226",espn
 6,source_team_id,Florida International Panthers,60000,"2229",espn
 6,source_team_id,Fordham Rams,60000,"2230",espn
 6,source_team_id,Fort Valley State Wildcats,60000,"2232",espn
-6,source_team_id,Cal State Fullerton Titans,61101,"2239",espn
 6,source_team_id,Gardner-Webb Runnin' Bulldogs,60000,"2241",espn
-6,source_team_id,George Mason Patriots,60103,"2244",espn
-6,source_team_id,Georgia State Panthers,62803,"2247",espn
 6,source_team_id,Glenville State Pioneers,60000,"2249",espn
-6,source_team_id,Gonzaga Bulldogs,63001,"2250",espn
 6,source_team_id,Grand Canyon Lopes,60000,"2253",espn
 6,source_team_id,Greensboro College Pride,60000,"2256",espn
-6,source_team_id,Hampton Pirates,61202,"2261",espn
 6,source_team_id,High Point Panthers,60000,"2272",espn
 6,source_team_id,High Point Panthers,60000,"2272",espn
 6,source_team_id,Hillsdale Chargers,60000,"2273",espn
-6,source_team_id,Hofstra Pride,61203,"2275",espn
 6,source_team_id,Houston Christian Huskies,60000,"2277",espn
 6,source_team_id,Houston Christian Huskies,60000,"2277",espn
 6,source_team_id,Huston-Tillotson Rams,60000,"2281",espn
 6,source_team_id,Illinois State Redbirds,60000,"2287",espn
-6,source_team_id,Iowa Hawkeyes,60601,"2294",espn
-6,source_team_id,Jackson State Tigers,62904,"2296",espn
 6,source_team_id,Jarvis Christian Bulldogs,60000,"2299",espn
 6,source_team_id,John Brown Golden Eagles,60000,"2301",espn
-6,source_team_id,Kansas Jayhawks,60709,"2305",espn
-6,source_team_id,Kansas State Wildcats,60710,"2306",espn
-6,source_team_id,Kent State Golden Flashes,61705,"2309",espn
 6,source_team_id,Kentucky State Thorobreds,60000,"2310",espn
 6,source_team_id,Kentucky Wesleyan Panthers,60000,"2316",espn
-6,source_team_id,Lamar Cardinals,62601,"2320",espn
 6,source_team_id,Lander Senators,60000,"2322",espn
-6,source_team_id,La Salle Explorers,60105,"2325",espn
 6,source_team_id,LeTourneau Yellow Jackets,60000,"2326",espn
-6,source_team_id,Lehigh Mountain Hawks,62304,"2329",espn
 6,source_team_id,Le Moyne Dolphins,60000,"2330",espn
 6,source_team_id,Lenoir-Rhyne Bears,60000,"2331",espn
 6,source_team_id,Lewis & Clark Pioneers,60000,"2333",espn
-6,source_team_id,Liberty Flames,61301,"2335",espn
 6,source_team_id,Longwood Lancers,60000,"2344",espn
 6,source_team_id,Cal State LA Golden Eagles,60000,"2345",espn
 6,source_team_id,Louisiana Christian Wildcats,60000,"2347",espn
 6,source_team_id,Louisiana Tech Bulldogs,60000,"2348",espn
 6,source_team_id,UMass Lowell River Hawks,60000,"2349",espn
-6,source_team_id,Loyola Chicago Ramblers,60106,"2350",espn
 6,source_team_id,Loyola Marymount Lions,60000,"2351",espn
-6,source_team_id,Loyola Maryland Greyhounds,62305,"2352",espn
 6,source_team_id,Lyon Scots,60000,"2358",espn
 6,source_team_id,Manchester Spartans,60000,"2362",espn
-6,source_team_id,Manhattan Jaspers,61602,"2363",espn
 6,source_team_id,Marist Red Foxes,60000,"2368",espn
-6,source_team_id,McNeese Cowboys,62602,"2377",espn
-6,source_team_id,UMBC Retrievers,60402,"2378",espn
 6,source_team_id,Maryland Eastern Shore Hawks,60000,"2379",espn
-6,source_team_id,Mercer Bears,62503,"2382",espn
 6,source_team_id,Merchant Marine Academy Mariners,60000,"2383",espn
 6,source_team_id,Mercy Mavericks,60000,"2384",espn
 6,source_team_id,Mercyhurst Lakers,60000,"2385",espn
-6,source_team_id,Miami Hurricanes,60314,"2390",espn
 6,source_team_id,Michigan-Dearborn Wolves,60000,"2391",espn
-6,source_team_id,Middle Tennessee Blue Raiders,61302,"2393",espn
 6,source_team_id,Milligan Buffaloes,60000,"2397",espn
-6,source_team_id,Mississippi Valley State Delta Devils,62905,"2400",espn
 6,source_team_id,Mississippi College Choctaws,60000,"2401",espn
 6,source_team_id,Missouri S&T Miners,60000,"2402",espn
-6,source_team_id,Monmouth Hawks,61204,"2405",espn
-6,source_team_id,Morehead State Eagles,62202,"2413",espn
-6,source_team_id,Morgan State Bears,61802,"2415",espn
 6,source_team_id,New Mexico Highlands Cowboys,60000,"2424",espn
 6,source_team_id,Navy Midshipmen,60000,"2426",espn
 6,source_team_id,UNC Asheville Bulldogs,60000,"2427",espn
-6,source_team_id,North Carolina Central Eagles,61804,"2428",espn
-6,source_team_id,Charlotte 49ers,60201,"2429",espn
 6,source_team_id,UNC Greensboro Spartans,60000,"2430",espn
 6,source_team_id,UL Monroe Warhawks,60000,"2433",espn
 6,source_team_id,Omaha Mavericks,60000,"2437",espn
-6,source_team_id,UNLV Rebels,62008,"2439",espn
-6,source_team_id,Nevada Wolf Pack,62006,"2440",espn
 6,source_team_id,New Haven Chargers,60000,"2441",espn
 6,source_team_id,College of New Jersey Lions,60000,"2442",espn
 6,source_team_id,New Orleans Privateers,60000,"2443",espn
 6,source_team_id,Nicholls Colonels,60000,"2447",espn
-6,source_team_id,North Carolina A&T Aggies,61803,"2448",espn
-6,source_team_id,North Dakota State Bison,62701,"2449",espn
-6,source_team_id,Norfolk State Spartans,61805,"2450",espn
 6,source_team_id,North Alabama Lions,60000,"2453",espn
 6,source_team_id,North Florida Ospreys,60000,"2454",espn
 6,source_team_id,Northern Colorado Bears,60000,"2458",espn
 6,source_team_id,Northern Illinois Huskies,60000,"2459",espn
-6,source_team_id,Northern Iowa Panthers,61906,"2460",espn
 6,source_team_id,Northland Lumberjacks,60000,"2462",espn
-6,source_team_id,Cal State Northridge Matadors,61102,"2463",espn
-6,source_team_id,Northern Arizona Lumberjacks,61003,"2464",espn
 6,source_team_id,Northwest University Eagles,60000,"2465",espn
-6,source_team_id,Northwestern State Demons,62603,"2466",espn
-6,source_team_id,Oakland Golden Grizzlies,61406,"2473",espn
 6,source_team_id,Oakland City Mighty Oaks,60000,"2474",espn
 6,source_team_id,Occidental Tigers,60000,"2475",espn
 6,source_team_id,Ohio Dominican Panthers,60000,"2477",espn
-6,source_team_id,Oregon Ducks,60611,"2483",espn
 6,source_team_id,Pacific Lutheran Lutes,60000,"2486",espn
 6,source_team_id,Paine Lions,60000,"2488",espn
 6,source_team_id,Palm Beach Atlantic Sailfish,60000,"2489",espn
 6,source_team_id,Paul Quinn Tigers,60000,"2491",espn
-6,source_team_id,Pepperdine Waves,63004,"2492",espn
 6,source_team_id,Piedmont Lions,60000,"2496",espn
 6,source_team_id,Portland Pilots,60000,"2501",espn
-6,source_team_id,Portland State Vikings,61004,"2502",espn
 6,source_team_id,Prairie View A&M Panthers,60000,"2504",espn
 6,source_team_id,Presbyterian Blue Hose,60000,"2506",espn
-6,source_team_id,Providence Friars,60807,"2507",espn
 6,source_team_id,Puget Sound Loggers,60000,"2508",espn
-6,source_team_id,Purdue Boilermakers,60613,"2509",espn
 6,source_team_id,Queens University Royals,60000,"2511",espn
 6,source_team_id,Quinnipiac Bobcats,60000,"2514",espn
-6,source_team_id,Radford Highlanders,60901,"2515",espn
 6,source_team_id,Rhodes Lynx,60000,"2519",espn
 6,source_team_id,Rider Broncs,60000,"2520",espn
-6,source_team_id,Robert Morris Colonials,61407,"2523",espn
 6,source_team_id,Rockford Regents,60000,"2524",espn
 6,source_team_id,Sacred Heart Pioneers,60000,"2529",espn
-6,source_team_id,Sam Houston Bearkats,61304,"2534",espn
-6,source_team_id,Samford Bulldogs,62504,"2535",espn
 6,source_team_id,San Francisco Dons,60000,"2539",espn
 6,source_team_id,UC Santa Barbara Gauchos,60000,"2540",espn
 6,source_team_id,Santa Clara Broncos,60000,"2541",espn
 6,source_team_id,Savannah State Tigers,60000,"2542",espn
 6,source_team_id,Schreiner Mountaineers,60000,"2544",espn
 6,source_team_id,SE Louisiana Lions,60000,"2545",espn
-6,source_team_id,Southeast Missouri State Redhawks,62203,"2546",espn
 6,source_team_id,Seattle U Redhawks,60000,"2547",espn
-6,source_team_id,Seton Hall Pirates,60808,"2550",espn
-6,source_team_id,Siena Saints,61605,"2561",espn
 6,source_team_id,Siena Heights Saints,60000,"2562",espn
 6,source_team_id,SIU Edwardsville Cougars,60000,"2565",espn
-6,source_team_id,SMU Mustangs,60206,"2567",espn
-6,source_team_id,South Carolina State Bulldogs,61806,"2569",espn
-6,source_team_id,South Dakota State Jackrabbits,62703,"2571",espn
-6,source_team_id,Southern Miss Golden Eagles,62807,"2572",espn
 6,source_team_id,Southern-New Orleans Knights,60000,"2573",espn
 6,source_team_id,Southern Wesleyan Warriors,60000,"2576",espn
-6,source_team_id,South Carolina Gamecocks,62412,"2579",espn
-6,source_team_id,Southern Jaguars,62906,"2582",espn
 6,source_team_id,Southwestern (TX) Pirates,60000,"2588",espn
 6,source_team_id,Spalding Pelicans,60000,"2589",espn
 6,source_team_id,Spring Hill Badgers,60000,"2590",espn
@@ -1619,66 +1248,41 @@
 6,source_team_id,St. Francis (IL) Fighting Saints,60000,"2595",espn
 6,source_team_id,St. Francis Brooklyn Terriers,60000,"2597",espn
 6,source_team_id,Saint Francis Red Flash,60000,"2598",espn
-6,source_team_id,St. John's Red Storm,60809,"2599",espn
-6,source_team_id,Saint Joseph's Hawks,60110,"2603",espn
 6,source_team_id,Saint Martin's Saints,60000,"2606",espn
-6,source_team_id,Saint Mary's Gaels,63006,"2608",espn
 6,source_team_id,St. Mary's (TX) Rattlers,60000,"2610",espn
-6,source_team_id,Saint Peter's Peacocks,61606,"2612",espn
 6,source_team_id,St. Xavier  (IL) Cougars,60000,"2615",espn
 6,source_team_id,Stanislaus State Warriors,60000,"2616",espn
-6,source_team_id,Stephen F. Austin Lumberjacks,62604,"2617",espn
 6,source_team_id,Stony Brook Seawolves,60000,"2619",espn
 6,source_team_id,Missouri State Bears,60000,"2623",espn
 6,source_team_id,Tarleton State Texans,60000,"2627",espn
-6,source_team_id,TCU Horned Frogs,60712,"2628",espn
 6,source_team_id,UT Martin Skyhawks,60000,"2630",espn
-6,source_team_id,Tennessee Volunteers,62413,"2633",espn
 6,source_team_id,Tennessee State Tigers,60000,"2634",espn
 6,source_team_id,Tennessee Tech Golden Eagles,60000,"2635",espn
-6,source_team_id,UTSA Roadrunners,60211,"2636",espn
-6,source_team_id,UTEP Miners,61305,"2638",espn
 6,source_team_id,Texas Lutheran Bulldogs,60000,"2639",espn
-6,source_team_id,Texas Southern Tigers,62907,"2640",espn
-6,source_team_id,Texas Tech Red Raiders,60713,"2641",espn
 6,source_team_id,The Citadel Bulldogs,60000,"2643",espn
 6,source_team_id,Thomas (ME) Terriers,60000,"2645",espn
 6,source_team_id,Toccoa Falls Eagles,60000,"2648",espn
 6,source_team_id,Toledo Rockets,60000,"2649",espn
 6,source_team_id,Trinity Christian (IL) Trolls,60000,"2652",espn
-6,source_team_id,Troy Trojans,62808,"2653",espn
 6,source_team_id,Truman State Bulldogs,60000,"2654",espn
 6,source_team_id,Tulane Green Wave,60000,"2655",espn
 6,source_team_id,Urbana Blue Knights,60000,"2666",espn
-6,source_team_id,VCU Rams,60113,"2670",espn
-6,source_team_id,Valparaiso Beacons,61908,"2674",espn
 6,source_team_id,VMI Keydets,60000,"2678",espn
-6,source_team_id,Wagner Seahawks,62104,"2681",espn
 6,source_team_id,Warren Wilson Owls,60000,"2684",espn
 6,source_team_id,Washburn Ichabods,60000,"2687",espn
 6,source_team_id,Washington College (MD) Shoremen,60000,"2689",espn
-6,source_team_id,Weber State Wildcats,61005,"2692",espn
 6,source_team_id,West Alabama Tigers,60000,"2695",espn
 6,source_team_id,West Georgia Wolves,60000,"2698",espn
 6,source_team_id,Montana-Western Bulldogs,60000,"2701",espn
 6,source_team_id,WVU Tech Golden Bears,60000,"2706",espn
 6,source_team_id,Western Illinois Leathernecks,60000,"2710",espn
-6,source_team_id,Western Michigan Broncos,61708,"2711",espn
-6,source_team_id,Westmont Warriors,60000,"2716",espn
 6,source_team_id,Western Carolina Catamounts,60000,"2717",espn
-6,source_team_id,Wichita State Shockers,60212,"2724",espn
 6,source_team_id,Wiley Wildcats,60000,"2728",espn
 6,source_team_id,William & Mary Tribe,60000,"2729",espn
 6,source_team_id,William & Mary Tribe,60000,"2729",espn
 6,source_team_id,William Carey Crusaders,60000,"2730",espn
 6,source_team_id,Wilmington (DE) Wildcats,60000,"2732",espn
-6,source_team_id,Winthrop Eagles,60902,"2737",espn
-6,source_team_id,Green Bay Phoenix,61403,"2739",espn
 6,source_team_id,Wisconsin-Stout Blue Devils,60000,"2744",espn
-6,source_team_id,Wofford Terriers,62505,"2747",espn
-6,source_team_id,Wright State Raiders,61408,"2750",espn
-6,source_team_id,Wyoming Cowboys,62010,"2751",espn
-6,source_team_id,Xavier Musketeers,60811,"2752",espn
 6,source_team_id,Xavier (LA) Gold Nuggets,60000,"2753",espn
 6,source_team_id,Youngstown State Penguins,60000,"2754",espn
 6,source_team_id,Grambling Tigers,60000,"2755",espn
@@ -1803,7 +1407,6 @@
 6,source_team_id,Carver College Cougars,60000,"111946",espn
 6,source_team_id,SUNY-Canton Roos,60000,"111947",espn
 6,source_team_id,Elms College Blazers,60000,"111948",espn
-6,source_team_id,Long Island University Sharks,62103,"112358",espn
 6,source_team_id,Nelson Lions,60000,"112679",espn
 6,source_team_id,Western Colorado Mountaineers,60000,"112694",espn
 6,source_team_id,Central Christian College Tigers,60000,"112698",espn
@@ -1820,3 +1423,476 @@
 6,source_team_id,Manor College Blue Jays,60000,"130196",espn
 6,source_team_id,Columbia College (SC) Fighting Koalas,60000,"130401",espn
 6,source_team_id,Bryant & Stratton (Ohio) Bobcats,60000,"131761",espn
+6,source_team_id,Davidson Wildcats,60101,"2166",espn
+6,source_team_id,Dayton Flyers,60102,"2168",espn
+6,source_team_id,George Mason Patriots,60103,"2244",espn
+6,team_name,,60103,George Mason Patriots,the_odds_api
+6,source_team_id,George Washington Revolutionaries,60104,"45",espn
+6,source_team_id,La Salle Explorers,60105,"2325",espn
+6,team_name,,60105,La Salle Explorers,the_odds_api
+6,source_team_id,Loyola Chicago Ramblers,60106,"2350",espn
+6,team_name,,60106,Loyola (Chi) Ramblers,the_odds_api
+6,source_team_id,Rhode Island Rams,60107,"227",espn
+6,team_name,,60107,Rhode Island Rams,the_odds_api
+6,source_team_id,Richmond Spiders,60108,"257",espn
+6,team_name,,60108,Richmond Spiders,the_odds_api
+6,source_team_id,St. Bonaventure Bonnies,60109,"179",espn
+6,team_name,,60109,St. Bonaventure Bonnies,the_odds_api
+6,source_team_id,Saint Joseph's Hawks,60110,"2603",espn
+6,team_name,,60110,Saint Joseph's Hawks,the_odds_api
+6,source_team_id,Saint Louis Billikens,60111,"139",espn
+6,team_name,,60111,Saint Louis Billikens,the_odds_api
+6,source_team_id,Massachusetts Minutemen,60112,"113",espn
+6,team_name,,60112,Massachusetts Minutemen,the_odds_api
+6,source_team_id,VCU Rams,60113,"2670",espn
+6,team_name,,60113,VCU Rams,the_odds_api
+6,source_team_id,Charlotte 49ers,60201,"2429",espn
+6,source_team_id,Florida Atlantic Owls,60202,"2226",espn
+6,team_name,,60202,Florida Atlantic Owls,the_odds_api
+6,source_team_id,Memphis Tigers,60203,"235",espn
+6,team_name,,60203,Memphis Tigers,the_odds_api
+6,source_team_id,North Texas Mean Green,60204,"249",espn
+6,team_name,,60204,North Texas Mean Green,the_odds_api
+6,source_team_id,Rice Owls,60205,"242",espn
+6,team_name,,60205,Rice Owls,the_odds_api
+6,source_team_id,SMU Mustangs,60206,"2567",espn
+6,team_name,,60206,SMU Mustangs,the_odds_api
+6,source_team_id,Temple Owls,60207,"218",espn
+6,team_name,,60207,Temple Owls,the_odds_api
+6,source_team_id,Tulsa Golden Hurricane,60208,"202",espn
+6,team_name,,60208,Tulsa Golden Hurricane,the_odds_api
+6,source_team_id,UAB Blazers,60209,"5",espn
+6,team_name,,60209,UAB Blazers,the_odds_api
+6,source_team_id,South Florida Bulls,60210,"58",espn
+6,team_name,,60210,South Florida Bulls,the_odds_api
+6,source_team_id,UTSA Roadrunners,60211,"2636",espn
+6,team_name,,60211,UTSA Roadrunners,the_odds_api
+6,source_team_id,Wichita State Shockers,60212,"2724",espn
+6,team_name,,60212,Wichita St Shockers,the_odds_api
+6,source_team_id,Boston College Eagles,60301,"103",espn
+6,team_name,,60301,Boston College Eagles,the_odds_api
+6,source_team_id,California Golden Bears,60302,"25",espn
+6,team_name,,60302,California Golden Bears,the_odds_api
+6,source_team_id,Clemson Tigers,60303,"228",espn
+6,team_name,,60303,Clemson Tigers,the_odds_api
+6,source_team_id,Duke Blue Devils,60304,"150",espn
+6,team_name,,60304,Duke Blue Devils,the_odds_api
+6,source_team_id,Florida State Seminoles,60305,"52",espn
+6,team_name,,60305,Florida St Seminoles,the_odds_api
+6,source_team_id,Georgia Tech Yellow Jackets,60306,"59",espn
+6,team_name,,60306,Georgia Tech Yellow Jackets,the_odds_api
+6,source_team_id,Louisville Cardinals,60307,"97",espn
+6,team_name,,60307,Louisville Cardinals,the_odds_api
+6,source_team_id,North Carolina Tar Heels,60308,"153",espn
+6,team_name,,60308,North Carolina Tar Heels,the_odds_api
+6,source_team_id,NC State Wolfpack,60309,"152",espn
+6,team_name,,60309,NC State Wolfpack,the_odds_api
+6,source_team_id,Notre Dame Fighting Irish,60310,"87",espn
+6,team_name,,60310,Notre Dame Fighting Irish,the_odds_api
+6,source_team_id,Pittsburgh Panthers,60311,"221",espn
+6,team_name,,60311,Pittsburgh Panthers,the_odds_api
+6,source_team_id,Stanford Cardinal,60312,"24",espn
+6,team_name,,60312,Stanford Cardinal,the_odds_api
+6,source_team_id,Syracuse Orange,60313,"183",espn
+6,team_name,,60313,Syracuse Orange,the_odds_api
+6,source_team_id,Miami Hurricanes,60314,"2390",espn
+6,team_name,,60314,Miami Hurricanes,the_odds_api
+6,source_team_id,Virginia Cavaliers,60315,"258",espn
+6,team_name,,60315,Virginia Cavaliers,the_odds_api
+6,source_team_id,Virginia Tech Hokies,60316,"259",espn
+6,team_name,,60316,Virginia Tech Hokies,the_odds_api
+6,source_team_id,Wake Forest Demon Deacons,60317,"154",espn
+6,team_name,,60317,Wake Forest Demon Deacons,the_odds_api
+6,team_name,,60401,Albany Great Danes,the_odds_api
+6,source_team_id,UMBC Retrievers,60402,"2378",espn
+6,source_team_id,Vermont Catamounts,60403,"261",espn
+6,team_name,,60403,Vermont Catamounts,the_odds_api
+6,source_team_id,Austin Peay Governors,60501,"2046",espn
+6,team_name,,60501,Austin Peay Governors,the_odds_api
+6,source_team_id,Eastern Kentucky Colonels,60502,"2198",espn
+6,team_name,,60502,Eastern Kentucky Colonels,the_odds_api
+6,source_team_id,Florida Gulf Coast Eagles,60503,"526",espn
+6,team_name,,60503,Florida Gulf Coast Eagles,the_odds_api
+6,source_team_id,Iowa Hawkeyes,60601,"2294",espn
+6,team_name,,60601,Iowa Hawkeyes,the_odds_api
+6,source_team_id,Illinois Fighting Illini,60602,"356",espn
+6,team_name,,60602,Illinois Fighting Illini,the_odds_api
+6,source_team_id,Indiana Hoosiers,60603,"84",espn
+6,team_name,,60603,Indiana Hoosiers,the_odds_api
+6,source_team_id,Maryland Terrapins,60604,"120",espn
+6,team_name,,60604,Maryland Terrapins,the_odds_api
+6,source_team_id,Michigan Wolverines,60605,"130",espn
+6,team_name,,60605,Michigan Wolverines,the_odds_api
+6,source_team_id,Michigan State Spartans,60606,"127",espn
+6,team_name,,60606,Michigan St Spartans,the_odds_api
+6,source_team_id,Minnesota Golden Gophers,60607,"135",espn
+6,team_name,,60607,Minnesota Golden Gophers,the_odds_api
+6,source_team_id,Nebraska Cornhuskers,60608,"158",espn
+6,team_name,,60608,Nebraska Cornhuskers,the_odds_api
+6,source_team_id,Northwestern Wildcats,60609,"77",espn
+6,team_name,,60609,Northwestern Wildcats,the_odds_api
+6,source_team_id,Ohio State Buckeyes,60610,"194",espn
+6,team_name,,60610,Ohio State Buckeyes,the_odds_api
+6,source_team_id,Oregon Ducks,60611,"2483",espn
+6,team_name,,60611,Oregon Ducks,the_odds_api
+6,source_team_id,Penn State Nittany Lions,60612,"213",espn
+6,team_name,,60612,Penn State Nittany Lions,the_odds_api
+6,source_team_id,Purdue Boilermakers,60613,"2509",espn
+6,team_name,,60613,Purdue Boilermakers,the_odds_api
+6,source_team_id,Rutgers Scarlet Knights,60614,"164",espn
+6,source_team_id,UCLA Bruins,60615,"26",espn
+6,team_name,,60615,UCLA Bruins,the_odds_api
+6,source_team_id,USC Trojans,60616,"30",espn
+6,source_team_id,Washington Huskies,60617,"264",espn
+6,team_name,,60617,Washington Huskies,the_odds_api
+6,source_team_id,Wisconsin Badgers,60618,"275",espn
+6,team_name,,60618,Wisconsin Badgers,the_odds_api
+6,source_team_id,Arizona Wildcats,60701,"12",espn
+6,team_name,,60701,Arizona Wildcats,the_odds_api
+6,source_team_id,Arizona State Sun Devils,60702,"9",espn
+6,team_name,,60702,Arizona St Sun Devils,the_odds_api
+6,source_team_id,Baylor Bears,60703,"239",espn
+6,team_name,,60703,Baylor Bears,the_odds_api
+6,source_team_id,BYU Cougars,60704,"252",espn
+6,team_name,,60704,BYU Cougars,the_odds_api
+6,source_team_id,Cincinnati Bearcats,60705,"2132",espn
+6,team_name,,60705,Cincinnati Bearcats,the_odds_api
+6,source_team_id,Colorado Buffaloes,60706,"38",espn
+6,team_name,,60706,Colorado Buffaloes,the_odds_api
+6,source_team_id,Houston Cougars,60707,"248",espn
+6,team_name,,60707,Houston Cougars,the_odds_api
+6,source_team_id,Iowa State Cyclones,60708,"66",espn
+6,team_name,,60708,Iowa State Cyclones,the_odds_api
+6,source_team_id,Kansas Jayhawks,60709,"2305",espn
+6,team_name,,60709,Kansas Jayhawks,the_odds_api
+6,source_team_id,Kansas State Wildcats,60710,"2306",espn
+6,team_name,,60710,Kansas St Wildcats,the_odds_api
+6,source_team_id,Oklahoma State Cowboys,60711,"197",espn
+6,team_name,,60711,Oklahoma St Cowboys,the_odds_api
+6,source_team_id,TCU Horned Frogs,60712,"2628",espn
+6,team_name,,60712,TCU Horned Frogs,the_odds_api
+6,source_team_id,Texas Tech Red Raiders,60713,"2641",espn
+6,team_name,,60713,Texas Tech Red Raiders,the_odds_api
+6,source_team_id,UCF Knights,60714,"2116",espn
+6,team_name,,60714,UCF Knights,the_odds_api
+6,source_team_id,Utah Utes,60715,"254",espn
+6,source_team_id,West Virginia Mountaineers,60716,"277",espn
+6,team_name,,60716,West Virginia Mountaineers,the_odds_api
+6,source_team_id,Butler Bulldogs,60801,"2086",espn
+6,team_name,,60801,Butler Bulldogs,the_odds_api
+6,source_team_id,UConn Huskies,60802,"41",espn
+6,team_name,,60802,UConn Huskies,the_odds_api
+6,source_team_id,Creighton Bluejays,60803,"156",espn
+6,team_name,,60803,Creighton Bluejays,the_odds_api
+6,source_team_id,DePaul Blue Demons,60804,"305",espn
+6,team_name,,60804,DePaul Blue Demons,the_odds_api
+6,source_team_id,Georgetown Hoyas,60805,"46",espn
+6,team_name,,60805,Georgetown Hoyas,the_odds_api
+6,source_team_id,Marquette Golden Eagles,60806,"269",espn
+6,team_name,,60806,Marquette Golden Eagles,the_odds_api
+6,source_team_id,Providence Friars,60807,"2507",espn
+6,team_name,,60807,Providence Friars,the_odds_api
+6,source_team_id,Seton Hall Pirates,60808,"2550",espn
+6,team_name,,60808,Seton Hall Pirates,the_odds_api
+6,source_team_id,St. John's Red Storm,60809,"2599",espn
+6,team_name,,60809,St. John's Red Storm,the_odds_api
+6,source_team_id,Villanova Wildcats,60810,"222",espn
+6,team_name,,60810,Villanova Wildcats,the_odds_api
+6,source_team_id,Xavier Musketeers,60811,"2752",espn
+6,team_name,,60811,Xavier Musketeers,the_odds_api
+6,source_team_id,Radford Highlanders,60901,"2515",espn
+6,team_name,,60901,Radford Highlanders,the_odds_api
+6,source_team_id,Winthrop Eagles,60902,"2737",espn
+6,team_name,,60902,Winthrop Eagles,the_odds_api
+6,source_team_id,Eastern Washington Eagles,61001,"331",espn
+6,team_name,,61001,Eastern Washington Eagles,the_odds_api
+6,source_team_id,Montana Grizzlies,61002,"149",espn
+6,team_name,,61002,Montana Grizzlies,the_odds_api
+6,source_team_id,Northern Arizona Lumberjacks,61003,"2464",espn
+6,team_name,,61003,Northern Arizona Lumberjacks,the_odds_api
+6,source_team_id,Portland State Vikings,61004,"2502",espn
+6,team_name,,61004,Portland St Vikings,the_odds_api
+6,source_team_id,Weber State Wildcats,61005,"2692",espn
+6,team_name,,61005,Weber State Wildcats,the_odds_api
+6,source_team_id,Cal State Fullerton Titans,61101,"2239",espn
+6,team_name,,61101,CSU Fullerton Titans,the_odds_api
+6,source_team_id,Cal State Northridge Matadors,61102,"2463",espn
+6,team_name,,61102,CSU Northridge Matadors,the_odds_api
+6,source_team_id,Hawai'i Rainbow Warriors,61103,"62",espn
+6,team_name,,61103,Hawai'i Rainbow Warriors,the_odds_api
+6,source_team_id,Long Beach State Beach,61104,"299",espn
+6,team_name,,61104,Long Beach St 49ers,the_odds_api
+6,source_team_id,Delaware Blue Hens,61201,"48",espn
+6,team_name,,61201,Delaware Blue Hens,the_odds_api
+6,source_team_id,Hampton Pirates,61202,"2261",espn
+6,team_name,,61202,Hampton Pirates,the_odds_api
+6,source_team_id,Hofstra Pride,61203,"2275",espn
+6,team_name,,61203,Hofstra Pride,the_odds_api
+6,source_team_id,Monmouth Hawks,61204,"2405",espn
+6,team_name,,61204,Monmouth Hawks,the_odds_api
+6,source_team_id,Northeastern Huskies,61205,"111",espn
+6,team_name,,61205,Northeastern Huskies,the_odds_api
+6,source_team_id,Liberty Flames,61301,"2335",espn
+6,team_name,,61301,Liberty Flames,the_odds_api
+6,source_team_id,Middle Tennessee Blue Raiders,61302,"2393",espn
+6,team_name,,61302,Middle Tennessee Blue Raiders,the_odds_api
+6,source_team_id,New Mexico State Aggies,61303,"166",espn
+6,team_name,,61303,New Mexico St Aggies,the_odds_api
+6,source_team_id,Sam Houston Bearkats,61304,"2534",espn
+6,team_name,,61304,Sam Houston St Bearkats,the_odds_api
+6,source_team_id,UTEP Miners,61305,"2638",espn
+6,team_name,,61305,UTEP Miners,the_odds_api
+6,source_team_id,Western Kentucky Hilltoppers,61306,"98",espn
+6,team_name,,61306,Western Kentucky Hilltoppers,the_odds_api
+6,source_team_id,Cleveland State Vikings,61401,"325",espn
+6,team_name,,61401,Cleveland St Vikings,the_odds_api
+6,source_team_id,Detroit Mercy Titans,61402,"2174",espn
+6,team_name,,61402,Detroit Mercy Titans,the_odds_api
+6,source_team_id,Green Bay Phoenix,61403,"2739",espn
+6,team_name,,61403,Green Bay Phoenix,the_odds_api
+6,source_team_id,UIC Flames,61404,"82",espn
+6,source_team_id,Milwaukee Panthers,61405,"270",espn
+6,team_name,,61405,Milwaukee Panthers,the_odds_api
+6,source_team_id,Oakland Golden Grizzlies,61406,"2473",espn
+6,team_name,,61406,Oakland Golden Grizzlies,the_odds_api
+6,source_team_id,Robert Morris Colonials,61407,"2523",espn
+6,team_name,,61407,Robert Morris Colonials,the_odds_api
+6,source_team_id,Wright State Raiders,61408,"2750",espn
+6,team_name,,61408,Wright St Raiders,the_odds_api
+6,source_team_id,Cornell Big Red,61501,"172",espn
+6,team_name,,61501,Cornell Big Red,the_odds_api
+6,source_team_id,Harvard Crimson,61502,"108",espn
+6,team_name,,61502,Harvard Crimson,the_odds_api
+6,source_team_id,Pennsylvania Quakers,61503,"219",espn
+6,team_name,,61503,Pennsylvania Quakers,the_odds_api
+6,source_team_id,Princeton Tigers,61504,"163",espn
+6,team_name,,61504,Princeton Tigers,the_odds_api
+6,source_team_id,Yale Bulldogs,61505,"43",espn
+6,team_name,,61505,Yale Bulldogs,the_odds_api
+6,source_team_id,Iona Gaels,61601,"314",espn
+6,team_name,,61601,Iona Gaels,the_odds_api
+6,source_team_id,Manhattan Jaspers,61602,"2363",espn
+6,team_name,,61602,Manhattan Jaspers,the_odds_api
+6,source_team_id,Mount St. Mary's Mountaineers,61603,"116",espn
+6,team_name,,61603,Mt. St. Mary's Mountaineers,the_odds_api
+6,source_team_id,Niagara Purple Eagles,61604,"315",espn
+6,team_name,,61604,Niagara Purple Eagles,the_odds_api
+6,source_team_id,Siena Saints,61605,"2561",espn
+6,team_name,,61605,Siena Saints,the_odds_api
+6,source_team_id,Saint Peter's Peacocks,61606,"2612",espn
+6,team_name,,61606,Saint Peter's Peacocks,the_odds_api
+6,source_team_id,Akron Zips,61701,"2006",espn
+6,team_name,,61701,Akron Zips,the_odds_api
+6,source_team_id,Ball State Cardinals,61702,"2050",espn
+6,team_name,,61702,Ball State Cardinals,the_odds_api
+6,source_team_id,Buffalo Bulls,61703,"2084",espn
+6,team_name,,61703,Buffalo Bulls,the_odds_api
+6,source_team_id,Central Michigan Chippewas,61704,"2117",espn
+6,team_name,,61704,Central Michigan Chippewas,the_odds_api
+6,source_team_id,Kent State Golden Flashes,61705,"2309",espn
+6,team_name,,61705,Kent State Golden Flashes,the_odds_api
+6,source_team_id,Miami (OH) RedHawks,61706,"193",espn
+6,team_name,,61706,Miami (OH) RedHawks,the_odds_api
+6,source_team_id,Ohio Bobcats,61707,"195",espn
+6,team_name,,61707,Ohio Bobcats,the_odds_api
+6,source_team_id,Western Michigan Broncos,61708,"2711",espn
+6,team_name,,61708,Western Michigan Broncos,the_odds_api
+6,source_team_id,Coppin State Eagles,61801,"2154",espn
+6,team_name,,61801,Coppin St Eagles,the_odds_api
+6,source_team_id,Morgan State Bears,61802,"2415",espn
+6,team_name,,61802,Morgan St Bears,the_odds_api
+6,source_team_id,North Carolina A&T Aggies,61803,"2448",espn
+6,team_name,,61803,North Carolina A&T Aggies,the_odds_api
+6,source_team_id,North Carolina Central Eagles,61804,"2428",espn
+6,team_name,,61804,North Carolina Central Eagles,the_odds_api
+6,source_team_id,Norfolk State Spartans,61805,"2450",espn
+6,team_name,,61805,Norfolk St Spartans,the_odds_api
+6,source_team_id,South Carolina State Bulldogs,61806,"2569",espn
+6,team_name,,61806,South Carolina St Bulldogs,the_odds_api
+6,source_team_id,Belmont Bruins,61901,"2057",espn
+6,team_name,,61901,Belmont Bruins,the_odds_api
+6,source_team_id,Bradley Braves,61902,"71",espn
+6,team_name,,61902,Bradley Braves,the_odds_api
+6,source_team_id,Drake Bulldogs,61903,"2181",espn
+6,team_name,,61903,Drake Bulldogs,the_odds_api
+6,source_team_id,Indiana State Sycamores,61904,"282",espn
+6,team_name,,61904,Indiana St Sycamores,the_odds_api
+6,source_team_id,Murray State Racers,61905,"93",espn
+6,team_name,,61905,Murray St Racers,the_odds_api
+6,source_team_id,Northern Iowa Panthers,61906,"2460",espn
+6,team_name,,61906,Northern Iowa Panthers,the_odds_api
+6,source_team_id,Southern Illinois Salukis,61907,"79",espn
+6,team_name,,61907,Southern Illinois Salukis,the_odds_api
+6,source_team_id,Valparaiso Beacons,61908,"2674",espn
+6,team_name,,61908,Valparaiso Beacons,the_odds_api
+6,source_team_id,Air Force Falcons,62001,"2005",espn
+6,team_name,,62001,Air Force Falcons,the_odds_api
+6,source_team_id,Boise State Broncos,62002,"68",espn
+6,team_name,,62002,Boise State Broncos,the_odds_api
+6,source_team_id,Colorado State Rams,62003,"36",espn
+6,team_name,,62003,Colorado St Rams,the_odds_api
+6,source_team_id,Fresno State Bulldogs,62004,"278",espn
+6,team_name,,62004,Fresno St Bulldogs,the_odds_api
+6,source_team_id,New Mexico Lobos,62005,"167",espn
+6,team_name,,62005,New Mexico Lobos,the_odds_api
+6,source_team_id,Nevada Wolf Pack,62006,"2440",espn
+6,team_name,,62006,Nevada Wolf Pack,the_odds_api
+6,source_team_id,San Diego State Aztecs,62007,"21",espn
+6,team_name,,62007,San Diego St Aztecs,the_odds_api
+6,source_team_id,UNLV Rebels,62008,"2439",espn
+6,team_name,,62008,UNLV Rebels,the_odds_api
+6,source_team_id,Utah State Aggies,62009,"328",espn
+6,source_team_id,Wyoming Cowboys,62010,"2751",espn
+6,team_name,,62010,Wyoming Cowboys,the_odds_api
+6,source_team_id,Central Connecticut Blue Devils,62101,"2115",espn
+6,team_name,,62101,Central Connecticut St Blue Devils,the_odds_api
+6,source_team_id,Fairleigh Dickinson Knights,62102,"161",espn
+6,team_name,,62102,Fairleigh Dickinson Knights,the_odds_api
+6,source_team_id,Long Island University Sharks,62103,"112358",espn
+6,source_team_id,Wagner Seahawks,62104,"2681",espn
+6,team_name,,62104,Wagner Seahawks,the_odds_api
+6,source_team_id,Eastern Illinois Panthers,62201,"2197",espn
+6,team_name,,62201,Eastern Illinois Panthers,the_odds_api
+6,source_team_id,Morehead State Eagles,62202,"2413",espn
+6,team_name,,62202,Morehead St Eagles,the_odds_api
+6,source_team_id,Southeast Missouri State Redhawks,62203,"2546",espn
+6,source_team_id,Bucknell Bison,62301,"2083",espn
+6,team_name,,62301,Bucknell Bison,the_odds_api
+6,source_team_id,Holy Cross Crusaders,62302,"107",espn
+6,team_name,,62302,Holy Cross Crusaders,the_odds_api
+6,source_team_id,Lafayette Leopards,62303,"322",espn
+6,team_name,,62303,Lafayette Leopards,the_odds_api
+6,source_team_id,Lehigh Mountain Hawks,62304,"2329",espn
+6,team_name,,62304,Lehigh Mountain Hawks,the_odds_api
+6,source_team_id,Loyola Maryland Greyhounds,62305,"2352",espn
+6,team_name,,62305,Loyola (MD) Greyhounds,the_odds_api
+6,source_team_id,American University Eagles,62306,"44",espn
+6,source_team_id,Alabama Crimson Tide,62401,"333",espn
+6,team_name,,62401,Alabama Crimson Tide,the_odds_api
+6,source_team_id,Arkansas Razorbacks,62402,"8",espn
+6,team_name,,62402,Arkansas Razorbacks,the_odds_api
+6,source_team_id,Auburn Tigers,62403,"2",espn
+6,team_name,,62403,Auburn Tigers,the_odds_api
+6,source_team_id,Florida Gators,62404,"57",espn
+6,team_name,,62404,Florida Gators,the_odds_api
+6,source_team_id,Georgia Bulldogs,62405,"61",espn
+6,team_name,,62405,Georgia Bulldogs,the_odds_api
+6,source_team_id,Kentucky Wildcats,62406,"96",espn
+6,team_name,,62406,Kentucky Wildcats,the_odds_api
+6,source_team_id,LSU Tigers,62407,"99",espn
+6,team_name,,62407,LSU Tigers,the_odds_api
+6,source_team_id,Missouri Tigers,62408,"142",espn
+6,team_name,,62408,Missouri Tigers,the_odds_api
+6,source_team_id,Ole Miss Rebels,62409,"145",espn
+6,team_name,,62409,Ole Miss Rebels,the_odds_api
+6,source_team_id,Mississippi State Bulldogs,62410,"344",espn
+6,team_name,,62410,Mississippi St Bulldogs,the_odds_api
+6,source_team_id,Oklahoma Sooners,62411,"201",espn
+6,team_name,,62411,Oklahoma Sooners,the_odds_api
+6,source_team_id,South Carolina Gamecocks,62412,"2579",espn
+6,team_name,,62412,South Carolina Gamecocks,the_odds_api
+6,source_team_id,Tennessee Volunteers,62413,"2633",espn
+6,team_name,,62413,Tennessee Volunteers,the_odds_api
+6,source_team_id,Texas Longhorns,62414,"251",espn
+6,team_name,,62414,Texas Longhorns,the_odds_api
+6,source_team_id,Texas A&M Aggies,62415,"245",espn
+6,team_name,,62415,Texas A&M Aggies,the_odds_api
+6,source_team_id,Vanderbilt Commodores,62416,"238",espn
+6,team_name,,62416,Vanderbilt Commodores,the_odds_api
+6,source_team_id,Chattanooga Mocs,62501,"236",espn
+6,team_name,,62501,Chattanooga Mocs,the_odds_api
+6,source_team_id,East Tennessee State Buccaneers,62502,"2193",espn
+6,team_name,,62502,East Tennessee St Buccaneers,the_odds_api
+6,source_team_id,Mercer Bears,62503,"2382",espn
+6,team_name,,62503,Mercer Bears,the_odds_api
+6,source_team_id,Samford Bulldogs,62504,"2535",espn
+6,team_name,,62504,Samford Bulldogs,the_odds_api
+6,source_team_id,Wofford Terriers,62505,"2747",espn
+6,team_name,,62505,Wofford Terriers,the_odds_api
+6,source_team_id,Lamar Cardinals,62601,"2320",espn
+6,team_name,,62601,Lamar Cardinals,the_odds_api
+6,source_team_id,McNeese Cowboys,62602,"2377",espn
+6,team_name,,62602,McNeese Cowboys,the_odds_api
+6,source_team_id,Northwestern State Demons,62603,"2466",espn
+6,team_name,,62603,Northwestern St Demons,the_odds_api
+6,source_team_id,Stephen F. Austin Lumberjacks,62604,"2617",espn
+6,team_name,,62604,Stephen F. Austin Lumberjacks,the_odds_api
+6,source_team_id,Texas A&M-Corpus Christi Islanders,62605,"357",espn
+6,team_name,,62605,Texas A&M-CC Islanders,the_odds_api
+6,source_team_id,North Dakota State Bison,62701,"2449",espn
+6,team_name,,62701,North Dakota St Bison,the_odds_api
+6,source_team_id,Oral Roberts Golden Eagles,62702,"198",espn
+6,team_name,,62702,Oral Roberts Golden Eagles,the_odds_api
+6,source_team_id,South Dakota State Jackrabbits,62703,"2571",espn
+6,team_name,,62703,South Dakota St Jackrabbits,the_odds_api
+6,source_team_id,North Dakota Fighting Hawks,62704,"155",espn
+6,team_name,,62704,North Dakota Fighting Hawks,the_odds_api
+5,source_team_id,South Dakota Coyotes,62705,"233",espn
+6,team_name,,62705,South Dakota Coyotes,the_odds_api
+6,source_team_id,App State Mountaineers,62801,"2026",espn
+6,team_name,,62801,Appalachian St Mountaineers,the_odds_api
+6,source_team_id,Coastal Carolina Chanticleers,62802,"324",espn
+6,team_name,,62802,Coastal Carolina Chanticleers,the_odds_api
+6,source_team_id,Georgia State Panthers,62803,"2247",espn
+6,team_name,,62803,Georgia St Panthers,the_odds_api
+6,source_team_id,James Madison Dukes,62804,"256",espn
+6,team_name,,62804,James Madison Dukes,the_odds_api
+6,source_team_id,Louisiana Ragin' Cajuns,62805,"309",espn
+6,team_name,,62805,Louisiana Ragin' Cajuns,the_odds_api
+6,source_team_id,Old Dominion Monarchs,62806,"295",espn
+6,team_name,,62806,Old Dominion Monarchs,the_odds_api
+6,source_team_id,Southern Miss Golden Eagles,62807,"2572",espn
+6,team_name,,62807,Southern Miss Golden Eagles,the_odds_api
+6,source_team_id,Troy Trojans,62808,"2653",espn
+6,team_name,,62808,Troy Trojans,the_odds_api
+6,source_team_id,South Alabama Jaguars,62809,"6",espn
+6,team_name,,62809,South Alabama Jaguars,the_odds_api
+6,source_team_id,Alabama State Hornets,62901,"2011",espn
+6,team_name,,62901,Alabama St Hornets,the_odds_api
+6,source_team_id,Alcorn State Braves,62902,"2016",espn
+6,team_name,,62902,Alcorn St Braves,the_odds_api
+6,source_team_id,Florida A&M Rattlers,62903,"50",espn
+6,team_name,,62903,Florida A&M Rattlers,the_odds_api
+6,source_team_id,Jackson State Tigers,62904,"2296",espn
+6,team_name,,62904,Jackson St Tigers,the_odds_api
+6,source_team_id,Mississippi Valley State Delta Devils,62905,"2400",espn
+6,source_team_id,Southern Jaguars,62906,"2582",espn
+6,team_name,,62906,Southern Jaguars,the_odds_api
+6,source_team_id,Texas Southern Tigers,62907,"2640",espn
+6,team_name,,62907,Texas Southern Tigers,the_odds_api
+6,source_team_id,Gonzaga Bulldogs,63001,"2250",espn
+6,team_name,,63001,Gonzaga Bulldogs,the_odds_api
+6,source_team_id,Oregon State Beavers,63002,"204",espn
+6,team_name,,63002,Oregon St Beavers,the_odds_api
+6,source_team_id,Pacific Tigers,63003,"279",espn
+6,team_name,,63003,Pacific Tigers,the_odds_api
+6,source_team_id,Pepperdine Waves,63004,"2492",espn
+6,team_name,,63004,Pepperdine Waves,the_odds_api
+6,source_team_id,San Diego Toreros,63005,"301",espn
+6,team_name,,63005,San Diego Toreros,the_odds_api
+6,source_team_id,Saint Mary's Gaels,63006,"2608",espn
+6,team_name,,63006,Saint Mary's Gaels,the_odds_api
+6,source_team_id,Washington State Cougars,63007,"265",espn
+6,team_name,,63007,Washington St Cougars,the_odds_api
+5,team_name,,,Idaho State Bengals,the_odds_api
+5,team_name,,,Southeastern Louisiana Lions,the_odds_api
+5,team_name,,,Southeast Missouri State Redhawks,the_odds_api
+5,team_name,,,Fresno State Bulldogs,the_odds_api
+5,team_name,,,Elon Phoenix,the_odds_api
+5,team_name,,,Charleston Southern Buccaneers,the_odds_api
+5,team_name,,,Bryant Bulldogs,the_odds_api
+5,team_name,,,Weber State Wildcats,the_odds_api
+5,team_name,,,Albany,the_odds_api
+5,team_name,,,Northern Arizona Lumberjacks,the_odds_api
+5,team_name,,,UT Martin Skyhawks,the_odds_api
+5,team_name,,,Western Illinois Leathernecks,the_odds_api
+5,team_name,,,North Dakota Fighting Hawks,the_odds_api
+5,team_name,,,Nicholls State Colonels,the_odds_api
+5,team_name,,,Montana State Bobcats,the_odds_api
+5,team_name,,,Missouri State Bears,the_odds_api
+5,team_name,,,Maine Black Bears,the_odds_api
+5,team_name,,,Illinois State Redbirds,the_odds_api
+5,team_name,,,Idaho Vandals,the_odds_api
+5,team_name,,,Portland State Vikings,the_odds_api
+5,team_name,,,Stony Brook Seawolves,the_odds_api
+5,team_name,,,South Dakota Coyotes,the_odds_api

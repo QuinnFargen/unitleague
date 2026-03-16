@@ -54,6 +54,8 @@ TRUNCATE TABLE src.the_odds_api;
 
 TRUNCATE TABLE utility.weather;
 \copy utility.weather FROM '${SEED_DIR}/utility.weather.csv' DELIMITER ',' CSV HEADER;
+TRUNCATE TABLE utility.job;
+\copy utility.job FROM '${SEED_DIR}/utility.job.csv' DELIMITER ',' CSV HEADER;
 
 
 TRUNCATE TABLE ball.league;

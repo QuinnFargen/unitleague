@@ -1,623 +1,623 @@
-"team_id","league_id","abbr","team_concat","name","location","conf","div","lat","lon","weather"
-11301,1,ATL,NBA_ATL,Atlanta Hawks,"Atlanta, GA",East,Southeast,33.757200,-84.396400,0
-11101,1,BOS,NBA_BOS,Boston Celtics,"Boston, MA",East,Atlantic,42.366300,-71.062202,0
-11102,1,BYN,NBA_BYN,Brooklyn Nets,"New York, NY",East,Atlantic,40.682700,-73.974701,0
-11302,1,CHA,NBA_CHA,Charlotte Hornets,"Charlotte, NC",East,Southeast,35.225000,-80.839203,0
-11201,1,CHI,NBA_CHI,Chicago Bulls,"Chicago, IL",East,Central,41.880600,-87.674202,0
-11202,1,CLE,NBA_CLE,Cleveland Cavaliers,"Cleveland, OH",East,Central,41.496400,-81.688103,0
-12601,1,DAL,NBA_DAL,Dallas Mavericks,"Dallas, TX",West,Southwest,32.790600,-96.810303,0
-12401,1,DEN,NBA_DEN,Denver Nuggets,"Denver, CO",West,Northwest,39.748600,-105.007004,0
-11203,1,DET,NBA_DET,Detroit Pistons,"Detroit, MI",East,Central,42.341100,-83.055000,0
-12501,1,GSW,NBA_GSW,Golden State Warriors,"San Francisco, CA",West,Pacific,37.768100,-122.387001,0
-12602,1,HOU,NBA_HOU,Houston Rockets,"Houston, TX",West,Southwest,29.750800,-95.362198,0
-11204,1,IND,NBA_IND,Indiana Pacers,"Indianapolis, IN",East,Central,39.763900,-86.155602,0
-12502,1,LAC,NBA_LAC,Los Angeles Clippers,"Inglewood, CA",West,Pacific,33.945100,-118.343002,0
-12503,1,LAL,NBA_LAL,Los Angeles Lakers,"Los Angeles, CA",West,Pacific,34.043100,-118.266998,0
-12603,1,MEM,NBA_MEM,Memphis Grizzlies,"Memphis, TN",West,Southwest,35.138300,-90.050598,0
-11303,1,MIA,NBA_MIA,Miami Heat,"Miami, FL",East,Southeast,25.781400,-80.188103,0
-11205,1,MIL,NBA_MIL,Milwaukee Bucks,"Milwaukee, WI",East,Central,43.043600,-87.916901,0
-12402,1,MIN,NBA_MIN,Minnesota Timberwolves,"Minneapolis, MN",West,Northwest,44.979400,-93.276100,0
-12604,1,NOP,NBA_NOP,New Orleans Pelicans,"New Orleans, LA",West,Southwest,29.948900,-90.081902,0
-11103,1,NYK,NBA_NYK,New York Knicks,"New York, NY",East,Atlantic,40.750600,-73.993599,0
-12403,1,OKC,NBA_OKC,Oklahoma City Thunder,"Oklahoma City, OK",West,Northwest,35.463300,-97.514999,0
-11304,1,ORL,NBA_ORL,Orlando Magic,"Orlando, FL",East,Southeast,28.539200,-81.383598,0
-11104,1,PHI,NBA_PHI,Philadelphia 76ers,"Philadelphia, PA",East,Atlantic,39.901100,-75.171898,0
-12504,1,PHX,NBA_PHX,Phoenix Suns,"Phoenix, AZ",West,Pacific,33.445800,-112.070999,0
-12404,1,POR,NBA_POR,Portland Trail Blazers,"Portland, OR",West,Northwest,45.531700,-122.667000,0
-12505,1,SAC,NBA_SAC,Sacramento Kings,"Sacramento, CA",West,Pacific,38.649200,-121.517998,0
-12605,1,SAN,NBA_SAN,San Antonio Spurs,"San Antonio, TX",West,Southwest,29.426900,-98.437500,0
-11105,1,TOR,NBA_TOR,Toronto Raptors,"Toronto, ON",East,Atlantic,43.643300,-79.379204,0
-12405,1,UTA,NBA_UTA,Utah Jazz,"Salt Lake City, UT",West,Northwest,40.768300,-111.901001,0
-11305,1,WAS,NBA_WAS,Washington Wizards,"Washington, DC",East,Southeast,38.898100,-77.020798,0
-22801,2,ARI,NFL_ARI,Arizona Cardinals,"Glendale, AZ",NFC,West,33.528000,-112.263000,0
-22701,2,ATL,NFL_ATL,Atlanta Falcons,"Atlanta, GA",NFC,South,33.452000,-84.239998,0
-21201,2,BAL,NFL_BAL,Baltimore Ravens,"Baltimore, MD",AFC,North,39.164000,-76.372200,1
-21202,2,CIN,NFL_CIN,Cincinnati Bengals,"Cincinnati, OH",AFC,North,39.095000,-84.515999,1
-21101,2,BUF,NFL_BUF,Buffalo Bills,"Orchard Park, NY",AFC,East,42.774000,-78.787003,1
-22702,2,CAR,NFL_CAR,Carolina Panthers,"Charlotte, NC",NFC,South,35.133300,-80.511002,1
-22601,2,CHI,NFL_CHI,Chicago Bears,"Chicago, IL",NFC,North,41.862300,-87.616699,1
-21203,2,CLE,NFL_CLE,Cleveland Browns,"Cleveland, OH",AFC,North,41.302200,-81.415802,1
-22501,2,DAL,NFL_DAL,Dallas Cowboys,"Arlington, TX",NFC,East,32.445200,-97.533997,0
-21401,2,DEN,NFL_DEN,Denver Broncos,"Denver, CO",AFC,West,39.443800,-105.112000,1
-22602,2,DET,NFL_DET,Detroit Lions,"Detroit, MI",NFC,North,42.202400,-83.244003,0
-22603,2,GB,NFL_GB,Green Bay Packers,"Green Bay, WI",NFC,North,44.305000,-88.344002,1
-21301,2,HOU,NFL_HOU,Houston Texans,"Houston, TX",AFC,South,9.415000,-95.243896,0
-21302,2,IND,NFL_IND,Indianapolis Colts,"Indianapolis, IN",AFC,South,39.453600,-86.949699,0
-21303,2,JAX,NFL_JAX,Jacksonville Jaguars,"Jacksonville, FL",AFC,South,30.192600,-81.381500,1
-21402,2,KC,NFL_KC,Kansas City Chiefs,"Kansas City, MO",AFC,West,39.256000,-94.292000,1
-21404,2,LAC,NFL_LAC,Los Angeles Chargers,"Inglewood, CA",AFC,West,33.953000,-118.338997,1
-22802,2,LAR,NFL_LAR,Los Angeles Rams,"Inglewood, CA",NFC,West,33.953000,-118.338997,0
-21403,2,LV,NFL_LV,Las Vegas Raiders,"Paradise, NV",AFC,West,36.052600,-115.112000,0
-21102,2,MIA,NFL_MIA,Miami Dolphins,"Miami, FL",AFC,East,25.958000,-80.239304,1
-22604,2,MIN,NFL_MIN,Minnesota Vikings,"Minneapolis, MN",NFC,North,44.974000,-93.258003,0
-21103,2,NE,NFL_NE,New England Patriots,"Foxborough, MA",AFC,East,42.091000,-71.264000,1
-22703,2,NO,NFL_NO,New Orleans Saints,"New Orleans, LA",NFC,South,29.573000,-90.452003,0
-22502,2,NYG,NFL_NYG,New York Giants,"East Rutherford, NJ",NFC,East,40.484900,-74.427696,1
-21104,2,NYJ,NFL_NYJ,New York Jets,"East Rutherford, NJ",AFC,East,40.484900,-74.427696,1
-22503,2,PHI,NFL_PHI,Philadelphia Eagles,"Philadelphia, PA",NFC,East,39.543000,-75.102997,1
-21204,2,PIT,NFL_PIT,Pittsburgh Steelers,"Pittsburgh, PA",AFC,North,40.264800,-80.056999,1
-22804,2,SEA,NFL_SEA,Seattle Seahawks,"Seattle, WA",NFC,West,47.595200,-122.332001,1
-22803,2,SF,NFL_SF,San Francisco 49ers,"Santa Clara, CA",NFC,West,37.403000,-121.970001,1
-22704,2,TB,NFL_TB,Tampa Bay Buccaneers,"Tampa, FL",NFC,South,27.583300,-82.301201,1
-21304,2,TEN,NFL_TEN,Tennessee Titans,"Nashville, TN",AFC,South,36.959000,-86.461700,1
-22504,2,WAS,NFL_WAS,Washington Commanders,"Landover, MD",NFC,East,38.542800,-76.515198,1
-32401,3,AHA,NHL_AHA,Anaheim Ducks,"Anaheim, CA",Western,Pacific,33.807800,-117.876999,0
-31101,3,BOS,NHL_BOS,Boston Bruins,"Boston, MA",Eastern,Atlantic,42.366300,-71.062202,0
-31102,3,BUF,NHL_BUF,Buffalo Sabres,"Buffalo, NY",Eastern,Atlantic,42.875000,-78.876404,0
-31201,3,CAR,NHL_CAR,Carolina Hurricanes,"Raleigh, NC",Eastern,Metropolitan,35.803300,-78.721901,0
-31202,3,CBJ,NHL_CBJ,Columbus Blue Jackets,"Columbus, OH",Eastern,Metropolitan,39.969300,-83.006104,0
-32402,3,CGY,NHL_CGY,Calgary Flames,"Calgary, AB",Western,Pacific,51.037400,-114.052002,0
-32301,3,CHI,NHL_CHI,Chicago Blackhawks,"Chicago, IL",Western,Central,41.880600,-87.674202,0
-32302,3,COL,NHL_COL,Colorado Avalanche,"Denver, CO",Western,Central,39.748700,-105.008003,0
-32303,3,DAL,NHL_DAL,Dallas Stars,"Dallas, TX",Western,Central,32.790600,-96.810303,0
-31103,3,DET,NHL_DET,Detroit Red Wings,"Detroit, MI",Eastern,Atlantic,42.341100,-83.055000,0
-32403,3,EDM,NHL_EDM,Edmonton Oilers,"Edmonton, AB",Western,Pacific,53.546900,-113.498001,0
-31104,3,FLA,NHL_FLA,Florida Panthers,"Sunrise, FL",Eastern,Atlantic,26.158300,-80.325600,0
-32404,3,LAK,NHL_LAK,Los Angeles Kings,"Los Angeles, CA",Western,Pacific,34.043100,-118.266998,0
-32304,3,MIN,NHL_MIN,Minnesota Wild,"Saint Paul, MN",Western,Central,44.944700,-93.101097,0
-31105,3,MTL,NHL_MTL,Montreal Canadiens,"Montreal, QC",Eastern,Atlantic,45.496100,-73.569397,0
-31203,3,NJD,NHL_NJD,New Jersey Devils,"Newark, NJ",Eastern,Metropolitan,40.733600,-74.171097,0
-32305,3,NSH,NHL_NSH,Nashville Predators,"Nashville, TN",Western,Central,36.159200,-86.778603,0
-31204,3,NYI,NHL_NYI,New York Islanders,"Elmont, NY",Eastern,Metropolitan,40.712100,-73.727203,0
-31205,3,NYR,NHL_NYR,New York Rangers,"New York, NY",Eastern,Metropolitan,40.750600,-73.993599,0
-31106,3,OTT,NHL_OTT,Ottawa Senators,"Ottawa, ON",Eastern,Atlantic,45.296900,-75.926804,0
-31206,3,PHI,NHL_PHI,Philadelphia Flyers,"Philadelphia, PA",Eastern,Metropolitan,39.901100,-75.171898,0
-31207,3,PIT,NHL_PIT,Pittsburgh Penguins,"Pittsburgh, PA",Eastern,Metropolitan,40.439400,-79.989197,0
-32406,3,SEA,NHL_SEA,Seattle Kraken,"Seattle, WA",Western,Pacific,47.622000,-122.353996,0
-32405,3,SJS,NHL_SJS,San Jose Sharks,"San Jose, CA",Western,Pacific,37.332800,-121.901001,0
-32306,3,STL,NHL_STL,St. Louis Blues,"St. Louis, MO",Western,Central,38.626700,-90.202499,0
-31107,3,TBL,NHL_TBL,Tampa Bay Lightning,"Tampa, FL",Eastern,Atlantic,27.942700,-82.451797,0
-31108,3,TOR,NHL_TOR,Toronto Maple Leafs,"Toronto, ON",Eastern,Atlantic,43.643300,-79.379204,0
-32307,3,UTA,NHL_UTA,Utah Mammoth,"Salt Lake City, UT",Western,Central,40.768400,-111.902000,0
-32407,3,VAN,NHL_VAN,Vancouver Canucks,"Vancouver, BC",Western,Pacific,49.277800,-123.109001,0
-32408,3,VGK,NHL_VGK,Vegas Golden Knights,"Paradise, NV",Western,Pacific,36.102800,-115.178001,0
-32308,3,WPG,NHL_WPG,Winnipeg Jets,"Winnipeg, MB",Western,Central,49.892800,-97.143600,0
-31208,3,WSH,NHL_WSH,Washington Capitals,"Washington, DC",Eastern,Metropolitan,38.898200,-77.020897,0
-42601,4,ARI,MLB_ARI,Arizona Diamondbacks,"Phoenix, AZ",NL,West,33.445300,-112.067001,0
-42401,4,ATL,MLB_ATL,Atlanta Braves,"Cumberland, GA",NL,East,33.890000,-84.468002,1
-41101,4,BAL,MLB_BAL,Baltimore Orioles,"Baltimore, MD",AL,East,39.283900,-76.621696,1
-41102,4,BOS,MLB_BOS,Boston Red Sox,"Boston, MA",AL,East,42.346200,-71.097702,1
-42501,4,CHI,MLB_CHI,Chicago Cubs,"Chicago, IL",NL,Central,41.948100,-87.655602,1
-42502,4,CIN,MLB_CIN,Cincinnati Reds,"Cincinnati, OH",NL,Central,39.097500,-84.506699,1
-41202,4,CLE,MLB_CLE,Cleveland Guardians,"Cleveland, OH",AL,Central,41.495800,-81.685303,1
-42602,4,COL,MLB_COL,Colorado Rockies,"Denver, CO",NL,West,39.756100,-104.994003,1
-41203,4,DET,MLB_DET,Detroit Tigers,"Detroit, MI",AL,Central,42.339200,-83.048599,1
-41301,4,HOU,MLB_HOU,Houston Astros,"Houston, TX",AL,West,29.756900,-95.355598,0
-41204,4,KC,MLB_KC,Kansas City Royals,"Kansas City, MO",AL,Central,39.051000,-94.480003,1
-41302,4,LAA,MLB_LAA,Los Angeles Angels,"Anaheim, CA",AL,West,33.800300,-117.883003,1
-42603,4,LAD,MLB_LAD,Los Angeles Dodgers,"Los Angeles, CA",NL,West,34.073600,-118.239998,1
-42402,4,MIA,MLB_MIA,Miami Marlins,"Miami, FL",NL,East,25.778100,-80.219704,0
-42503,4,MIL,MLB_MIL,Milwaukee Brewers,"Milwaukee, WI",NL,Central,43.028300,-87.971100,0
-41205,4,MIN,MLB_MIN,Minnesota Twins,"Minneapolis, MN",AL,Central,44.981700,-93.278297,1
-42403,4,NYM,MLB_NYM,New York Mets,"New York, NY",NL,East,40.756900,-73.845802,1
-41103,4,NYY,MLB_NYY,New York Yankees,"New York, NY",AL,East,40.829200,-73.926399,1
-41303,4,OAK,MLB_OAK,Oakland Athletics,"Oakland, CA",AL,West,37.751700,-122.200996,1
-42404,4,PHI,MLB_PHI,Philadelphia Phillies,"Philadelphia, PA",NL,East,39.905800,-75.166397,1
-42504,4,PIT,MLB_PIT,Pittsburgh Pirates,"Pittsburgh, PA",NL,Central,40.446900,-80.005798,1
-42604,4,SD,MLB_SD,San Diego Padres,"San Diego, CA",NL,West,32.707300,-117.156998,1
-41304,4,SEA,MLB_SEA,Seattle Mariners,"Seattle, WA",AL,West,47.591000,-122.333000,0
-42605,4,SF,MLB_SF,San Francisco Giants,"San Francisco, CA",NL,West,37.778600,-122.389000,1
-41201,4,SOX,MLB_SOX,Chicago White Sox,"Chicago, IL",AL,Central,41.830000,-87.633904,1
-42505,4,STL,MLB_STL,St. Louis Cardinals,"St. Louis, MO",NL,Central,38.622500,-90.193100,1
-41104,4,TB,MLB_TB,Tampa Bay Rays,"St. Petersburg, FL",AL,East,27.768300,-82.653297,0
-41305,4,TEX,MLB_TEX,Texas Rangers,"Arlington, TX",AL,West,32.747400,-97.084198,0
-41105,4,TOR,MLB_TOR,Toronto Blue Jays,"Toronto, ON",AL,East,43.641400,-79.389198,0
-42405,4,WSH,MLB_WSH,Washington Nationals,"Washington, DC",NL,East,38.872800,-77.007500,1
-50801,5,AFA,CFB_AFA,Air Force,"Colorado Springs, CO",MTNW,,38.996900,-104.844002,1
-50701,5,AKR,CFB_AKR,Akron,"Akron, OH",MAC,,41.072600,-81.508400,1
-51101,5,APP,CFB_APP,Appalachian State,"Boone, NC",SUNB,,36.211500,-81.685501,1
-51001,5,ARK,CFB_ARK,Arkansas,"Fayetteville, AR",SEC,,36.067900,-94.178802,1
-50101,5,ARMY,CFB_ARMY,Army,"West Point, NY",AAC,,41.387100,-73.964104,1
-51102,5,ARST,CFB_ARST,Arkansas State,"Jonesboro, AR",SUNB,,35.849000,-90.667702,1
-51002,5,AUB,CFB_AUB,Auburn,"Auburn, AL",SEC,,32.602400,-85.488899,1
-50401,5,ARIZ,CFB_ARIZ,Arizona,"Tucson, AZ",B12,,32.228300,-110.948997,1
-50402,5,ASU,CFB_ASU,Arizona State,"Tempe, AZ",B12,,33.426400,-111.932999,1
-50702,5,BALL,CFB_BALL,Ball State,"Muncie, IN",MAC,,40.216000,-85.417702,1
-51003,5,ALA,CFB_ALA,Alabama,"Tuscaloosa, AL",SEC,,33.207500,-87.550400,1
-50403,5,BAY,CFB_BAY,Baylor,"Waco, TX",B12,East,31.558700,-97.115601,1
-50201,5,BC,CFB_BC,Boston,"Chestnut Hill, MA",ACC,,42.335100,-71.166496,1
-50703,5,BGSU,CFB_BGSU,Bowling Green,"Bowling Green, OH",MAC,,41.378100,-83.622498,1
-50802,5,BOIS,CFB_BOIS,Boise State,"Boise, ID",MTNW,,43.602700,-116.195999,1
-50704,5,BUFF,CFB_BUFF,Buffalo,"Orchard Park, NY",MAC,,42.999100,-78.777496,1
-50404,5,BYU,CFB_BYU,Brigham Young,"Provo, UT",B12,Central,40.257500,-111.653999,1
-50202,5,CAL,CFB_CAL,California,"Berkeley, CA",ACC,,37.870700,-122.250999,1
-51103,5,CCU,CFB_CCU,Coastal Carolina,"Conway, SC",SUNB,,33.792200,-79.017303,1
-50102,5,CHAR,CFB_CHAR,Charlotte,"Charlotte, NC",AAC,,35.310300,-80.740501,1
-50405,5,CIN,CFB_CIN,Cincinnati,"Cincinnati, OH",B12,,39.131300,-84.516296,1
-50203,5,CLEM,CFB_CLEM,Clemson,"Clemson, SC",ACC,,34.678700,-82.843201,1
-50705,5,CMU,CFB_CMU,Central Michigan,"Mount Pleasant, MI",MAC,,43.577600,-84.770798,1
-50406,5,COLO,CFB_COLO,Colorado,"Boulder, CO",B12,Central,40.009400,-105.266998,1
-50601,5,CONN,CFB_CONN,Connecticut,"Storrs, CT",IND,,41.759900,-72.618896,1
-50803,5,CSU,CFB_CSU,Colorado State,"Fort Collins, CO",MTNW,Central,40.561700,-105.139999,1
-50204,5,DUKE,CFB_DUKE,Duke,"Durham, NC",ACC,,35.995300,-78.941704,1
-50103,5,ECU,CFB_ECU,East Carolina,"Greensville, NC",AAC,,35.596400,-77.365196,1
-50706,5,EMU,CFB_EMU,Eastern Michigan,"Ypsilanti, MI",MAC,,42.255800,-83.647797,1
-50104,5,FAU,CFB_FAU,Florida Atlantic,"Boca Raton, FL",AAC,,26.375500,-80.101700,1
-50501,5,FIU,CFB_FIU,Florida International,"Miami, FL",CUSA,,25.752500,-80.377899,1
-51004,5,FLA,CFB_FLA,Florida,"Gainesville, FL",SEC,Central,29.649900,-82.348701,1
-50804,5,FRES,CFB_FRES,Fresno State,"Fresno, CA",MTNW,,36.814300,-119.758003,1
-50205,5,FSU,CFB_FSU,Florida State,"Tallahassee, FL",ACC,East,30.437500,-84.304497,1
-51015,5,UGA,CFB_UGA,Georgia,"Athens, GA",SEC,,33.949800,-83.373398,1
-51104,5,GASO,CFB_GASO,Georgia Southern,"Statesboro, GA",SUNB,,32.412200,-81.783203,1
-51105,5,GAST,CFB_GAST,Georgia State,"Atlanta, GA",SUNB,East,33.757600,-84.401100,1
-50206,5,GT,CFB_GT,Georgia Tech,"Atlanta, GA",ACC,Central,33.772600,-84.392899,1
-50805,5,HAW,CFB_HAW,Hawaii,"Honolulu, HI",MTNW,,21.372800,-157.929993,1
-50414,5,HOU,CFB_HOU,Houston,"Houston, TX",B12,,29.721800,-95.349098,1
-50303,5,IOWA,CFB_IOWA,Iowa,"Iowa City, IA",B10,,41.658400,-91.551498,1
-50407,5,ISU,CFB_ISU,Iowa State,"Ames, IA",B12,Central,42.014000,-93.635803,1
-50301,5,ILL,CFB_ILL,Illinois,"Champaign, IL",B10,East,40.099300,-88.236000,1
-50302,5,IND,CFB_IND,Indiana,"Bloomington, IN",B10,,39.180900,-86.525597,1
-51106,5,JMU,CFB_JMU,James Madison,"Harrisonburg, VA",SUNB,,38.435100,-78.873398,1
-50502,5,JVST,CFB_JVST,Jacksonville State,"Jacksonville, AL",CUSA,,32.329600,-90.179802,1
-50503,5,KENN,CFB_KENN,Kennesaw State,"Kennesaw, GA",CUSA,,34.023400,-84.615501,1
-50707,5,KENT,CFB_KENT,Kent State,"Kent, OH",MAC,,41.139100,-81.313400,1
-50409,5,KU,CFB_KU,Kansas,"Lawrence, KS",B12,,38.962900,-95.246300,1
-50408,5,KSU,CFB_KSU,Kansas State,"Manhattan, KS",B12,,39.201900,-96.593803,1
-51005,5,UK,CFB_UK,Kentucky,"Lexington, KY",SEC,,38.022600,-84.505203,1
-51107,5,UL,CFB_UL,Louisiana,"Lafayette, LA",SUNB,,30.215800,-92.016296,1
-50505,5,LAT,CFB_LAT,Louisiana Tech,"Ruston, LA",CUSA,,32.532200,-92.655998,1
-50504,5,LIB,CFB_LIB,Liberty,"Lynchburg, VA",CUSA,,37.354400,-79.175003,1
-50207,5,LOU,CFB_LOU,Louisville,"Louisville, KY",ACC,Pacific,38.205400,-85.758102,1
-51006,5,LSU,CFB_LSU,Louisiana State,"Baton Rouge, LA",SEC,East,30.412000,-91.183800,1
-50602,5,MASS,CFB_MASS,Massachusetts,"Amherst, MA",IND,,42.377500,-72.535599,1
-51108,5,MRSH,CFB_MRSH,Marshall,"Huntington, WV",SUNB,,38.424900,-82.421898,1
-50304,5,MD,CFB_MD,Maryland,"College Park, MD",B10,,38.991200,-76.947304,1
-50105,5,MEM,CFB_MEM,Memphis,"Memphis, TN",AAC,,35.120900,-89.978104,1
-50307,5,MICH,CFB_MICH,Michigan,"Ann Arbor, MI",B10,,42.265900,-83.748703,1
-50208,5,MIA,CFB_MIA,Miami (FL),"Miami, FL",ACC,,25.957900,-80.238800,1
-50708,5,MIOH,CFB_MIOH,Miami (OH),"Oxford, OH",MAC,,39.519400,-84.733398,1
-50306,5,MSU,CFB_MSU,Michigan State,"East Lansing, MI",B10,,42.728200,-84.484901,1
-50305,5,MINN,CFB_MINN,Minnesota,"Minneapolis, MN",B10,,44.976500,-93.224602,1
-51007,5,MIZ,CFB_MIZ,Missouri,"Columbia, MO",SEC,Central,38.935900,-92.333099,1
-51010,5,MISS,CFB_MISS,Ole Miss,"Oxford, MS",SEC,,34.362200,-89.534103,1
-51008,5,MSST,CFB_MSST,Mississippi State,"Starkville, MS",SEC,Central,33.456200,-88.793404,1
-50506,5,MTSU,CFB_MTSU,Middle Tennessee State,"Murfreesboro, TN",CUSA,,35.851100,-86.368401,1
-50106,5,NAVY,CFB_NAVY,Navy,"Annapolis, MD",AAC,,38.984800,-76.507103,1
-50209,5,UNC,CFB_UNC,North Carolina,"Chapel Hill, NC",ACC,Central,35.907000,-79.047897,1
-50210,5,NCST,CFB_NCST,North Carolina State,"Raleigh, NC",ACC,Central,35.800800,-78.719498,1
-50603,5,ND,CFB_ND,Notre Dame,"South Bend, IN",IND,,41.698400,-86.233803,1
-50308,5,NEB,CFB_NEB,Nebraska,"Lincoln, NE",B10,,40.820500,-96.705704,1
-50709,5,NIU,CFB_NIU,Northern Illinois,"DeKalb, IL",MAC,,41.934000,-88.778198,1
-50806,5,UNM,CFB_UNM,New Mexico,"Albuquerque, NM",MTNW,,32.279800,-106.740997,1
-50507,5,NMSU,CFB_NMSU,New Mexico State,"Las Cruces, NM",CUSA,,35.067600,-106.627998,1
-50107,5,UNT,CFB_UNT,North Texas,"Denton, TX",AAC,,33.203900,-97.159203,1
-50807,5,NEV,CFB_NEV,Nevada,"Reno, NV",MTNW,,39.546900,-119.818001,1
-50309,5,NW,CFB_NW,Northwestern,"Evanston, IL",B10,,42.065400,-87.692497,1
-50710,5,OHIO,CFB_OHIO,Ohio,"Athens, OH",MAC,,39.321300,-82.103401,1
-50311,5,OSU,CFB_OSU,Ohio State,"Columbus, OH",B10,,40.001700,-83.019699,1
-51009,5,OU,CFB_OU,Oklahoma,"Norman, OK",SEC,Pacific,35.205900,-97.442596,1
-50410,5,OKST,CBB_OKST,Oklahoma State,"Stillwater, OK",B12,,36.125700,-97.066498,1
-51109,5,ODU,CFB_ODU,Old Dominion,"Norfolk, VA",SUNB,,36.888800,-76.305702,1
-50310,5,ORE,CFB_ORE,Oregon,"Eugene, OR",B10,,44.058300,-123.069000,1
-50901,5,ORST,CFB_ORST,Oregon State,"Corvallis, OR",P12,,44.559500,-123.280998,1
-50211,5,PITT,CFB_PITT,Pittsburgh,"Pittsburgh, PA",ACC,,40.446800,-80.015800,1
-50312,5,PSU,CFB_PSU,Penn State,"State College, PA",B10,,40.812200,-77.856201,1
-50313,5,PUR,CFB_PUR,Purdue,"West Lafayette, IN",B10,,40.434300,-86.918503,1
-50108,5,RICE,CFB_RICE,Rice,"Houston, TX",AAC,,29.716200,-95.409302,1
-50314,5,RUTG,CFB_RUTG,Rutgers,"New Brunswick, NJ",B10,,40.513800,-74.464996,1
-50508,5,SHSU,CFB_SHSU,Sam Houston,"Huntsville, TX",CUSA,,30.713900,-95.541901,1
-51011,5,SC,CFB_SC,South Carolina,"Columbia, SC",SEC,,33.972600,-81.020203,1
-50808,5,SDSU,CFB_SDSU,San Diego State,"San Diego, CA",MTNW,,32.783100,-117.120003,1
-50809,5,SJSU,CFB_SJSU,San Jose State,"San Jose, CA",MTNW,,37.320100,-121.867996,1
-50212,5,SMU,CFB_SMU,Southern Methodist,"Dallas, TX",ACC,,32.837700,-96.782700,1
-51110,5,USM,CFB_USM,Southern Mississippi,"Hattiesburg, MS",SUNB,,31.329000,-89.331299,1
-50213,5,STAN,CFB_STAN,Stanford,"Stanford, CA",ACC,Central,37.434700,-122.161003,1
-50214,5,SYR,CFB_SYR,Syracuse,"Syracuse, NY",ACC,East,43.036100,-76.136497,1
-50000,5,TBD,CFB_TBD,Unknown School,,,,,,1
-50411,5,TCU,CFB_TCU,Texas Christian,"Fort Worth, TX",B12,,32.709900,-97.367996,1
-50109,5,TEM,CFB_TEM,Temple,"Philadelphia, PA",AAC,,39.900700,-75.167503,1
-51012,5,TENN,CFB_TENN,Tennessee,"Knoxville, TN",SEC,,35.954700,-83.925301,1
-50711,5,TOL,CFB_TOL,Toledo,"Toledo, OH",MAC,,41.657400,-83.613998,1
-51111,5,TROY,CFB_TROY,Troy,"Troy, AL",SUNB,,31.799500,-85.952202,1
-50110,5,TULN,CFB_TULN,Tulane,"New Orleans, LA",AAC,,29.945900,-90.115196,1
-50111,5,TLSA,CFB_TLSA,Tulsa,"Tulsa, OK",AAC,,36.148900,-95.943604,1
-51013,5,TEX,CFB_TEX,Texas,"Austin, TX",SEC,,30.283600,-97.732300,1
-51014,5,TXAM,CFB_TXAM,Texas A&M,"College Station, TX",SEC,,30.610100,-96.340698,1
-51112,5,TXST,CFB_TXST,Texas State,"San Marcos, TX",SUNB,,29.891300,-97.925301,1
-50412,5,TTU,CFB_TTU,Texas Tech,"Lubbock, TX",B12,,33.591000,-101.873001,1
-50112,5,UAB,CFB_UAB,Alabama Birmingham,"Birmingham, AL",AAC,,33.528000,-86.809196,1
-50413,5,UCF,CFB_UCF,Central Florida,"Orlando, FL",B12,,28.608000,-81.193001,1
-50315,5,UCLA,CFB_UCLA,California Los Angeles,"Los Angeles, CA",B10,,34.161600,-118.167999,1
-51113,5,ULM,CFB_ULM,Louisiana-Monroe,"Monroe, LA",SUNB,,32.531100,-92.066399,1
-50810,5,UNLV,CFB_UNLV,Nevada Las Vegas,"Las Vegas, NV",MTNW,,36.086000,-115.016998,1
-51114,5,USA,CFB_USA,South Alabama,"Mobile, AL",SUNB,,30.674200,-88.075600,1
-50316,5,USC,CFB_USC,Southern California,"Los Angeles, CA",B10,,34.014000,-118.288002,1
-50113,5,USF,CFB_USF,South Florida,"Tampa, FL",AAC,,27.976000,-82.503304,1
-50415,5,UTAH,CFB_UTAH,Utah,"Salt Lake City, UT",B12,,40.759900,-111.848999,1
-50509,5,UTEP,CFB_UTEP,Texas El Paso,"El Paso, TX",CUSA,,31.773300,-106.508003,1
-50114,5,UTSA,CFB_UTSA,Texas San Antonio,"San Antonio, TX",AAC,,29.416900,-98.478897,1
-50811,5,USU,CFB_USU,Utah State,"Logan, UT",MTNW,,41.751500,-111.811996,1
-50215,5,UVA,CFB_UVA,Virginia,"Charlottesville, VA",ACC,,38.031100,-78.513702,1
-51016,5,VAN,CFB_VAN,Vanderbilt,"Nashville, TN",SEC,,36.143600,-86.808800,1
-50216,5,VT,CFB_VT,Virginia Tech,"Blacksburg, VA",ACC,,37.220000,-80.418098,1
-50317,5,WASH,CFB_WASH,Washington,"Seattle, WA",B10,,47.650400,-122.303001,1
-50902,5,WSU,CFB_WSU,Washington State,"Pullman, WA",P12,,46.732000,-117.161003,1
-50217,5,WAKE,CFB_WAKE,Wake Forest,"Winston-Salem, NC",ACC,East,36.091800,-80.255302,1
-50318,5,WIS,CFB_WIS,Wisconsin,"Madison, WI",B10,,43.069900,-89.412804,1
-50510,5,WKU,CFB_WKU,Western Kentucky,"Bowling Green, KY",CUSA,Atlantic,36.984900,-86.459000,1
-50712,5,WMU,CFB_WMU,Western Michigan,"Kalamazoo, MI",MAC,,42.285800,-85.600998,1
-50416,5,WVU,CFB_WVU,West Virginia,"Morgantown, WV",B12,,39.652200,-79.955200,1
-50812,5,WYO,CFB_WYO,Wyoming,"Laramie, WY",MTNW,,41.311900,-105.569000,1
-62001,6,AF,CBB_AF,Air Force,"Colorado Springs, CO",MTNW,,38.996900,-104.844002,0
-61701,6,AKR,CBB_AKR,Akron,"Akron, OH",MAC,,41.072600,-81.508400,0
-60401,6,ALB,CBB_ALB,Albany (NY),"Albany, NY",AEC,,42.684000,-73.825500,0
-62901,6,ALST,CBB_ALST,Alabama State,"Montgomery, AL",SWAC,,32.362400,-86.293900,0
-60501,6,AP,CBB_AP,Austin Peay,"Clarksville, TN",ASUN,,36.535400,-87.352898,0
-62801,6,APP,CBB_APP,Appalachian State,"Boone, NC",SUNB,,36.211500,-81.685501,0
-62402,6,AR,CBB_AR,Arkansas,"Fayetteville, AR",SEC,,36.067900,-94.178802,0
-62403,6,AUB,CBB_AUB,Auburn,"Auburn, AL",SEC,,32.602400,-85.488899,0
-60701,6,AZ,CBB_AZ,Arizona,"Tucson, AZ",B12,,32.228300,-110.948997,0
-60702,6,AZST,CBB_AZST,Arizona State,"Tempe, AZ",B12,,33.426400,-111.932999,0
-61702,6,BALL,CBB_BALL,Ball State,"Muncie, IN",MAC,,40.216000,-85.417702,0
-62401,6,BAMA,CBB_BAMA,Alabama,"Tuscaloosa, AL",SEC,,33.207500,-87.550400,0
-60703,6,BAY,CBB_BAY,Baylor,"Waco, TX",B12,,31.558700,-97.115601,0
-60301,6,BC,CBB_BC,Boston College,"Chestnut Hill, MA",ACC,,42.335100,-71.166496,0
-61901,6,BEL,CBB_BEL,Belmont,"Nashville, TN",MVAL,Central,36.133100,-86.793503,0
-62002,6,BOI,CBB_BOI,Boise State,"Boise, ID",MTNW,,43.602700,-116.195999,0
-61902,6,BRAD,CBB_BRAD,Bradley,"Peoria, IL",MVAL,Southeast,40.697600,-89.615700,0
-62301,6,BUCK,CBB_BUCK,Bucknell,"Lewisburg, PA",PAT,Atlantic,40.955500,-76.885498,0
-61703,6,BUF,CBB_BUF,Buffalo,"Buffalo, NY",MAC,,42.999100,-78.777496,0
-60801,6,BUT,CBB_BUT,Butler,"Indianapolis, IN",BEAST,,39.838700,-86.171600,0
-60704,6,BYU,CBB_BYU,Brigham Young,"Provo, UT",B12,,40.257500,-111.653999,0
-60302,6,CAL,CBB_CAL,California,"Berkeley, CA",ACC,,37.870700,-122.250999,0
-62802,6,CC,CBB_CC,Coastal Carolina,"Conway, SC",SUNB,,33.792200,-79.017303,0
-62101,6,CCST,CBB_CCST,Central Connecticut State,"New Britain, CT",NE,,41.692700,-72.764000,0
-60201,6,CHAR,CBB_CHAR,Charlotte,"Charlotte, NC",AAC,,35.310300,-80.740501,0
-62501,6,CHAT,CBB_CHAT,Chattanooga,"Chattanooga, TN",SO,Atlantic,35.045300,-85.294899,0
-60705,6,CIN,CBB_CIN,Cincinnati,"Cincinnati, OH",B12,,39.131300,-84.516296,0
-60303,6,CLEM,CBB_CLEM,Clemson,"Clemson, SC",ACC,,34.678700,-82.843201,0
-61401,6,CLST,CBB_CLST,Cleveland State,"Cleveland, OH",HZ,,41.502900,-81.675102,0
-61704,6,CMU,CBB_CMU,Central Michigan,"Mount Pleasant, MI",MAC,Pacific,43.582300,-84.776802,0
-60706,6,CO,CBB_CO,Colorado,"Boulder, CO",B12,,40.009400,-105.266998,0
-60802,6,CONN,CBB_CONN,Connecticut,"Storrs, CT",BEAST,,41.759900,-72.618896,0
-61801,6,COP,CBB_COP,Coppin State,"Baltimore, MD",MEAC,,39.313400,-76.658096,0
-61501,6,CORN,CBB_CORN,Cornell,"Ithaca, NY",IVY,,42.454200,-76.473297,0
-62003,6,COST,CBB_COST,Colorado State,"Fort Collins, CO",MTNW,,40.561700,-105.139999,0
-60803,6,CREI,CBB_CREI,Creighton,"Omaha, NE",BEAST,,41.265800,-95.945503,0
-62902,6,CRNS,CBB_CRNS,Alcorn State,"Lorman, MS",SWAC,,31.874700,-91.134804,0
-61101,6,CSFU,CBB_CSFU,Cal State Fullerton,"Fullerton, CA",BW,,33.881700,-117.885002,0
-61102,6,CSNR,CBB_CSNR,Cal State Northridge,"Northridge, CA",BW,,34.240100,-118.530998,0
-60101,6,DAVE,CBB_DAVE,Davidson,"Davidson, NC",A10,,35.499000,-80.841904,0
-60102,6,DAY,CBB_DAY,Dayton,"Dayton, OH",A10,,39.739600,-84.178200,0
-61201,6,DE,CBB_DE,Delaware,"Newark, DE",CAA,,39.680400,-75.752800,0
-60804,6,DEPA,CBB_DEPA,DePaul,"Chicago, IL",BEAST,,41.877600,-87.627701,0
-61402,6,DMER,CBB_DMER,Detroit Mercy,"Detroit, MI",HZ,,42.414200,-83.138100,0
-61903,6,DRAK,CBB_DRAK,Drake,"Des Moines, IA",MVAL,Southeast,41.603100,-93.654800,0
-60304,6,DUKE,CBB_DUKE,Duke,"Durham, NC",ACC,,35.995300,-78.941704,0
-62201,6,EIL,CBB_EIL,Eastern Illinois,"Charleston, IL",OVAL,East,39.484000,-88.175499,0
-60502,6,EKY,CBB_EKY,Eastern Kentucky,"Richmond, KY",ASUN,Pacific,37.735500,-84.299500,0
-62502,6,ETST,CBB_ETST,East Tennessee State,"Johnson City, TN",SO,Atlantic,36.302200,-82.370300,0
-61001,6,EWA,CBB_EWA,Eastern Washington,"Cheney, WA",BSKY,,47.490900,-117.584999,0
-60202,6,FAU,CBB_FAU,Florida Atlantic,"Boca Raton, FL",AAC,,26.375500,-80.101700,0
-62102,6,FDU,CBB_FDU,Fairleigh Dickinson,"Teaneck, NJ",NE,,40.898900,-74.028397,0
-62404,6,FL,CBB_FL,Florida,"Gainesville, FL",SEC,,29.649900,-82.348701,0
-62903,6,FLAM,CBB_FLAM,Florida A&M,"Tallahassee, FL",SWAC,,30.422000,-84.288200,0
-60503,6,FLGC,CBB_FLGC,Florida Gulf Coast,"Fort Myers, FL",ASUN,,26.463300,-81.778702,0
-62004,6,FRST,CBB_FRST,Fresno State,"Fresno, CA",MTNW,,36.814300,-119.758003,0
-60305,6,FSU,CBB_FSU,Florida State,"Tallahassee, FL",ACC,,30.437500,-84.304497,0
-62405,6,GA,CBB_GA,Georgia,"Athens, GA",SEC,,33.949800,-83.373398,0
-62803,6,GAST,CBB_GAST,Georgia State,"Atlanta, GA",SUNB,,33.757600,-84.401100,0
-61403,6,GB,CBB_GB,Green Bay,"Green Bay, WI",HZ,,44.305000,-88.344002,0
-60103,6,GM,CBB_GM,George Mason,"Fairfax, VA",A10,,38.831700,-77.310402,0
-63001,6,GONZ,CBB_GONZ,Gonzaga,"Spokane, WA",WC,,47.666100,-117.401001,0
-60306,6,GT,CBB_GT,Georgia Tech,"Atlanta, GA",ACC,,33.772600,-84.392899,0
-60805,6,GTWN,CBB_GT,Georgetown,"Washington, DC",BEAST,,33.772600,-84.392899,0
-60104,6,GW,CBB_GW,George Washington,"Washington, DC",A10,,38.899500,-77.047600,0
-61202,6,HAMP,CBB_HAMP,Hampton,"Hampton, VA",CAA,,37.023300,-76.333603,0
-61502,6,HARV,CBB_HARV,Harvard,"Boston, MA",IVY,,42.374100,-71.116402,0
-62302,6,HC,CBB_HC,Holy Cross,"Worcester, MA",PAT,Atlantic,42.239300,-71.809097,0
-61103,6,HI,CBB_HI,Hawaii,"Honolulu, HI",BW,,21.372800,-157.929993,0
-61203,6,HOF,CBB_HOF,Hofstra,"Hempstead, NY",CAA,,40.717300,-73.599297,0
-60707,6,HOU,CBB_HOU,Houston,"Houston, TX",B12,,29.750800,-95.362198,0
-60601,6,IA,CBB_IA,Iowa,"Iowa City, IA",B10,,41.658400,-91.551498,0
-60708,6,IAST,CBB_IAST,Iowa State,"Ames, IA",B12,,42.014000,-93.635803,0
-60602,6,IL,CBB_IL,Illinois,"Champaign, IL",B10,,40.099300,-88.236000,0
-61404,6,ILCH,CBB_ILCH,Illinois-Chicago,"Chicago, IL",HZ,,41.868700,-87.647903,0
-60603,6,IN,CBB_IN,Indiana,"Bloomington, IN",B10,,39.180900,-86.525597,0
-61904,6,INST,CBB_INST,Indiana State,"Terre Haute, IN",MVAL,Southeast,39.471000,-87.408302,0
-61601,6,IONA,CBB_IONA,Iona,"New Rochelle, NY",MAA,,40.927500,-73.785896,0
-62904,6,JACK,CBB_JACK,Jackson State,"Jackson, MS",SWAC,,32.297300,-90.207100,0
-62804,6,JMU,CBB_JMU,James Madison,"Harrisonburg, VA",SUNB,,38.435100,-78.873398,0
-61705,6,KENT,CBB_KENT,Kent State,"Kent, OH",MAC,,41.139100,-81.313400,0
-60709,6,KS,CBB_KS,Kansas,"Lawrence, KS",B12,,38.962900,-95.246300,0
-60710,6,KSST,CBB_KSST,Kansas State,"Manhattan, KS",B12,,39.201900,-96.593803,0
-62406,6,KY,CBB_KY,Kentucky,"Lexington, KY",SEC,,38.022600,-84.505203,0
-62805,6,LA,CBB_LA,Louisiana,"Lafayette, LA",SUNB,,30.215800,-92.016296,0
-62303,6,LAF,CBB_LAF,Lafayette,"Easton, PA",PAT,Atlantic,34.038900,-84.582100,0
-62601,6,LAMR,CBB_LAMR,Lamar,"Beaumont, TX",SOLA,West,30.041800,-94.074799,0
-60105,6,LASA,CBB_LASA,La Salle,"Philadelphia, PA",A10,,40.039000,-75.156403,0
-61104,6,LBSU,CBB_LBSU,Long Beach State,"Long Beach, CA",BW,,33.783800,-118.113998,0
-62304,6,LEHI,CBB_LEHI,Lehigh,"Bethlehem, PA",PAT,,40.605500,-75.377701,0
-61301,6,LIB,CBB_LIB,Liberty,"Lynchburg, VA",CUSA,,37.354400,-79.175003,0
-62103,6,LIU,CBB_LIU,Long Island,"Brooklyn, NY",NE,,40.689900,-73.981400,0
-60106,6,LOIL,CBB_LOIL,Loyola (IL),"Chicago, IL",A10,,41.999400,-87.655800,0
-62305,6,LOMD,CBB_LOMD,Loyola (MD),"Baltimore, MD",PAT,,39.347200,-76.617203,0
-60307,6,LOU,CBB_LOU,Louisville,"Louisville, KY",ACC,,38.205400,-85.758102,0
-62407,6,LSU,CBB_LSU,Louisiana State,"Baton Rouge, LA",SEC,,30.412000,-91.183800,0
-60112,6,MA,CBB_MA,Massachusetts,"Amherst, MA",A10,,42.377500,-72.535599,0
-61602,6,MAN,CBB_MAN,Manhattan,"Riverdale, NY",MAA,,40.889400,-73.901802,0
-60806,6,MARQ,CBB_MARQ,Marquette,"Milwaukee, WI",BEAST,,43.038700,-87.931297,0
-62602,6,MCNE,CBB_MCNE,McNeese State,"Lake Charles, LA",SOLA,,30.177200,-93.215500,0
-60604,6,MD,CBB_MD,Maryland,"College Park, MD",B10,,38.991200,-76.947304,0
-60203,6,MEM,CBB_MEM,Memphis,"Memphis, TN",AAC,,35.120900,-89.978104,0
-62503,6,MERC,CBB_MERC,Mercer,"Macon, GA",SO,Metropolitan,32.828300,-83.649200,0
-60605,6,MI,CBB_MI,Michigan,"Ann Arbor, MI",B10,,42.265900,-83.748703,0
-60314,6,MIA,CBB_MIA,Miami (FL),"Coral Gables, FL",ACC,,25.781400,-80.188103,0
-61405,6,MILW,CBB_MILW,Milwaukee,"Milwaukee, WI",HZ,,43.078600,-87.882500,0
-61706,6,MIOH,CBB_MIOH,Miami (OH),"Oxford, OH",MAC,,39.519400,-84.733398,0
-60606,6,MIST,CBB_MIST,Michigan State,"East Lansing, MI",B10,,42.728200,-84.484901,0
-60607,6,MN,CBB_MN,Minnesota,"Minneapolis, MN",B10,,44.976500,-93.224602,0
-62408,6,MO,CBB_MO,Missouri,"Columbia, MO",SEC,,38.935900,-92.333099,0
-61204,6,MON,CBB_MON,Monmouth,"West Long Branch, NJ",CAA,,40.279800,-74.005898,0
-62202,6,MORE,CBB_MORE,Morehead State,"Morehead, KY",OVAL,Atlantic,38.188800,-83.431396,0
-61802,6,MORG,CBB_MORG,Morgan State,"Baltimore, MD",MEAC,,39.343600,-76.584000,0
-62306,6,MRCA,CBB_MRCA,American,"Washington, DC",PAT,,38.938300,-77.089996,0
-62409,6,MS,CBB_MS,Ole Miss,"Oxford, MS",SEC,,34.362200,-89.534103,0
-62410,6,MSST,CBB_MSST,Mississippi State,"Starkville, MS",SEC,,33.456200,-88.793404,0
-61603,6,MSTM,CBB_MSTM,Mount St. Mary's,"Emmitsburg, MD",MAA,,39.679000,-77.347099,0
-62905,6,MSVS,CBB_MSVS,Mississippi Valley State,"Itta Bena, MS",SWAC,,33.513200,-90.342796,0
-61002,6,MT,CBB_MT,Montana,"Missoula, MT",BSKY,,46.862200,-113.986000,0
-61302,6,MTST,CBB_MTST,Middle Tennessee,"Murfreesboro, TN",CUSA,,35.851100,-86.368401,0
-61905,6,MURR,CBB_MURR,Murray State,"Murray, KY",MVAL,East,36.615900,-88.321297,0
-61003,6,NAZ,CBB_NAZ,Northern Arizona,"Flagstaff, AZ",BSKY,,35.180200,-111.654999,0
-60308,6,NC,CBB_NC,North Carolina,"Chapel Hill, NC",ACC,,35.907000,-79.047897,0
-61803,6,NCAT,CBB_NCAT,North Carolina A&T,"Greensboro, NC",MEAC,Metropolitan,36.079000,-79.773697,0
-61804,6,NCC,CBB_NCC,North Carolina Central,"Durham, NC",MEAC,Metropolitan,35.974800,-78.899300,0
-60309,6,NCST,CBB_NCST,North Carolina State,"Raleigh, NC",ACC,,35.800800,-78.719498,0
-60310,6,ND,CBB_ND,Notre Dame,"South Bend, IN",ACC,,41.698400,-86.233803,0
-62701,6,NDSU,CBB_NDSU,North Dakota State,"Fargo, ND",SUM,,46.895100,-96.802803,0
-60608,6,NE,CBB_NE,Nebraska,"Lincoln, NE",B10,,42.091000,-71.264000,0
-61906,6,NIA,CBB_NIA,Northern Iowa,"Cedar Falls, IA",MVAL,East,42.511100,-92.464897,0
-61604,6,NIAG,CBB_NIAG,Niagara,"Niagara Falls, NY",MAA,Metropolitan,43.136800,-79.035599,0
-62005,6,NM,CBB_NM,New Mexico,"Albuquerque, NM",MTNW,,32.279800,-106.740997,0
-61303,6,NMST,CBB_NMST,New Mexico State,"Las Cruces, NM",CUSA,,35.067600,-106.627998,0
-61205,6,NOEA,CBB_NE,Northeastern,"Boston, MA",CAA,,42.091000,-71.264000,0
-61805,6,NRST,CBB_NRST,Norfolk State,"Norfolk, VA",MEAC,,36.848200,-76.262398,0
-60204,6,NTX,CBB_NTX,North Texas,"Denton, TX",AAC,,33.203900,-97.159203,0
-62006,6,NV,CBB_NV,Nevada,"Reno, NV",MTNW,,39.546900,-119.818001,0
-60609,6,NW,CBB_NW,Northwestern,"Evanston, IL",B10,,42.065400,-87.692497,0
-62603,6,NWST,CBB_NWST,Northwestern State,"Natchitoches, LA",SOLA,,31.748200,-93.098297,0
-61406,6,OAK,CBB_OAK,Oakland,"Rochester, MI",HZ,,37.751700,-122.200996,0
-61707,6,OH,CBB_OH,Ohio,"Athens, OH",MAC,,39.321300,-82.103401,0
-60610,6,OHST,CBB_OHST,Ohio State,"Columbus, OH",B10,,40.001700,-83.019699,0
-62411,6,OK,CBB_OK,Oklahoma,"Norman, OK",SEC,,35.205900,-97.442596,0
-60711,6,OKST,CBB_OKST,Oklahoma State,"Stillwater, OK",B12,,36.125700,-97.066498,0
-62806,6,OLD,CBB_OLD,Old Dominion,"Norfolk, VA",SUNB,,36.888800,-76.305702,0
-60611,6,OR,CBB_OR,Oregon,"Eugene, OR",B10,,44.058300,-123.069000,0
-62702,6,ORAL,CBB_ORAL,Oral Roberts,"Tulsa, OK",SUM,,36.049900,-95.952698,0
-63002,6,ORST,CBB_ORST,Oregon State,"Corvallis, OR",WC,,44.559500,-123.280998,0
-61503,6,PA,CBB_PA,Pennsylvania,"Philadelphia, PA",IVY,,39.952000,-75.194000,0
-63003,6,PAC,CBB_PAC,Pacific,"Stockton, CA",WC,,37.979300,-121.313004,0
-63004,6,PEP,CBB_PEP,Pepperdine,"Malibu, CA",WC,,34.041000,-118.709999,0
-60311,6,PITT,CBB_PITT,Pittsburgh,"Pittsburgh, PA",ACC,,40.446800,-80.015800,0
-61004,6,POST,CBB_POST,Portland State,"Portland, OR",BSKY,,45.510800,-122.683998,0
-61504,6,PRIN,CBB_PRIN,Princeton,"Princeton, NJ",IVY,,40.341200,-74.655899,0
-60807,6,PROV,CBB_PROV,Providence,"Providence, RI",BEAST,,41.822500,-71.413300,0
-60612,6,PSU,CBB_PSU,Penn State,"State College, PA",B10,,40.812200,-77.856201,0
-60613,6,PUR,CBB_PUR,Purdue,"West Lafayette, IN",B10,,40.434300,-86.918503,0
-60901,6,RAD,CBB_RAD,Radford,"Radford, VA",BS,,37.138500,-80.551300,0
-60107,6,RI,CBB_RI,Rhode Island,"Kingston, RI",A10,,41.485800,-71.530899,0
-60205,6,RICE,CBB_RICE,Rice,"Houston, TX",AAC,,29.716200,-95.409302,0
-60108,6,RICH,CBB_RICH,Richmond,"Richmond, VA",A10,,37.574900,-77.539902,0
-61407,6,RM,CBB_RM,Robert Morris,"Pittsburgh, PA",HZ,,40.521700,-80.213699,0
-60614,6,RUT,CBB_RUT,Rutgers,"New Brunswick, NJ",B10,,40.513800,-74.464996,0
-61304,6,SAM,CBB_SAM,Sam Houston,"Huntsville, TX",CUSA,West,30.713900,-95.541901,0
-62504,6,SAMF,CBB_SAMF,Samford,"Birmingham, AL",SO,,33.463900,-86.791100,0
-60109,6,SBON,CBB_SBON,St. Bonaventure,"St. Bonaventure, NY",A10,,42.079300,-78.482803,0
-62412,6,SC,CBB_SC,South Carolina,"Columbia, SC",SEC,,33.972600,-81.020203,0
-61806,6,SCST,CBB_SCST,South Carolina State,"Orangeburg, SC",MEAC,Central,33.498100,-80.850197,0
-63005,6,SD,CBB_SD,San Diego,"San Diego, CA",WC,,32.707300,-117.156998,0
-62007,6,SDST,CBB_SDST,San Diego State,"San Diego, CA",MTNW,,32.783100,-117.120003,0
-62703,6,SDSU,CBB_SDSU,South Dakota State,"Brookings, SD",SUM,,32.783100,-117.120003,0
-62203,6,SEMO,CBB_SEMO,Southeast Missouri State,"Cape Girardeau, MO",OVAL,Atlantic,37.314300,-89.528099,0
-60808,6,SETH,CBB_SETH,Seton Hall,"South Orange, NJ",BEAST,,40.743100,-74.246803,0
-62604,6,SFA,CBB_SFA,Stephen F. Austin,"Nacogdoches, TX",SOLA,,31.621700,-94.647003,0
-61605,6,SIEN,CBB_SIEN,Siena,"Loudonville, NY",MAA,Metropolitan,42.718100,-73.752602,0
-60110,6,SJ,CBB_SJ,Saint Joseph's,"Philadelphia, PA",A10,,39.995200,-75.241096,0
-60809,6,SJON,CBB_SJON,St. John's (NY),"Queens, NY",BEAST,,40.721400,-73.796997,0
-60111,6,SL,CBB_SL,Saint Louis,"St. Louis, MO",A10,,38.636100,-90.234802,0
-63006,6,SMCA,CBB_SMCA,Saint Mary's (CA),"Moraga, CA",WC,,37.841300,-122.109001,0
-60206,6,SMU,CBB_SOME,Southern Methodist,"Dallas, TX",AAC,,32.840200,-96.781601,0
-62906,6,SO,CBB_SO,Southern,"Baton Rouge, LA",SWAC,,30.525500,-91.192101,0
-61907,6,SOIL,CBB_SOIL,Southern Illinois,"Carbondale, IL",MVAL,East,37.706500,-89.223000,0
-62807,6,SOMS,CBB_SOMS,Southern Mississippi,"Hattiesburg, MS",SUNB,,31.329000,-89.331299,0
-61606,6,SP,CBB_SP,Saint Peter's,"Jersey City, NJ",MAA,,40.727300,-74.070198,0
-60312,6,STAN,CBB_STAN,Stanford,"Stanford, CA",ACC,,37.434700,-122.161003,0
-60313,6,SYR,CBB_SYR,Syracuse,"Syracuse, NY",ACC,,43.036100,-76.136497,0
-62605,6,TACC,CBB_TACC,Texas A&M-Corpus Christi,"Corpus Christi, TX",SOLA,,27.713100,-97.326401,0
-60000,6,TBD,CBB_TBD,Unknown School,,,,,,0
-60712,6,TCU,CBB_TCU,Texas Cristian,"Fort Worth, TX",B12,,32.709900,-97.367996,0
-60207,6,TEMP,CBB_TEMP,Temple,"Philadelphia, PA",AAC,,39.900700,-75.167503,0
-62413,6,TN,CBB_TN,Tennessee,"Knoxville, TN",SEC,,35.954700,-83.925301,0
-62808,6,TROY,CBB_TROY,Troy,"Troy, AL",SUNB,,31.799500,-85.952202,0
-60208,6,TULS,CBB_TULS,Tulsa,"Tulsa, OK",AAC,,36.148900,-95.943604,0
-62414,6,TX,CBB_TX,Texas,"Austin, TX",SEC,,30.283600,-97.732300,0
-62415,6,TXAM,CBB_TXAM,Texas A&M,"College Station, TX",SEC,,30.610100,-96.340698,0
-62907,6,TXSO,CBB_TXSO,Texas Southern,"Houston, TX",SWAC,,29.721100,-95.359596,0
-60713,6,TXTC,CBB_TXTC,Texas Tech,"Lubbock, TX",B12,,33.591000,-101.873001,0
-60209,6,UAB,CBB_UAB,Alabama Birmingham,"Birmingham, AL",AAC,,33.528000,-86.809196,0
-60714,6,UCF,CBB_UCF,Central Florida,"Orlando, FL",B12,,28.608000,-81.193001,0
-60615,6,UCLA,CBB_UCLA,California Los Angeles,"Los Angeles, CA",B10,,34.161600,-118.167999,0
-60402,6,UMBC,CBB_UMBC,Maryland-Baltimore County,"Baltimore, MD",AEC,,39.255700,-76.711197,0
-62704,6,UND,CBB_UND,North Dakota,"Grand Forks, ND",SUM,,47.922300,-97.077103,0
-62008,6,UNLV,CBB_UNLV,Nevada Las Vegas,"Las Vegas, NV",MTNW,,36.086000,-115.016998,0
-62809,6,USA,CBB_USA,South Alabama,"Mobile, AL",SUNB,,30.674200,-88.075600,0
-60616,6,USC,CBB_USC,Southern California,"Los Angeles, CA",B10,,34.014000,-118.288002,0
-62705,6,USD,CBB_USD,South Dakota,"Vermillion, SD",SUM,,42.790300,-96.926102,0
-60210,6,USF,CBB_USF,South Florida,"Tampa, FL",AAC,,27.976000,-82.503304,0
-60715,6,UT,CBB_UT,Utah,"Salt Lake City, UT",B12,,40.759900,-111.848999,0
-61305,6,UTEP,CBB_UTEP,Texas El Paso,"El Paso, TX",CUSA,,31.773300,-106.508003,0
-60211,6,UTSA,CBB_UTSA,Texas San Antonio,"San Antonio, TX",AAC,,29.416900,-98.478897,0
-62009,6,UTST,CBB_UTST,Utah State,"Logan, UT",MTNW,,41.751500,-111.811996,0
-60315,6,VA,CBB_VA,Virginia,"Charlottesville, VA",ACC,,38.031100,-78.513702,0
-61908,6,VALP,CBB_VALP,Valparaiso,"Valparaiso, IN",MVAL,South,41.464300,-87.044197,0
-62416,6,VAND,CBB_VAND,Vanderbilt,"Nashville, TN",SEC,,36.143600,-86.808800,0
-60316,6,VATC,CBB_VATC,Virginia Tech,"Blacksburg, VA",ACC,,37.220000,-80.418098,0
-60113,6,VCU,CBB_VCU,Virginia Commonwealth,"Richmond, VA",A10,,37.544600,-77.432899,0
-60810,6,VILL,CBB_VILL,Villanova,"Villanova, PA",BEAST,,40.036800,-75.343002,0
-60403,6,VT,CBB_VT,Vermont,"Burlington, VT",AEC,,44.477600,-73.197098,0
-60617,6,WA,CBB_WA,Washington,"Seattle, WA",B10,,47.650400,-122.303001,0
-62104,6,WAG,CBB_WAG,Wagner,"Staten Island, NY",NE,,40.614200,-74.094101,0
-63007,6,WAST,CBB_WAST,Washington State,"Pullman, WA",WC,,46.732000,-117.161003,0
-61005,6,WEB,CBB_WEB,Weber State,"Ogden, UT",BSKY,,41.190700,-111.944000,0
-60317,6,WF,CBB_WF,Wake Forest,"Winston-Salem, NC",ACC,,36.091800,-80.255302,0
-60618,6,WI,CBB_WI,Wisconsin,"Madison, WI",B10,,43.069900,-89.412804,0
-60212,6,WICH,CBB_WICH,Wichita State,"Wichita, KS",AAC,,37.719000,-97.291199,0
-60902,6,WIN,CBB_WIN,Winthrop,"Rock Hill, SC",BS,,34.938900,-81.032600,0
-61306,6,WKY,CBB_WKY,Western Kentucky,"Bowling Green, KY",CUSA,,36.984900,-86.459000,0
-61708,6,WMI,CBB_WMI,Western Michigan,"Kalamazoo, MI",MAC,West,42.285800,-85.600998,0
-62505,6,WOFF,CBB_WOFF,Wofford,"Spartanburg, SC",SO,,34.958700,-81.935303,0
-61408,6,WST,CBB_WST,Wright State,"Dayton, OH",HZ,,39.779400,-84.066002,0
-60716,6,WV,CBB_WV,West Virginia,"Morgantown, WV",B12,,39.652200,-79.955200,0
-62010,6,WY,CBB_WY,Wyoming,"Laramie, WY",MTNW,,41.311900,-105.569000,0
-60811,6,X,CBB_X,Xavier,"Cincinnati, OH",BEAST,,39.149200,-84.473999,0
-61505,6,YALE,CBB_YALE,Yale,"New Haven, CT",IVY,,41.316000,-72.922302,0
-59001,5,IDHO,CFB_IDHO,Idaho,"Moscow, ID",FCS,BIG SKY,46.726000,-117.017000,1
-59002,5,PRST,CFB_PRST,Portland State,"Portland, OR",FCS,BIG SKY,45.555000,-122.907000,1
-59003,5,SAC,CFB_SAC,Sacramento State,"Sacramento, CA",FCS,BIG SKY,38.556000,-121.423000,1
-59004,5,UCD,CFB_UCD,UC Davis,"Davis, CA",FCS,BIG SKY,38.537000,-121.763000,1
-59005,5,EWU,CFB_EWU,Eastern Washington,"Cheney, WA",FCS,BIG SKY,47.493000,-117.587000,1
-59006,5,MTST,CFB_MTST,Montana State,"Bozeman, MT",FCS,BIG SKY,45.659000,-111.050000,1
-59007,5,WEB,CFB_WEB,Weber State,"Ogden, UT",FCS,BIG SKY,41.192000,-111.940000,1
-59008,5,CP,CFB_CP,Cal Poly,"San Luis Obispo, CA",FCS,BIG SKY,35.298000,-120.665000,1
-59009,5,MONT,CFB_MONT,Montana,"Missoula, MT",FCS,BIG SKY,46.864000,-113.982000,1
-59010,5,IDST,CFB_IDST,Idaho State,"Pocatello, ID",FCS,BIG SKY,42.870000,-112.428000,1
-59011,5,NAU,CFB_NAU,Northern Arizona,"Flagstaff, AZ",FCS,BIG SKY,35.181000,-111.653000,1
-59012,5,UNCO,CFB_UNCO,Northern Colorado,"Greeley, CO",FCS,BIG SKY,40.403000,-104.705000,1
-59013,5,GWEB,CFB_GWEB,Gardner-Webb,"Boiling Springs, NC",FCS,OVC,35.246000,-81.674000,1
-59014,5,LIN,CFB_LIN,Lindenwood,"Saint Charles, MO",FCS,OVC,38.795000,-90.520000,1
-59015,5,WIU,CFB_WIU,Western Illinois,"Macomb, IL",FCS,OVC,40.468000,-90.684000,1
-59016,5,CHSO,CFB_CHSO,Charleston Southern,"North Charleston, SC",FCS,OVC,32.981000,-80.066000,1
-59017,5,UTM,CFB_UTM,Tennessee-Martin,"Martin, TN",FCS,OVC,36.345000,-88.862000,1
-59018,5,SEMO,CFB_SEMO,Southeast Missouri,"Cape Girardeau, MO",FCS,OVC,37.303000,-89.523000,1
-59019,5,EIU,CFB_EIU,Eastern Illinois,"Charleston, IL",FCS,OVC,39.480000,-88.181000,1
-59020,5,TNTC,CFB_TNTC,Tennessee Tech,"Cookeville, TN",FCS,OVC,36.178000,-85.506000,1
-59021,5,TNST,CFB_TNST,Tennessee State,"Nashville, TN",FCS,OVC,36.166000,-86.771000,1
-59022,5,TOW,CFB_TOW,Towson,"Towson, MD",FCS,CAA,39.389000,-76.616000,1
-59023,5,W&M,CFB_W&M,William & Mary,"Williamsburg, VA",FCS,CAA,37.273000,-76.714000,1
-59024,5,VILL,CFB_VILL,Villanova,"Villanova, PA",FCS,CAA,40.034000,-75.337000,1
-59025,5,BRY,CFB_BRY,Bryant,"Smithfield, RI",FCS,CAA,41.924000,-71.539000,1
-59026,5,ALB,CFB_ALB,UAlbany,"Albany, NY",FCS,CAA,42.681000,-73.827000,1
-59027,5,ME,CFB_ME,Maine,"Orono, ME",FCS,CAA,44.905000,-68.672000,1
-59028,5,CAM,CFB_CAM,Campbell,"Buies Creek, NC",FCS,CAA,35.405000,-78.742000,1
-59029,5,STBK,CFB_STBK,Stony Brook,"Stony Brook, NY",FCS,CAA,40.919000,-73.124000,1
-59030,5,URI,CFB_URI,Rhode Island,"Kingston, RI",FCS,CAA,41.488000,-71.535000,1
-59031,5,ELON,CFB_ELON,Elon,"Elon, NC",FCS,CAA,36.110000,-79.508000,1
-59032,5,NCAT,CFB_NCAT,North Carolina A&T,"Greensboro, NC",FCS,CAA,36.081000,-79.770000,1
-59033,5,HAMP,CFB_HAMP,Hampton,"Hampton, VA",FCS,CAA,37.020000,-76.333000,1
-59034,5,UNH,CFB_UNH,New Hampshire,"Durham, NH",FCS,CAA,43.139000,-70.939000,1
-59035,5,MONM,CFB_MONM,Monmouth,"West Long Branch, NJ",FCS,CAA,40.279000,-74.009000,1
-59036,5,DEL,CFB_DEL,Delaware,"Newark, DE",CUSA,,39.662000,-75.749000,1
-59037,5,MOST,CFB_MOST,Missouri State,"Springfield, MO",CUSA,,37.198000,-93.280000,1
-59038,5,SHU,CFB_SHU,Sacred Heart,"Fairfield, CT",FCS,IND,41.221000,-73.242000,1
-59039,5,MRMK,CFB_MRMK,Merrimack,"North Andover, MA",FCS,IND,42.684000,-71.113000,1
-59040,5,BRWN,CFB_BRWN,Brown,"Providence, RI",FCS,IVY,41.842000,-71.394000,1
-59041,5,HARV,CFB_HARV,Harvard,"Boston, MA",FCS,IVY,42.367000,-71.127000,1
-59042,5,DART,CFB_DART,Dartmouth,"Hanover, NH",FCS,IVY,43.701000,-72.284000,1
-59043,5,COR,CFB_COR,Cornell,"Ithaca, NY",FCS,IVY,42.444000,-76.479000,1
-59044,5,COLU,CFB_COLU,Columbia,"Manhattan, NY",FCS,IVY,40.873000,-73.916000,1
-59045,5,PRIN,CFB_PRIN,Princeton,"Princeton, NJ",FCS,IVY,40.346000,-74.650000,1
-59046,5,YALE,CFB_YALE,Yale,"New Haven, CT",FCS,IVY,41.313000,-72.961000,1
-59047,5,PENN,CFB_PENN,Penn,"Philadelphia, PA",FCS,IVY,39.950000,-75.190000,1
-59048,5,HOW,CFB_HOW,Howard,"Washington, DC",FCS,MEAC,38.925000,-77.021000,1
-59049,5,NCCU,CFB_NCCU,North Carolina Central,"Durham, NC",FCS,MEAC,35.974000,-78.897000,1
-59050,5,NORF,CFB_NORF,Norfolk State,"Norfolk, VA",FCS,MEAC,36.847000,-76.260000,1
-59051,5,MORG,CFB_MORG,Morgan State,"Baltimore, MD",FCS,MEAC,39.344000,-76.583000,1
-59052,5,SCST,CFB_SCST,South Carolina State,"Orangeburg, SC",FCS,MEAC,33.499000,-80.845000,1
-59053,5,DSU,CFB_DSU,Delaware State,"Dover, DE",FCS,MEAC,39.189000,-75.543000,1
-59054,5,INST,CFB_INST,Indiana State,"Terre Haute, IN",FCS,MVFC,39.475000,-87.367000,1
-59055,5,ILST,CFB_ILST,Illinois State,"Normal, IL",FCS,MVFC,40.513000,-88.997000,1
-59056,5,MUR,CFB_MUR,Murray State,"Murray, KY",FCS,MVFC,36.622000,-88.318000,1
-59057,5,UND,CFB_UND,North Dakota,"Grand Forks, ND",FCS,MVFC,47.911000,-97.091000,1
-59058,5,NDSU,CFB_NDSU,North Dakota State,"Fargo, ND",FCS,MVFC,46.903000,-96.800000,1
-59059,5,UNI,CFB_UNI,Northern Iowa,"Cedar Falls, IA",FCS,MVFC,42.516000,-92.467000,1
-59060,5,SDAK,CFB_SDAK,South Dakota,"Vermillion, SD",FCS,MVFC,42.791000,-96.928000,1
-59061,5,SDST,CFB_SDST,South Dakota State,"Brookings, SD",FCS,MVFC,44.321000,-96.780000,1
-59062,5,SIU,CFB_SIU,Southern Illinois,"Carbondale, IL",FCS,MVFC,37.709000,-89.216000,1
-59063,5,YSU,CFB_YSU,Youngstown State,"Youngstown, OH",FCS,MVFC,41.109000,-80.650000,1
-59064,5,RMU,CFB_RMU,Robert Morris,"Moon Township, PA",FCS,NEC,40.521000,-80.216000,1
-59065,5,DUQ,CFB_DUQ,Duquesne,"Pittsburgh, PA",FCS,NEC,40.436000,-79.990000,1
-59067,5,WAG,CFB_WAG,Wagner,"Staten Island, NY",FCS,NEC,40.615000,-74.091000,1
-59068,5,CCSU,CFB_CCSU,Central Connecticut,"New Britain, CT",FCS,NEC,41.695000,-72.762000,1
-59069,5,STO,CFB_STO,Stonehill,"North Easton, MA",FCS,NEC,42.067000,-71.104000,1
-59070,5,MERC,CFB_MERC,Mercyhurst,"Erie, PA",FCS,NEC,42.129000,-80.085000,1
-59071,5,NH,CFB_NH,New Haven,"West Haven, CT",FCS,NEC,41.271000,-72.947000,1
-59072,5,SFPA,CFB_SFPA,Saint Francis PA,"Loretto, PA",FCS,NEC,40.506000,-78.637000,1
-59073,5,BUCK,CFB_BUCK,Bucknell,"Lewisburg, PA",FCS,PATRIOT,40.952000,-76.885000,1
-59074,5,HC,CFB_HC,Holy Cross,"Worcester, MA",FCS,PATRIOT,42.240000,-71.811000,1
-59075,5,GTWN,CFB_GTWN,Georgetown,"Washington, DC",FCS,PATRIOT,38.908000,-77.075000,1
-59076,5,FOR,CFB_FOR,Fordham,"Bronx, NY",FCS,PATRIOT,40.847000,-73.879000,1
-59077,5,RICH,CFB_RICH,Richmond,"Richmond, VA",FCS,PATRIOT,37.581000,-77.537000,1
-59078,5,COLG,CFB_COLG,Colgate,"Hamilton, NY",FCS,PATRIOT,42.817000,-75.545000,1
-59079,5,LAF,CFB_LAF,Lafayette,"Easton, PA",FCS,PATRIOT,40.701000,-75.211000,1
-59080,5,LEH,CFB_LEH,Lehigh,"Bethlehem, PA",FCS,PATRIOT,40.589000,-75.355000,1
-59081,5,MORE,CFB_MORE,Morehead State,"Morehead, KY",FCS,PIONEER,38.192000,-83.425000,1
-59082,5,BUT,CFB_BUT,Butler,"Indianapolis, IN",FCS,PIONEER,39.844000,-86.166000,1
-59083,5,VAL,CFB_VAL,Valparaiso,"Valparaiso, IN",FCS,PIONEER,41.466000,-87.048000,1
-59084,5,DRKE,CFB_DRKE,Drake,"Des Moines, IA",FCS,PIONEER,41.605000,-93.655000,1
-59085,5,DAY,CFB_DAY,Dayton,"Dayton, OH",FCS,PIONEER,39.737000,-84.198000,1
-59086,5,USD,CFB_USD,San Diego,"San Diego, CA",FCS,PIONEER,32.773000,-117.184000,1
-59087,5,DAV,CFB_DAV,Davidson,"Davidson, NC",FCS,PIONEER,35.500000,-80.843000,1
-59088,5,PRES,CFB_PRES,Presbyterian,"Clinton, SC",FCS,PIONEER,34.462000,-81.861000,1
-59089,5,MRST,CFB_MRST,Marist,"Poughkeepsie, NY",FCS,PIONEER,41.719000,-73.933000,1
-59090,5,STET,CFB_STET,Stetson,"DeLand, FL",FCS,PIONEER,29.021000,-81.299000,1
-59091,5,STMN,CFB_STMN,St Thomas (MN),"Saint Paul, MN",FCS,PIONEER,44.950000,-93.093000,1
-59092,5,CIT,CFB_CIT,The Citadel,"Charleston, SC",FCS,SOUTHERN,32.794000,-79.956000,1
-59093,5,FUR,CFB_FUR,Furman,"Greenville, SC",FCS,SOUTHERN,34.920000,-82.437000,1
-59094,5,ETSU,CFB_ETSU,ETSU,"Johnson City, TN",FCS,SOUTHERN,36.299000,-82.374000,1
-59095,5,MER,CFB_MER,Mercer,"Macon, GA",FCS,SOUTHERN,32.826000,-83.652000,1
-59096,5,VMI,CFB_VMI,VMI,"Lexington, VA",FCS,SOUTHERN,37.789000,-79.435000,1
-59097,5,WOF,CFB_WOF,Wofford,"Spartanburg, SC",FCS,SOUTHERN,34.962000,-81.933000,1
-59098,5,SAM,CFB_SAM,Samford,"Homewood, AL",FCS,SOUTHERN,33.463000,-86.795000,1
-59099,5,UTC,CFB_UTC,Chattanooga,"Chattanooga, TN",FCS,SOUTHERN,35.036000,-85.316000,1
-59100,5,WCU,CFB_WCU,Western Carolina,"Cullowhee, NC",FCS,SOUTHERN,35.305000,-83.182000,1
-59101,5,UIW,CFB_UIW,Incarnate Word,"San Antonio, TX",FCS,SOUTHLAND,29.467000,-98.470000,1
-59102,5,SFA,CFB_SFA,Stephen F. Austin,"Nacogdoches, TX",FCS,SOUTHLAND,31.626000,-94.644000,1
-59103,5,NICH,CFB_NICH,Nicholls State,"Thibodaux, LA",FCS,SOUTHLAND,29.787000,-90.805000,1
-59104,5,SELA,CFB_SELA,Southeastern Louisiana,"Hammond, LA",FCS,SOUTHLAND,30.511000,-90.469000,1
-59105,5,MCN,CFB_MCN,McNeese,"Lake Charles, LA",FCS,SOUTHLAND,30.180000,-93.218000,1
-59106,5,NWST,CFB_NWST,Northwestern State,"Natchitoches, LA",FCS,SOUTHLAND,31.747000,-93.096000,1
-59107,5,LAM,CFB_LAM,Lamar,"Beaumont, TX",FCS,SOUTHLAND,30.043000,-94.070000,1
-59108,5,HCU,CFB_HCU,Houston Christian,"Houston, TX",FCS,SOUTHLAND,29.695000,-95.517000,1
-59110,5,ETAM,CFB_ETAM,East Texas A&M,"Commerce, TX",FCS,SOUTHLAND,33.244000,-95.901000,1
-59111,5,FAMU,CFB_FAMU,Florida A&M,"Tallahassee, FL",FCS,SWAC,30.426000,-84.292000,1
-59112,5,PV,CFB_PV,Prairie View A&M,"Prairie View, TX",FCS,SWAC,30.094000,-95.996000,1
-59113,5,GRAM,CFB_GRAM,Grambling State,"Grambling, LA",FCS,SWAC,32.526000,-92.715000,1
-59114,5,AAMU,CFB_AAMU,Alabama A&M,"Huntsville, AL",FCS,SWAC,34.784000,-86.578000,1
-59115,5,JKST,CFB_JKST,Jackson State,"Jackson, MS",FCS,SWAC,32.330000,-90.180000,1
-59116,5,SOU,CFB_SOU,Southern,"Baton Rouge, LA",FCS,SWAC,30.522000,-91.190000,1
-59117,5,ALCN,CFB_ALCN,Alcorn State,"Lorman, MS",FCS,SWAC,31.874000,-91.135000,1
-59118,5,TXSO,CFB_TXSO,Texas Southern,"Houston, TX",FCS,SWAC,29.752000,-95.352000,1
-59119,5,BCU,CFB_BCU,Bethune,"Daytona Beach, FL",FCS,SWAC,29.173000,-81.118000,1
-59120,5,UAPB,CFB_UAPB,Arkansas-Pine Bluff,"Pine Bluff, AR",FCS,SWAC,34.253000,-92.021000,1
-59121,5,MVSU,CFB_MVSU,Mississippi Valley State,"Itta Bena, MS",FCS,SWAC,33.512000,-90.340000,1
-59122,5,ALST,CFB_ALST,Alabama State,"Montgomery, AL",FCS,SWAC,32.364000,-86.290000,1
-59123,5,CARK,CFB_CARK,Central Arkansas,"Conway, AR",FCS,UAC,35.080000,-92.460000,1
-59124,5,TAR,CFB_TAR,Tarleton State,"Stephenville, TX",FCS,UAC,32.219000,-98.213000,1
-59125,5,EKU,CFB_EKU,Eastern Kentucky,"Richmond, KY",FCS,UAC,37.734000,-84.297000,1
-59126,5,SUU,CFB_SUU,Southern Utah,"Cedar City, UT",FCS,UAC,37.676000,-113.077000,1
-59127,5,ACU,CFB_ACU,Abilene Chrstn,"Abilene, TX",FCS,UAC,32.472000,-99.710000,1
-59128,5,UNA,CFB_UNA,North Alabama,"Florence, AL",FCS,UAC,34.811000,-87.671000,1
-59129,5,APSU,CFB_APSU,Austin Peay,"Clarksville, TN",FCS,UAC,36.536000,-87.353000,1
-59130,5,WGA,CFB_WGA,West Georgia,"Carrollton, GA",FCS,UAC,33.580000,-85.077000,1
-59131,5,UTU,CFB_UTU,Utah Tech,"Saint George, UT",FCS,UAC,37.110000,-113.567000,1
+team_id,league_id,abbr,team_concat,name,loc,conf,div,lat,lon,weather,town,st,mascot,color,region,category
+11101,1,BOS,NBA_BOS,Boston Celtics,"Boston, MA",East,Atlantic,42.3663,-71.0622,0,Boston,MA,Celtics,Green,East,Imaginary
+11102,1,BYN,NBA_BYN,Brooklyn Nets,"New York, NY",East,Atlantic,40.6827,-73.9747,0,Brooklyn,NY,Nets,Black,East,Imaginary
+11103,1,NYK,NBA_NYK,New York Knicks,"New York, NY",East,Atlantic,40.7506,-73.9936,0,New York,NY,Knicks,Orange,East,Imaginary
+11104,1,PHI,NBA_PHI,Philadelphia 76ers,"Philadelphia, PA",East,Atlantic,39.9011,-75.1719,0,Philadelphia,PA,76ers,Blue,East,Person
+11105,1,TOR,NBA_TOR,Toronto Raptors,"Toronto, ON",East,Atlantic,43.6433,-79.3792,0,Toronto,ON,Raptors,Red,East,Bird
+11201,1,CHI,NBA_CHI,Chicago Bulls,"Chicago, IL",East,Central,41.8806,-87.6742,0,Chicago,IL,Bulls,Red,Midwest,Animal
+11202,1,CLE,NBA_CLE,Cleveland Cavaliers,"Cleveland, OH",East,Central,41.4964,-81.6881,0,Cleveland,OH,Cavaliers,Blue,Midwest,Person
+11203,1,DET,NBA_DET,Detroit Pistons,"Detroit, MI",East,Central,42.3411,-83.055,0,Detroit,MI,Pistons,Blue,Midwest,Imaginary
+11204,1,IND,NBA_IND,Indiana Pacers,"Indianapolis, IN",East,Central,39.7639,-86.1556,0,Indiana,IN,Pacers,Yellow,Midwest,Imaginary
+11205,1,MIL,NBA_MIL,Milwaukee Bucks,"Milwaukee, WI",East,Central,43.0436,-87.9169,0,Milwaukee,WI,Bucks,Green,Midwest,Animal
+11301,1,ATL,NBA_ATL,Atlanta Hawks,"Atlanta, GA",East,Southeast,33.7572,-84.3964,0,Atlanta,GA,Hawks,Red,South,Bird
+11302,1,CHA,NBA_CHA,Charlotte Hornets,"Charlotte, NC",East,Southeast,35.225,-80.8392,0,Brooklyn,NY,Nets,Black,East,Imaginary
+11303,1,MIA,NBA_MIA,Miami Heat,"Miami, FL",East,Southeast,25.7814,-80.1881,0,Miami,FL,Heat,Red,South,Imaginary
+11304,1,ORL,NBA_ORL,Orlando Magic,"Orlando, FL",East,Southeast,28.5392,-81.3836,0,Orlando,FL,Magic,Blue,South,Imaginary
+11305,1,WAS,NBA_WAS,Washington Wizards,"Washington, DC",East,Southeast,38.8981,-77.0208,0,Washington,DC,Wizards,Red,East,Person
+12401,1,DEN,NBA_DEN,Denver Nuggets,"Denver, CO",West,Northwest,39.7486,-105.007,0,Denver,CO,Nuggets,Blue,West,Imaginary
+12402,1,MIN,NBA_MIN,Minnesota Timberwolves,"Minneapolis, MN",West,Northwest,44.9794,-93.2761,0,Minnesota,MN,Timberwolves,Blue,Midwest,Dog
+12403,1,OKC,NBA_OKC,Oklahoma City Thunder,"Oklahoma City, OK",West,Northwest,35.4633,-97.515,0,Oklahoma,OK,Thunder,Blue,South,Imaginary
+12404,1,POR,NBA_POR,Portland Trail Blazers,"Portland, OR",West,Northwest,45.5317,-122.667,0,Portland,OR,Trail Blazers,Red,West,Imaginary
+12405,1,UTA,NBA_UTA,Utah Jazz,"Salt Lake City, UT",West,Northwest,40.7683,-111.901,0,Salt Lake City,UT,Jazz,Yellow,West,Imaginary
+12501,1,GSW,NBA_GSW,Golden State Warriors,"San Francisco, CA",West,Pacific,37.7681,-122.387,0,Golden,CA,Warriors,Yellow,West,Person
+12502,1,LAC,NBA_LAC,Los Angeles Clippers,"Inglewood, CA",West,Pacific,33.9451,-118.343,0,Inglewood,CA,Clippers,Blue,West,Imaginary
+12503,1,LAL,NBA_LAL,Los Angeles Lakers,"Los Angeles, CA",West,Pacific,34.0431,-118.267,0,Los Angeles,CA,Lakers,Yellow,West,Imaginary
+12504,1,PHX,NBA_PHX,Phoenix Suns,"Phoenix, AZ",West,Pacific,33.4458,-112.071,0,Phoenix,AZ,Suns,Black,West,Imaginary
+12505,1,SAC,NBA_SAC,Sacramento Kings,"Sacramento, CA",West,Pacific,38.6492,-121.518,0,Sacramento,CA,Kings,Black,West,Person
+12601,1,DAL,NBA_DAL,Dallas Mavericks,"Dallas, TX",West,Southwest,32.7906,-96.8103,0,Dallas,TX,Mavericks,Blue,South,Person
+12602,1,HOU,NBA_HOU,Houston Rockets,"Houston, TX",West,Southwest,29.7508,-95.3622,0,Houston,TX,Rockets,Red,South,Imaginary
+12603,1,MEM,NBA_MEM,Memphis Grizzlies,"Memphis, TN",West,Southwest,35.1383,-90.0506,0,Memphis,TN,Grizzlies,Blue,South,Animal
+12604,1,NOP,NBA_NOP,New Orleans Pelicans,"New Orleans, LA",West,Southwest,29.9489,-90.0819,0,New Orleans,LA,Pelicans,Blue,South,Bird
+12605,1,SAN,NBA_SAN,San Antonio Spurs,"San Antonio, TX",West,Southwest,29.4269,-98.4375,0,San Antonio,TX,Spurs,Black,South,Imaginary
+21101,2,BUF,NFL_BUF,Buffalo Bills,"Orchard Park, NY",AFC,East,42.774,-78.787,1,Orchard Park,NY,Bills,Blue,East,Animal
+21102,2,MIA,NFL_MIA,Miami Dolphins,"Miami, FL",AFC,East,25.958,-80.2393,1,Miami,FL,Dolphins,Blue,South,Animal
+21103,2,NE,NFL_NE,New England Patriots,"Foxborough, MA",AFC,East,42.091,-71.264,1,Foxborough,MA,Patriots,Blue,East,Person
+21104,2,NYJ,NFL_NYJ,New York Jets,"East Rutherford, NJ",AFC,East,40.4849,-74.4277,1,East Rutherford,NJ,Jets,Green,East,Imaginary
+21201,2,BAL,NFL_BAL,Baltimore Ravens,"Baltimore, MD",AFC,North,39.164,-76.3722,1,Baltimore,MD,Ravens,Purple,East,Bird
+21202,2,CIN,NFL_CIN,Cincinnati Bengals,"Cincinnati, OH",AFC,North,39.095,-84.516,1,Cincinnati,OH,Bengals,Orange,Midwest,Cat
+21203,2,CLE,NFL_CLE,Cleveland Browns,"Cleveland, OH",AFC,North,41.3022,-81.4158,1,Cleveland,OH,Browns,Brown,Midwest,Color
+21204,2,PIT,NFL_PIT,Pittsburgh Steelers,"Pittsburgh, PA",AFC,North,40.2648,-80.057,1,Pittsburgh,PA,Steelers,Black,East,Imaginary
+21301,2,HOU,NFL_HOU,Houston Texans,"Houston, TX",AFC,South,9.415,-95.2439,0,Houston,TX,Texans,Red,South,Imaginary
+21302,2,IND,NFL_IND,Indianapolis Colts,"Indianapolis, IN",AFC,South,39.4536,-86.9497,0,Indianapolis,IN,Colts,Blue,Midwest,Animal
+21303,2,JAX,NFL_JAX,Jacksonville Jaguars,"Jacksonville, FL",AFC,South,30.1926,-81.3815,1,Jacksonville,FL,Jaguars,Black,South,Cat
+21304,2,TEN,NFL_TEN,Tennessee Titans,"Nashville, TN",AFC,South,36.959,-86.4617,1,Nashville,TN,Titans,Blue,South,Imaginary
+21401,2,DEN,NFL_DEN,Denver Broncos,"Denver, CO",AFC,West,39.4438,-105.112,1,Denver,CO,Broncos,Blue,West,Animal
+21402,2,KC,NFL_KC,Kansas City Chiefs,"Kansas City, MO",AFC,West,39.256,-94.292,1,Kansas City,MO,Chiefs,Red,Midwest,Person
+21403,2,LV,NFL_LV,Las Vegas Raiders,"Paradise, NV",AFC,West,36.0526,-115.112,0,Las Vegas,NV,Raiders,Black,West,Person
+21404,2,LAC,NFL_LAC,Los Angeles Chargers,"Inglewood, CA",AFC,West,33.953,-118.339,1,Inglewood,CA,Chargers,Blue,West,Imaginary
+22501,2,DAL,NFL_DAL,Dallas Cowboys,"Arlington, TX",NFC,East,32.4452,-97.534,0,Arlington,TX,Cowboys,Blue,South,Person
+22502,2,NYG,NFL_NYG,New York Giants,"East Rutherford, NJ",NFC,East,40.4849,-74.4277,1,East Rutherford,NJ,Giants,Blue,East,Imaginary
+22503,2,PHI,NFL_PHI,Philadelphia Eagles,"Philadelphia, PA",NFC,East,39.543,-75.103,1,Philadelphia,PA,Eagles,Green,East,Bird
+22504,2,WAS,NFL_WAS,Washington Commanders,"Landover, MD",NFC,East,38.5428,-76.5152,1,Landover,MD,Commanders,Red,East,Person
+22601,2,CHI,NFL_CHI,Chicago Bears,"Chicago, IL",NFC,North,41.8623,-87.6167,1,Chicago,IL,Bears,Blue,Midwest,Animal
+22602,2,DET,NFL_DET,Detroit Lions,"Detroit, MI",NFC,North,42.2024,-83.244,0,Detroit,MI,Lions,Blue,Midwest,Cat
+22603,2,GB,NFL_GB,Green Bay Packers,"Green Bay, WI",NFC,North,44.305,-88.344,1,Green Bay,WI,Packers,Green,Midwest,Imaginary
+22604,2,MIN,NFL_MIN,Minnesota Vikings,"Minneapolis, MN",NFC,North,44.974,-93.258,0,Minneapolis,MN,Vikings,Purple,Midwest,Person
+22701,2,ATL,NFL_ATL,Atlanta Falcons,"Atlanta, GA",NFC,South,33.452,-84.24,0,Atlanta,GA,Falcons,Red,South,Bird
+22702,2,CAR,NFL_CAR,Carolina Panthers,"Charlotte, NC",NFC,South,35.1333,-80.511,1,Charlotte,NC,Panthers,Blue,East,Cat
+22703,2,NO,NFL_NO,New Orleans Saints,"New Orleans, LA",NFC,South,29.573,-90.452,0,New Orleans,LA,Saints,Black,South,Person
+22704,2,TB,NFL_TB,Tampa Bay Buccaneers,"Tampa, FL",NFC,South,27.5833,-82.3012,1,Tampa,FL,Buccaneers,Red,South,Person
+22801,2,ARI,NFL_ARI,Arizona Cardinals,"Glendale, AZ",NFC,West,33.528,-112.263,0,Glendale,AZ,Cardinals,Red,West,Bird
+22802,2,LAR,NFL_LAR,Los Angeles Rams,"Inglewood, CA",NFC,West,33.953,-118.339,0,Inglewood,CA,Rams,Blue,West,Animal
+22803,2,SF,NFL_SF,San Francisco 49ers,"Santa Clara, CA",NFC,West,37.403,-121.97,1,Santa Clara,CA,49ers,Red,West,Person
+22804,2,SEA,NFL_SEA,Seattle Seahawks,"Seattle, WA",NFC,West,47.5952,-122.332,1,Seattle,WA,Seahawks,Blue,West,Bird
+31101,3,BOS,NHL_BOS,Boston Bruins,"Boston, MA",Eastern,Atlantic,42.3663,-71.0622,0,Boston,MA,Bruins,Yellow,East,Animal
+31102,3,BUF,NHL_BUF,Buffalo Sabres,"Buffalo, NY",Eastern,Atlantic,42.875,-78.8764,0,Buffalo,NY,Sabres,Blue,East,Imaginary
+31103,3,DET,NHL_DET,Detroit Red Wings,"Detroit, MI",Eastern,Atlantic,42.3411,-83.055,0,Detroit,MI,Red Wings,Red,Midwest,Color
+31104,3,FLA,NHL_FLA,Florida Panthers,"Sunrise, FL",Eastern,Atlantic,26.1583,-80.3256,0,Sunrise,FL,Panthers,Red,South,Cat
+31105,3,MTL,NHL_MTL,Montreal Canadiens,"Montreal, QC",Eastern,Atlantic,45.4961,-73.5694,0,Montreal,QC,Canadiens,Red,East,Person
+31106,3,OTT,NHL_OTT,Ottawa Senators,"Ottawa, ON",Eastern,Atlantic,45.2969,-75.9268,0,Ottawa,ON,Senators,Red,East,Person
+31107,3,TBL,NHL_TBL,Tampa Bay Lightning,"Tampa, FL",Eastern,Atlantic,27.9427,-82.4518,0,Tampa,FL,Lightning,Blue,South,Imaginary
+31108,3,TOR,NHL_TOR,Toronto Maple Leafs,"Toronto, ON",Eastern,Atlantic,43.6433,-79.3792,0,Toronto,ON,Maple Leafs,Blue,East,Imaginary
+31201,3,CAR,NHL_CAR,Carolina Hurricanes,"Raleigh, NC",Eastern,Metropolitan,35.8033,-78.7219,0,Raleigh,NC,Hurricanes,Red,East,Imaginary
+31202,3,CBJ,NHL_CBJ,Columbus Blue Jackets,"Columbus, OH",Eastern,Metropolitan,39.9693,-83.0061,0,Columbus,OH,Blue Jackets,Blue,Midwest,Color
+31203,3,NJD,NHL_NJD,New Jersey Devils,"Newark, NJ",Eastern,Metropolitan,40.7336,-74.1711,0,Newark,NJ,Devils,Red,East,Imaginary
+31204,3,NYI,NHL_NYI,New York Islanders,"Elmont, NY",Eastern,Metropolitan,40.7121,-73.7272,0,Elmont,NY,Islanders,Blue,East,Imaginary
+31205,3,NYR,NHL_NYR,New York Rangers,"New York, NY",Eastern,Metropolitan,40.7506,-73.9936,0,New York,NY,Rangers,Blue,East,Imaginary
+31206,3,PHI,NHL_PHI,Philadelphia Flyers,"Philadelphia, PA",Eastern,Metropolitan,39.9011,-75.1719,0,Philadelphia,PA,Flyers,Orange,East,Imaginary
+31207,3,PIT,NHL_PIT,Pittsburgh Penguins,"Pittsburgh, PA",Eastern,Metropolitan,40.4394,-79.9892,0,Pittsburgh,PA,Penguins,Black,East,Bird
+31208,3,WSH,NHL_WSH,Washington Capitals,"Washington, DC",Eastern,Metropolitan,38.8982,-77.0209,0,Washington,DC,Capitals,Red,East,Imaginary
+32301,3,CHI,NHL_CHI,Chicago Blackhawks,"Chicago, IL",Western,Central,41.8806,-87.6742,0,Chicago,IL,Blackhawks,Red,Midwest,Bird
+32302,3,COL,NHL_COL,Colorado Avalanche,"Denver, CO",Western,Central,39.7487,-105.008,0,Denver,CO,Avalanche,Red,West,Imaginary
+32303,3,DAL,NHL_DAL,Dallas Stars,"Dallas, TX",Western,Central,32.7906,-96.8103,0,Dallas,TX,Stars,Green,South,Imaginary
+32304,3,MIN,NHL_MIN,Minnesota Wild,"Saint Paul, MN",Western,Central,44.9447,-93.1011,0,Saint Paul,MN,Wild,Green,Midwest,Imaginary
+32305,3,NSH,NHL_NSH,Nashville Predators,"Nashville, TN",Western,Central,36.1592,-86.7786,0,Nashville,TN,Predators,Yellow,South,Imaginary
+32306,3,STL,NHL_STL,St. Louis Blues,"St. Louis, MO",Western,Central,38.6267,-90.2025,0,St. Louis,MO,Blues,Blue,Midwest,Color
+32307,3,UTA,NHL_UTA,Utah Mammoth,"Salt Lake City, UT",Western,Central,40.7684,-111.902,0,Salt Lake City,UT,Mammoth,Blue,West,Animal
+32308,3,WPG,NHL_WPG,Winnipeg Jets,"Winnipeg, MB",Western,Central,49.8928,-97.1436,0,Winnipeg,MB,Jets,Blue,Midwest,Imaginary
+32401,3,AHA,NHL_AHA,Anaheim Ducks,"Anaheim, CA",Western,Pacific,33.8078,-117.877,0,Anaheim,CA,Ducks,Black,West,Animal
+32402,3,CGY,NHL_CGY,Calgary Flames,"Calgary, AB",Western,Pacific,51.0374,-114.052,0,Calgary,AB,Flames,Red,West,Imaginary
+32403,3,EDM,NHL_EDM,Edmonton Oilers,"Edmonton, AB",Western,Pacific,53.5469,-113.498,0,Edmonton,AB,Oilers,Blue,West,Imaginary
+32404,3,LAK,NHL_LAK,Los Angeles Kings,"Los Angeles, CA",Western,Pacific,34.0431,-118.267,0,Los Angeles,CA,Kings,Black,West,Person
+32405,3,SJS,NHL_SJS,San Jose Sharks,"San Jose, CA",Western,Pacific,37.3328,-121.901,0,San Jose,CA,Sharks,Blue,West,Animal
+32406,3,SEA,NHL_SEA,Seattle Kraken,"Seattle, WA",Western,Pacific,47.622,-122.354,0,Seattle,WA,Kraken,Blue,West,Animal
+32407,3,VAN,NHL_VAN,Vancouver Canucks,"Vancouver, BC",Western,Pacific,49.2778,-123.109,0,Vancouver,BC,Canucks,Blue,West,Imaginary
+32408,3,VGK,NHL_VGK,Vegas Golden Knights,"Paradise, NV",Western,Pacific,36.1028,-115.178,0,Paradise,NV,Golden Knights,Black,West,Color
+41101,4,BAL,MLB_BAL,Baltimore Orioles,"Baltimore, MD",AL,East,39.2839,-76.6217,1,Baltimore,MD,Orioles,Orange,East,Bird
+41102,4,BOS,MLB_BOS,Boston Red Sox,"Boston, MA",AL,East,42.3462,-71.0977,1,Boston,MA,Red Sox,Red,East,Color
+41103,4,NYY,MLB_NYY,New York Yankees,"New York, NY",AL,East,40.8292,-73.9264,1,New York,NY,Yankees,Blue,East,Person
+41104,4,TB,MLB_TB,Tampa Bay Rays,"St. Petersburg, FL",AL,East,27.7683,-82.6533,0,St. Petersburg,FL,Rays,Black,South,Animal
+41105,4,TOR,MLB_TOR,Toronto Blue Jays,"Toronto, ON",AL,East,43.6414,-79.3892,0,Toronto,ON,Blue Jays,Blue,East,Color
+41201,4,SOX,MLB_SOX,Chicago White Sox,"Chicago, IL",AL,Central,41.83,-87.6339,1,Chicago,IL,White Sox,Black,Midwest,Color
+41202,4,CLE,MLB_CLE,Cleveland Guardians,"Cleveland, OH",AL,Central,41.4958,-81.6853,1,Cleveland,OH,Guardians,Red,Midwest,Imaginary
+41203,4,DET,MLB_DET,Detroit Tigers,"Detroit, MI",AL,Central,42.3392,-83.0486,1,Detroit,MI,Tigers,Blue,Midwest,Cat
+41204,4,KC,MLB_KC,Kansas City Royals,"Kansas City, MO",AL,Central,39.051,-94.48,1,Kansas City,MO,Royals,Blue,Midwest,Color
+41205,4,MIN,MLB_MIN,Minnesota Twins,"Minneapolis, MN",AL,Central,44.9817,-93.2783,1,Minneapolis,MN,Twins,Red,Midwest,Person
+41301,4,HOU,MLB_HOU,Houston Astros,"Houston, TX",AL,West,29.7569,-95.3556,0,Houston,TX,Astros,Blue,South,Imaginary
+41302,4,LAA,MLB_LAA,Los Angeles Angels,"Anaheim, CA",AL,West,33.8003,-117.883,1,Anaheim,CA,Angels,Red,West,Person
+41303,4,OAK,MLB_OAK,Oakland Athletics,"Oakland, CA",AL,West,37.7517,-122.201,1,Oakland,CA,Athletics,Yellow,West,Person
+41304,4,SEA,MLB_SEA,Seattle Mariners,"Seattle, WA",AL,West,47.591,-122.333,0,Seattle,WA,Mariners,Blue,West,Person
+41305,4,TEX,MLB_TEX,Texas Rangers,"Arlington, TX",AL,West,32.7474,-97.0842,0,Arlington,TX,Rangers,Red,South,Imaginary
+42401,4,ATL,MLB_ATL,Atlanta Braves,"Cumberland, GA",NL,East,33.89,-84.468,1,Cumberland,GA,Braves,Red,South,Person
+42402,4,MIA,MLB_MIA,Miami Marlins,"Miami, FL",NL,East,25.7781,-80.2197,0,Miami,FL,Marlins,Black,South,Animal
+42403,4,NYM,MLB_NYM,New York Mets,"New York, NY",NL,East,40.7569,-73.8458,1,New York,NY,Mets,Blue,East,Imaginary
+42404,4,PHI,MLB_PHI,Philadelphia Phillies,"Philadelphia, PA",NL,East,39.9058,-75.1664,1,Philadelphia,PA,Phillies,Red,East,Imaginary
+42405,4,WSH,MLB_WSH,Washington Nationals,"Washington, DC",NL,East,38.8728,-77.0075,1,Washington,DC,Nationals,Red,East,Imaginary
+42501,4,CHI,MLB_CHI,Chicago Cubs,"Chicago, IL",NL,Central,41.9481,-87.6556,1,Chicago,IL,Cubs,Blue,Midwest,Animal
+42502,4,CIN,MLB_CIN,Cincinnati Reds,"Cincinnati, OH",NL,Central,39.0975,-84.5067,1,Cincinnati,OH,Reds,Red,Midwest,Color
+42503,4,MIL,MLB_MIL,Milwaukee Brewers,"Milwaukee, WI",NL,Central,43.0283,-87.9711,0,Milwaukee,WI,Brewers,Yellow,Midwest,Person
+42504,4,PIT,MLB_PIT,Pittsburgh Pirates,"Pittsburgh, PA",NL,Central,40.4469,-80.0058,1,Pittsburgh,PA,Pirates,Yellow,East,Person
+42505,4,STL,MLB_STL,St. Louis Cardinals,"St. Louis, MO",NL,Central,38.6225,-90.1931,1,St. Louis,MO,Cardinals,Red,Midwest,Bird
+42601,4,ARI,MLB_ARI,Arizona Diamondbacks,"Phoenix, AZ",NL,West,33.4453,-112.067,0,Phoenix,AZ,Diamondbacks,Red,West,Animal
+42602,4,COL,MLB_COL,Colorado Rockies,"Denver, CO",NL,West,39.7561,-104.994,1,Denver,CO,Rockies,Black,West,Imaginary
+42603,4,LAD,MLB_LAD,Los Angeles Dodgers,"Los Angeles, CA",NL,West,34.0736,-118.24,1,Los Angeles,CA,Dodgers,Blue,West,Animal
+42604,4,SD,MLB_SD,San Diego Padres,"San Diego, CA",NL,West,32.7073,-117.157,1,San Diego,CA,Padres,Yellow,West,Person
+42605,4,SF,MLB_SF,San Francisco Giants,"San Francisco, CA",NL,West,37.7786,-122.389,1,San Francisco,CA,Giants,Black,West,Imaginary
+50000,5,TBD,CFB_TBD,Unknown School,,,,,,1,,,,,,
+50101,5,ARMY,CFB_ARMY,Army,"West Point, NY",FBS,AAC,41.3871,-73.9641,1,West Point,NY,Black Knights,Black,East,Color
+50102,5,CHAR,CFB_CHAR,Charlotte,"Charlotte, NC",FBS,AAC,35.3103,-80.7405,1,Charlotte,NC,49ers,Green,East,Person
+50103,5,ECU,CFB_ECU,East Carolina,"Greensville, NC",FBS,AAC,35.5964,-77.3652,1,Greensville,NC,Pirates,Yellow,East,Person
+50104,5,FAU,CFB_FAU,Florida Atlantic,"Boca Raton, FL",FBS,AAC,26.3755,-80.1017,1,Boca Raton,FL,Owls,Blue,South,Bird
+50105,5,MEM,CFB_MEM,Memphis,"Memphis, TN",FBS,AAC,35.1209,-89.9781,1,Memphis,TN,Tigers,Blue,South,Cat
+50106,5,NAVY,CFB_NAVY,Navy,"Annapolis, MD",FBS,AAC,38.9848,-76.5071,1,Annapolis,MD,Midshipmen,Blue,East,Person
+50107,5,UNT,CFB_UNT,North Texas,"Denton, TX",FBS,AAC,33.2039,-97.1592,1,Denton,TX,Mean Green,Green,South,Color
+50108,5,RICE,CFB_RICE,Rice,"Houston, TX",FBS,AAC,29.7162,-95.4093,1,Houston,TX,Owls,Blue,South,Bird
+50109,5,TEM,CFB_TEM,Temple,"Philadelphia, PA",FBS,AAC,39.9007,-75.1675,1,Philadelphia,PA,Owls,Red,East,Bird
+50110,5,TULN,CFB_TULN,Tulane,"New Orleans, LA",FBS,AAC,29.9459,-90.1152,1,New Orleans,LA,Green Wave,Green,South,Color
+50111,5,TLSA,CFB_TLSA,Tulsa,"Tulsa, OK",FBS,AAC,36.1489,-95.9436,1,Tulsa,OK,Golden Huricane,Blue,South,Color
+50112,5,UAB,CFB_UAB,Alabama Birmingham,"Birmingham, AL",FBS,AAC,33.528,-86.8092,1,Birmingham,AL,Blazers,Yellow,South,Imaginary
+50113,5,USF,CFB_USF,South Florida,"Tampa, FL",FBS,AAC,27.976,-82.5033,1,Tampa,FL,Bulls,Green,South,Animal
+50114,5,UTSA,CFB_UTSA,Texas San Antonio,"San Antonio, TX",FBS,AAC,29.4169,-98.4789,1,San Antonio,TX,Roadrunners,Blue,South,Bird
+50201,5,BC,CFB_BC,Boston College,"Chestnut Hill, MA",FBS,ACC,42.3351,-71.1665,1,Chestnut Hill,MA,Eagles,Red,East,Bird
+50202,5,CAL,CFB_CAL,California,"Berkeley, CA",FBS,ACC,37.8707,-122.251,1,Berkeley,CA,Golden Bears,Yellow,West,Color
+50203,5,CLEM,CFB_CLEM,Clemson,"Clemson, SC",FBS,ACC,34.6787,-82.8432,1,Clemson,SC,Tigers,Orange,South,Cat
+50204,5,DUKE,CFB_DUKE,Duke,"Durham, NC",FBS,ACC,35.9953,-78.9417,1,Durham,NC,Blue Devils,Blue,East,Color
+50205,5,FSU,CFB_FSU,Florida State,"Tallahassee, FL",FBS,ACC,30.4375,-84.3045,1,Tallahassee,FL,Seminoles,Red,South,Person
+50206,5,GT,CFB_GT,Georgia Tech,"Atlanta, GA",FBS,ACC,33.7726,-84.3929,1,Atlanta,GA,Yellow Jackets,Yellow,South,Color
+50207,5,LOU,CFB_LOU,Louisville,"Louisville, KY",FBS,ACC,38.2054,-85.7581,1,Louisville,KY,Cardinals,Red,South,Bird
+50208,5,MIA,CFB_MIA,Miami (FL),"Miami, FL",FBS,ACC,25.9579,-80.2388,1,Miami,FL,Hurricanes,Orange,South,Imaginary
+50209,5,UNC,CFB_UNC,North Carolina,"Chapel Hill, NC",FBS,ACC,35.907,-79.0479,1,Chapel Hill,NC,Tar Heels,Blue,East,Imaginary
+50210,5,NCST,CFB_NCST,North Carolina State,"Raleigh, NC",FBS,ACC,35.8008,-78.7195,1,Raleigh,NC,Wolfpack,Red,East,Dog
+50211,5,PITT,CFB_PITT,Pittsburgh,"Pittsburgh, PA",FBS,ACC,40.4468,-80.0158,1,Pittsburgh,PA,Panthers,Blue,East,Cat
+50212,5,SMU,CFB_SMU,Southern Methodist,"Dallas, TX",FBS,ACC,32.8377,-96.7816,1,Dallas,TX,Mustangs,Red,South,Animal
+50213,5,STAN,CFB_STAN,Stanford,"Stanford, CA",FBS,ACC,37.4347,-122.161,1,Stanford,CA,Cardinals,Red,West,Bird
+50214,5,SYR,CFB_SYR,Syracuse,"Syracuse, NY",FBS,ACC,43.0361,-76.1365,1,Syracuse,NY,Orange,Orange,East,Color
+50215,5,UVA,CFB_UVA,Virginia,"Charlottesville, VA",FBS,ACC,38.0311,-78.5137,1,Charlottesville,VA,Cavaliers,Blue,East,Person
+50216,5,VT,CFB_VT,Virginia Tech,"Blacksburg, VA",FBS,ACC,37.22,-80.4181,1,Blacksburg,VA,Hokies,Red,East,Imaginary
+50217,5,WAKE,CFB_WAKE,Wake Forest,"Winston-Salem, NC",FBS,ACC,36.0918,-80.2553,1,Winston-Salem,NC,Demon Deacons,Yellow,East,Imaginary
+50301,5,ILL,CFB_ILL,Illinois,"Champaign, IL",FBS,B10,40.0993,-88.236,1,Champaign,IL,Fighting Illini,Orange,Midwest,Imaginary
+50302,5,IND,CFB_IND,Indiana,"Bloomington, IN",FBS,B10,39.1809,-86.5256,1,Bloomington,IN,Hoosiers,Red,Midwest,Imaginary
+50303,5,IA,CFB_IA,Iowa,"Iowa City, IA",FBS,B10,41.6584,-91.5515,1,Iowa City,IA,Hawkeyes,Black,Midwest,Bird
+50304,5,MD,CFB_MD,Maryland,"College Park, MD",FBS,B10,38.9912,-76.9473,1,College Park,MD,Terrapins,Red,East,Animal
+50305,5,MN,CFB_MN,Minnesota,"Minneapolis, MN",FBS,B10,44.9765,-93.2246,1,Minneapolis,MN,Golden Gophers,Red,Midwest,Color
+50306,5,MSU,CFB_MSU,Michigan State,"East Lansing, MI",FBS,B10,42.7282,-84.4849,1,East Lansing,MI,Spartans,Green,Midwest,Person
+50307,5,MI,CFB_MI,Michigan,"Ann Arbor, MI",FBS,B10,42.2659,-83.7487,1,Ann Arbor,MI,Wolverine,Blue,Midwest,Animal
+50308,5,NE,CFB_NE,Nebraska,"Lincoln, NE",FBS,B10,40.8205,-96.7057,1,Lincoln,NE,Cornhuskers,Red,Midwest,Imaginary
+50309,5,NW,CFB_NW,Northwestern,"Evanston, IL",FBS,B10,42.0654,-87.6925,1,Evanston,IL,Wildcats,Purple,Midwest,Cat
+50310,5,ORE,CFB_ORE,Oregon,"Eugene, OR",FBS,B10,44.0583,-123.069,1,Eugene,OR,Ducks,Green,West,Animal
+50311,5,OSU,CFB_OSU,Ohio State,"Columbus, OH",FBS,B10,40.0017,-83.0197,1,Columbus,OH,Buckeyes,Red,Midwest,Imaginary
+50312,5,PSU,CFB_PSU,Penn State,"State College, PA",FBS,B10,40.8122,-77.8562,1,State College,PA,Nittany Lions,Blue,East,Cat
+50313,5,PUR,CFB_PUR,Purdue,"West Lafayette, IN",FBS,B10,40.4343,-86.9185,1,West Lafayette,IN,Boilermakers,Yellow,Midwest,Imaginary
+50314,5,RUTG,CFB_RUTG,Rutgers,"New Brunswick, NJ",FBS,B10,40.5138,-74.465,1,New Brunswick,NJ,Scarlet Knights,Red,East,Color
+50315,5,UCLA,CFB_UCLA,California Los Angeles,"Los Angeles, CA",FBS,B10,34.1616,-118.168,1,Los Angeles,CA,Bruins,Blue,West,Animal
+50316,5,USC,CFB_USC,Southern California,"Los Angeles, CA",FBS,B10,34.014,-118.288,1,Los Angeles,CA,Trojans,Red,West,Person
+50317,5,WASH,CFB_WASH,Washington,"Seattle, WA",FBS,B10,47.6504,-122.303,1,Seattle,WA,Huskies,Purple,West,Dog
+50318,5,WIS,CFB_WIS,Wisconsin,"Madison, WI",FBS,B10,43.0699,-89.4128,1,Madison,WI,Badgers,Red,Midwest,Animal
+50401,5,AZ,CFB_AZ,Arizona,"Tucson, AZ",FBS,B12,32.2283,-110.949,1,Tucson,AZ,Wildcats,Red,West,Cat
+50402,5,ASU,CFB_ASU,Arizona State,"Tempe, AZ",FBS,B12,33.4264,-111.933,1,Tempe,AZ,Sun Devils,Red,West,Imaginary
+50403,5,BAY,CFB_BAY,Baylor,"Waco, TX",FBS,B12,31.5587,-97.1156,1,Waco,TX,Bears,Green,South,Animal
+50404,5,BYU,CFB_BYU,Brigham Young,"Provo, UT",FBS,B12,40.2575,-111.654,1,Provo,UT,Cougars,Blue,West,Cat
+50405,5,CIN,CFB_CIN,Cincinnati,"Cincinnati, OH",FBS,B12,39.1313,-84.5163,1,Cincinnati,OH,Bearcats,Red,Midwest,Animal
+50406,5,CO,CFB_CO,Colorado,"Boulder, CO",FBS,B12,40.0094,-105.267,1,Boulder,CO,Buffaloes,Black,West,Animal
+50407,5,IAST,CFB_IAST,Iowa State,"Ames, IA",FBS,B12,42.014,-93.6358,1,Ames,IA,Cyclones,Red,Midwest,Imaginary
+50408,5,KSU,CFB_KSU,Kansas State,"Manhattan, KS",FBS,B12,39.2019,-96.5938,1,Manhattan,KS,Wildcats,Purple,Midwest,Cat
+50409,5,KS,CFB_KS,Kansas,"Lawrence, KS",FBS,B12,38.9629,-95.2463,1,Lawrence,KS,JayHawk,Red,Midwest,Bird
+50410,5,OKST,CBB_OKST,Oklahoma State,"Stillwater, OK",FBS,B12,36.1257,-97.0665,1,Stillwater,OK,Cowboys,Orange,South,Person
+50411,5,TCU,CFB_TCU,Texas Christian,"Fort Worth, TX",FBS,B12,32.7099,-97.368,1,Fort Worth,TX,Horned Frogs,Purple,South,Animal
+50412,5,TTU,CFB_TTU,Texas Tech,"Lubbock, TX",FBS,B12,33.591,-101.873,1,Lubbock,TX,Red Raiders,Red,South,Color
+50413,5,UCF,CFB_UCF,Central Florida,"Orlando, FL",FBS,B12,28.608,-81.193,1,Orlando,FL,Knights,Black,South,Person
+50414,5,HOU,CFB_HOU,Houston,"Houston, TX",FBS,B12,29.7218,-95.3491,1,Houston,TX,Cougars,Red,South,Cat
+50415,5,UTAH,CFB_UTAH,Utah,"Salt Lake City, UT",FBS,B12,40.7599,-111.849,1,Salt Lake City,UT,Utes,Red,West,Person
+50416,5,WVU,CFB_WVU,West Virginia,"Morgantown, WV",FBS,B12,39.6522,-79.9552,1,Morgantown,WV,Mountaineers,Yellow,East,Person
+50501,5,FIU,CFB_FIU,Florida International,"Miami, FL",FBS,CUSA,25.7525,-80.3779,1,Miami,FL,Panthers,Blue,South,Cat
+50502,5,JVST,CFB_JVST,Jacksonville State,"Jacksonville, AL",FBS,CUSA,32.3296,-90.1798,1,Jacksonville,AL,Gamecocks,Red,South,Bird
+50503,5,KENN,CFB_KENN,Kennesaw State,"Kennesaw, GA",FBS,CUSA,34.0234,-84.6155,1,Kennesaw,GA,Owls,Yellow,South,Bird
+50504,5,LIB,CFB_LIB,Liberty,"Lynchburg, VA",FBS,CUSA,37.3544,-79.175,1,Lynchburg,VA,Flames,Red,East,Imaginary
+50505,5,LAT,CFB_LAT,Louisiana Tech,"Ruston, LA",FBS,CUSA,32.5322,-92.656,1,Ruston,LA,Bulldogs,Blue,South,Dog
+50506,5,MTST,CFB_MTST,Middle Tennessee State,"Murfreesboro, TN",FBS,CUSA,35.8511,-86.3684,1,Murfreesboro,TN,Blue Raiders,Blue,South,Color
+50507,5,NMST,CFB_NMST,New Mexico State,"Las Cruces, NM",FBS,CUSA,35.0676,-106.628,1,Las Cruces,NM,Aggies,Red,South,Person
+50508,5,SHSU,CFB_SHSU,Sam Houston,"Huntsville, TX",FBS,CUSA,30.7139,-95.5419,1,Huntsville,TX,Bearkats,Orange,South,Animal
+50509,5,UTEP,CFB_UTEP,Texas El Paso,"El Paso, TX",FBS,CUSA,31.7733,-106.508,1,El Paso,TX,Miners,Blue,South,Person
+50510,5,WKU,CFB_WKU,Western Kentucky,"Bowling Green, KY",FBS,CUSA,36.9849,-86.459,1,Bowling Green,KY,Hilltoppers,Red,South,Imaginary
+50601,5,CONN,CFB_CONN,Connecticut,"Storrs, CT",FBS,IND,41.7599,-72.6189,1,Storrs,CT,Huskies,Blue,East,Dog
+50602,5,MASS,CFB_MASS,Massachusetts,"Amherst, MA",FBS,IND,42.3775,-72.5356,1,Amherst,MA,Minutemen,Red,East,Person
+50603,5,ND,CFB_ND,Notre Dame,"South Bend, IN",FBS,IND,41.6984,-86.2338,1,South Bend,IN,Fighting Irish,Yellow,Midwest,Imaginary
+50701,5,AKR,CFB_AKR,Akron,"Akron, OH",FBS,MAC,41.0726,-81.5084,1,Akron,OH,Zips,Blue,Midwest,Imaginary
+50702,5,BALL,CFB_BALL,Ball State,"Muncie, IN",FBS,MAC,40.216,-85.4177,1,Muncie,IN,Cardinals,Red,Midwest,Bird
+50703,5,BGSU,CFB_BGSU,Bowling Green,"Bowling Green, OH",FBS,MAC,41.3781,-83.6225,1,Bowling Green,OH,Falcons,Black,Midwest,Bird
+50704,5,BUFF,CFB_BUFF,Buffalo,"Orchard Park, NY",FBS,MAC,42.9991,-78.7775,1,Orchard Park,NY,Bulls,Blue,East,Animal
+50705,5,CMU,CFB_CMU,Central Michigan,"Mount Pleasant, MI",FBS,MAC,43.5776,-84.7708,1,Mount Pleasant,MI,Chippewas,Red,Midwest,Person
+50706,5,EMI,CFB_EMI,Eastern Michigan,"Ypsilanti, MI",FBS,MAC,42.2558,-83.6478,1,Ypsilanti,MI,Eagles,Green,Midwest,Bird
+50707,5,KENT,CFB_KENT,Kent State,"Kent, OH",FBS,MAC,41.1391,-81.3134,1,Kent,OH,Golden Flashes,Blue,Midwest,Color
+50708,5,MIOH,CFB_MIOH,Miami (OH),"Oxford, OH",FBS,MAC,39.5194,-84.7334,1,Oxford,OH,RedHawks,Red,Midwest,Color
+50709,5,NIU,CFB_NIU,Northern Illinois,"DeKalb, IL",FBS,MAC,41.934,-88.7782,1,DeKalb,IL,Huskies,Red,Midwest,Dog
+50710,5,OHIO,CFB_OHIO,Ohio,"Athens, OH",FBS,MAC,39.3213,-82.1034,1,Athens,OH,Bobcats,Green,Midwest,Cat
+50711,5,TOL,CFB_TOL,Toledo,"Toledo, OH",FBS,MAC,41.6574,-83.614,1,Toledo,OH,Rockets,Blue,Midwest,Imaginary
+50712,5,WMU,CFB_WMU,Western Michigan,"Kalamazoo, MI",FBS,MAC,42.2858,-85.601,1,Kalamazoo,MI,Broncos,Yellow,Midwest,Animal
+50801,5,AFA,CFB_AFA,Air Force,"Colorado Springs, CO",FBS,MTNW,38.9969,-104.844,1,Colorado Springs,CO,Falcons,Blue,West,Bird
+50802,5,BOI,CFB_BOI,Boise State,"Boise, ID",FBS,MTNW,43.6027,-116.196,1,Boise,ID,Broncos,Blue,West,Animal
+50803,5,COST,CFB_COST,Colorado State,"Fort Collins, CO",FBS,MTNW,40.5617,-105.14,1,Fort Collins,CO,Rams,Green,West,Animal
+50804,5,FRES,CFB_FRES,Fresno State,"Fresno, CA",FBS,MTNW,36.8143,-119.758,1,Fresno,CA,Bulldogs,Red,West,Dog
+50805,5,HI,CFB_HI,Hawaii,"Honolulu, HI",FBS,MTNW,21.3728,-157.93,1,Honolulu,HI,Rainbow Warriors,Green,West,Color
+50806,5,NM,CFB_NM,New Mexico,"Albuquerque, NM",FBS,MTNW,32.2798,-106.741,1,Albuquerque,NM,Lobos,Red,South,Dog
+50807,5,NV,CFB_NV,Nevada,"Reno, NV",FBS,MTNW,39.5469,-119.818,1,Reno,NV,Wolf Pack,Blue,West,Dog
+50808,5,SDSU,CFB_SDSU,San Diego State,"San Diego, CA",FBS,MTNW,32.7831,-117.12,1,San Diego,CA,Aztecs,Red,West,Person
+50809,5,SJSU,CFB_SJSU,San Jose State,"San Jose, CA",FBS,MTNW,37.3201,-121.868,1,San Jose,CA,Spartans,Blue,West,Person
+50810,5,UNLV,CFB_UNLV,Nevada Las Vegas,"Las Vegas, NV",FBS,MTNW,36.086,-115.017,1,Las Vegas,NV,Rebels,Red,West,Imaginary
+50811,5,USU,CFB_USU,Utah State,"Logan, UT",FBS,MTNW,41.7515,-111.812,1,Logan,UT,Aggies,Blue,West,Person
+50812,5,WY,CFB_WY,Wyoming,"Laramie, WY",FBS,MTNW,41.3119,-105.569,1,Laramie,WY,Cowboys,Yellow,West,Person
+50901,5,ORST,CFB_ORST,Oregon State,"Corvallis, OR",FBS,P12,44.5595,-123.281,1,Corvallis,OR,Beavers,Orange,West,Animal
+50902,5,WSU,CFB_WSU,Washington State,"Pullman, WA",FBS,P12,46.732,-117.161,1,Pullman,WA,Cougars,Purple,West,Cat
+51001,5,ARK,CFB_ARK,Arkansas,"Fayetteville, AR",FBS,SEC,36.0679,-94.1788,1,Fayetteville,AR,Razorbacks,Red,South,Animal
+51002,5,AUB,CFB_AUB,Auburn,"Auburn, AL",FBS,SEC,32.6024,-85.4889,1,Auburn,AL,Tigers,Orange,South,Cat
+51003,5,ALA,CFB_ALA,Alabama,"Tuscaloosa, AL",FBS,SEC,33.2075,-87.5504,1,Tuscaloosa,AL,Crimson Tide,Red,South,Color
+51004,5,FL,CFB_FL,Florida,"Gainesville, FL",FBS,SEC,29.6499,-82.3487,1,Gainesville,FL,Gators,Blue,South,Animal
+51005,5,KY,CFB_KY,Kentucky,"Lexington, KY",FBS,SEC,38.0226,-84.5052,1,Lexington,KY,Wildcats,Blue,South,Cat
+51006,5,LSU,CFB_LSU,Louisiana State,"Baton Rouge, LA",FBS,SEC,30.412,-91.1838,1,Baton Rouge,LA,Tigers,Purple,South,Cat
+51007,5,MO,CFB_MO,Missouri,"Columbia, MO",FBS,SEC,38.9359,-92.3331,1,Columbia,MO,Tigers,Black,South,Cat
+51008,5,MSST,CFB_MSST,Mississippi State,"Starkville, MS",FBS,SEC,33.4562,-88.7934,1,Starkville,MS,Bulldogs,Red,South,Dog
+51009,5,OU,CFB_OU,Oklahoma,"Norman, OK",FBS,SEC,35.2059,-97.4426,1,Norman,OK,Sooners,Red,South,Person
+51010,5,MISS,CFB_MISS,Ole Miss,"Oxford, MS",FBS,SEC,34.3622,-89.5341,1,Oxford,MS,Rebels,Red,South,Imaginary
+51011,5,SC,CFB_SC,South Carolina,"Columbia, SC",FBS,SEC,33.9726,-81.0202,1,Columbia,SC,Gamecocks,Red,South,Bird
+51012,5,TENN,CFB_TENN,Tennessee,"Knoxville, TN",FBS,SEC,35.9547,-83.9253,1,Knoxville,TN,Volunteers,Orange,South,Person
+51013,5,TEX,CFB_TEX,Texas,"Austin, TX",FBS,SEC,30.2836,-97.7323,1,Austin,TX,Longhorns,Orange,South,Animal
+51014,5,TXAM,CFB_TXAM,Texas A&M,"College Station, TX",FBS,SEC,30.6101,-96.3407,1,College Station,TX,Aggies,Red,South,Person
+51015,5,GA,CFB_GA,Georgia,"Athens, GA",FBS,SEC,33.9498,-83.3734,1,Athens,GA,Bulldogs,Red,South,Dog
+51016,5,VAN,CFB_VAN,Vanderbilt,"Nashville, TN",FBS,SEC,36.1436,-86.8088,1,Nashville,TN,Commodores,Black,South,Person
+51101,5,APP,CFB_APP,Appalachian State,"Boone, NC",FBS,SUNB,36.2115,-81.6855,1,Boone,NC,Mountaineers,Yellow,East,Person
+51102,5,ARST,CFB_ARST,Arkansas State,"Jonesboro, AR",FBS,SUNB,35.849,-90.6677,1,Jonesboro,AR,Red Wolves,Red,South,Color
+51103,5,CC,CFB_CC,Coastal Carolina,"Conway, SC",FBS,SUNB,33.7922,-79.0173,1,Conway,SC,Chanticleers,Blue,South,Bird
+51104,5,GASO,CFB_GASO,Georgia Southern,"Statesboro, GA",FBS,SUNB,32.4122,-81.7832,1,Statesboro,GA,Eagles,Blue,South,Bird
+51105,5,GAST,CFB_GAST,Georgia State,"Atlanta, GA",FBS,SUNB,33.7576,-84.4011,1,Atlanta,GA,Panthers,Blue,South,Cat
+51106,5,JMU,CFB_JMU,James Madison,"Harrisonburg, VA",FBS,SUNB,38.4351,-78.8734,1,Harrisonburg,VA,Dukes,Purple,East,Person
+51107,5,LA,CFB_LA,Louisiana,"Lafayette, LA",FBS,SUNB,30.2158,-92.0163,1,Lafayette,LA,Rajan’ Cajuns,Red,South,Imaginary
+51108,5,MRSH,CFB_MRSH,Marshall,"Huntington, WV",FBS,SUNB,38.4249,-82.4219,1,Huntington,WV,Thundering Herd,Green,East,Animal
+51109,5,ODU,CFB_ODU,Old Dominion,"Norfolk, VA",FBS,SUNB,36.8888,-76.3057,1,Norfolk,VA,Monarchs,Blue,East,Cat
+51110,5,USM,CFB_USM,Southern Mississippi,"Hattiesburg, MS",FBS,SUNB,31.329,-89.3313,1,Hattiesburg,MS,Golden Eagles,Yellow,South,Color
+51111,5,TROY,CFB_TROY,Troy,"Troy, AL",FBS,SUNB,31.7995,-85.9522,1,Troy,AL,Trojans,Red,South,Person
+51112,5,TXST,CFB_TXST,Texas State,"San Marcos, TX",FBS,SUNB,29.8913,-97.9253,1,San Marcos,TX,Bobcats,Red,South,Cat
+51113,5,ULM,CFB_ULM,Louisiana-Monroe,"Monroe, LA",FBS,SUNB,32.5311,-92.0664,1,Monroe,LA,Warhawks,Red,South,Bird
+51114,5,USA,CFB_USA,South Alabama,"Mobile, AL",FBS,SUNB,30.6742,-88.0756,1,Mobile,AL,Jaguars,Blue,South,Cat
+59001,5,IDHO,CFB_IDHO,Idaho,"Moscow, ID",FCS,BIG SKY,46.726,-117.017,1,Moscow,ID,Vandals,Yellow,West,Imaginary
+59002,5,PRST,CFB_PRST,Portland State,"Portland, OR",FCS,BIG SKY,45.555,-122.907,1,Portland,OR,Vikings,Green,West,Person
+59003,5,SAC,CFB_SAC,Sacramento State,"Sacramento, CA",FCS,BIG SKY,38.556,-121.423,1,Sacramento,CA,Hornets,Green,West,Animal
+59004,5,UCD,CFB_UCD,UC Davis,"Davis, CA",FCS,BIG SKY,38.537,-121.763,1,Davis,CA,Aggies,Blue,West,Person
+59005,5,EWA,CFB_EWA,Eastern Washington,"Cheney, WA",FCS,BIG SKY,47.493,-117.587,1,Cheney,WA,Eagles,Red,West,Bird
+59006,5,MTST,CFB_MTST,Montana State,"Bozeman, MT",FCS,BIG SKY,45.659,-111.05,1,Bozeman,MT,Bobcats,Blue,West,Cat
+59007,5,WEB,CFB_WEB,Weber State,"Ogden, UT",FCS,BIG SKY,41.192,-111.94,1,Ogden,UT,Wildcats,Red,West,Cat
+59008,5,CP,CFB_CP,Cal Poly,"San Luis Obispo, CA",FCS,BIG SKY,35.298,-120.665,1,San Luis Obispo,CA,Mustangs,Green,West,Animal
+59009,5,MT,CFB_MT,Montana,"Missoula, MT",FCS,BIG SKY,46.864,-113.982,1,Missoula,MT,Grizzlies,Red,West,Animal
+59010,5,IDST,CFB_IDST,Idaho State,"Pocatello, ID",FCS,BIG SKY,42.87,-112.428,1,Pocatello,ID,Bengals,Orange,West,Cat
+59011,5,NAU,CFB_NAU,Northern Arizona,"Flagstaff, AZ",FCS,BIG SKY,35.181,-111.653,1,Flagstaff,AZ,Lumberjacks,Blue,West,Person
+59012,5,UNCO,CFB_UNCO,Northern Colorado,"Greeley, CO",FCS,BIG SKY,40.403,-104.705,1,Greeley,CO,Bears,Blue,West,Animal
+59013,5,GWEB,CFB_GWEB,Gardner-Webb,"Boiling Springs, NC",FCS,OVC,35.246,-81.674,1,Boiling Springs,NC,Runnin’ Bulldogs,Red,East,Dog
+59014,5,LIN,CFB_LIN,Lindenwood,"Saint Charles, MO",FCS,OVC,38.795,-90.52,1,Saint Charles,MO,Lions,Black,South,Cat
+59015,5,WIU,CFB_WIU,Western Illinois,"Macomb, IL",FCS,OVC,40.468,-90.684,1,Macomb,IL,Leathernecks,Purple,Midwest,Dog
+59016,5,CHSO,CFB_CHSO,Charleston Southern,"North Charleston, SC",FCS,OVC,32.981,-80.066,1,North Charleston,SC,Buccaneers,Blue,South,Person
+59017,5,UTM,CFB_UTM,Tennessee-Martin,"Martin, TN",FCS,OVC,36.345,-88.862,1,Martin,TN,Skyhawks,Blue,South,Bird
+59018,5,SEMO,CFB_SEMO,Southeast Missouri,"Cape Girardeau, MO",FCS,OVC,37.303,-89.523,1,Cape Girardeau,MO,Redhawks,Red,South,Color
+59019,5,EIL,CFB_EIL,Eastern Illinois,"Charleston, IL",FCS,OVC,39.48,-88.181,1,Charleston,IL,Panthers,Blue,Midwest,Cat
+59020,5,TNTC,CFB_TNTC,Tennessee Tech,"Cookeville, TN",FCS,OVC,36.178,-85.506,1,Cookeville,TN,Golden Eagles,Purple,South,Color
+59021,5,TNST,CFB_TNST,Tennessee State,"Nashville, TN",FCS,OVC,36.166,-86.771,1,Nashville,TN,Tigers,Blue,South,Cat
+59022,5,TOW,CFB_TOW,Towson,"Towson, MD",FCS,CAA,39.389,-76.616,1,Towson,MD,Tigers,Black,East,Cat
+59023,5,W&M,CFB_W&M,William & Mary,"Williamsburg, VA",FCS,CAA,37.273,-76.714,1,Williamsburg,VA,Tribe,Green,East,Imaginary
+59024,5,VILL,CFB_VILL,Villanova,"Villanova, PA",FCS,CAA,40.034,-75.337,1,Villanova,PA,Wildcats,Blue,East,Cat
+59025,5,BRY,CFB_BRY,Bryant,"Smithfield, RI",FCS,CAA,41.924,-71.539,1,Smithfield,RI,Bulldogs,Black,East,Dog
+59026,5,ALB,CFB_ALB,Albany,"Albany, NY",FCS,CAA,42.681,-73.827,1,Albany,NY,Great Danes,Purple,East,Dog
+59027,5,ME,CFB_ME,Maine,"Orono, ME",FCS,CAA,44.905,-68.672,1,Orono,ME,Black Bears,Blue,East,Color
+59028,5,CAM,CFB_CAM,Campbell,"Buies Creek, NC",FCS,CAA,35.405,-78.742,1,Buies Creek,NC,Fighting Camels,Orange,East,Animal
+59029,5,STBK,CFB_STBK,Stony Brook,"Stony Brook, NY",FCS,CAA,40.919,-73.124,1,Stony Brook,NY,Seawolves,Red,East,Dog
+59030,5,URI,CFB_URI,Rhode Island,"Kingston, RI",FCS,CAA,41.488,-71.535,1,Kingston,RI,Rams,Blue,East,Animal
+59031,5,ELON,CFB_ELON,Elon,"Elon, NC",FCS,CAA,36.11,-79.508,1,Elon,NC,Phoenix,Red,East,Imaginary
+59032,5,NCAT,CFB_NCAT,North Carolina A&T,"Greensboro, NC",FCS,CAA,36.081,-79.77,1,Greensboro,NC,Aggies,Blue,East,Person
+59033,5,HAMP,CFB_HAMP,Hampton,"Hampton, VA",FCS,CAA,37.02,-76.333,1,Hampton,VA,Pirates,Blue,East,Person
+59034,5,UNH,CFB_UNH,New Hampshire,"Durham, NH",FCS,CAA,43.139,-70.939,1,Durham,NH,Wildcats,Blue,East,Cat
+59035,5,MON,CFB_MON,Monmouth,"West Long Branch, NJ",FCS,CAA,40.279,-74.009,1,West Long Branch,NJ,Hawks,Blue,East,Bird
+59036,5,DE,CFB_DE,Delaware,"Newark, DE",FBS,CUSA,39.662,-75.749,1,Newark,DE,Fightin’ Blue Hens,Blue,East,Color
+59037,5,MOST,CFB_MOST,Missouri State,"Springfield, MO",FBS,CUSA,37.198,-93.28,1,Springfield,MO,Bears,Red,South,Animal
+59038,5,SHU,CFB_SHU,Sacred Heart,"Fairfield, CT",FCS,IND,41.221,-73.242,1,Fairfield,CT,Pioneers,Red,East,Person
+59039,5,MRMK,CFB_MRMK,Merrimack,"North Andover, MA",FCS,IND,42.684,-71.113,1,North Andover,MA,Warriors,Blue,East,Person
+59040,5,BRWN,CFB_BRWN,Brown,"Providence, RI",FCS,IVY,41.842,-71.394,1,Providence,RI,Bears,Brown,East,Animal
+59041,5,HARV,CFB_HARV,Harvard,"Boston, MA",FCS,IVY,42.367,-71.127,1,Boston,MA,Crimson,Red,East,Color
+59042,5,DART,CFB_DART,Dartmouth,"Hanover, NH",FCS,IVY,43.701,-72.284,1,Hanover,NH,Big Green,Green,East,Color
+59043,5,CORN,CFB_CORN,Cornell,"Ithaca, NY",FCS,IVY,42.444,-76.479,1,Ithaca,NY,Big Red,Red,East,Color
+59044,5,COLU,CFB_COLU,Columbia,"Manhattan, NY",FCS,IVY,40.873,-73.916,1,Manhattan,NY,Lions,Blue,East,Cat
+59045,5,PRIN,CFB_PRIN,Princeton,"Princeton, NJ",FCS,IVY,40.346,-74.65,1,Princeton,NJ,Tigers,Black,East,Cat
+59046,5,YALE,CFB_YALE,Yale,"New Haven, CT",FCS,IVY,41.313,-72.961,1,New Haven,CT,Bulldogs,Blue,East,Dog
+59047,5,PENN,CFB_PENN,Penn,"Philadelphia, PA",FCS,IVY,39.95,-75.19,1,Philadelphia,PA,Quakers,Red,East,Person
+59048,5,HOW,CFB_HOW,Howard,"Washington, DC",FCS,MEAC,38.925,-77.021,1,Washington,DC,Bison,Blue,East,Animal
+59049,5,NCC,CFB_NCC,North Carolina Central,"Durham, NC",FCS,MEAC,35.974,-78.897,1,Durham,NC,Eagles,Red,East,Bird
+59050,5,NORF,CFB_NORF,Norfolk State,"Norfolk, VA",FCS,MEAC,36.847,-76.26,1,Norfolk,VA,Spartans,Green,East,Person
+59051,5,MORG,CFB_MORG,Morgan State,"Baltimore, MD",FCS,MEAC,39.344,-76.583,1,Baltimore,MD,Bears,Blue,East,Animal
+59052,5,SCST,CFB_SCST,South Carolina State,"Orangeburg, SC",FCS,MEAC,33.499,-80.845,1,Orangeburg,SC,Bulldogs,Red,South,Dog
+59053,5,DSU,CFB_DSU,Delaware State,"Dover, DE",FCS,MEAC,39.189,-75.543,1,Dover,DE,Hornets,Blue,East,Animal
+59054,5,INST,CFB_INST,Indiana State,"Terre Haute, IN",FCS,MVFC,39.475,-87.367,1,Terre Haute,IN,Sycamores,Blue,Midwest,Imaginary
+59055,5,ILST,CFB_ILST,Illinois State,"Normal, IL",FCS,MVFC,40.513,-88.997,1,Normal,IL,Redbirds,Red,Midwest,Color
+59056,5,MUR,CFB_MUR,Murray State,"Murray, KY",FCS,MVFC,36.622,-88.318,1,Murray,KY,Racers,Yellow,South,Imaginary
+59057,5,UND,CFB_UND,North Dakota,"Grand Forks, ND",FCS,MVFC,47.911,-97.091,1,Grand Forks,ND,Fighting Hawks,Green,Midwest,Bird
+59058,5,NDSU,CFB_NDSU,North Dakota State,"Fargo, ND",FCS,MVFC,46.903,-96.8,1,Fargo,ND,Bison,Green,Midwest,Animal
+59059,5,UNI,CFB_UNI,Northern Iowa,"Cedar Falls, IA",FCS,MVFC,42.516,-92.467,1,Cedar Falls,IA,Panthers,Purple,Midwest,Cat
+59060,5,SDAK,CFB_SDAK,South Dakota,"Vermillion, SD",FCS,MVFC,42.791,-96.928,1,Vermillion,SD,Coyotes,Red,Midwest,Dog
+59061,5,SDST,CFB_SDST,South Dakota State,"Brookings, SD",FCS,MVFC,44.321,-96.78,1,Brookings,SD,Jackrabbits,Blue,Midwest,Animal
+59062,5,SIU,CFB_SIU,Southern Illinois,"Carbondale, IL",FCS,MVFC,37.709,-89.216,1,Carbondale,IL,Salukis,Red,Midwest,Dog
+59063,5,YSU,CFB_YSU,Youngstown State,"Youngstown, OH",FCS,MVFC,41.109,-80.65,1,Youngstown,OH,Penguins,Red,Midwest,Bird
+59064,5,RMU,CFB_RMU,Robert Morris,"Moon Township, PA",FCS,NEC,40.521,-80.216,1,Moon Township,PA,Colonials,Blue,East,Person
+59065,5,DUQ,CFB_DUQ,Duquesne,"Pittsburgh, PA",FCS,NEC,40.436,-79.99,1,Pittsburgh,PA,Dukes,Red,East,Person
+59067,5,WAG,CFB_WAG,Wagner,"Staten Island, NY",FCS,NEC,40.615,-74.091,1,Staten Island,NY,Seahawks,Green,East,Bird
+59068,5,CCST,CFB_CCST,Central Connecticut State,"New Britain, CT",FCS,NEC,41.695,-72.762,1,New Britain,CT,Blue Devils,Blue,East,Color
+59069,5,STO,CFB_STO,Stonehill,"North Easton, MA",FCS,NEC,42.067,-71.104,1,North Easton,MA,Skyhawks,Blue,East,Bird
+59070,5,MERC,CFB_MERC,Mercyhurst,"Erie, PA",FCS,NEC,42.129,-80.085,1,Erie,PA,Lakers,Green,East,Imaginary
+59071,5,NH,CFB_NH,New Haven,"West Haven, CT",FCS,NEC,41.271,-72.947,1,West Haven,CT,Chargers,Blue,East,Imaginary
+59072,5,SFPA,CFB_SFPA,Saint Francis PA,"Loretto, PA",FCS,NEC,40.506,-78.637,1,Loretto,PA,Red Flash,Red,East,Color
+59073,5,BUCK,CFB_BUCK,Bucknell,"Lewisburg, PA",FCS,PATRIOT,40.952,-76.885,1,Lewisburg,PA,Bison,Blue,East,Animal
+59074,5,HC,CFB_HC,Holy Cross,"Worcester, MA",FCS,PATRIOT,42.24,-71.811,1,Worcester,MA,Crusaders,Purple,East,Person
+59075,5,GTWN,CFB_GTWN,Georgetown,"Washington, DC",FCS,PATRIOT,38.908,-77.075,1,Washington,DC,Hoyas,Blue,East,Imaginary
+59076,5,FOR,CFB_FOR,Fordham,"Bronx, NY",FCS,PATRIOT,40.847,-73.879,1,Bronx,NY,Rams,Red,East,Animal
+59077,5,RICH,CFB_RICH,Richmond,"Richmond, VA",FCS,PATRIOT,37.581,-77.537,1,Richmond,VA,Spiders,Blue,East,Animal
+59078,5,COLG,CFB_COLG,Colgate,"Hamilton, NY",FCS,PATRIOT,42.817,-75.545,1,Hamilton,NY,Raiders,Red,East,Person
+59079,5,LAF,CFB_LAF,Lafayette,"Easton, PA",FCS,PATRIOT,40.701,-75.211,1,Easton,PA,Leopards,Red,East,Cat
+59080,5,LEH,CFB_LEH,Lehigh,"Bethlehem, PA",FCS,PATRIOT,40.589,-75.355,1,Bethlehem,PA,Mountain Hawks,Red,East,Bird
+59081,5,MORE,CFB_MORE,Morehead State,"Morehead, KY",FCS,PIONEER,38.192,-83.425,1,Morehead,KY,Eagles,Blue,South,Bird
+59082,5,BUT,CFB_BUT,Butler,"Indianapolis, IN",FCS,PIONEER,39.844,-86.166,1,Indianapolis,IN,Bulldogs,Blue,Midwest,Dog
+59083,5,VAL,CFB_VAL,Valparaiso,"Valparaiso, IN",FCS,PIONEER,41.466,-87.048,1,Valparaiso,IN,Beacons,Brown,Midwest,Imaginary
+59084,5,DRAK,CFB_DRAK,Drake,"Des Moines, IA",FCS,PIONEER,41.605,-93.655,1,Des Moines,IA,Bulldogs,Blue,Midwest,Dog
+59085,5,DAY,CFB_DAY,Dayton,"Dayton, OH",FCS,PIONEER,39.737,-84.198,1,Dayton,OH,Flyers,Red,Midwest,Imaginary
+59086,5,USD,CFB_USD,San Diego,"San Diego, CA",FCS,PIONEER,32.773,-117.184,1,San Diego,CA,Toreros,Blue,West,Person
+59087,5,DAV,CFB_DAV,Davidson,"Davidson, NC",FCS,PIONEER,35.5,-80.843,1,Davidson,NC,Wildcats,Red,East,Cat
+59088,5,PRES,CFB_PRES,Presbyterian,"Clinton, SC",FCS,PIONEER,34.462,-81.861,1,Clinton,SC,Blue Hose,Blue,South,Color
+59089,5,MRST,CFB_MRST,Marist,"Poughkeepsie, NY",FCS,PIONEER,41.719,-73.933,1,Poughkeepsie,NY,Red Foxes,Red,East,Color
+59090,5,STET,CFB_STET,Stetson,"DeLand, FL",FCS,PIONEER,29.021,-81.299,1,DeLand,FL,Hatters,Green,South,Imaginary
+59091,5,STMN,CFB_STMN,St Thomas (MN),"Saint Paul, MN",FCS,PIONEER,44.95,-93.093,1,Saint Paul,MN,Tommies,Purple,Midwest,Imaginary
+59092,5,CIT,CFB_CIT,The Citadel,"Charleston, SC",FCS,SOUTHERN,32.794,-79.956,1,Charleston,SC,Bulldogs,Blue,South,Dog
+59093,5,FUR,CFB_FUR,Furman,"Greenville, SC",FCS,SOUTHERN,34.92,-82.437,1,Greenville,SC,Paladins,Purple,South,Person
+59094,5,ETSU,CFB_ETSU,ETSU,"Johnson City, TN",FCS,SOUTHERN,36.299,-82.374,1,Johnson City,TN,Buccaneers,Blue,South,Person
+59095,5,MER,CFB_MER,Mercer,"Macon, GA",FCS,SOUTHERN,32.826,-83.652,1,Macon,GA,Bears,Orange,South,Animal
+59096,5,VMI,CFB_VMI,VMI,"Lexington, VA",FCS,SOUTHERN,37.789,-79.435,1,Lexington,VA,Keydets,Red,East,Person
+59097,5,WOF,CFB_WOF,Wofford,"Spartanburg, SC",FCS,SOUTHERN,34.962,-81.933,1,Spartanburg,SC,Terriers,Black,South,Dog
+59098,5,SAM,CFB_SAM,Samford,"Homewood, AL",FCS,SOUTHERN,33.463,-86.795,1,Homewood,AL,Bulldogs,Blue,South,Dog
+59099,5,CHAT,CFB_CHAT,Chattanooga,"Chattanooga, TN",FCS,SOUTHERN,35.036,-85.316,1,Chattanooga,TN,Mocs,Blue,South,Bird
+59100,5,WCU,CFB_WCU,Western Carolina,"Cullowhee, NC",FCS,SOUTHERN,35.305,-83.182,1,Cullowhee,NC,Catamounts,Purple,East,Cat
+59101,5,UIW,CFB_UIW,Incarnate Word,"San Antonio, TX",FCS,SOUTHLAND,29.467,-98.47,1,San Antonio,TX,Cardinals,Red,South,Bird
+59102,5,SFA,CFB_SFA,Stephen F. Austin,"Nacogdoches, TX",FCS,SOUTHLAND,31.626,-94.644,1,Nacogdoches,TX,Lumberjacks,Purple,South,Person
+59103,5,NICH,CFB_NICH,Nicholls State,"Thibodaux, LA",FCS,SOUTHLAND,29.787,-90.805,1,Thibodaux,LA,Colonels,Red,South,Person
+59104,5,SELA,CFB_SELA,Southeastern Louisiana,"Hammond, LA",FCS,SOUTHLAND,30.511,-90.469,1,Hammond,LA,Lions,Green,South,Cat
+59105,5,MCN,CFB_MCN,McNeese State,"Lake Charles, LA",FCS,SOUTHLAND,30.18,-93.218,1,Lake Charles,LA,Cowboys,Blue,South,Person
+59106,5,NWST,CFB_NWST,Northwestern State,"Natchitoches, LA",FCS,SOUTHLAND,31.747,-93.096,1,Natchitoches,LA,Demons,Purple,South,Imaginary
+59107,5,LAM,CFB_LAM,Lamar,"Beaumont, TX",FCS,SOUTHLAND,30.043,-94.07,1,Beaumont,TX,Cardinals,Red,South,Bird
+59108,5,HCU,CFB_HCU,Houston Christian,"Houston, TX",FCS,SOUTHLAND,29.695,-95.517,1,Houston,TX,Huskies,Blue,South,Dog
+59110,5,ETAM,CFB_ETAM,East Texas A&M,"Commerce, TX",FCS,SOUTHLAND,33.244,-95.901,1,Commerce,TX,Lions,Blue,South,Cat
+59111,5,FLAM,CFB_FLAM,Florida A&M,"Tallahassee, FL",FCS,SWAC,30.426,-84.292,1,Tallahassee,FL,Rattlers,Orange,South,Animal
+59112,5,PV,CFB_PV,Prairie View A&M,"Prairie View, TX",FCS,SWAC,30.094,-95.996,1,Prairie View,TX,Panthers,Purple,South,Cat
+59113,5,GRAM,CFB_GRAM,Grambling State,"Grambling, LA",FCS,SWAC,32.526,-92.715,1,Grambling,LA,Tigers,Black,South,Cat
+59114,5,AAMU,CFB_AAMU,Alabama A&M,"Huntsville, AL",FCS,SWAC,34.784,-86.578,1,Huntsville,AL,Bulldogs,Red,South,Dog
+59115,5,JACK,CFB_JACK,Jackson State,"Jackson, MS",FCS,SWAC,32.33,-90.18,1,Jackson,MS,Tigers,Blue,South,Cat
+59116,5,SOU,CFB_SOU,Southern,"Baton Rouge, LA",FCS,SWAC,30.522,-91.19,1,Baton Rouge,LA,Jaguars,Blue,South,Cat
+59117,5,ALCN,CFB_ALCN,Alcorn State,"Lorman, MS",FCS,SWAC,31.874,-91.135,1,Lorman,MS,Braves,Purple,South,Person
+59118,5,TXSO,CFB_TXSO,Texas Southern,"Houston, TX",FCS,SWAC,29.752,-95.352,1,Houston,TX,Tigers,Red,South,Cat
+59119,5,BCU,CFB_BCU,Bethune,"Daytona Beach, FL",FCS,SWAC,29.173,-81.118,1,Daytona Beach,FL,Wildcats,Red,South,Cat
+59120,5,UAPB,CFB_UAPB,Arkansas-Pine Bluff,"Pine Bluff, AR",FCS,SWAC,34.253,-92.021,1,Pine Bluff,AR,Golden Lions,Yellow,South,Color
+59121,5,MSVS,CFB_MSVS,Mississippi Valley State,"Itta Bena, MS",FCS,SWAC,33.512,-90.34,1,Itta Bena,MS,Delta Devils,Green,South,Imaginary
+59122,5,ALST,CFB_ALST,Alabama State,"Montgomery, AL",FCS,SWAC,32.364,-86.29,1,Montgomery,AL,Hornets,Black,South,Animal
+59123,5,CARK,CFB_CARK,Central Arkansas,"Conway, AR",FCS,UAC,35.08,-92.46,1,Conway,AR,Bears,Purple,South,Animal
+59124,5,TAR,CFB_TAR,Tarleton State,"Stephenville, TX",FCS,UAC,32.219,-98.213,1,Stephenville,TX,Texans,Purple,South,Imaginary
+59125,5,EKY,CFB_EKY,Eastern Kentucky,"Richmond, KY",FCS,UAC,37.734,-84.297,1,Richmond,KY,Colonels,Red,South,Person
+59126,5,SUU,CFB_SUU,Southern Utah,"Cedar City, UT",FCS,UAC,37.676,-113.077,1,Cedar City,UT,Thunderbirds,Red,West,Bird
+59127,5,ACU,CFB_ACU,Abilene Chrstian,"Abilene, TX",FCS,UAC,32.472,-99.71,1,Abilene,TX,Wildcats,Purple,South,Cat
+59128,5,UNA,CFB_UNA,North Alabama,"Florence, AL",FCS,UAC,34.811,-87.671,1,Florence,AL,Lions,Purple,South,Cat
+59129,5,AP,CFB_AP,Austin Peay,"Clarksville, TN",FCS,UAC,36.536,-87.353,1,Clarksville,TN,Govenors,Red,South,Person
+59130,5,WGA,CFB_WGA,West Georgia,"Carrollton, GA",FCS,UAC,33.58,-85.077,1,Carrollton,GA,Wolves,Blue,South,Dog
+59131,5,UTU,CFB_UTU,Utah Tech,"Saint George, UT",FCS,UAC,37.11,-113.567,1,Saint George,UT,Trailblazers,Red,West,Imaginary
+60000,6,TBD,CBB_TBD,Unknown School,,,,,,0,,,,,,
+60101,6,DAV,CBB_DAV,Davidson,"Davidson, NC",A10,,35.499,-80.8419,0,Davidson,NC,Wildcats,Red,East,Cat
+60102,6,DAY,CBB_DAY,Dayton,"Dayton, OH",A10,,39.7396,-84.1782,0,Dayton,OH,Flyers,Red,Midwest,Imaginary
+60103,6,GM,CBB_GM,George Mason,"Fairfax, VA",A10,,38.8317,-77.3104,0,Fairfax,VA,Patriots,Green,East,Person
+60104,6,GW,CBB_GW,George Washington,"Washington, DC",A10,,38.8995,-77.0476,0,Washington,DC,Revolutionaries,Blue,East,Person
+60105,6,LASA,CBB_LASA,La Salle,"Philadelphia, PA",A10,,40.039,-75.1564,0,Philadelphia,PA,Explorers,Blue,East,Person
+60106,6,LOIL,CBB_LOIL,Loyola (IL),"Chicago, IL",A10,,41.9994,-87.6558,0,Chicago,IL,Ramblers,Yellow,Midwest,Imaginary
+60107,6,RI,CBB_RI,Rhode Island,"Kingston, RI",A10,,41.4858,-71.5309,0,Kingston,RI,Rams,Blue,East,Animal
+60108,6,RICH,CBB_RICH,Richmond,"Richmond, VA",A10,,37.5749,-77.5399,0,Richmond,VA,Spiders,Blue,East,Animal
+60109,6,SBON,CBB_SBON,St. Bonaventure,"St. Bonaventure, NY",A10,,42.0793,-78.4828,0,St. Bonaventure,NY,Bonnies,Brown,East,Imaginary
+60110,6,SJ,CBB_SJ,Saint Joseph's,"Philadelphia, PA",A10,,39.9952,-75.2411,0,Philadelphia,PA,Hawks,Red,East,Bird
+60111,6,SL,CBB_SL,Saint Louis,"St. Louis, MO",A10,,38.6361,-90.2348,0,St. Louis,MO,Billikens,Blue,South,Imaginary
+60112,6,MA,CBB_MA,Massachusetts,"Amherst, MA",MAC,,42.3775,-72.5356,0,Amherst,MA,Minutemen,Red,East,Person
+60113,6,VCU,CBB_VCU,Virginia Commonwealth,"Richmond, VA",A10,,37.5446,-77.4329,0,Richmond,VA,Rams,Yellow,East,Animal
+60201,6,CHAR,CBB_CHAR,Charlotte,"Charlotte, NC",AAC,,35.3103,-80.7405,0,Charlotte,NC,49ers,Green,East,Person
+60202,6,FAU,CBB_FAU,Florida Atlantic,"Boca Raton, FL",AAC,,26.3755,-80.1017,0,Boca Raton,FL,Owls,Blue,South,Bird
+60203,6,MEM,CBB_MEM,Memphis,"Memphis, TN",AAC,,35.1209,-89.9781,0,Memphis,TN,Tigers,Blue,South,Cat
+60204,6,NTX,CBB_NTX,North Texas,"Denton, TX",AAC,,33.2039,-97.1592,0,Denton,TX,Mean Green,Green,South,Color
+60205,6,RICE,CBB_RICE,Rice,"Houston, TX",AAC,,29.7162,-95.4093,0,Houston,TX,Owls,Blue,South,Bird
+60206,6,SMU,CBB_SMU,Southern Methodist,"Dallas, TX",ACC,,32.8402,-96.7816,0,Dallas,TX,Mustangs,Red,South,Animal
+60207,6,TEMP,CBB_TEMP,Temple,"Philadelphia, PA",AAC,,39.9007,-75.1675,0,Philadelphia,PA,Owls,Red,East,Bird
+60208,6,TULS,CBB_TULS,Tulsa,"Tulsa, OK",AAC,,36.1489,-95.9436,0,Tulsa,OK,Golden Huricane,Blue,South,Color
+60209,6,UAB,CBB_UAB,Alabama Birmingham,"Birmingham, AL",AAC,,33.528,-86.8092,0,Birmingham,AL,Blazers,Yellow,South,Imaginary
+60210,6,USF,CBB_USF,South Florida,"Tampa, FL",AAC,,27.976,-82.5033,0,Tampa,FL,Bulls,Green,South,Animal
+60211,6,UTSA,CBB_UTSA,Texas San Antonio,"San Antonio, TX",AAC,,29.4169,-98.4789,0,San Antonio,TX,Roadrunners,Blue,South,Bird
+60212,6,WICH,CBB_WICH,Wichita State,"Wichita, KS",AAC,,37.719,-97.2912,0,Wichita,KS,Shockers,Yellow,Midwest,Imaginary
+60301,6,BC,CBB_BC,Boston College,"Chestnut Hill, MA",ACC,,42.3351,-71.1665,0,Chestnut Hill,MA,Eagles,Red,East,Bird
+60302,6,CAL,CBB_CAL,California,"Berkeley, CA",ACC,,37.8707,-122.251,0,Berkeley,CA,Golden Bears,Yellow,West,Color
+60303,6,CLEM,CBB_CLEM,Clemson,"Clemson, SC",ACC,,34.6787,-82.8432,0,Clemson,SC,Tigers,Orange,South,Cat
+60304,6,DUKE,CBB_DUKE,Duke,"Durham, NC",ACC,,35.9953,-78.9417,0,Durham,NC,Blue Devils,Blue,East,Color
+60305,6,FSU,CBB_FSU,Florida State,"Tallahassee, FL",ACC,,30.4375,-84.3045,0,Tallahassee,FL,Seminoles,Red,South,Person
+60306,6,GT,CBB_GT,Georgia Tech,"Atlanta, GA",ACC,,33.7726,-84.3929,0,Atlanta,GA,Yellow Jackets,Yellow,South,Color
+60307,6,LOU,CBB_LOU,Louisville,"Louisville, KY",ACC,,38.2054,-85.7581,0,Louisville,KY,Cardinals,Red,South,Bird
+60308,6,UNC,CBB_UNC,North Carolina,"Chapel Hill, NC",ACC,,35.907,-79.0479,0,Chapel Hill,NC,Tar Heels,Blue,East,Imaginary
+60309,6,NCST,CBB_NCST,North Carolina State,"Raleigh, NC",ACC,,35.8008,-78.7195,0,Raleigh,NC,Wolfpack,Red,East,Dog
+60310,6,ND,CBB_ND,Notre Dame,"South Bend, IN",ACC,,41.6984,-86.2338,0,South Bend,IN,Fighting Irish,Yellow,Midwest,Imaginary
+60311,6,PITT,CBB_PITT,Pittsburgh,"Pittsburgh, PA",ACC,,40.4468,-80.0158,0,Pittsburgh,PA,Panthers,Blue,East,Cat
+60312,6,STAN,CBB_STAN,Stanford,"Stanford, CA",ACC,,37.4347,-122.161,0,Stanford,CA,Cardinals,Red,West,Bird
+60313,6,SYR,CBB_SYR,Syracuse,"Syracuse, NY",ACC,,43.0361,-76.1365,0,Syracuse,NY,Orange,Orange,East,Color
+60314,6,MIA,CBB_MIA,Miami (FL),"Coral Gables, FL",ACC,,25.7814,-80.1881,0,Coral Gables,FL,Hurricanes,Orange,South,Imaginary
+60315,6,VA,CBB_VA,Virginia,"Charlottesville, VA",ACC,,38.0311,-78.5137,0,Charlottesville,VA,Cavaliers,Blue,East,Person
+60316,6,VATC,CBB_VATC,Virginia Tech,"Blacksburg, VA",ACC,,37.22,-80.4181,0,Blacksburg,VA,Hokies,Red,East,Imaginary
+60317,6,WF,CBB_WF,Wake Forest,"Winston-Salem, NC",ACC,,36.0918,-80.2553,0,Winston-Salem,NC,Demon Deacons,Yellow,East,Imaginary
+60401,6,ALB,CBB_ALB,Albany,"Albany, NY",AEC,,42.684,-73.8255,0,Albany,NY,Great Danes,Yellow,East,Dog
+60402,6,UMBC,CBB_UMBC,Maryland-Baltimore County,"Baltimore, MD",AEC,,39.2557,-76.7112,0,Baltimore,MD,Retreviers,Yellow,East,Dog
+60403,6,VT,CBB_VT,Vermont,"Burlington, VT",AEC,,44.4776,-73.1971,0,Burlington,VT,Catamounts,Green,East,Cat
+60501,6,AP,CBB_AP,Austin Peay,"Clarksville, TN",ASUN,,36.5354,-87.3529,0,Clarksville,TN,Govenors,Red,South,Person
+60502,6,EKY,CBB_EKY,Eastern Kentucky,"Richmond, KY",ASUN,,37.7355,-84.2995,0,Richmond,KY,Colonels,Red,South,Person
+60503,6,FLGC,CBB_FLGC,Florida Gulf Coast,"Fort Myers, FL",ASUN,,26.4633,-81.7787,0,Fort Myers,FL,Eagles,Blue,South,Bird
+60601,6,IA,CBB_IA,Iowa,"Iowa City, IA",B10,,41.6584,-91.5515,0,Iowa City,IA,Hawkeyes,Black,Midwest,Bird
+60602,6,IL,CBB_IL,Illinois,"Champaign, IL",B10,,40.0993,-88.236,0,Champaign,IL,Fighting Illini,Orange,Midwest,Imaginary
+60603,6,IN,CBB_IN,Indiana,"Bloomington, IN",B10,,39.1809,-86.5256,0,Bloomington,IN,Hoosiers,Red,Midwest,Imaginary
+60604,6,MD,CBB_MD,Maryland,"College Park, MD",B10,,38.9912,-76.9473,0,College Park,MD,Terrapins,Red,East,Animal
+60605,6,MI,CBB_MI,Michigan,"Ann Arbor, MI",B10,,42.2659,-83.7487,0,Ann Arbor,MI,Wolverine,Blue,Midwest,Animal
+60606,6,MIST,CBB_MIST,Michigan State,"East Lansing, MI",B10,,42.7282,-84.4849,0,East Lansing,MI,Spartans,Green,Midwest,Person
+60607,6,MN,CBB_MN,Minnesota,"Minneapolis, MN",B10,,44.9765,-93.2246,0,Minneapolis,MN,Golden Gophers,Red,Midwest,Color
+60608,6,NE,CBB_NE,Nebraska,"Lincoln, NE",B10,,42.091,-71.264,0,Lincoln,NE,Cornhuskers,Red,Midwest,Imaginary
+60609,6,NW,CBB_NW,Northwestern,"Evanston, IL",B10,,42.0654,-87.6925,0,Evanston,IL,Wildcats,Purple,Midwest,Cat
+60610,6,OHST,CBB_OHST,Ohio State,"Columbus, OH",B10,,40.0017,-83.0197,0,Columbus,OH,Buckeyes,Red,Midwest,Imaginary
+60611,6,OR,CBB_OR,Oregon,"Eugene, OR",B10,,44.0583,-123.069,0,Eugene,OR,Ducks,Green,West,Animal
+60612,6,PSU,CBB_PSU,Penn State,"State College, PA",B10,,40.8122,-77.8562,0,State College,PA,Nittany Lions,Blue,East,Cat
+60613,6,PUR,CBB_PUR,Purdue,"West Lafayette, IN",B10,,40.4343,-86.9185,0,West Lafayette,IN,Boilermakers,Yellow,Midwest,Imaginary
+60614,6,RUT,CBB_RUT,Rutgers,"New Brunswick, NJ",B10,,40.5138,-74.465,0,New Brunswick,NJ,Scarlet Knights,Red,East,Color
+60615,6,UCLA,CBB_UCLA,California Los Angeles,"Los Angeles, CA",B10,,34.1616,-118.168,0,Los Angeles,CA,Bruins,Blue,West,Animal
+60616,6,USC,CBB_USC,Southern California,"Los Angeles, CA",B10,,34.014,-118.288,0,Los Angeles,CA,Trojans,Red,West,Person
+60617,6,WA,CBB_WA,Washington,"Seattle, WA",B10,,47.6504,-122.303,0,Seattle,WA,Huskies,Purple,West,Dog
+60618,6,WI,CBB_WI,Wisconsin,"Madison, WI",B10,,43.0699,-89.4128,0,Madison,WI,Badgers,Red,Midwest,Animal
+60701,6,AZ,CBB_AZ,Arizona,"Tucson, AZ",B12,,32.2283,-110.949,0,Tucson,AZ,Wildcats,Red,West,Cat
+60702,6,AZST,CBB_AZST,Arizona State,"Tempe, AZ",B12,,33.4264,-111.933,0,Tempe,AZ,Sun Devils,Red,West,Imaginary
+60703,6,BAY,CBB_BAY,Baylor,"Waco, TX",B12,,31.5587,-97.1156,0,Waco,TX,Bears,Green,South,Animal
+60704,6,BYU,CBB_BYU,Brigham Young,"Provo, UT",B12,,40.2575,-111.654,0,Provo,UT,Cougars,Blue,West,Cat
+60705,6,CIN,CBB_CIN,Cincinnati,"Cincinnati, OH",B12,,39.1313,-84.5163,0,Cincinnati,OH,Bearcats,Red,Midwest,Animal
+60706,6,CO,CBB_CO,Colorado,"Boulder, CO",B12,,40.0094,-105.267,0,Boulder,CO,Buffaloes,Black,West,Animal
+60707,6,HOU,CBB_HOU,Houston,"Houston, TX",B12,,29.7508,-95.3622,0,Houston,TX,Cougars,Red,South,Cat
+60708,6,IAST,CBB_IAST,Iowa State,"Ames, IA",B12,,42.014,-93.6358,0,Ames,IA,Cyclones,Red,Midwest,Imaginary
+60709,6,KS,CBB_KS,Kansas,"Lawrence, KS",B12,,38.9629,-95.2463,0,Lawrence,KS,JayHawk,Red,Midwest,Bird
+60710,6,KSU,CBB_KSU,Kansas State,"Manhattan, KS",B12,,39.2019,-96.5938,0,Manhattan,KS,Wildcats,Purple,Midwest,Cat
+60711,6,OKST,CBB_OKST,Oklahoma State,"Stillwater, OK",B12,,36.1257,-97.0665,0,Stillwater,OK,Cowboys,Orange,South,Person
+60712,6,TCU,CBB_TCU,Texas Cristian,"Fort Worth, TX",B12,,32.7099,-97.368,0,Fort Worth,TX,Horned Frogs,Purple,South,Animal
+60713,6,TXTC,CBB_TXTC,Texas Tech,"Lubbock, TX",B12,,33.591,-101.873,0,Lubbock,TX,Red Raiders,Red,South,Color
+60714,6,UCF,CBB_UCF,Central Florida,"Orlando, FL",B12,,28.608,-81.193,0,Orlando,FL,Knights,Black,South,Person
+60715,6,UT,CBB_UT,Utah,"Salt Lake City, UT",B12,,40.7599,-111.849,0,Salt Lake City,UT,Utes,Red,West,Person
+60716,6,WV,CBB_WV,West Virginia,"Morgantown, WV",B12,,39.6522,-79.9552,0,Morgantown,WV,Mountaineers,Yellow,East,Person
+60801,6,BUT,CBB_BUT,Butler,"Indianapolis, IN",BEAST,,39.8387,-86.1716,0,Indianapolis,IN,Bulldogs,Blue,Midwest,Dog
+60802,6,CONN,CBB_CONN,Connecticut,"Storrs, CT",BEAST,,41.7599,-72.6189,0,Storrs,CT,Huskies,Blue,East,Dog
+60803,6,CREI,CBB_CREI,Creighton,"Omaha, NE",BEAST,,41.2658,-95.9455,0,Omaha,NE,Bluejays,Blue,Midwest,Color
+60804,6,DEPA,CBB_DEPA,DePaul,"Chicago, IL",BEAST,,41.8776,-87.6277,0,Chicago,IL,Blue Demons,Blue,Midwest,Color
+60805,6,GTWN,CBB_GTWN,Georgetown,"Washington, DC",BEAST,,33.7726,-84.3929,0,Washington,DC,Hoyas,Blue,East,Imaginary
+60806,6,MARQ,CBB_MARQ,Marquette,"Milwaukee, WI",BEAST,,43.0387,-87.9313,0,Milwaukee,WI,Golden Eagles,Blue,Midwest,Color
+60807,6,PROV,CBB_PROV,Providence,"Providence, RI",BEAST,,41.8225,-71.4133,0,Providence,RI,Friars,Black,East,Person
+60808,6,SETH,CBB_SETH,Seton Hall,"South Orange, NJ",BEAST,,40.7431,-74.2468,0,South Orange,NJ,Pirates,Blue,East,Person
+60809,6,SJON,CBB_SJON,St. John's (NY),"Queens, NY",BEAST,,40.7214,-73.797,0,Queens,NY,Red Storm,Red,East,Color
+60810,6,VILL,CBB_VILL,Villanova,"Villanova, PA",BEAST,,40.0368,-75.343,0,Villanova,PA,Wildcats,Blue,East,Cat
+60811,6,X,CBB_X,Xavier,"Cincinnati, OH",BEAST,,39.1492,-84.474,0,Cincinnati,OH,Musketeers,Blue,Midwest,Person
+60901,6,RAD,CBB_RAD,Radford,"Radford, VA",BS,,37.1385,-80.5513,0,Radford,VA,Highlanders,Red,East,Imaginary
+60902,6,WIN,CBB_WIN,Winthrop,"Rock Hill, SC",BS,,34.9389,-81.0326,0,Rock Hill,SC,Eagles,Red,South,Bird
+61001,6,EWA,CBB_EWA,Eastern Washington,"Cheney, WA",BSKY,,47.4909,-117.585,0,Cheney,WA,Eagles,Red,West,Bird
+61002,6,MT,CBB_MT,Montana,"Missoula, MT",BSKY,,46.8622,-113.986,0,Missoula,MT,Grizzlies,Red,West,Animal
+61003,6,NAZ,CBB_NAZ,Northern Arizona,"Flagstaff, AZ",BSKY,,35.1802,-111.655,0,Flagstaff,AZ,Lumberjacks,Blue,West,Person
+61004,6,POST,CBB_POST,Portland State,"Portland, OR",BSKY,,45.5108,-122.684,0,Portland,OR,Vikings,Green,West,Person
+61005,6,WEB,CBB_WEB,Weber State,"Ogden, UT",BSKY,,41.1907,-111.944,0,Ogden,UT,Wildcats,Red,West,Cat
+61101,6,CSFU,CBB_CSFU,Cal State Fullerton,"Fullerton, CA",BW,,33.8817,-117.885,0,Fullerton,CA,Hornets,Green,West,Animal
+61102,6,CSUN,CBB_CSUN,Cal State Northridge,"Northridge, CA",BW,,34.2401,-118.531,0,Northridge,CA,Matadors,Red,West,Person
+61103,6,HI,CBB_HI,Hawaii,"Honolulu, HI",BW,,21.3728,-157.93,0,Honolulu,HI,Rainbow Warriors,Green,West,Color
+61104,6,LBSU,CBB_LBSU,Long Beach State,"Long Beach, CA",BW,,33.7838,-118.114,0,Long Beach,CA,Beach,Black,West,Imaginary
+61201,6,DE,CBB_DE,Delaware,"Newark, DE",CUSA,,39.6804,-75.7528,0,Newark,DE,Fightin’ Blue Hens,Blue,East,Color
+61202,6,HAMP,CBB_HAMP,Hampton,"Hampton, VA",CAA,,37.0233,-76.3336,0,Hampton,VA,Pirates,Blue,East,Person
+61203,6,HOF,CBB_HOF,Hofstra,"Hempstead, NY",CAA,,40.7173,-73.5993,0,Hempstead,NY,Pride,Blue,East,Imaginary
+61204,6,MON,CBB_MON,Monmouth,"West Long Branch, NJ",CAA,,40.2798,-74.0059,0,West Long Branch,NJ,Hawks,Blue,East,Bird
+61205,6,NOEA,CBB_NE,Northeastern,"Boston, MA",CAA,,42.091,-71.264,0,Boston,MA,Huskies,Red,East,Dog
+61301,6,LIB,CBB_LIB,Liberty,"Lynchburg, VA",CUSA,,37.3544,-79.175,0,Lynchburg,VA,Flames,Red,East,Imaginary
+61302,6,MTST,CBB_MTST,Middle Tennessee State,"Murfreesboro, TN",CUSA,,35.8511,-86.3684,0,Murfreesboro,TN,Blue Raiders,Blue,South,Color
+61303,6,NMST,CBB_NMST,New Mexico State,"Las Cruces, NM",CUSA,,35.0676,-106.628,0,Las Cruces,NM,Aggies,Red,South,Person
+61304,6,SAM,CBB_SAM,Sam Houston,"Huntsville, TX",CUSA,,30.7139,-95.5419,0,Huntsville,TX,Bearkats,Orange,South,Animal
+61305,6,UTEP,CBB_UTEP,Texas El Paso,"El Paso, TX",CUSA,,31.7733,-106.508,0,El Paso,TX,Miners,Blue,South,Person
+61306,6,WKY,CBB_WKY,Western Kentucky,"Bowling Green, KY",CUSA,,36.9849,-86.459,0,Bowling Green,KY,Hilltoppers,Red,South,Imaginary
+61401,6,CLST,CBB_CLST,Cleveland State,"Cleveland, OH",HZ,,41.5029,-81.6751,0,Cleveland,OH,Vikings,Green,Midwest,Person
+61402,6,DMER,CBB_DMER,Detroit Mercy,"Detroit, MI",HZ,,42.4142,-83.1381,0,Detroit,MI,Titans,Red,Midwest,Imaginary
+61403,6,GB,CBB_GB,Green Bay,"Green Bay, WI",HZ,,44.305,-88.344,0,Green Bay,WI,Phoenix,Green,Midwest,Imaginary
+61404,6,UIC,CBB_UIC,Illinois-Chicago,"Chicago, IL",HZ,,41.8687,-87.6479,0,Chicago,IL,Flames,Blue,Midwest,Imaginary
+61405,6,MILW,CBB_MILW,Milwaukee,"Milwaukee, WI",HZ,,43.0786,-87.8825,0,Milwaukee,WI,Panthers,Black,Midwest,Cat
+61406,6,OAK,CBB_OAK,Oakland,"Rochester, MI",HZ,,37.7517,-122.201,0,Rochester,MI,Golden Grizzlies,Blue,Midwest,Color
+61407,6,RM,CBB_RM,Robert Morris,"Pittsburgh, PA",HZ,,40.5217,-80.2137,0,Pittsburgh,PA,Colonials,Blue,East,Person
+61408,6,WST,CBB_WST,Wright State,"Dayton, OH",HZ,,39.7794,-84.066,0,Dayton,OH,Flyers,Red,Midwest,Imaginary
+61501,6,CORN,CBB_CORN,Cornell,"Ithaca, NY",IVY,,42.4542,-76.4733,0,Ithaca,NY,Big Red,Red,East,Color
+61502,6,HARV,CBB_HARV,Harvard,"Boston, MA",IVY,,42.3741,-71.1164,0,Boston,MA,Crimson,Red,East,Color
+61503,6,PA,CBB_PA,Pennsylvania,"Philadelphia, PA",IVY,,39.952,-75.194,0,Philadelphia,PA,Quakers,Red,East,Person
+61504,6,PRIN,CBB_PRIN,Princeton,"Princeton, NJ",IVY,,40.3412,-74.6559,0,Princeton,NJ,Tigers,Black,East,Cat
+61505,6,YALE,CBB_YALE,Yale,"New Haven, CT",IVY,,41.316,-72.9223,0,New Haven,CT,Bulldogs,Blue,East,Dog
+61601,6,IONA,CBB_IONA,Iona,"New Rochelle, NY",MAA,,40.9275,-73.7859,0,New Rochelle,NY,Gaels,Red,East,Person
+61602,6,MAN,CBB_MAN,Manhattan,"Riverdale, NY",MAA,,40.8894,-73.9018,0,Riverdale,NY,Jaspers,Green,East,Imaginary
+61603,6,MSTM,CBB_MSTM,Mount St. Mary's,"Emmitsburg, MD",MAA,,39.679,-77.3471,0,Emmitsburg,MD,Mountaineers,Blue,East,Person
+61604,6,NIAG,CBB_NIAG,Niagara,"Niagara Falls, NY",MAA,,43.1368,-79.0356,0,Niagara Falls,NY,Purple Eagles,Purple,East,Color
+61605,6,SIEN,CBB_SIEN,Siena,"Loudonville, NY",MAA,,42.7181,-73.7526,0,Loudonville,NY,Saints,Green,East,Person
+61606,6,SP,CBB_SP,Saint Peter's,"Jersey City, NJ",MAA,,40.7273,-74.0702,0,Jersey City,NJ,Peacocks,Blue,East,Bird
+61701,6,AKR,CBB_AKR,Akron,"Akron, OH",MAC,,41.0726,-81.5084,0,Akron,OH,Zips,Blue,Midwest,Imaginary
+61702,6,BALL,CBB_BALL,Ball State,"Muncie, IN",MAC,,40.216,-85.4177,0,Muncie,IN,Cardinals,Red,Midwest,Bird
+61703,6,BUF,CBB_BUF,Buffalo,"Buffalo, NY",MAC,,42.9991,-78.7775,0,Buffalo,NY,Bulls,Blue,East,Animal
+61704,6,CMU,CBB_CMU,Central Michigan,"Mount Pleasant, MI",MAC,,43.5823,-84.7768,0,Mount Pleasant,MI,Chippewas,Red,Midwest,Person
+61705,6,KENT,CBB_KENT,Kent State,"Kent, OH",MAC,,41.1391,-81.3134,0,Kent,OH,Golden Flashes,Blue,Midwest,Color
+61706,6,MIOH,CBB_MIOH,Miami (OH),"Oxford, OH",MAC,,39.5194,-84.7334,0,Oxford,OH,RedHawks,Red,Midwest,Color
+61707,6,OH,CBB_OH,Ohio,"Athens, OH",MAC,,39.3213,-82.1034,0,Athens,OH,Bobcats,Green,Midwest,Cat
+61708,6,WMI,CBB_WMI,Western Michigan,"Kalamazoo, MI",MAC,,42.2858,-85.601,0,Kalamazoo,MI,Broncos,Yellow,Midwest,Animal
+61801,6,COP,CBB_COP,Coppin State,"Baltimore, MD",MEAC,,39.3134,-76.6581,0,Baltimore,MD,Eagles,Blue,East,Bird
+61802,6,MORG,CBB_MORG,Morgan State,"Baltimore, MD",MEAC,,39.3436,-76.584,0,Baltimore,MD,Bears,Blue,East,Animal
+61803,6,NCAT,CBB_NCAT,North Carolina A&T,"Greensboro, NC",MEAC,,36.079,-79.7737,0,Greensboro,NC,Aggies,Blue,East,Person
+61804,6,NCC,CBB_NCC,North Carolina Central,"Durham, NC",MEAC,,35.9748,-78.8993,0,Durham,NC,Eagles,Red,East,Bird
+61805,6,NRST,CBB_NRST,Norfolk State,"Norfolk, VA",MEAC,,36.8482,-76.2624,0,Norfolk,VA,Spartans,Green,East,Person
+61806,6,SCST,CBB_SCST,South Carolina State,"Orangeburg, SC",MEAC,,33.4981,-80.8502,0,Orangeburg,SC,Bulldogs,Red,South,Dog
+61901,6,BEL,CBB_BEL,Belmont,"Nashville, TN",MVAL,,36.1331,-86.7935,0,Nashville,TN,Bruins,Blue,South,Animal
+61902,6,BRAD,CBB_BRAD,Bradley,"Peoria, IL",MVAL,,40.6976,-89.6157,0,Peoria,IL,Braves,Red,Midwest,Person
+61903,6,DRAK,CBB_DRAK,Drake,"Des Moines, IA",MVAL,,41.6031,-93.6548,0,Des Moines,IA,Bulldogs,Blue,Midwest,Dog
+61904,6,INST,CBB_INST,Indiana State,"Terre Haute, IN",MVAL,,39.471,-87.4083,0,Terre Haute,IN,Sycamores,Blue,Midwest,Imaginary
+61905,6,MUR,CBB_MUR,Murray State,"Murray, KY",MVAL,,36.6159,-88.3213,0,Murray,KY,Racers,Yellow,South,Imaginary
+61906,6,NIA,CBB_NIA,Northern Iowa,"Cedar Falls, IA",MVAL,,42.5111,-92.4649,0,Cedar Falls,IA,Panthers,Purple,Midwest,Cat
+61907,6,SOIL,CBB_SOIL,Southern Illinois,"Carbondale, IL",MVAL,,37.7065,-89.223,0,Carbondale,IL,Salukis,Red,Midwest,Dog
+61908,6,VALP,CBB_VALP,Valparaiso,"Valparaiso, IN",MVAL,,41.4643,-87.0442,0,Valparaiso,IN,Beacons,Brown,Midwest,Imaginary
+62001,6,AF,CBB_AF,Air Force,"Colorado Springs, CO",MTNW,,38.9969,-104.844,0,Colorado Springs,CO,Falcons,Blue,West,Bird
+62002,6,BOI,CBB_BOI,Boise State,"Boise, ID",P12,,43.6027,-116.196,0,Boise,ID,Broncos,Blue,West,Animal
+62003,6,COST,CBB_COST,Colorado State,"Fort Collins, CO",P12,,40.5617,-105.14,0,Fort Collins,CO,Rams,Green,West,Animal
+62004,6,FRST,CBB_FRST,Fresno State,"Fresno, CA",P12,,36.8143,-119.758,0,Fresno,CA,Bulldogs,Red,West,Dog
+62005,6,NM,CBB_NM,New Mexico,"Albuquerque, NM",MTNW,,32.2798,-106.741,0,Albuquerque,NM,Lobos,Red,South,Dog
+62006,6,NV,CBB_NV,Nevada,"Reno, NV",MTNW,,39.5469,-119.818,0,Reno,NV,Wolf Pack,Blue,West,Dog
+62007,6,SDST,CBB_SDST,San Diego State,"San Diego, CA",P12,,32.7831,-117.12,0,San Diego,CA,Aztecs,Red,West,Person
+62008,6,UNLV,CBB_UNLV,Nevada Las Vegas,"Las Vegas, NV",MTNW,,36.086,-115.017,0,Las Vegas,NV,Rebels,Red,West,Imaginary
+62009,6,UTST,CBB_UTST,Utah State,"Logan, UT",P12,,41.7515,-111.812,0,Logan,UT,Aggies,Blue,West,Person
+62010,6,WY,CBB_WY,Wyoming,"Laramie, WY",MTNW,,41.3119,-105.569,0,Laramie,WY,Cowboys,Yellow,West,Person
+62101,6,CCST,CBB_CCST,Central Connecticut State,"New Britain, CT",NE,,41.6927,-72.764,0,New Britain,CT,Blue Devils,Blue,East,Color
+62102,6,FDU,CBB_FDU,Fairleigh Dickinson,"Teaneck, NJ",NE,,40.8989,-74.0284,0,Teaneck,NJ,Knights,Blue,East,Person
+62103,6,LIU,CBB_LIU,Long Island,"Brooklyn, NY",NE,,40.6899,-73.9814,0,Brooklyn,NY,Sharks,Blue,East,Animal
+62104,6,WAG,CBB_WAG,Wagner,"Staten Island, NY",NE,,40.6142,-74.0941,0,Staten Island,NY,Seahawks,Green,East,Bird
+62201,6,EIL,CBB_EIL,Eastern Illinois,"Charleston, IL",OVAL,,39.484,-88.1755,0,Charleston,IL,Panthers,Blue,Midwest,Cat
+62202,6,MORE,CBB_MORE,Morehead State,"Morehead, KY",OVAL,,38.1888,-83.4314,0,Morehead,KY,Eagles,Blue,South,Bird
+62203,6,SEMO,CBB_SEMO,Southeast Missouri State,"Cape Girardeau, MO",OVAL,,37.3143,-89.5281,0,Cape Girardeau,MO,Redhawks,Red,South,Color
+62301,6,BUCK,CBB_BUCK,Bucknell,"Lewisburg, PA",PAT,,40.9555,-76.8855,0,Lewisburg,PA,Bison,Blue,East,Animal
+62302,6,HC,CBB_HC,Holy Cross,"Worcester, MA",PAT,,42.2393,-71.8091,0,Worcester,MA,Crusaders,Purple,East,Person
+62303,6,LAF,CBB_LAF,Lafayette,"Easton, PA",PAT,,34.0389,-84.5821,0,Easton,PA,Leopards,Red,East,Cat
+62304,6,LEH,CBB_LEH,Lehigh,"Bethlehem, PA",PAT,,40.6055,-75.3777,0,Bethlehem,PA,Mountain Hawks,Red,East,Bird
+62305,6,LOMD,CBB_LOMD,Loyola (MD),"Baltimore, MD",PAT,,39.3472,-76.6172,0,Baltimore,MD,Greyhounds,Green,East,Dog
+62306,6,MRCA,CBB_MRCA,American,"Washington, DC",PAT,,38.9383,-77.09,0,Washington,DC,Eagles,Blue,East,Bird
+62401,6,BAMA,CBB_BAMA,Alabama,"Tuscaloosa, AL",SEC,,33.2075,-87.5504,0,Tuscaloosa,AL,Crimson Tide,Red,South,Color
+62402,6,AR,CBB_AR,Arkansas,"Fayetteville, AR",SEC,,36.0679,-94.1788,0,Fayetteville,AR,Razorbacks,Red,South,Animal
+62403,6,AUB,CBB_AUB,Auburn,"Auburn, AL",SEC,,32.6024,-85.4889,0,Auburn,AL,Tigers,Orange,South,Cat
+62404,6,FL,CBB_FL,Florida,"Gainesville, FL",SEC,,29.6499,-82.3487,0,Gainesville,FL,Gators,Blue,South,Animal
+62405,6,GA,CBB_GA,Georgia,"Athens, GA",SEC,,33.9498,-83.3734,0,Athens,GA,Bulldogs,Red,South,Dog
+62406,6,KY,CBB_KY,Kentucky,"Lexington, KY",SEC,,38.0226,-84.5052,0,Lexington,KY,Wildcats,Blue,South,Cat
+62407,6,LSU,CBB_LSU,Louisiana State,"Baton Rouge, LA",SEC,,30.412,-91.1838,0,Baton Rouge,LA,Tigers,Purple,South,Cat
+62408,6,MO,CBB_MO,Missouri,"Columbia, MO",SEC,,38.9359,-92.3331,0,Columbia,MO,Tigers,Black,South,Cat
+62409,6,MS,CBB_MS,Ole Miss,"Oxford, MS",SEC,,34.3622,-89.5341,0,Oxford,MS,Rebels,Red,South,Imaginary
+62410,6,MSST,CBB_MSST,Mississippi State,"Starkville, MS",SEC,,33.4562,-88.7934,0,Starkville,MS,Bulldogs,Red,South,Dog
+62411,6,OK,CBB_OK,Oklahoma,"Norman, OK",SEC,,35.2059,-97.4426,0,Norman,OK,Sooners,Red,South,Person
+62412,6,SC,CBB_SC,South Carolina,"Columbia, SC",SEC,,33.9726,-81.0202,0,Columbia,SC,Gamecocks,Red,South,Bird
+62413,6,TN,CBB_TN,Tennessee,"Knoxville, TN",SEC,,35.9547,-83.9253,0,Knoxville,TN,Volunteers,Orange,South,Person
+62414,6,TX,CBB_TX,Texas,"Austin, TX",SEC,,30.2836,-97.7323,0,Austin,TX,Longhorns,Orange,South,Animal
+62415,6,TXAM,CBB_TXAM,Texas A&M,"College Station, TX",SEC,,30.6101,-96.3407,0,College Station,TX,Aggies,Red,South,Person
+62416,6,VAND,CBB_VAND,Vanderbilt,"Nashville, TN",SEC,,36.1436,-86.8088,0,Nashville,TN,Commodores,Black,South,Person
+62501,6,CHAT,CBB_CHAT,Chattanooga,"Chattanooga, TN",SO,,35.0453,-85.2949,0,Chattanooga,TN,Mocs,Blue,South,Bird
+62502,6,ETST,CBB_ETST,East Tennessee State,"Johnson City, TN",SO,,36.3022,-82.3703,0,Johnson City,TN,Buccaneers,Blue,South,Person
+62503,6,MER,CBB_MER,Mercer,"Macon, GA",SO,,32.8283,-83.6492,0,Macon,GA,Bears,Orange,South,Animal
+62504,6,SAMF,CBB_SAMF,Samford,"Birmingham, AL",SO,,33.4639,-86.7911,0,Birmingham,AL,Bulldogs,Blue,South,Dog
+62505,6,WOF,CBB_WOF,Wofford,"Spartanburg, SC",SO,,34.9587,-81.9353,0,Spartanburg,SC,Terriers,Black,South,Dog
+62601,6,LAM,CBB_LAM,Lamar,"Beaumont, TX",SOLA,,30.0418,-94.0748,0,Beaumont,TX,Cardinals,Red,South,Bird
+62602,6,MCN,CBB_MCN,McNeese State,"Lake Charles, LA",SOLA,,30.1772,-93.2155,0,Lake Charles,LA,Cowboys,Blue,South,Person
+62603,6,NWST,CBB_NWST,Northwestern State,"Natchitoches, LA",SOLA,,31.7482,-93.0983,0,Natchitoches,LA,Demons,Purple,South,Imaginary
+62604,6,SFA,CBB_SFA,Stephen F. Austin,"Nacogdoches, TX",SOLA,,31.6217,-94.647,0,Nacogdoches,TX,Lumberjacks,Purple,South,Person
+62605,6,TACC,CBB_TACC,Texas A&M-Corpus Christi,"Corpus Christi, TX",SOLA,,27.7131,-97.3264,0,Corpus Christi,TX,Islanders,Blue,South,Imaginary
+62701,6,NDSU,CBB_NDSU,North Dakota State,"Fargo, ND",SUM,,46.8951,-96.8028,0,Fargo,ND,Bison,Green,Midwest,Animal
+62702,6,ORAL,CBB_ORAL,Oral Roberts,"Tulsa, OK",SUM,,36.0499,-95.9527,0,Tulsa,OK,Golden Eagles,Blue,South,Color
+62703,6,SDSU,CBB_SDSU,South Dakota State,"Brookings, SD",SUM,,32.7831,-117.12,0,Brookings,SD,Jackrabbits,Blue,Midwest,Animal
+62704,6,UND,CBB_UND,North Dakota,"Grand Forks, ND",SUM,,47.9223,-97.0771,0,Grand Forks,ND,Fighting Hawks,Green,Midwest,Bird
+62705,6,USD,CBB_USD,South Dakota,"Vermillion, SD",SUM,,42.7903,-96.9261,0,Vermillion,SD,Coyotes,Red,Midwest,Dog
+62801,6,APP,CBB_APP,Appalachian State,"Boone, NC",SUNB,,36.2115,-81.6855,0,Boone,NC,Mountaineers,Yellow,East,Person
+62802,6,CC,CBB_CC,Coastal Carolina,"Conway, SC",SUNB,,33.7922,-79.0173,0,Conway,SC,Chanticleers,Blue,South,Bird
+62803,6,GAST,CBB_GAST,Georgia State,"Atlanta, GA",SUNB,,33.7576,-84.4011,0,Atlanta,GA,Panthers,Blue,South,Cat
+62804,6,JMU,CBB_JMU,James Madison,"Harrisonburg, VA",SUNB,,38.4351,-78.8734,0,Harrisonburg,VA,Dukes,Purple,East,Person
+62805,6,LA,CBB_LA,Louisiana,"Lafayette, LA",SUNB,,30.2158,-92.0163,0,Lafayette,LA,Rajan’ Cajuns,Red,South,Imaginary
+62806,6,OLD,CBB_OLD,Old Dominion,"Norfolk, VA",SUNB,,36.8888,-76.3057,0,Norfolk,VA,Monarchs,Blue,East,Cat
+62807,6,SOMS,CBB_SOMS,Southern Mississippi,"Hattiesburg, MS",SUNB,,31.329,-89.3313,0,Hattiesburg,MS,Golden Eagles,Yellow,South,Color
+62808,6,TROY,CBB_TROY,Troy,"Troy, AL",SUNB,,31.7995,-85.9522,0,Troy,AL,Trojans,Red,South,Person
+62809,6,USA,CBB_USA,South Alabama,"Mobile, AL",SUNB,,30.6742,-88.0756,0,Mobile,AL,Jaguars,Blue,South,Cat
+62901,6,ALST,CBB_ALST,Alabama State,"Montgomery, AL",SWAC,,32.3624,-86.2939,0,Montgomery,AL,Hornets,Black,South,Animal
+62902,6,CRNS,CBB_CRNS,Alcorn State,"Lorman, MS",SWAC,,31.8747,-91.1348,0,Lorman,MS,Braves,Purple,South,Person
+62903,6,FLAM,CBB_FLAM,Florida A&M,"Tallahassee, FL",SWAC,,30.422,-84.2882,0,Tallahassee,FL,Rattlers,Orange,South,Animal
+62904,6,JACK,CBB_JACK,Jackson State,"Jackson, MS",SWAC,,32.2973,-90.2071,0,Jackson,MS,Tigers,Blue,South,Cat
+62905,6,MSVS,CBB_MSVS,Mississippi Valley State,"Itta Bena, MS",SWAC,,33.5132,-90.3428,0,Itta Bena,MS,Delta Devils,Green,South,Imaginary
+62906,6,SO,CBB_SO,Southern,"Baton Rouge, LA",SWAC,,30.5255,-91.1921,0,Baton Rouge,LA,Jaguars,Blue,South,Cat
+62907,6,TXSO,CBB_TXSO,Texas Southern,"Houston, TX",SWAC,,29.7211,-95.3596,0,Houston,TX,Tigers,Red,South,Cat
+63001,6,GONZ,CBB_GONZ,Gonzaga,"Spokane, WA",WC,,47.6661,-117.401,0,Spokane,WA,Bulldogs,Blue,West,Dog
+63002,6,ORST,CBB_ORST,Oregon State,"Corvallis, OR",WC,,44.5595,-123.281,0,Corvallis,OR,Beavers,Orange,West,Animal
+63003,6,PAC,CBB_PAC,Pacific,"Stockton, CA",WC,,37.9793,-121.313,0,Stockton,CA,Tigers,Orange,West,Cat
+63004,6,PEP,CBB_PEP,Pepperdine,"Malibu, CA",WC,,34.041,-118.71,0,Malibu,CA,Waves,Blue,West,Imaginary
+63005,6,SD,CBB_SD,San Diego,"San Diego, CA",WC,,32.7073,-117.157,0,San Diego,CA,Toreros,Blue,West,Person
+63006,6,SMCA,CBB_SMCA,Saint Mary's (CA),"Moraga, CA",WC,,37.8413,-122.109,0,Moraga,CA,Gaels,Blue,West,Person
+63007,6,WAST,CBB_WAST,Washington State,"Pullman, WA",WC,,46.732,-117.161,0,Pullman,WA,Cougars,Purple,West,Cat

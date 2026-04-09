@@ -4,10 +4,16 @@ CREATE TABLE IF NOT EXISTS ball.team (
   abbr varchar(10) NOT NULL,
   team_concat varchar(20), --NBA_LAL
   name varchar(50),
-  location varchar(50),		-- "CITY, ST" right 2 state used for Weather Averages Historically
+  loc varchar(50),		-- "CITY, ST" right 2 state used for Weather Averages Historically
   conf varchar(20),		-- 1000 increment	-- 2 per League
   div varchar(20),		-- 100	Increment
   lat decimal(8,6),
   lon decimal(9,6),
-  weather smallint	-- 0 = Dome
+  weather smallint,	-- 0 = Dome
+  town varchar(50),
+  st varchar(50),
+  mascot varchar(50),
+  color varchar(50),
+  region varchar(50),
+  category varchar(50)
 );

@@ -172,6 +172,12 @@ tasks:
       final_df.to_csv("basket_sched.csv", index=False)
       print("Done.")
 
+
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "etl"."stg_basket_espn_schedule" ;
+
   - id: pg_copyin_basket_sched
     type: io.kestra.plugin.jdbc.postgresql.CopyIn
     format: CSV
@@ -179,6 +185,11 @@ tasks:
     table: etl.stg_basket_espn_schedule
     header: true
     delimiter: ","
+
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src basket_espn_schedule');
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql

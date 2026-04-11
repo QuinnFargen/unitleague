@@ -5,9 +5,11 @@ tasks:
   - id: fetch_game_dates
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      select distinct TO_CHAR(gamedate::date, 'YYYYMMDD') AS game_dt
+      select distinct
+          league_id,
+          TO_CHAR(gamedate::date, 'YYYYMMDD') AS game_dt
       from src.espn_schedule es
-      where league_id = 1 -- NBA
+      where league_id in (1, 6) -- NBA, CBB
           and status_period = 0
           and gamedate < current_date
     fetchType: STORE
@@ -32,20 +34,27 @@ tasks:
       import time
 
       HEADERS = {"User-Agent": "Mozilla/5.0"}
-      BASE_URL = "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard"
 
-      LEAGUE_ID = 1  # NBA
+      ENDPOINTS = {
+          1: "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+          6: "https://site.web.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
+      }
 
       game_dates_df = pd.read_csv("game_dates.csv")
-      calendar_days = game_dates_df["game_dt"].astype(str).tolist()
-      print(f"Dates to fetch: {len(calendar_days)}")
+      game_dates_df["league_id"] = game_dates_df["league_id"].astype(int)
+      game_dates_df["game_dt"]   = game_dates_df["game_dt"].astype(str)
+
+      nba_days = game_dates_df[game_dates_df["league_id"] == 1]["game_dt"].tolist()
+      cbb_days = game_dates_df[game_dates_df["league_id"] == 6]["game_dt"].tolist()
+      print(f"NBA dates: {len(nba_days)} | CBB dates: {len(cbb_days)}")
 
 
       def is_list_or_dict(x):
           return isinstance(x, (list, dict))
 
 
-      def merge_data(data):
+      def base_merge(data):
+          """Shared normalise + team join, returns raw df before period handling."""
           game_df = pd.json_normalize(data)
           game_df = game_df.drop(["uid"], axis=1, errors="ignore")
 
@@ -60,104 +69,140 @@ tasks:
           columns_to_keep = game_df.map(is_list_or_dict).all(axis=0) == False
           game_df = game_df.loc[:, columns_to_keep]
 
-          df = pd.merge(
-              game_df,
-              team_df,
-              how="outer",
-              left_on=["id"],
-              right_on=["game.id"],
+          return pd.merge(
+              game_df, team_df, how="outer", left_on=["id"], right_on=["game.id"]
           ).drop(["id"], axis=1, errors="ignore")
 
-          # NBA quarters Q1-Q4 + Q5 for OT
+
+      def merge_data_nba(data):
+          df = base_merge(data)
+          # NBA: Q1-Q4 regular + Q5 OT
           for i in range(1, 6):
               df[f"Q{i}"] = 0
-
           if "linescores" in df.columns:
               for idx, row in df.iterrows():
-                  scores = row["linescores"] if isinstance(row["linescores"], list) else []
-                  for s in scores:
-                      period = s.get("period", 0)
-                      value = s.get("value", 0)
-                      if 1 <= period <= 5:
-                          df.at[idx, f"Q{period}"] = value
-
-          final_columns = [
+                  for s in (row["linescores"] if isinstance(row["linescores"], list) else []):
+                      p, v = s.get("period", 0), s.get("value", 0)
+                      if 1 <= p <= 5:
+                          df.at[idx, f"Q{p}"] = v
+          return df.reindex(columns=[
               "date", "name", "shortName",
               "season.year", "season.type", "season.slug", "status.period",
               "homeAway", "score", "winner", "linescores",
               "team.displayName", "team.abbreviation", "team.shortDisplayName",
               "team.id", "game.id",
               "Q1", "Q2", "Q3", "Q4", "Q5",
-          ]
-          return df.reindex(columns=final_columns)
+          ])
 
 
-      def collapse_games(df):
+      def merge_data_cbb(data):
+          df = base_merge(data)
+          # CBB: H1, H2 + OT1-OT5
+          df["H1"] = 0
+          df["H2"] = 0
+          for i in range(1, 6):
+              df[f"OT{i}"] = 0
+          if "linescores" in df.columns:
+              for idx, row in df.iterrows():
+                  for s in (row["linescores"] if isinstance(row["linescores"], list) else []):
+                      p, v = s.get("period", 0), s.get("value", 0)
+                      if p == 1:
+                          df.at[idx, "H1"] = v
+                      elif p == 2:
+                          df.at[idx, "H2"] = v
+                      elif 3 <= p <= 7:
+                          df.at[idx, f"OT{p - 2}"] = v
+          return df.reindex(columns=[
+              "date", "name", "shortName",
+              "season.year", "season.type", "season.slug", "status.period",
+              "homeAway", "score", "winner", "linescores",
+              "team.displayName", "team.abbreviation", "team.shortDisplayName",
+              "team.id", "game.id",
+              "H1", "H2", "OT1", "OT2", "OT3", "OT4", "OT5",
+          ])
+
+
+      MERGE_KEYS = [
+          "game.id", "date", "name", "shortName",
+          "season.year", "season.type", "season.slug", "status.period",
+      ]
+
+      def collapse_games(df, period_cols):
           home_df = df[df["homeAway"] == "home"].copy()
           away_df = df[df["homeAway"] == "away"].copy()
 
-          home_df.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
-          away_df.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
+          for d in [home_df, away_df]:
+              d.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
 
           home_df = home_df.rename(columns={
-              "score": "home_score",
-              "team.displayName": "home_team",
-              "team.abbreviation": "home_abbr",
-              "team.shortDisplayName": "home_short",
+              "score": "home_score", "team.displayName": "home_team",
+              "team.abbreviation": "home_abbr", "team.shortDisplayName": "home_short",
               "team.id": "home_team_id",
+              **{c: f"{c}_home" for c in period_cols},
           })
           away_df = away_df.rename(columns={
-              "score": "away_score",
-              "team.displayName": "away_team",
-              "team.abbreviation": "away_abbr",
-              "team.shortDisplayName": "away_short",
+              "score": "away_score", "team.displayName": "away_team",
+              "team.abbreviation": "away_abbr", "team.shortDisplayName": "away_short",
               "team.id": "away_team_id",
+              **{c: f"{c}_away" for c in period_cols},
           })
-
-          home_df = home_df.rename(columns={f"Q{i}": f"Q{i}_home" for i in range(1, 6)})
-          away_df = away_df.rename(columns={f"Q{i}": f"Q{i}_away" for i in range(1, 6)})
-
-          merge_keys = [
-              "game.id", "date", "name", "shortName",
-              "season.year", "season.type", "season.slug", "status.period",
-          ]
-          return pd.merge(home_df, away_df, on=merge_keys)
+          return pd.merge(home_df, away_df, on=MERGE_KEYS)
 
 
-      all_games = []
-      for day in calendar_days:
-          url = f"{BASE_URL}?dates={day}"
-          print(f"Fetching {day}")
-          r = requests.get(url, headers=HEADERS)
-          games_data = r.json().get("events", [])
-          if games_data:
-              df = merge_data(games_data)
-              all_games.append(df)
-          time.sleep(1)
+      def fetch_and_process(days, url_base, merge_fn, period_cols, league_id):
+          all_games = []
+          for day in days:
+              print(f"[{league_id}] Fetching {day}")
+              r = requests.get(f"{url_base}?dates={day}", headers=HEADERS)
+              events = r.json().get("events", [])
+              if events:
+                  all_games.append(merge_fn(events))
+              time.sleep(1)
+          if not all_games:
+              return pd.DataFrame()
+          results = pd.concat(all_games, ignore_index=True)
+          df = collapse_games(results, period_cols)
+          df.columns = df.columns.str.replace(".", "_", regex=False)
+          df.drop_duplicates(subset="game_id", inplace=True)
+          df["league_id"] = league_id
+          return df
 
-      if not all_games:
+
+      # --- NBA ---
+      nba_df = fetch_and_process(nba_days, ENDPOINTS[1], merge_data_nba,
+                                  ["Q1","Q2","Q3","Q4","Q5"], league_id=1)
+      if not nba_df.empty:
+          nba_df = nba_df.rename(columns={
+              "date": "gamedate", "shortName": "shortname",
+              **{f"Q{i}_home": f"h{i}" for i in range(1, 6)},
+              **{f"Q{i}_away": f"a{i}" for i in range(1, 6)},
+          })
+          for col in ["h6","h7","h8","h9","h10","a6","a7","a8","a9","a10"]:
+              nba_df[col] = None
+
+      # --- CBB ---
+      cbb_df = fetch_and_process(cbb_days, ENDPOINTS[6], merge_data_cbb,
+                                  ["H1","H2","OT1","OT2","OT3","OT4","OT5"], league_id=6)
+      if not cbb_df.empty:
+          cbb_df = cbb_df.rename(columns={
+              "date": "gamedate", "shortName": "shortname",
+              "H1_home": "h1", "H2_home": "h2",
+              "OT1_home": "h3", "OT2_home": "h4", "OT3_home": "h5",
+              "OT4_home": "h6", "OT5_home": "h7",
+              "H1_away": "a1", "H2_away": "a2",
+              "OT1_away": "a3", "OT2_away": "a4", "OT3_away": "a5",
+              "OT4_away": "a6", "OT5_away": "a7",
+          })
+          for col in ["h8","h9","h10","a8","a9","a10"]:
+              cbb_df[col] = None
+
+      all_frames = [df for df in [nba_df, cbb_df] if not df.empty]
+      if not all_frames:
           pd.DataFrame().to_csv("basket_sched.csv", index=False)
           print("No new games to load.")
           exit()
 
-      results = pd.concat(all_games, ignore_index=True)
-      final_df = collapse_games(results)
-      final_df.columns = final_df.columns.str.replace(".", "_", regex=False)
-      final_df.drop_duplicates(subset="game_id", inplace=True)
-      print(f"Games to load: {len(final_df)}")
-
-      # Rename quarters to match src.espn_schedule DDL
-      final_df = final_df.rename(columns={
-          "date":      "gamedate",
-          "shortName": "shortname",
-          **{f"Q{i}_home": f"h{i}" for i in range(1, 6)},
-          **{f"Q{i}_away": f"a{i}" for i in range(1, 6)},
-      })
-
-      # Add league_id and null-fill h6-h10, a6-a10 (NBA max 5 periods)
-      final_df["league_id"] = LEAGUE_ID
-      for col in ["h6", "h7", "h8", "h9", "h10", "a6", "a7", "a8", "a9", "a10"]:
-          final_df[col] = None
+      final_df = pd.concat(all_frames, ignore_index=True)
 
       # Reorder columns to match DDL
       final_df = final_df[[
@@ -170,7 +215,7 @@ tasks:
       ]]
 
       final_df.to_csv("basket_sched.csv", index=False)
-      print("Done.")
+      print(f"Done. {len(final_df)} games written.")
 
 
   - id: pg_truncate_stg

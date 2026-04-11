@@ -176,14 +176,6 @@ tasks:
       final_df.to_csv("base_sched.csv", index=False)
       print("Done.")
 
-  - id: pg_copyin_base_sched
-    type: io.kestra.plugin.jdbc.postgresql.CopyIn
-    format: CSV
-    from: "{{ outputs.python_base_sched.outputFiles['base_sched.csv'] }}"
-    table: etl.stg_base_espn_schedule
-    header: true
-    delimiter: ","
-
   - id: pg_truncate_stg
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |

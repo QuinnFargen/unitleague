@@ -1,0 +1,201 @@
+id: puck_espn_sched_backfill
+namespace: local_unit_league
+
+tasks:
+  - id: fetch_game_dates
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+        select distinct TO_CHAR(gamedate::date, 'YYYYMMDD') AS game_dt
+        from src.espn_schedule es 
+        where league_id =3
+            and status_period = 0
+            and gamedate < current_date
+    fetchType: STORE
+
+  - id: game_dates_csv
+    type: io.kestra.plugin.serdes.csv.IonToCsv
+    from: "{{ outputs.fetch_game_dates.uri }}"
+
+  - id: python_nhl_sched
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "nhl_sched.csv"
+    beforeCommands:
+      - pip install pandas
+      - pip install requests
+    inputFiles:
+      game_dates.csv: "{{ outputs.game_dates_csv.uri }}"
+    warningOnStdErr: false
+    script: |
+      import requests
+      import pandas as pd
+      import time
+
+      HEADERS = {"User-Agent": "Mozilla/5.0"}
+      BASE_URL = "https://site.web.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard"
+
+      LEAGUE_ID = 3  # NHL
+
+      game_dates_df = pd.read_csv("game_dates.csv")
+      calendar_days = game_dates_df["game_dt"].astype(str).tolist()
+      print(f"Dates to fetch: {len(calendar_days)}")
+
+
+      def is_list_or_dict(x):
+          return isinstance(x, (list, dict))
+
+
+      def merge_data(data):
+          game_df = pd.json_normalize(data)
+          game_df = game_df.drop(["uid"], axis=1, errors="ignore")
+
+          team_df = pd.json_normalize(
+              data,
+              record_path=["competitions", "competitors"],
+              meta=["id"],
+              meta_prefix="game.",
+          )
+          team_df = team_df.drop(["id", "uid"], axis=1, errors="ignore")
+
+          columns_to_keep = game_df.map(is_list_or_dict).all(axis=0) == False
+          game_df = game_df.loc[:, columns_to_keep]
+
+          df = pd.merge(
+              game_df,
+              team_df,
+              how="outer",
+              left_on=["id"],
+              right_on=["game.id"],
+          ).drop(["id"], axis=1, errors="ignore")
+
+          df["P1"] = 0
+          df["P2"] = 0
+          df["P3"] = 0
+          df["OT"] = 0
+          df["SO"] = 0
+
+          if "linescores" in df.columns:
+              for idx, row in df.iterrows():
+                  scores = row["linescores"] if isinstance(row["linescores"], list) else []
+                  for s in scores:
+                      period = s.get("period", 0)
+                      value = s.get("value", 0)
+                      if period == 1:
+                          df.at[idx, "P1"] = value
+                      elif period == 2:
+                          df.at[idx, "P2"] = value
+                      elif period == 3:
+                          df.at[idx, "P3"] = value
+                      elif period == 4:
+                          df.at[idx, "OT"] = value
+                      elif period == 5:
+                          df.at[idx, "SO"] = value
+
+          final_columns = [
+              "date", "name", "shortName",
+              "season.year", "season.type", "season.slug", "status.period",
+              "homeAway", "score", "winner", "linescores",
+              "team.displayName", "team.abbreviation", "team.shortDisplayName",
+              "team.id", "game.id",
+              "P1", "P2", "P3", "OT", "SO",
+          ]
+          return df.reindex(columns=final_columns)
+
+
+      def collapse_games(df):
+          home_df = df[df["homeAway"] == "home"].copy()
+          away_df = df[df["homeAway"] == "away"].copy()
+
+          home_df.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
+          away_df.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
+
+          home_df = home_df.rename(columns={
+              "score": "home_score",
+              "team.displayName": "home_team",
+              "team.abbreviation": "home_abbr",
+              "team.shortDisplayName": "home_short",
+              "team.id": "home_team_id",
+              "P1": "h1", "P2": "h2", "P3": "h3", "OT": "h4", "SO": "h5",
+          })
+
+          away_df = away_df.rename(columns={
+              "score": "away_score",
+              "team.displayName": "away_team",
+              "team.abbreviation": "away_abbr",
+              "team.shortDisplayName": "away_short",
+              "team.id": "away_team_id",
+              "P1": "a1", "P2": "a2", "P3": "a3", "OT": "a4", "SO": "a5",
+          })
+
+          merge_keys = [
+              "game.id", "date", "name", "shortName",
+              "season.year", "season.type", "season.slug", "status.period",
+          ]
+          return pd.merge(home_df, away_df, on=merge_keys)
+
+
+      all_games = []
+      for day in calendar_days:
+          url = f"{BASE_URL}?dates={day}"
+          print(f"Fetching {day}")
+          r = requests.get(url, headers=HEADERS)
+          games_data = r.json().get("events", [])
+          if games_data:
+              df = merge_data(games_data)
+              all_games.append(df)
+          time.sleep(1)
+
+      if not all_games:
+          pd.DataFrame().to_csv("nhl_sched.csv", index=False)
+          print("No new games to load.")
+          exit()
+
+      results = pd.concat(all_games, ignore_index=True)
+      final_df = collapse_games(results)
+      final_df.columns = final_df.columns.str.replace(".", "_", regex=False)
+      final_df.drop_duplicates(subset="game_id", inplace=True)
+      print(f"Games to load: {len(final_df)}")
+
+      # Rename to match src.espn_schedule DDL
+      final_df = final_df.rename(columns={
+          "date":        "gamedate",
+          "shortName":   "shortname",
+          "season_year": "season_year",
+          "season_type": "season_type",
+          "season_slug": "season_slug",
+      })
+
+      # Add league_id and null-fill h6-h10, a6-a10 (NHL has max 5 periods)
+      final_df["league_id"] = LEAGUE_ID
+      for col in ["h6", "h7", "h8", "h9", "h10", "a6", "a7", "a8", "a9", "a10"]:
+          final_df[col] = None
+
+      # Reorder columns to match DDL
+      final_df = final_df[[
+          "league_id", "game_id", "gamedate", "name", "shortname",
+          "season_year", "season_type", "season_slug", "status_period",
+          "home_score", "home_team", "home_abbr", "home_short", "home_team_id",
+          "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9", "h10",
+          "away_score", "away_team", "away_abbr", "away_short", "away_team_id",
+          "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10",
+      ]]
+
+      final_df.to_csv("nhl_sched.csv", index=False)
+      print("Done.")
+
+  - id: pg_copyin_nhl_sched
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_nhl_sched.outputFiles['nhl_sched.csv'] }}"
+    table: etl.stg_puck_espn_schedule
+    header: true
+    delimiter: ","
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+disabled: true

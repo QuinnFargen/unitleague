@@ -42,7 +42,7 @@ AS
 		,a.a10
 		-- SELECT *
 	from etl.stg_basket_espn_schedule a
-	left join src.espn_schedule s on a.game_id = s.game_id and s.league_id = 1
+	left join src.espn_schedule s on a.game_id = s.game_id and s.league_id = a.league_id
 	where (
 			s.game_id is null						-- not yet in src or
 		 	or a.status_period <> s.status_period 	-- game has completed

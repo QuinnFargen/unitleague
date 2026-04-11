@@ -3,6 +3,30 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
 
+
+-----------------------
+-- Load ball.week from src.espn_week
+
+	truncate table ball.week;
+
+	insert into ball.week(week_id, season_id, league_id, week_start_dt, week_end_dt, week_num, week_concat, week_name, is_pre, is_post)
+	select 
+		(s.season_id * 1000) + w.week_num
+			+ case when w.is_pre then 100 when w.is_post then 300 else 200 end	as week_id,
+		s.season_id, 
+		w.league_id,
+		w.week_start_dt,
+		w.week_end_dt,
+		w.week_num,
+		s.season_concat || case when w.is_pre then '_PR' when w.is_post then '_PO' else '_' end || w.week_num::varchar as week_concat,
+		w.week_name,
+		w.is_pre,
+		w.is_post 
+	from src.espn_week w
+	join ball.season s on w.league_id = s.league_id  and w.yr = s.yr 
+		-- 2010 and prior in foot filtered out till in season
+	;-- 2230
+
 -----------------------
 -- Load ball.game from src.foot_schedule
 
@@ -56,7 +80,7 @@ BEGIN
 	
 	truncate table ball.sched;
 
-	insert into ball.sched (league_id,season_id,team_id,game_num,opp_team_id,sched_concat,game_dt,home, won,team, opp, game_id)
+	insert into ball.sched (league_id,season_id,team_id,game_num,opp_team_id,sched_concat,game_dt,home, won,team, opp, game_id, week_id)
 	select 
 		g.league_id, s.season_id
 		, g.home_team_id 
@@ -69,10 +93,12 @@ BEGIN
 		,g.h as team
 		,g.a as opp
 		,g.game_id 
+		,w.week_id
 	--	,g.*
 		-- SELECT COUNT(*)
 	from ball.game g 	-- 14923
 	join ball.season s on g.league_id = s.league_id and g.game_dt between s.reg_start_dt - interval '2 month' and s.champ_dt + interval '2 month'
+	join ball.week w on g.league_id = w.league_id and g.game_dt between w.week_start_dt and w.week_end_dt
 	where 1=1
 		and g.home_team_id % 10000 <> 0	-- Not unknown team
 

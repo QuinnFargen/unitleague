@@ -33,6 +33,9 @@ psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
 TRUNCATE TABLE src.espn_schedule;
 \copy src.espn_schedule FROM '${SEED_DIR}/src.espn_schedule.csv' DELIMITER ',' CSV HEADER;
 
+TRUNCATE TABLE src.espn_week;
+\copy src.espn_week FROM '${SEED_DIR}/src.espn_week.csv' DELIMITER ',' CSV HEADER;
+
 
 TRUNCATE TABLE src.foot_espn_box_defensive;
 \copy src.foot_espn_box_defensive FROM '${SEED_DIR}/src.foot_espn_box_defensive.csv' DELIMITER ',' CSV HEADER;
@@ -70,8 +73,10 @@ TRUNCATE TABLE ball.meta;
 TRUNCATE TABLE ball.team;
 \copy ball.team FROM '${SEED_DIR}/ball.team.csv' DELIMITER ',' CSV HEADER;
 
-TRUNCATE TABLE ball.game;
-TRUNCATE TABLE ball.sched;
+# all 3 truncates in procedure:
+  # TRUNCATE TABLE ball.game;
+  # TRUNCATE TABLE ball.sched;
+  # truncate table ball.week;
 call utility.seed_ball_game_sched();
 
 EOF

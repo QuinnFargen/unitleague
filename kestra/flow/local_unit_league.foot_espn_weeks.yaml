@@ -28,7 +28,7 @@ tasks:
 
         def get_calendar(url, league, year):
 
-            r = requests.get(url, headers=HEADERS, params={"dates": f"{year}0801"})
+            r = requests.get(url, headers=HEADERS, params={"dates": f"{year}1001"})
             data = r.json()
 
             rows = []
@@ -109,6 +109,11 @@ tasks:
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
       CALL "utility"."run_etl_job"('etl all_foot_espn_weeks');
+
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src espn_week');
 
 
 pluginDefaults:

@@ -32,6 +32,7 @@ WITH src AS (
 	  		when event_ticker like 'KXNCAAFGAME%' then 5
 	  		when event_ticker like 'KXNCAAFCSGAME%' then 5
 	  		when event_ticker like 'KXNCAABGAME%' then 6
+	  		when event_ticker like 'KXNCAAMBGAME%' then 6
 	  		else null end as league_id,
 	  volume,
 	  yes_ask,

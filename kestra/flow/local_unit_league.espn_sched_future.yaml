@@ -137,15 +137,11 @@ tasks:
               "home_abbr":     home.get("team", {}).get("abbreviation"),
               "home_short":    home.get("team", {}).get("shortDisplayName"),
               "home_team_id":  home.get("team", {}).get("id"),
-              "h1": None, "h2": None, "h3": None, "h4": None, "h5": None,
-              "h6": None, "h7": None, "h8": None, "h9": None, "h10": None,
               "away_score":    None,
               "away_team":     away.get("team", {}).get("displayName"),
               "away_abbr":     away.get("team", {}).get("abbreviation"),
               "away_short":    away.get("team", {}).get("shortDisplayName"),
               "away_team_id":  away.get("team", {}).get("id"),
-              "a1": None, "a2": None, "a3": None, "a4": None, "a5": None,
-              "a6": None, "a7": None, "a8": None, "a9": None, "a10": None,
           }
 
 
@@ -228,9 +224,7 @@ tasks:
           "league_id", "game_id", "gamedate", "name", "shortname",
           "season_year", "season_type", "season_slug", "status_period",
           "home_score", "home_team", "home_abbr", "home_short", "home_team_id",
-          "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9", "h10",
           "away_score", "away_team", "away_abbr", "away_short", "away_team_id",
-          "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10",
       ]]
       print(f"Total future games to stage: {len(final_df)}")
       final_df.to_csv("espn_future.csv", index=False)

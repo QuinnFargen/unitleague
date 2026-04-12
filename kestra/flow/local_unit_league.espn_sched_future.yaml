@@ -1,0 +1,267 @@
+id: espn_sched_future
+namespace: local_unit_league
+
+tasks:
+
+  # Step 1: Pull active seasons + has_reg / has_post flags from ball.sched
+  - id: fetch_active_seasons
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      SELECT * FROM etl.v_fetch_espn_sched_future
+    fetchType: STORE
+
+  # Step 2: Convert to CSV for Python inputFile
+  - id: seasons_csv
+    type: io.kestra.plugin.serdes.csv.IonToCsv
+    from: "{{ outputs.fetch_active_seasons.uri }}"
+
+  # Step 3: Fetch full remaining schedule per season using mode-based date ranges
+  - id: python_espn_future
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "espn_future.csv"
+    beforeCommands:
+      - pip install pandas requests
+    inputFiles:
+      seasons.csv: "{{ outputs.seasons_csv.uri }}"
+    warningOnStdErr: false
+    script: |
+      import requests
+      import pandas as pd
+      import time
+      from datetime import datetime, timedelta, timezone
+
+      HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+      ENDPOINTS = {
+          1: "https://site.web.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+          2: "https://site.web.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+          3: "https://site.web.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard",
+          4: "https://site.web.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard",
+          5: "https://site.web.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
+          6: "https://site.web.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard",
+      }
+
+      # Mode thresholds
+      REG_LOOKAHEAD = 90   # days forward from today to trigger a full reg-season pull
+      POST_WINDOW   = 7    # days: fire if post_start is within this many days (or already past)
+      POST_BUFFER   = 14   # days past champ_dt to catch 7-game series overruns
+
+      today = datetime.now(timezone.utc).date()
+
+      seasons_df = pd.read_csv("seasons.csv")
+      seasons_df.columns = seasons_df.columns.str.lower()
+      print(f"Seasons from view: {len(seasons_df)}")
+      print(seasons_df[["league_id","season_concat","has_reg","has_post"]].to_string(index=False))
+
+
+      def parse_date(val):
+          if pd.isna(val):
+              return None
+          return pd.to_datetime(val).date()
+
+
+      def get_fetch_bounds(row):
+          """
+          Determine the date window to fetch for a season row.
+
+          Modes:
+            FULL_REG  — has_reg=false, reg_start within 3 months (forward only)
+                        → fetch reg_start..reg_end via ESPN calendar
+            FULL_POST — has_post=false, post_start imminent or already in progress
+                        → fetch post_start..champ_dt+14 via ESPN calendar
+            ROLLING   — default; ESPN calendar from tomorrow through champ_dt
+          """
+          reg_start  = parse_date(row.get("reg_start_dt"))
+          reg_end    = parse_date(row.get("reg_end_dt"))
+          post_start = parse_date(row.get("post_start_dt"))
+          champ_dt   = parse_date(row.get("champ_dt"))
+          has_reg    = bool(row.get("has_reg", False))
+          has_post   = bool(row.get("has_post", False))
+
+          fetch_start = today + timedelta(days=1)  # ROLLING default
+          fetch_end   = champ_dt
+
+          full_reg = (
+              not has_reg
+              and reg_start is not None
+              and reg_end   is not None
+              and today < reg_start <= today + timedelta(days=REG_LOOKAHEAD)
+          )
+          full_post = (
+              not has_post
+              and post_start is not None
+              and champ_dt   is not None
+              and post_start <= today + timedelta(days=POST_WINDOW)
+              and champ_dt   >= today
+          )
+
+          if full_reg:
+              fetch_start = min(fetch_start, reg_start)
+
+          if full_post:
+              fetch_start = min(fetch_start, post_start)
+              fetch_end   = champ_dt + timedelta(days=POST_BUFFER)
+
+          mode = (
+              ("FULL_REG+" if full_reg else "")
+              + ("FULL_POST" if full_post else ("" if full_reg else "ROLLING"))
+          ) or "ROLLING"
+
+          return fetch_start, fetch_end, mode
+
+
+      def parse_event(event, league_id):
+          """Flatten a single ESPN event into one row. All score/period cols null."""
+          competition = event.get("competitions", [{}])[0]
+          competitors = competition.get("competitors", [])
+
+          home = next((c for c in competitors if c.get("homeAway") == "home"), {})
+          away = next((c for c in competitors if c.get("homeAway") == "away"), {})
+
+          season = event.get("season", {})
+          status = event.get("status", {})
+
+          return {
+              "league_id":     league_id,
+              "game_id":       event.get("id"),
+              "gamedate":      event.get("date"),
+              "name":          event.get("name"),
+              "shortname":     event.get("shortName"),
+              "season_year":   season.get("year"),
+              "season_type":   season.get("type"),
+              "season_slug":   season.get("slug"),
+              "status_period": status.get("period", 0),
+              "home_score":    None,
+              "home_team":     home.get("team", {}).get("displayName"),
+              "home_abbr":     home.get("team", {}).get("abbreviation"),
+              "home_short":    home.get("team", {}).get("shortDisplayName"),
+              "home_team_id":  home.get("team", {}).get("id"),
+              "h1": None, "h2": None, "h3": None, "h4": None, "h5": None,
+              "h6": None, "h7": None, "h8": None, "h9": None, "h10": None,
+              "away_score":    None,
+              "away_team":     away.get("team", {}).get("displayName"),
+              "away_abbr":     away.get("team", {}).get("abbreviation"),
+              "away_short":    away.get("team", {}).get("shortDisplayName"),
+              "away_team_id":  away.get("team", {}).get("id"),
+              "a1": None, "a2": None, "a3": None, "a4": None, "a5": None,
+              "a6": None, "a7": None, "a8": None, "a9": None, "a10": None,
+          }
+
+
+      rows = []
+
+      for _, season_row in seasons_df.iterrows():
+          league_id    = int(season_row["league_id"])
+          season_label = str(season_row.get("season_concat", league_id))
+
+          url_base = ENDPOINTS.get(league_id)
+          if url_base is None:
+              print(f"[{season_label}] No endpoint for league_id={league_id}, skipping")
+              continue
+
+          fetch_start, fetch_end, mode = get_fetch_bounds(season_row)
+
+          if fetch_end is None or fetch_end < today:
+              print(f"[{season_label}] Season appears over, skipping")
+              continue
+
+          # Anchor: for upcoming seasons use fetch_start so ESPN returns that season's
+          # calendar; for active seasons today is sufficient
+          anchor = max(today, fetch_start)
+          print(f"[{season_label}] mode={mode} | window={fetch_start}..{fetch_end} | anchor={anchor}")
+
+          try:
+              r = requests.get(
+                  f"{url_base}?dates={anchor.strftime('%Y%m%d')}",
+                  headers=HEADERS,
+                  timeout=30,
+              )
+              r.raise_for_status()
+          except Exception as e:
+              print(f"[{season_label}] Calendar fetch failed: {e}")
+              continue
+
+          league_meta  = r.json().get("leagues", [{}])[0]
+          raw_calendar = league_meta.get("calendar", [])
+
+          # Filter calendar dates to [fetch_start, fetch_end]
+          future_dates = []
+          for iso in raw_calendar:
+              try:
+                  d_obj = pd.to_datetime(iso).date()
+                  if fetch_start <= d_obj <= fetch_end:
+                      future_dates.append(d_obj.strftime("%Y%m%d"))
+              except Exception:
+                  continue
+
+          future_dates = sorted(set(future_dates))
+          print(f"[{season_label}] {len(future_dates)} game day(s) to fetch")
+
+          if not future_dates:
+              print(f"[{season_label}] No dates in calendar window — may not be published yet")
+              continue
+
+          for day in future_dates:
+              try:
+                  r2 = requests.get(
+                      f"{url_base}?dates={day}",
+                      headers=HEADERS,
+                      timeout=30,
+                  )
+                  r2.raise_for_status()
+                  for event in r2.json().get("events", []):
+                      rows.append(parse_event(event, league_id))
+              except Exception as e:
+                  print(f"[{season_label}] day={day} failed: {e}")
+              time.sleep(0.2)
+
+      if not rows:
+          pd.DataFrame().to_csv("espn_future.csv", index=False)
+          print("No future games found across any active season.")
+          exit()
+
+      final_df = pd.DataFrame(rows)
+      final_df["game_id"] = pd.to_numeric(final_df["game_id"], errors="coerce")
+      final_df.drop_duplicates(subset=["league_id", "game_id"], inplace=True)
+      final_df = final_df[[
+          "league_id", "game_id", "gamedate", "name", "shortname",
+          "season_year", "season_type", "season_slug", "status_period",
+          "home_score", "home_team", "home_abbr", "home_short", "home_team_id",
+          "h1", "h2", "h3", "h4", "h5", "h6", "h7", "h8", "h9", "h10",
+          "away_score", "away_team", "away_abbr", "away_short", "away_team_id",
+          "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10",
+      ]]
+      print(f"Total future games to stage: {len(final_df)}")
+      final_df.to_csv("espn_future.csv", index=False)
+
+  # Step 4: Clear staging
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      TRUNCATE TABLE etl.stg_espn_schedule_future;
+
+  # Step 5: Load into staging
+  - id: pg_copyin_future
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_espn_future.outputFiles['espn_future.csv'] }}"
+    table: etl.stg_espn_schedule_future
+    header: true
+    delimiter: ","
+
+  # Step 6: Insert net-new game_ids into src.espn_schedule via v_espn_schedule_future
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src espn_schedule_future');
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
+      username: "{{secret('POSTGRES_USERNAME')}}"
+      password: "{{secret('POSTGRES_PASSWORD')}}"
+
+disabled: true

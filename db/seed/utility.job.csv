@@ -7,3 +7,4 @@ etl all_open_weather,etl,stg_open_weather,etl,all_open_weather,v_all_open_weathe
 src weather_forecast,etl,all_open_weather,src,weather_forecast,v_weather_forecast,append,,daily,true
 etl all_kalshi_market,etl,stg_kalshi_market,etl,all_kalshi_market,v_all_kalshi_market,append,,daily,true
 etl all_kalshi_game,etl,all_kalshi_market,etl,all_kalshi_game,v_all_kalshi_game,append,,daily,true
+src espn_schedule_future,etl,stg_espn_schedule_future,src,espn_schedule,v_espn_schedule_future,append,,daily,true

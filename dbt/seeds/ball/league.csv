@@ -1,0 +1,7 @@
+"league_id","abbr","name","yr_orig","yr_data","sport","weather"
+1,NBA,National Basketball Association,1949,,BASKET,"0"
+2,NFL,National Football League,1920,,FOOT,"1"
+3,NHL,National Hockey League,1917,,PUCK,"0"
+4,MLB,Major League Baseball,1869,,BASE,"1"
+5,CFB,College Football,1869,,FOOT,"1"
+6,CBB,College Basketball,1939,,BASKET,"0"

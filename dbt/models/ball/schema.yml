@@ -1,0 +1,91 @@
+version: 2
+
+models:
+  - name: ball_v_team
+    description: >
+      View joining ball.team to ball.meta to expose external IDs
+      (ESPN, CFBD, The Odds API, Kalshi) alongside team attributes.
+      Note: uses `loc` column (matches DDL) — the existing db/views/ball/v_team.sql
+      incorrectly references `location`.
+    columns:
+      - name: team_id
+        tests: [not_null, unique]
+      - name: league_id
+        tests: [not_null]
+      - name: abbr
+        tests: [not_null]
+      - name: espn_team_id
+        description: "ESPN numeric team ID, sourced from ball.meta where meta_source = 'espn'"
+
+  - name: ball_week
+    description: >
+      One row per league-year-week. Joins src.espn_week to ball.season to compute
+      week_id and week_concat. week_id = (season_id * 1000) + offset + week_num,
+      where offset is 100 (pre), 200 (regular), or 300 (post).
+    columns:
+      - name: week_id
+        description: "season_id * 1000 + offset (100/200/300) + week_num"
+        tests: [not_null, unique]
+      - name: season_id
+        tests: [not_null]
+      - name: league_id
+        tests: [not_null]
+      - name: week_concat
+        description: "e.g. NFL_2024_PR1, NBA_2024_1, MLB_2024_PO1"
+        tests: [not_null, unique]
+      - name: week_start_dt
+        tests: [not_null]
+      - name: week_end_dt
+        tests: [not_null]
+
+  - name: ball_game
+    description: >
+      One row per game. Source is src.espn_schedule. ESPN team IDs are mapped to
+      internal team_ids via ball_v_team. Games with no mapped team on either side
+      are excluded (Pro All-Stars, TBD match-ups).
+      Fixes a copy-paste bug in the original procedure where period score nullification
+      used `case when x = 0 and x = 0` (same column twice); replaced with nullif(x, 0).
+    columns:
+      - name: source_game_id
+        description: "ESPN game_id — not unique across leagues"
+        tests: [not_null]
+      - name: league_id
+        tests: [not_null]
+      - name: home_team_id
+        tests: [not_null]
+      - name: away_team_id
+        tests: [not_null]
+      - name: game_dt
+        tests: [not_null]
+      - name: game_concat
+        description: "e.g. NBA_BOS_MIA_20241015"
+        tests: [unique]
+
+  - name: ball_sched
+    description: >
+      Two rows per game: home team perspective and away team perspective.
+      Replaces the original stored procedure's two-step INSERT + UPDATE pattern
+      using a single CTE chain with ROW_NUMBER() for game_num.
+      Bug fix: original procedure only joined ball.week in the home branch,
+      leaving week_id NULL for all away rows. Both branches now get week_id.
+    columns:
+      - name: league_id
+        tests: [not_null]
+      - name: season_id
+        tests: [not_null]
+      - name: week_id
+        description: "Now populated for both home and away rows (bug fix vs original procedure)"
+        tests: [not_null]
+      - name: team_id
+        tests: [not_null]
+      - name: opp_team_id
+        tests: [not_null]
+      - name: game_id
+        tests: [not_null]
+      - name: game_num
+        tests: [not_null]
+      - name: sched_concat
+        description: "e.g. NBA_2024_BOS_1_MIA"
+        tests: [unique]
+      - name: home
+        tests: [not_null]

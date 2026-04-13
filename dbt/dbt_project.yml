@@ -1,0 +1,51 @@
+name: 'unitleague'
+version: '1.0.0'
+config-version: 2
+
+profile: 'unitleague'
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]
+macro-paths: ["macros"]
+
+target-path:  "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  unitleague:
+    ball:
+      +schema: ball
+      +materialized: table
+
+seeds:
+  unitleague:
+    ball:
+      +schema: ball
+      league:
+        +column_types:
+          league_id: smallint
+          yr_orig: smallint
+          yr_data: smallint
+          weather: varchar(1)
+      team:
+        +column_types:
+          team_id: int
+          league_id: smallint
+          lat: "decimal(8,6)"
+          lon: "decimal(9,6)"
+          weather: smallint
+      meta:
+        +column_types:
+          league_id: smallint
+          meta_keyid: int
+      season:
+        +column_types:
+          season_id: int
+          league_id: smallint
+          pre_dt: date
+          reg_start_dt: date
+          reg_end_dt: date
+          post_start_dt: date
+          champ_series_start_dt: date
+          champ_dt: date
+          yr: smallint

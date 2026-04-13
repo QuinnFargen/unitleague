@@ -1,0 +1,23 @@
+unitleague:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PGHOST', '192.168.4.59') }}"
+      port: "{{ env_var('PGPORT', '5432') | int }}"
+      dbname: "{{ env_var('PGDATABASE', 'sport') }}"
+      user: "{{ env_var('PGUSER', 'postgres') }}"
+      password: "{{ env_var('PGPASSWORD') }}"
+      schema: public
+      threads: 4
+      sslmode: "{{ env_var('PGSSLMODE', 'disable') }}"
+    prod:
+      type: postgres
+      host: "{{ env_var('PGHOST') }}"
+      port: "{{ env_var('PGPORT') | int }}"
+      dbname: "{{ env_var('PGDATABASE') }}"
+      user: "{{ env_var('PGUSER') }}"
+      password: "{{ env_var('PGPASSWORD') }}"
+      schema: public
+      threads: 4
+      sslmode: "{{ env_var('PGSSLMODE', 'disable') }}"

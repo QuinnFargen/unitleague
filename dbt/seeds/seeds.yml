@@ -1,0 +1,40 @@
+version: 2
+
+seeds:
+  - name: league
+    description: "League reference — NBA, NFL, NHL, MLB, CFB, CBB"
+    columns:
+      - name: league_id
+        tests: [not_null, unique]
+      - name: abbr
+        tests: [not_null]
+
+  - name: team
+    description: "Team reference with geography, conference, and division"
+    columns:
+      - name: team_id
+        tests: [not_null, unique]
+      - name: league_id
+        tests: [not_null]
+      - name: abbr
+        tests: [not_null]
+
+  - name: season
+    description: "One row per league-year with season date boundaries"
+    columns:
+      - name: season_id
+        tests: [not_null, unique]
+      - name: league_id
+        tests: [not_null]
+      - name: yr
+        tests: [not_null]
+
+  - name: meta
+    description: "Key-value metadata mapping teams to external source IDs (ESPN, CFBD, odds APIs)"
+    columns:
+      - name: meta_keyid
+        tests: [not_null]
+      - name: meta_type
+        tests: [not_null]
+      - name: meta_source
+        tests: [not_null]

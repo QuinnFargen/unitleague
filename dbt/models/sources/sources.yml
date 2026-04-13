@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: src
+    schema: src
+    description: "Cleaned ESPN ingest tables loaded by Python/Kestra ETL pipeline"
+    tables:
+      - name: espn_schedule
+        description: "One row per game from ESPN. Includes scores, period breakdowns, and team IDs."
+        columns:
+          - name: game_id
+            tests: [not_null]
+          - name: league_id
+            tests: [not_null]
+          - name: gamedate
+            tests: [not_null]
+
+      - name: espn_week
+        description: "Week boundary definitions per league and year from ESPN."
+        columns:
+          - name: league_id
+            tests: [not_null]
+          - name: yr
+            tests: [not_null]
+          - name: week_start_dt
+            tests: [not_null]
+          - name: week_end_dt
+            tests: [not_null]

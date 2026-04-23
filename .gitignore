@@ -216,3 +216,5 @@ db/seed/src.the_odds_api.csv
 /scripts/running.sh
 input.csv
 /.claude
+/dbt/profiles.yml
+/dbt/.user.yml

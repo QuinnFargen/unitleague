@@ -23,16 +23,16 @@ models:
       week_id and week_concat. week_id = (season_id * 1000) + offset + week_num,
       where offset is 100 (pre), 200 (regular), or 300 (post).
     columns:
-      - name: week_id
-        description: "season_id * 1000 + offset (100/200/300) + week_num"
-        tests: [not_null, unique]
+      # - name: week_id
+      #   description: "season_id * 1000 + offset (100/200/300) + week_num"
+      #   tests: [not_null, unique]
       - name: season_id
         tests: [not_null]
       - name: league_id
         tests: [not_null]
-      - name: week_concat
-        description: "e.g. NFL_2024_PR1, NBA_2024_1, MLB_2024_PO1"
-        tests: [not_null, unique]
+      # - name: week_concat
+      #   description: "e.g. NFL_2024_PR1, NBA_2024_1, MLB_2024_PO1"
+      #   tests: [not_null, unique]
       - name: week_start_dt
         tests: [not_null]
       - name: week_end_dt

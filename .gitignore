@@ -218,3 +218,4 @@ input.csv
 /.claude
 /dbt/profiles.yml
 /dbt/.user.yml
+/dbt/dbt_packages

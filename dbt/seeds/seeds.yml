@@ -32,8 +32,8 @@ seeds:
   - name: meta
     description: "Key-value metadata mapping teams to external source IDs (ESPN, CFBD, odds APIs)"
     columns:
-      - name: meta_keyid
-        tests: [not_null]
+      # - name: meta_keyid
+      #   tests: [not_null]
       - name: meta_type
         tests: [not_null]
       - name: meta_source

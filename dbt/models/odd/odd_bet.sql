@@ -10,7 +10,7 @@ with odds_api as (
     select
         o.odd_hash                                                          as bet_source_id,
         o.bookmakers_title                                                  as bookmaker,
-        g.source_game_id,
+        g.source_game_id                                                    as game_id,
         case
             when o.market_name = o.home_team then ht.team_id
             when o.market_name = o.away_team then at.team_id
@@ -21,7 +21,10 @@ with odds_api as (
         o.price,
         o.point                                                             as points,
         o.markets_last_update_ts                                            as start_ts,
-        null::timestamp                                                     as end_ts
+        lead(o.markets_last_update_ts) over (
+            partition by o.id, o.bookmakers_key, o.markets_key, o.market_name
+            order by o.markets_last_update_ts
+        )                                                                   as end_ts
 
     from {{ source('src', 'the_odds_api') }} o
     join {{ ref('ball_v_team') }} ht
@@ -36,40 +39,56 @@ with odds_api as (
 
 kalshi_home as (
     select
-        kg.kalshi_hash                                          as bet_source_id,
+        kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
-        kg.game_id,
-        kg.home_team_id                                                     as team_id,
+        g.source_game_id                                                    as game_id,
+        ht.team_id                                                          as team_id,
         'h2h'                                                               as bet_type,
         g.game_concat || '_H2H'                                            as bet_concat,
         100.0 / kg.home_yes                                                as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
-        null::timestamp                                                     as end_ts
+        lead(kg.insert_ts) over (
+            partition by kg.event_ticker
+            order by kg.insert_ts
+        )                                                                   as end_ts
 
     from {{ source('src', 'kalshi_game') }} kg
+    join {{ ref('ball_v_team') }} ht
+        on ht.kalshi_team_name = kg.home_team
+    join {{ ref('ball_v_team') }} at
+        on at.kalshi_team_name = kg.away_team
     join {{ ref('ball_game') }} g
-        on g.source_game_id = kg.game_id
-    where kg.is_latest = true
+        on  g.home_team_id = ht.team_id
+        and g.away_team_id = at.team_id
+        and g.game_dt      = kg.game_dt
 ),
 
 kalshi_away as (
     select
-        kg.kalshi_game_id::varchar                                          as bet_source_id,
+        kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
-        kg.game_id,
-        kg.away_team_id                                                     as team_id,
+        g.source_game_id                                                    as game_id,
+        at.team_id                                                          as team_id,
         'h2h'                                                               as bet_type,
         g.game_concat || '_H2H'                                            as bet_concat,
         100.0 / kg.away_yes                                                as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
-        null::timestamp                                                     as end_ts
+        lead(kg.insert_ts) over (
+            partition by kg.event_ticker
+            order by kg.insert_ts
+        )                                                                   as end_ts
 
     from {{ source('src', 'kalshi_game') }} kg
+    join {{ ref('ball_v_team') }} ht
+        on ht.kalshi_team_name = kg.home_team
+    join {{ ref('ball_v_team') }} at
+        on at.kalshi_team_name = kg.away_team
     join {{ ref('ball_game') }} g
-        on g.game_id = kg.game_id
-    where kg.is_latest = true
+        on  g.home_team_id = ht.team_id
+        and g.away_team_id = at.team_id
+        and g.game_dt      = kg.game_dt
 ),
 
 combined as (
@@ -90,7 +109,7 @@ select
     bet_concat,
     price,
     points,
-    true                                                                    as active,
+    end_ts is null                                                          as active,
     start_ts,
     end_ts
 

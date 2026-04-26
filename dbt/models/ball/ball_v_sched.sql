@@ -18,7 +18,7 @@ select
     s.opp,
     s.home,
     s.won,
-    s.game_id,
+    s.source_game_id,
     s.league_id,
     s.team_id,
     s.opp_team_id

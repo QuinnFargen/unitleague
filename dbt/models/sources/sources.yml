@@ -26,3 +26,19 @@ sources:
             tests: [not_null]
           - name: week_end_dt
             tests: [not_null]
+
+      - name: the_odds_api
+        description: "One row per outcome per market per bookmaker per game from TheOddsAPI."
+        columns:
+          - name: odd_hash
+            tests: [not_null, unique]
+          - name: id
+            tests: [not_null]
+
+      - name: kalshi_game
+        description: "One row per game from Kalshi prediction markets with pre-joined home/away team IDs and prices."
+        columns:
+          - name: kalshi_game_id
+            tests: [not_null, unique]
+          - name: game_id
+            tests: [not_null]

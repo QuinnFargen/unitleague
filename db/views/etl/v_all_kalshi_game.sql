@@ -59,7 +59,7 @@ WITH src AS (
 		,h.game_dt
 		,h.event_ticker
 		,h.pull_dt
-		,md5(h.league_id::varchar || h.game_dt || h.event_ticker || h.pull_dt || h.volume || a.volume ) as kalshi_hash
+		,md5(h.league_id::varchar || h.game_dt || h.event_ticker || h.pull_dt || h.volume || a.volume || h.yes_ask || a.yes_ask ) as kalshi_hash
 		,h.kalshi_market_id as home_kalshi_market_id
 		,a.kalshi_market_id as away_kalshi_market_id
 		,h.team as home_team

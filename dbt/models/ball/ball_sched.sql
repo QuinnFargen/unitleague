@@ -1,7 +1,7 @@
 {{
     config(
         materialized  = 'incremental',
-        unique_key    = ['league_id', 'season_id', 'team_id', 'game_id'],
+        unique_key    = ['league_id', 'season_id', 'team_id', 'source_game_id'],
         schema        = 'ball',
         alias         = 'sched'
     )
@@ -104,7 +104,7 @@ select
     g.won,
     g.team_score                                                    as team,
     g.opp_score                                                     as opp,
-    g.source_game_id                                                as game_id
+    g.source_game_id
 
 from with_game_num g
 join {{ ref('team') }} t on g.team_id     = t.team_id

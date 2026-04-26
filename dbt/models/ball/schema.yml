@@ -80,7 +80,7 @@ models:
         tests: [not_null]
       - name: opp_team_id
         tests: [not_null]
-      - name: game_id
+      - name: source_game_id
         tests: [not_null]
       - name: game_num
         tests: [not_null]

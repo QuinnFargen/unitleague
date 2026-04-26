@@ -1,8 +1,9 @@
 {{
     config(
-        materialized = 'table',
-        schema       = 'odd',
-        alias        = 'bet'
+        materialized  = 'incremental',
+        unique_key    = ['bet_source_id', 'team_id'],
+        schema        = 'odd',
+        alias         = 'bet'
     )
 }}
 
@@ -16,8 +17,23 @@ with odds_api as (
             when o.market_name = o.away_team then at.team_id
             else null
         end                                                                 as team_id,
-        o.markets_key                                                       as bet_type,
-        g.game_concat || '_' || upper(o.markets_key)                       as bet_concat,
+        case
+            when o.markets_key = 'h2h'     then 'ML'
+            when o.markets_key = 'spreads' then 'SPR'
+            when o.markets_key = 'totals'  then upper(split_part(o.market_name, ' ', 1))
+            else upper(o.markets_key)
+        end                                                                 as bet_type,
+        case
+            when o.markets_key = 'totals'
+                then g.game_concat || '_' || upper(split_part(o.market_name, ' ', 1))
+            when o.markets_key = 'h2h'
+                then g.game_concat || '_ML_'
+                    || case when o.market_name = o.home_team then ht.abbr else at.abbr end
+            when o.markets_key = 'spreads'
+                then g.game_concat || '_SPR_'
+                    || case when o.market_name = o.home_team then ht.abbr else at.abbr end
+            else g.game_concat || '_' || upper(o.markets_key)
+        end                                                                 as bet_concat,
         o.price,
         o.point                                                             as points,
         o.markets_last_update_ts                                            as start_ts,
@@ -35,6 +51,18 @@ with odds_api as (
         on  g.home_team_id = ht.team_id
         and g.away_team_id = at.team_id
         and g.game_dt      = o.commence_ts::date
+
+    {% if is_incremental() %}
+    where o.id in (
+        select distinct id
+        from {{ source('src', 'the_odds_api') }}
+        where markets_last_update_ts > (
+            select coalesce(max(start_ts), '1900-01-01'::timestamp)
+            from {{ this }}
+            where bookmaker != 'Kalshi'
+        )
+    )
+    {% endif %}
 ),
 
 kalshi_home as (
@@ -43,9 +71,9 @@ kalshi_home as (
         'Kalshi'                                                            as bookmaker,
         g.source_game_id                                                    as game_id,
         ht.team_id                                                          as team_id,
-        'h2h'                                                               as bet_type,
-        g.game_concat || '_H2H'                                            as bet_concat,
-        100.0 / kg.home_yes                                                as price,
+        'ML'                                                                as bet_type,
+        g.game_concat || '_ML_' || ht.abbr                                 as bet_concat,
+        1.0 / kg.home_yes                                                  as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
         lead(kg.insert_ts) over (
@@ -62,6 +90,18 @@ kalshi_home as (
         on  g.home_team_id = ht.team_id
         and g.away_team_id = at.team_id
         and g.game_dt      = kg.game_dt
+
+    {% if is_incremental() %}
+    where kg.event_ticker in (
+        select distinct event_ticker
+        from {{ source('src', 'kalshi_game') }}
+        where insert_ts > (
+            select coalesce(max(start_ts), '1900-01-01'::timestamp)
+            from {{ this }}
+            where bookmaker = 'Kalshi'
+        )
+    )
+    {% endif %}
 ),
 
 kalshi_away as (
@@ -70,9 +110,9 @@ kalshi_away as (
         'Kalshi'                                                            as bookmaker,
         g.source_game_id                                                    as game_id,
         at.team_id                                                          as team_id,
-        'h2h'                                                               as bet_type,
-        g.game_concat || '_H2H'                                            as bet_concat,
-        100.0 / kg.away_yes                                                as price,
+        'ML'                                                                as bet_type,
+        g.game_concat || '_ML_' || at.abbr                                 as bet_concat,
+        1.0 / kg.away_yes                                                  as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
         lead(kg.insert_ts) over (
@@ -89,6 +129,18 @@ kalshi_away as (
         on  g.home_team_id = ht.team_id
         and g.away_team_id = at.team_id
         and g.game_dt      = kg.game_dt
+
+    {% if is_incremental() %}
+    where kg.event_ticker in (
+        select distinct event_ticker
+        from {{ source('src', 'kalshi_game') }}
+        where insert_ts > (
+            select coalesce(max(start_ts), '1900-01-01'::timestamp)
+            from {{ this }}
+            where bookmaker = 'Kalshi'
+        )
+    )
+    {% endif %}
 ),
 
 combined as (

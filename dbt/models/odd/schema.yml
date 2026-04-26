@@ -3,15 +3,16 @@ version: 2
 models:
   - name: odd_bet
     description: >
-      One row per individual bet offer. Unions two sources: src.the_odds_api
-      (moneyline, spread, and totals from bookmakers like DraftKings) and
-      src.kalshi_game (prediction market h2h offers, home and away side each
-      as a separate row). Kalshi prices are converted from 0–100 probability
-      to decimal odds (100 / yes_price). team_id is null for totals bets.
+      SCD2 table with one row per bet snapshot. Unions two sources: src.the_odds_api
+      (ML, spread, and totals from bookmakers like DraftKings) and src.kalshi_game
+      (prediction market ML offers, home and away side each as a separate row).
+      Kalshi prices are converted from decimal probability to decimal odds (1 / yes_price).
+      team_id is null for totals bets. start_ts/end_ts are dbt-managed via LEAD window;
+      active = (end_ts IS NULL).
     columns:
       - name: bet_hash
-        description: "md5(bookmaker || game_id || coalesce(team_id,'total') || bet_type) — deduplication key"
-        tests: [not_null, unique]
+        description: "md5(bookmaker || game_id || coalesce(team_id,'total') || bet_type) — logical bet identifier, not unique across SCD2 history"
+        tests: [not_null]
       - name: bet_source_id
         description: "odd_hash from src.the_odds_api or kalshi_hash from src.kalshi_game"
         tests: [not_null]
@@ -19,24 +20,24 @@ models:
         description: "Sportsbook or platform name (e.g. 'DraftKings', 'Kalshi')"
         tests: [not_null]
       - name: game_id
-        description: "Foreign key to ball.game"
+        description: "Foreign key to ball.game (source_game_id)"
         tests: [not_null]
       - name: team_id
-        description: "Foreign key to ball.team. NULL for totals bets (Over/Under)."
+        description: "Foreign key to ball.team. NULL for totals bets (OVER/UNDER)."
       - name: bet_type
-        description: "h2h, spreads, or totals (from the_odds_api markets_key; always h2h for Kalshi)"
+        description: "ML (moneyline), SPR (spread), OVER, or UNDER"
         tests: [not_null]
       - name: bet_concat
-        description: "Human-readable identifier, e.g. NBA_BOS_MIA_20241015_H2H"
+        description: "Human-readable identifier. Non-totals include team abbr, e.g. CFB_MRSH_ODU_20251011_ML_ODU. Totals omit team, e.g. CFB_MRSH_ODU_20251011_OVER."
       - name: price
-        description: "Decimal odds. For the_odds_api, sourced directly. For Kalshi, computed as 100 / yes_price."
+        description: "Decimal odds. For the_odds_api, sourced directly. For Kalshi, computed as 1 / yes_price."
       - name: points
-        description: "Spread or total point value. NULL for h2h and Kalshi bets."
+        description: "Spread or total point value. NULL for ML and Kalshi bets."
       - name: active
-        description: "Always true at insert time; updated externally when a bet is no longer available."
+        description: "True when end_ts IS NULL (current snapshot). Derived — no external updates needed."
         tests: [not_null]
       - name: start_ts
         description: "markets_last_update_ts for the_odds_api rows; insert_ts for Kalshi rows."
         tests: [not_null]
       - name: end_ts
-        description: "NULL at insert; populated externally when the bet expires or closes."
+        description: "Timestamp when this snapshot was superseded by the next pull; NULL for the current active row. Managed by dbt via LEAD window function."

@@ -36,9 +36,7 @@ sources:
             tests: [not_null]
 
       - name: kalshi_game
-        description: "One row per game from Kalshi prediction markets with pre-joined home/away team IDs and prices."
+        description: "Raw Kalshi game snapshots. One row per pull per game."
         columns:
-          - name: kalshi_game_id
+          - name: kalshi_hash
             tests: [not_null, unique]
-          - name: game_id
-            tests: [not_null]

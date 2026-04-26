@@ -13,7 +13,7 @@ models:
         description: "md5(bookmaker || game_id || coalesce(team_id,'total') || bet_type) — deduplication key"
         tests: [not_null, unique]
       - name: bet_source_id
-        description: "odd_hash from src.the_odds_api or kalshi_game_id::varchar from src.kalshi_game"
+        description: "odd_hash from src.the_odds_api or kalshi_hash from src.kalshi_game"
         tests: [not_null]
       - name: bookmaker
         description: "Sportsbook or platform name (e.g. 'DraftKings', 'Kalshi')"

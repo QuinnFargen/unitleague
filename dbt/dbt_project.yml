@@ -16,6 +16,12 @@ models:
     ball:
       +schema: ball
       +materialized: table
+    etl:
+      +schema: etl
+      +materialized: view
+    mart:
+      +schema: mart
+      +materialized: table
 
 seeds:
   unitleague:

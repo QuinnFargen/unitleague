@@ -1,8 +1,8 @@
 {{
     config(
-        materialized = 'view',
-        schema       = 'ball',
-        alias        = 'v_sched'
+        materialized = 'table',
+        schema       = 'mart',
+        alias        = 'sched'
     )
 }}
 

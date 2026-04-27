@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS etl.all_the_odds_api_bet (
   name varchar(100),  
   price varchar(100),  
   point varchar(100),  
+  odd_hash varchar(32) NOT NULL, -- md5(id || bookmakers_key || markets_key || "name" || (markets_last_update::timestamp)::varchar )
   imported boolean default (false),
   insert_ts timestamp not null default now()
 );

@@ -5,13 +5,10 @@ tasks:
   - id: fetch_game_dates
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      select distinct
-          league_id,
-          TO_CHAR(gamedate::date, 'YYYYMMDD') AS game_dt
-      from src.espn_schedule es
-      where league_id in (2, 5) -- NFL, CFB
-          and status_period = 0
-          and gamedate < current_date
+      select league_id, game_dt
+      from etl.v_fetch_espn_sched_update v
+      where v.league_id IN (2, 5) -- NFL, CFB
+      ;
     fetchType: STORE
 
   - id: game_dates_csv
@@ -32,31 +29,22 @@ tasks:
       import requests
       import pandas as pd
       import time
-
       HEADERS = {"User-Agent": "Mozilla/5.0"}
-
       ENDPOINTS = {
           2: "https://site.web.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
           5: "https://site.web.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard",
       }
-
       game_dates_df = pd.read_csv("game_dates.csv")
       game_dates_df["league_id"] = game_dates_df["league_id"].astype(int)
       game_dates_df["game_dt"]   = game_dates_df["game_dt"].astype(str)
-
       nfl_days = game_dates_df[game_dates_df["league_id"] == 2]["game_dt"].tolist()
       cfb_days = game_dates_df[game_dates_df["league_id"] == 5]["game_dt"].tolist()
       print(f"NFL dates: {len(nfl_days)} | CFB dates: {len(cfb_days)}")
-
-
       def is_list_or_dict(x):
           return isinstance(x, (list, dict))
-
-
       def merge_data(data):
           game_df = pd.json_normalize(data)
           game_df = game_df.drop(["uid"], axis=1, errors="ignore")
-
           team_df = pd.json_normalize(
               data,
               record_path=["competitions", "competitors"],
@@ -64,14 +52,11 @@ tasks:
               meta_prefix="game.",
           )
           team_df = team_df.drop(["id", "uid"], axis=1, errors="ignore")
-
           columns_to_keep = game_df.map(is_list_or_dict).all(axis=0) == False
           game_df = game_df.loc[:, columns_to_keep]
-
           df = pd.merge(
               game_df, team_df, how="outer", left_on=["id"], right_on=["game.id"]
           ).drop(["id"], axis=1, errors="ignore")
-
           # Football: Q1-Q4 + Q5 for OT (same structure for NFL and CFB)
           for i in range(1, 6):
               df[f"Q{i}"] = 0
@@ -81,7 +66,6 @@ tasks:
                       p, v = s.get("period", 0), s.get("value", 0)
                       if 1 <= p <= 5:
                           df.at[idx, f"Q{p}"] = v
-
           return df.reindex(columns=[
               "date", "name", "shortName",
               "season.year", "season.type", "season.slug", "status.period",
@@ -90,15 +74,11 @@ tasks:
               "team.id", "game.id",
               "Q1", "Q2", "Q3", "Q4", "Q5",
           ])
-
-
       def collapse_games(df):
           home_df = df[df["homeAway"] == "home"].copy()
           away_df = df[df["homeAway"] == "away"].copy()
-
           for d in [home_df, away_df]:
               d.drop(["homeAway", "winner", "linescores"], axis=1, inplace=True)
-
           home_df = home_df.rename(columns={
               "score": "home_score", "team.displayName": "home_team",
               "team.abbreviation": "home_abbr", "team.shortDisplayName": "home_short",
@@ -111,14 +91,11 @@ tasks:
               "team.id": "away_team_id",
               **{f"Q{i}": f"Q{i}_away" for i in range(1, 6)},
           })
-
           merge_keys = [
               "game.id", "date", "name", "shortName",
               "season.year", "season.type", "season.slug", "status.period",
           ]
           return pd.merge(home_df, away_df, on=merge_keys)
-
-
       def fetch_league(days, url_base, league_id):
           all_games = []
           for day in days:
@@ -143,19 +120,14 @@ tasks:
           for col in ["h6", "h7", "h8", "h9", "h10", "a6", "a7", "a8", "a9", "a10"]:
               df[col] = None
           return df
-
-
       nfl_df = fetch_league(nfl_days, ENDPOINTS[2], league_id=2)
       cfb_df = fetch_league(cfb_days, ENDPOINTS[5], league_id=5)
-
       all_frames = [df for df in [nfl_df, cfb_df] if not df.empty]
       if not all_frames:
           pd.DataFrame().to_csv("foot_sched.csv", index=False)
           print("No new games to load.")
           exit()
-
       final_df = pd.concat(all_frames, ignore_index=True)
-
       final_df = final_df[[
           "league_id", "game_id", "gamedate", "name", "shortname",
           "season_year", "season_type", "season_slug", "status_period",
@@ -164,10 +136,8 @@ tasks:
           "away_score", "away_team", "away_abbr", "away_short", "away_team_id",
           "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10",
       ]]
-
       final_df.to_csv("foot_sched.csv", index=False)
       print(f"Done. {len(final_df)} games written.")
-
 
   - id: pg_truncate_stg
     type: io.kestra.plugin.jdbc.postgresql.Query
@@ -187,6 +157,40 @@ tasks:
     sql: |
       CALL "utility"."run_etl_job"('src foot_espn_schedule');
 
+
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select ball_game ball_sched
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "unit_postgres"
+                port: 5432
+                dbname: "sport"
+                user: "{{ secret('POSTGRES_USERNAME') }}"
+                password: "{{ secret('POSTGRES_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "disable"
+            target: prod
+
+
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
@@ -194,4 +198,10 @@ pluginDefaults:
       username: "{{secret('POSTGRES_USERNAME')}}"
       password: "{{secret('POSTGRES_PASSWORD')}}"
 
-disabled: true
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 13 * * *"
+    recoverMissedSchedules: NONE
+

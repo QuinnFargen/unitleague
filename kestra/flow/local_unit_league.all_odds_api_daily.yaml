@@ -92,7 +92,41 @@ tasks:
         UPDATE etl.all_the_odds_api_bet
         SET imported = true
         FROM ( SELECT DISTINCT A.odd_hash as src_odd_hash FROM src.the_odds_api A )  
-        WHERE md5(id || bookmakers_key || markets_key || "name" || (markets_last_update::timestamp)::varchar ) = src_odd_hash;
+        WHERE odd_hash = src_odd_hash;
+
+
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select odd_bet
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "unit_postgres"
+                port: 5432
+                dbname: "sport"
+                user: "{{ secret('POSTGRES_USERNAME') }}"
+                password: "{{ secret('POSTGRES_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "disable"
+            target: prod
+
 
 
 pluginDefaults:

@@ -34,7 +34,7 @@ with odds_api as (
                     || case when o.market_name = o.home_team then ht.abbr else at.abbr end
             else g.game_concat || '_' || upper(o.markets_key)
         end                                                                 as bet_concat,
-        o.price,
+        o.price::numeric(10, 4)                                             as price,
         o.point                                                             as points,
         o.markets_last_update_ts                                            as start_ts,
         lead(o.markets_last_update_ts) over (
@@ -72,8 +72,8 @@ kalshi_home as (
         g.source_game_id                                                    as game_id,
         ht.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
-        g.game_concat || '_ML_' || ht.abbr                                 as bet_concat,
-        1.0 / kg.home_yes                                                  as price,
+        g.game_concat || '_ML_' || ht.abbr                                  as bet_concat,
+        round((1.0 / kg.home_yes)::numeric, 4)                              as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
         lead(kg.insert_ts) over (
@@ -111,8 +111,8 @@ kalshi_away as (
         g.source_game_id                                                    as game_id,
         at.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
-        g.game_concat || '_ML_' || at.abbr                                 as bet_concat,
-        1.0 / kg.away_yes                                                  as price,
+        g.game_concat || '_ML_' || at.abbr                                  as bet_concat,
+        round((1.0 / kg.away_yes)::numeric, 4)                              as price,
         null::float                                                         as points,
         kg.insert_ts                                                        as start_ts,
         lead(kg.insert_ts) over (

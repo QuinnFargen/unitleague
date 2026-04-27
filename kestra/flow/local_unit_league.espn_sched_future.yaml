@@ -251,6 +251,40 @@ tasks:
       CALL "utility"."run_etl_job"('src espn_schedule_future');
 
 
+
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select ball_game ball_sched
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "unit_postgres"
+                port: 5432
+                dbname: "sport"
+                user: "{{ secret('POSTGRES_USERNAME') }}"
+                password: "{{ secret('POSTGRES_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "disable"
+            target: prod
+
+
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
@@ -258,4 +292,11 @@ pluginDefaults:
       username: "{{secret('POSTGRES_USERNAME')}}"
       password: "{{secret('POSTGRES_PASSWORD')}}"
 
-disabled: true
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 13 * * *"
+    recoverMissedSchedules: NONE
+
+

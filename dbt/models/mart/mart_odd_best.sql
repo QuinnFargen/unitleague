@@ -57,7 +57,7 @@ select
     case when ml_h.bet_hash is null and ml_a.bet_hash is null
             and spr_h.bet_hash is null and spr_a.bet_hash is null
             and ov.bet_hash is null and un.bet_hash is null
-            then true else false end    as no_active_bets
+            then false else true end    as has_active_bets,
 
     ml_h.bet_hash        as ml_home_bet_hash,
     ml_h.bookmaker       as ml_home_bookmaker,

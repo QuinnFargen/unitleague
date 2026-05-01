@@ -79,9 +79,14 @@ def get_sched(team_id: str = Query(None)
 @app.get("/mart/odd_best")
 def get_odd_best(game_id: int = Query(None)
                , game_dt: str = Query(None)
-               , has_active_bets: bool = Query(None)):
-    q = "SELECT * FROM mart.odd_best WHERE 1=1"
+            , league_id: int = Query(None)):
+    q = "SELECT * FROM mart.odd_best " \
+    "   WHERE has_active_bets and game_dt >= current_date"
     query_params = {}
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
 
     if game_id:
         q += " AND game_id = :game_id"
@@ -90,10 +95,6 @@ def get_odd_best(game_id: int = Query(None)
     if game_dt:
         q += " AND game_dt = :game_dt"
         query_params["game_dt"] = game_dt
-
-    if has_active_bets is not None:
-        q += " AND has_active_bets = :has_active_bets"
-        query_params["has_active_bets"] = has_active_bets
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)

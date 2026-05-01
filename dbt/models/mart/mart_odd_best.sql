@@ -25,6 +25,7 @@ with active_bets as (
 games as (
     select
         game_id,
+        league_id,
         game_concat,
         game_dt,
         game_time,
@@ -47,6 +48,7 @@ games as (
 
 select
     g.game_id,
+    g.league_id,
     g.game_concat,
     g.game_dt,
     g.game_time,
@@ -62,36 +64,36 @@ select
     ml_h.bet_hash        as ml_home_bet_hash,
     ml_h.bookmaker       as ml_home_bookmaker,
     ml_h.price           as ml_home_price,
-    ml_h.bet_concat      as ml_home_bet_concat,
+    -- ml_h.bet_concat      as ml_home_bet_concat,
 
     ml_a.bet_hash        as ml_away_bet_hash,
     ml_a.bookmaker       as ml_away_bookmaker,
     ml_a.price           as ml_away_price,
-    ml_a.bet_concat      as ml_away_bet_concat,
+    -- ml_a.bet_concat      as ml_away_bet_concat,
 
     spr_h.bet_hash       as spr_home_bet_hash,
     spr_h.bookmaker      as spr_home_bookmaker,
     spr_h.price          as spr_home_price,
     spr_h.points         as spr_home_points,
-    spr_h.bet_concat     as spr_home_bet_concat,
+    -- spr_h.bet_concat     as spr_home_bet_concat,
 
     spr_a.bet_hash       as spr_away_bet_hash,
     spr_a.bookmaker      as spr_away_bookmaker,
     spr_a.price          as spr_away_price,
     spr_a.points         as spr_away_points,
-    spr_a.bet_concat     as spr_away_bet_concat,
+    -- spr_a.bet_concat     as spr_away_bet_concat,
 
     ov.bet_hash          as over_bet_hash,
     ov.bookmaker         as over_bookmaker,
     ov.price             as over_price,
     ov.points            as over_points,
-    ov.bet_concat        as over_bet_concat,
+    -- ov.bet_concat        as over_bet_concat,
 
     un.bet_hash          as under_bet_hash,
     un.bookmaker         as under_bookmaker,
     un.price             as under_price,
     un.points            as under_points,
-    un.bet_concat        as under_bet_concat,
+    -- un.bet_concat        as under_bet_concat,
 
     current_timestamp    as last_updated_ts
 

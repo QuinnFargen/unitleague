@@ -20,6 +20,12 @@ select
         when g.away_team_id = g.won_team_id then a.abbr
         else null
     end                                                             as winner,
+    case
+        when g.won_team_id is not null then abs(g.h - g.a)
+    end                                                             as margin,
+    case
+        when g.h is not null and g.a is not null then g.h + g.a
+    end                                                             as total,
     g.league_id,
     g.home_team_id,
     g.away_team_id,

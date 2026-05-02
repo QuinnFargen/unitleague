@@ -3,7 +3,7 @@
         materialized = 'incremental',
         unique_key   = 'game_id',
         schema       = 'mart',
-        alias        = 'odd_best'
+        alias        = 'game_oddbest'
     )
 }}
 
@@ -32,7 +32,13 @@ games as (
         home            as home_abbr,
         away            as away_abbr,
         home_team_id,
-        away_team_id
+        away_team_id,
+        won_team_id,
+        h,
+        a,
+        winner,
+        margin,
+        total
     from {{ ref('mart_game') }}
     {% if is_incremental() %}
     where game_id in (
@@ -56,6 +62,9 @@ select
     g.away_abbr,
     g.home_team_id,
     g.away_team_id,
+    g.winner,
+    g.margin,
+    g.total,
     case when ml_h.bet_hash is null and ml_a.bet_hash is null
             and spr_h.bet_hash is null and spr_a.bet_hash is null
             and ov.bet_hash is null and un.bet_hash is null
@@ -64,36 +73,54 @@ select
     ml_h.bet_hash        as ml_home_bet_hash,
     ml_h.bookmaker       as ml_home_bookmaker,
     ml_h.price           as ml_home_price,
-    -- ml_h.bet_concat      as ml_home_bet_concat,
+    case
+        when g.won_team_id = g.home_team_id then true
+        when g.won_team_id is not null      then false
+    end                  as ml_home_won,
 
     ml_a.bet_hash        as ml_away_bet_hash,
     ml_a.bookmaker       as ml_away_bookmaker,
     ml_a.price           as ml_away_price,
-    -- ml_a.bet_concat      as ml_away_bet_concat,
+    case
+        when g.won_team_id = g.away_team_id then true
+        when g.won_team_id is not null      then false
+    end                  as ml_away_won,
 
     spr_h.bet_hash       as spr_home_bet_hash,
     spr_h.bookmaker      as spr_home_bookmaker,
     spr_h.price          as spr_home_price,
     spr_h.points         as spr_home_points,
-    -- spr_h.bet_concat     as spr_home_bet_concat,
+    case
+        when g.h is not null and spr_h.points is not null
+        then (g.h + spr_h.points) > g.a
+    end                  as spr_home_won,
 
     spr_a.bet_hash       as spr_away_bet_hash,
     spr_a.bookmaker      as spr_away_bookmaker,
     spr_a.price          as spr_away_price,
     spr_a.points         as spr_away_points,
-    -- spr_a.bet_concat     as spr_away_bet_concat,
+    case
+        when g.a is not null and spr_a.points is not null
+        then (g.a + spr_a.points) > g.h
+    end                  as spr_away_won,
 
     ov.bet_hash          as over_bet_hash,
     ov.bookmaker         as over_bookmaker,
     ov.price             as over_price,
     ov.points            as over_points,
-    -- ov.bet_concat        as over_bet_concat,
+    case
+        when g.h is not null and ov.points is not null
+        then (g.h + g.a) > ov.points
+    end                  as over_won,
 
     un.bet_hash          as under_bet_hash,
     un.bookmaker         as under_bookmaker,
     un.price             as under_price,
     un.points            as under_points,
-    -- un.bet_concat        as under_bet_concat,
+    case
+        when g.h is not null and un.points is not null
+        then (g.h + g.a) < un.points
+    end                  as under_won,
 
     current_timestamp    as last_updated_ts
 

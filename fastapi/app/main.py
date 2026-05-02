@@ -19,7 +19,7 @@ def get_league():
 
 @app.get("/mart/team")
 def get_team(league_id: int = Query(None)
-             ,team_id: int = Query(None)):
+            ,team_id: int = Query(None)):
     q = "SELECT * FROM mart.team WHERE 1=1"
     query_params = {}
 
@@ -76,11 +76,11 @@ def get_sched(team_id: str = Query(None)
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
-@app.get("/mart/odd_best")
-def get_odd_best(game_id: int = Query(None)
-               , game_dt: str = Query(None)
-            , league_id: int = Query(None)):
-    q = "SELECT * FROM mart.odd_best " \
+@app.get("/mart/game_oddbest")
+def get_game_oddbest(game_id: int = Query(None)
+                   , game_dt: str = Query(None)
+                   , league_id: int = Query(None)):
+    q = "SELECT * FROM mart.game_oddbest " \
     "   WHERE has_active_bets and game_dt >= current_date"
     query_params = {}
 
@@ -95,6 +95,19 @@ def get_odd_best(game_id: int = Query(None)
     if game_dt:
         q += " AND game_dt = :game_dt"
         query_params["game_dt"] = game_dt
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
+@app.get("/mart/runner")
+def get_runner(syndicate_id: int = Query(None)):
+    q = "SELECT * FROM mart.runner WHERE 1=1"
+    query_params = {}
+
+    if syndicate_id:
+        q += " AND syndicate_id = :syndicate_id"
+        query_params["syndicate_id"] = syndicate_id
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)

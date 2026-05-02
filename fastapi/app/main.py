@@ -118,14 +118,17 @@ class BettorProfile(BaseModel):
     symbol: Optional[str] = None
     color: Optional[str] = None
 
-class LeagueCreate(BaseModel):
+class SyndicateCreate(BaseModel):
     bettor_id: int
     name: str
     description: Optional[str] = None
     fantasy: Optional[bool] = False
+    password: Optional[str] = None
+    max_runner: Optional[int] = None
 
-class LeagueJoin(BaseModel):
+class RunnerCreate(BaseModel):
     bettor_id: int
+    password: Optional[str] = None
 
 @app.post("/odd/bettor")
 def create_bettor(bettor: BettorCreate):
@@ -175,45 +178,57 @@ def set_bettor_profile(bettor_id: int, profile: BettorProfile):
             raise HTTPException(status_code=404, detail="Bettor not found")
         return dict(row._mapping)
 
-@app.post("/odd/league")
-def create_league(league: LeagueCreate):
+@app.post("/odd/syndicate")
+def create_syndicate(syndicate: SyndicateCreate):
     with engine.begin() as conn:
-        league_row = conn.execute(text("""
-            INSERT INTO odd.league (name, description, fantasy, created_by_bettor_id)
-            VALUES (:name, :description, :fantasy, :bettor_id)
+        syndicate_row = conn.execute(text("""
+            INSERT INTO odd.syndicate (name, description, fantasy, password, max_runner, created_by_bettor_id)
+            VALUES (:name, :description, :fantasy, :password, :max_runner, :bettor_id)
             RETURNING *
-        """), league.model_dump()).fetchone()
+        """), syndicate.model_dump()).fetchone()
 
-        bbl_row = conn.execute(text("""
-            INSERT INTO odd.bbl (bettor_id, league_id, role)
-            VALUES (:bettor_id, :league_id, 'admin')
+        runner_row = conn.execute(text("""
+            INSERT INTO odd.runner (bettor_id, syndicate_id, role)
+            VALUES (:bettor_id, :syndicate_id, 'admin')
             RETURNING *
-        """), {"bettor_id": league.bettor_id, "league_id": league_row._mapping["league_id"]}).fetchone()
+        """), {"bettor_id": syndicate.bettor_id, "syndicate_id": syndicate_row._mapping["syndicate_id"]}).fetchone()
 
-    return {"league": dict(league_row._mapping), "membership": dict(bbl_row._mapping)}
+    return {"syndicate": dict(syndicate_row._mapping), "runner": dict(runner_row._mapping)}
 
-@app.post("/odd/league/{league_id}/join")
-def join_league(league_id: int, body: LeagueJoin):
+@app.post("/odd/syndicate/{syndicate_id}/join")
+def join_syndicate(syndicate_id: int, body: RunnerCreate):
     with engine.begin() as conn:
         existing = conn.execute(text("""
-            SELECT bbl_id FROM odd.bbl
-            WHERE bettor_id = :bettor_id AND league_id = :league_id AND active = true
-        """), {"bettor_id": body.bettor_id, "league_id": league_id}).fetchone()
+            SELECT runner_id FROM odd.runner
+            WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id AND active = true
+        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id}).fetchone()
 
         if existing:
-            raise HTTPException(status_code=409, detail="Bettor is already in this league")
+            raise HTTPException(status_code=409, detail="Bettor is already in this syndicate")
 
-        league = conn.execute(text(
-            "SELECT league_id FROM odd.league WHERE league_id = :league_id"
-        ), {"league_id": league_id}).fetchone()
+        syndicate = conn.execute(text("""
+            SELECT syndicate_id, password, max_runner FROM odd.syndicate
+            WHERE syndicate_id = :syndicate_id
+        """), {"syndicate_id": syndicate_id}).fetchone()
 
-        if league is None:
-            raise HTTPException(status_code=404, detail="League not found")
+        if syndicate is None:
+            raise HTTPException(status_code=404, detail="Syndicate not found")
 
-        bbl_row = conn.execute(text("""
-            INSERT INTO odd.bbl (bettor_id, league_id, role)
-            VALUES (:bettor_id, :league_id, 'member')
+        if syndicate.password and syndicate.password != body.password:
+            raise HTTPException(status_code=403, detail="Incorrect password")
+
+        if syndicate.max_runner is not None:
+            count = conn.execute(text("""
+                SELECT COUNT(*) FROM odd.runner
+                WHERE syndicate_id = :syndicate_id AND active = true
+            """), {"syndicate_id": syndicate_id}).scalar()
+            if count >= syndicate.max_runner:
+                raise HTTPException(status_code=409, detail="Syndicate is full")
+
+        runner_row = conn.execute(text("""
+            INSERT INTO odd.runner (bettor_id, syndicate_id, role)
+            VALUES (:bettor_id, :syndicate_id, 'member')
             RETURNING *
-        """), {"bettor_id": body.bettor_id, "league_id": league_id}).fetchone()
+        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id}).fetchone()
 
-    return dict(bbl_row._mapping)
+    return dict(runner_row._mapping)

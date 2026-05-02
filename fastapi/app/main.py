@@ -100,6 +100,19 @@ def get_game_oddbest(game_id: int = Query(None)
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@app.get("/mart/syndicate")
+def get_runner(syndicate_id: int = Query(None)):
+    q = "SELECT * FROM mart.syndicate WHERE 1=1"
+    query_params = {}
+
+    if syndicate_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+    
 @app.get("/mart/runner")
 def get_runner(syndicate_id: int = Query(None)):
     q = "SELECT * FROM mart.runner WHERE 1=1"

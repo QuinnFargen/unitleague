@@ -40,3 +40,10 @@ sources:
         columns:
           - name: kalshi_hash
             tests: [not_null, unique]
+
+  - name: odd
+    schema: odd
+    description: "Syndicate, bettors and what bet are created are stored here"
+    tables:
+      - name: syndicate
+        description: "One row per syndicate. Which bettors are connected to syndicates in the Runner table"

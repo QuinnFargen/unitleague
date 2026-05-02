@@ -18,7 +18,7 @@ select
     color
 from (
     values
-        (1, 101, 1, 'admin',  true, 142, 'SharpMike',    'figure.american.football.circle.fill',  '#E63946'),
+        (1, 1, 1, 'admin',  true, 142, 'SharpMike',    'figure.american.football.circle.fill',  '#E63946'),
         (2, 102, 1, 'member', true,  87, 'LineBuster',   'figure.basketball.circle.fill',          '#457B9D'),
         (3, 103, 1, 'member', true, 195, 'GrindQueen',   'figure.baseball.circle.fill',            '#2A9D8F'),
         (4, 104, 2, 'admin',  true,  63, 'ValueHunter',  'figure.hockey.circle.fill',              '#F4A261'),

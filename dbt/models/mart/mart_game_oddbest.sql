@@ -73,6 +73,7 @@ select
     ml_h.bet_hash        as ml_home_bet_hash,
     ml_h.bookmaker       as ml_home_bookmaker,
     ml_h.price           as ml_home_price,
+    ml_h.bet_concat      as ml_home_bet_concat,
     case
         when g.won_team_id = g.home_team_id then true
         when g.won_team_id is not null      then false
@@ -81,6 +82,8 @@ select
     ml_a.bet_hash        as ml_away_bet_hash,
     ml_a.bookmaker       as ml_away_bookmaker,
     ml_a.price           as ml_away_price,
+
+    ml_a.bet_concat      as ml_away_bet_concat,
     case
         when g.won_team_id = g.away_team_id then true
         when g.won_team_id is not null      then false
@@ -90,6 +93,7 @@ select
     spr_h.bookmaker      as spr_home_bookmaker,
     spr_h.price          as spr_home_price,
     spr_h.points         as spr_home_points,
+    spr_h.bet_concat     as spr_home_bet_concat,
     case
         when g.h is not null and spr_h.points is not null
         then (g.h + spr_h.points) > g.a
@@ -99,6 +103,7 @@ select
     spr_a.bookmaker      as spr_away_bookmaker,
     spr_a.price          as spr_away_price,
     spr_a.points         as spr_away_points,
+    spr_a.bet_concat     as spr_away_bet_concat,
     case
         when g.a is not null and spr_a.points is not null
         then (g.a + spr_a.points) > g.h
@@ -108,6 +113,7 @@ select
     ov.bookmaker         as over_bookmaker,
     ov.price             as over_price,
     ov.points            as over_points,
+    ov.bet_concat        as over_bet_concat,
     case
         when g.h is not null and ov.points is not null
         then (g.h + g.a) > ov.points
@@ -117,6 +123,7 @@ select
     un.bookmaker         as under_bookmaker,
     un.price             as under_price,
     un.points            as under_points,
+    un.bet_concat        as under_bet_concat,
     case
         when g.h is not null and un.points is not null
         then (g.h + g.a) < un.points
@@ -131,3 +138,12 @@ left join active_bets spr_h on spr_h.game_id = g.game_id and spr_h.bet_type = 'S
 left join active_bets spr_a on spr_a.game_id = g.game_id and spr_a.bet_type = 'SPR'   and spr_a.team_id = g.away_team_id
 left join active_bets ov    on ov.game_id    = g.game_id and ov.bet_type    = 'OVER'  and ov.team_id    is null
 left join active_bets un    on un.game_id    = g.game_id and un.bet_type    = 'UNDER' and un.team_id    is null
+
+
+
+    -- ml_h.bet_concat      as ml_home_bet_concat,
+    -- ml_a.bet_concat      as ml_away_bet_concat,
+    -- spr_h.bet_concat     as spr_home_bet_concat,
+    -- spr_a.bet_concat     as spr_away_bet_concat,
+    -- ov.bet_concat        as over_bet_concat,
+    -- un.bet_concat        as under_bet_concat,

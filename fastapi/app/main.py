@@ -80,8 +80,7 @@ def get_sched(team_id: str = Query(None)
 def get_game_oddbest(game_id: int = Query(None)
                    , game_dt: str = Query(None)
                    , league_id: int = Query(None)):
-    q = "SELECT * FROM mart.game_oddbest " \
-    "   WHERE has_active_bets and game_dt >= current_date"
+    q = "SELECT * FROM mart.game_oddbest WHERE has_active_bets"
     query_params = {}
 
     if league_id:
@@ -133,22 +132,20 @@ class BettorCreate(BaseModel):
     apple_name: Optional[str] = None
     apple_refresh_token: Optional[str] = None
 
-class BettorUpdate(BaseModel):
-    apple_email: Optional[str] = None
-    apple_name: Optional[str] = None
-    apple_refresh_token: Optional[str] = None
-    last_login_ts: Optional[str] = None
-
 class BettorProfile(BaseModel):
     profile_name: Optional[str] = None
     symbol: Optional[str] = None
     color: Optional[str] = None
 
+class BettorSignin(BaseModel):
+    bettor_id: Optional[int] = None
+    apple_sub: Optional[str] = None
+
 class SyndicateCreate(BaseModel):
     bettor_id: int
     name: str
     description: Optional[str] = None
-    fantasy: Optional[bool] = False
+    is_public: Optional[bool] = False
     password: Optional[str] = None
     max_runner: Optional[int] = None
 
@@ -168,20 +165,22 @@ def create_bettor(bettor: BettorCreate):
         row = result.fetchone()
         return dict(row._mapping)
 
-@app.patch("/odd/bettor/{bettor_id}")
-def update_bettor(bettor_id: int, bettor: BettorUpdate):
-    updates = {k: v for k, v in bettor.model_dump().items() if v is not None}
-    if not updates:
-        raise HTTPException(status_code=400, detail="No fields provided to update")
+@app.post("/odd/bettor/signin")
+def signin_bettor(signin: BettorSignin):
+    if signin.bettor_id is None and signin.apple_sub is None:
+        raise HTTPException(status_code=400, detail="bettor_id or apple_sub required")
 
-    set_clause = ", ".join(f"{k} = :{k}" for k in updates)
-    updates["bettor_id"] = bettor_id
+    if signin.bettor_id is not None:
+        where = "bettor_id = :bettor_id"
+        params = {"bettor_id": signin.bettor_id}
+    else:
+        where = "apple_sub = :apple_sub"
+        params = {"apple_sub": signin.apple_sub}
 
-    q = f"UPDATE odd.bettor SET {set_clause} WHERE bettor_id = :bettor_id RETURNING *"
+    q = f"UPDATE odd.bettor SET last_login_ts = now() WHERE {where} RETURNING *"
 
     with engine.begin() as conn:
-        result = conn.execute(text(q), updates)
-        row = result.fetchone()
+        row = conn.execute(text(q), params).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Bettor not found")
         return dict(row._mapping)
@@ -208,8 +207,8 @@ def set_bettor_profile(bettor_id: int, profile: BettorProfile):
 def create_syndicate(syndicate: SyndicateCreate):
     with engine.begin() as conn:
         syndicate_row = conn.execute(text("""
-            INSERT INTO odd.syndicate (name, description, fantasy, password, max_runner, created_by_bettor_id)
-            VALUES (:name, :description, :fantasy, :password, :max_runner, :bettor_id)
+            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id)
+            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id)
             RETURNING *
         """), syndicate.model_dump()).fetchone()
 

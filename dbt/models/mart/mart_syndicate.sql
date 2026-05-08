@@ -10,7 +10,7 @@ select
     s.syndicate_id,
     s.name,
     s.description,
-    s.fantasy,
+    s.is_public,
     s.max_runner,
     s.created_by_bettor_id
 

@@ -100,12 +100,21 @@ def get_game_oddbest(game_id: int = Query(None)
         return [dict(row._mapping) for row in result]
 
 @app.get("/mart/syndicate")
-def get_runner(syndicate_id: int = Query(None)):
-    q = "SELECT * FROM mart.syndicate WHERE 1=1"
+def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None)):
+    q = """
+        SELECT s.* 
+        FROM odd.syndicate s
+        JOIN odd.runner r ON s.syndicate_id = r.syndicate_id
+        WHERE r.active = true
+    """
     query_params = {}
 
     if syndicate_id:
-        q += " AND bettor_id = :bettor_id"
+        q += " AND s.syndicate_id = :syndicate_id"
+        query_params["syndicate_id"] = syndicate_id
+
+    if bettor_id:
+        q += " AND r.bettor_id = :bettor_id"
         query_params["bettor_id"] = bettor_id
 
     with engine.connect() as conn:
@@ -152,12 +161,16 @@ class SyndicateCreate(BaseModel):
 class RunnerCreate(BaseModel):
     bettor_id: int
     password: Optional[str] = None
-
+    
 @app.post("/odd/bettor")
 def create_bettor(bettor: BettorCreate):
     q = """
-        INSERT INTO odd.bettor (apple_sub, apple_email, apple_name, apple_refresh_token)
-        VALUES (:apple_sub, :apple_email, :apple_name, :apple_refresh_token)
+        INSERT INTO odd.bettor (apple_sub, apple_email, apple_name)
+        VALUES (:apple_sub, :apple_email, :apple_name)
+        ON CONFLICT (apple_sub) DO UPDATE
+            SET apple_email = COALESCE(EXCLUDED.apple_email, odd.bettor.apple_email),
+                apple_name  = COALESCE(EXCLUDED.apple_name,  odd.bettor.apple_name),
+                last_login_ts = now()
         RETURNING *
     """
     with engine.begin() as conn:

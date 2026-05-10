@@ -19,7 +19,10 @@ try:
 except ImportError:
     sys.exit("Missing dependency: pip install requests")
 
-BASE_URL = os.getenv("BASE_URL", "http://localhost:8000").rstrip("/")
+BASE_URL = os.getenv("BASE_URL", "http://192.168.4.59:8000").rstrip("/")
+
+_results: list[dict] = []
+
 
 
 def call(method: str, path: str, label: str = "", **kwargs) -> dict:
@@ -40,10 +43,27 @@ def call(method: str, path: str, label: str = "", **kwargs) -> dict:
         data = resp.text
         print(f"  response: {data}")
 
+    _results.append({
+        "label": tag,
+        "method": method,
+        "url": url,
+        "request_body": kwargs.get("json"),
+        "status": resp.status_code,
+        "response": data,
+    })
+
     if not resp.ok:
+        _write_results()
         sys.exit(f"FAILED: {tag} returned {resp.status_code}")
 
     return data
+
+def _write_results():
+    out_path = os.path.join(os.path.dirname(__file__), "test_api_results.json")
+    with open(out_path, "w") as f:
+        json.dump(_results, f, indent=2, default=str)
+    print(f"\n  Results written to {out_path}")
+
 
 
 def run():

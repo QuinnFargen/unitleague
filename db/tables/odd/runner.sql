@@ -3,6 +3,9 @@ create table IF NOT EXISTS odd.runner(
   bettor_id    bigint not NULL,
   syndicate_id bigint not NULL,
   role         varchar(20) not null default 'member', -- 'admin' | 'member'
+  profile_name varchar(100),
+  symbol       varchar(100),
+  color        varchar(100),
   active       boolean default (true),
   start_ts     timestamp,
   end_ts       timestamp,

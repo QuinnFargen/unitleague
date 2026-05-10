@@ -5,8 +5,7 @@ create table IF NOT EXISTS odd.bettor(
   apple_sub           varchar(100) unique not null,
   apple_email         varchar(300),
   apple_name          varchar(100),
-  apple_refresh_token varchar(1000),
   profile_name        varchar(100),
-  symbol              varchar(10),
-  color               varchar(7)            -- hex color e.g. #FF5733
+  symbol              varchar(100),
+  color               varchar(100)
 );

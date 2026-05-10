@@ -233,24 +233,24 @@ def create_syndicate(syndicate: SyndicateCreate):
 
     return {"syndicate": dict(syndicate_row._mapping), "runner": dict(runner_row._mapping)}
 
-@app.post("/odd/syndicate/{syndicate_id}/join")
-def join_syndicate(syndicate_id: int, body: RunnerCreate):
+@app.post("/odd/syndicate/join/{code}")
+def join_syndicate(code: str, body: RunnerCreate):
     with engine.begin() as conn:
-        existing = conn.execute(text("""
-            SELECT runner_id FROM odd.runner
-            WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id AND active = true
-        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id}).fetchone()
-
-        if existing:
-            raise HTTPException(status_code=409, detail="Bettor is already in this syndicate")
-
         syndicate = conn.execute(text("""
             SELECT syndicate_id, password, max_runner FROM odd.syndicate
-            WHERE syndicate_id = :syndicate_id
-        """), {"syndicate_id": syndicate_id}).fetchone()
+            WHERE code = :code
+        """), {"code": code}).fetchone()
 
         if syndicate is None:
             raise HTTPException(status_code=404, detail="Syndicate not found")
+
+        existing = conn.execute(text("""
+            SELECT runner_id FROM odd.runner
+            WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id AND active = true
+        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate.syndicate_id}).fetchone()
+
+        if existing:
+            raise HTTPException(status_code=409, detail="Bettor is already in this syndicate")
 
         if syndicate.password and syndicate.password != body.password:
             raise HTTPException(status_code=403, detail="Incorrect password")
@@ -259,7 +259,7 @@ def join_syndicate(syndicate_id: int, body: RunnerCreate):
             count = conn.execute(text("""
                 SELECT COUNT(*) FROM odd.runner
                 WHERE syndicate_id = :syndicate_id AND active = true
-            """), {"syndicate_id": syndicate_id}).scalar()
+            """), {"syndicate_id": syndicate.syndicate_id}).scalar()
             if count >= syndicate.max_runner:
                 raise HTTPException(status_code=409, detail="Syndicate is full")
 
@@ -267,6 +267,6 @@ def join_syndicate(syndicate_id: int, body: RunnerCreate):
             INSERT INTO odd.runner (bettor_id, syndicate_id, role)
             VALUES (:bettor_id, :syndicate_id, 'member')
             RETURNING *
-        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id}).fetchone()
+        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate.syndicate_id}).fetchone()
 
     return dict(runner_row._mapping)

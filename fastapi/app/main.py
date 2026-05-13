@@ -162,6 +162,12 @@ class RunnerCreate(BaseModel):
     bettor_id: int
     password: Optional[str] = None
     
+class SyndicateUpdate(BaseModel):
+    name: Optional[str] = None
+    symbol: Optional[str] = None
+    color: Optional[str] = None
+
+    
 @app.post("/odd/bettor")
 def create_bettor(bettor: BettorCreate):
     q = """
@@ -270,3 +276,20 @@ def join_syndicate(code: str, body: RunnerCreate):
         """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate.syndicate_id}).fetchone()
 
     return dict(runner_row._mapping)
+
+@app.patch("/odd/syndicate/{syndicate_id}")
+def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
+    updates = {k: v for k, v in body.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields provided to update")
+
+    set_clause = ", ".join(f"{k} = :{k}" for k in updates)
+    updates["syndicate_id"] = syndicate_id
+
+    q = f"UPDATE odd.syndicate SET {set_clause} WHERE syndicate_id = :syndicate_id RETURNING *"
+
+    with engine.begin() as conn:
+        row = conn.execute(text(q), updates).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Syndicate not found")
+        return dict(row._mapping)

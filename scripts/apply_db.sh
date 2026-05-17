@@ -4,14 +4,24 @@ set -euo pipefail
 echo "Starting database DDL application..."
 
 # --------------------------------------
-# Load .env file if present
+# Parse --env flag
 # --------------------------------------
-if [ -f ".env" ]; then
-  echo "Loading environment variables from .env"
-  set -a
-  source .env
-  set +a
-fi
+ENV_TARGET=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --env) ENV_TARGET="$2"; shift 2 ;;
+    *) echo "Unknown argument: $1"; exit 1 ;;
+  esac
+done
+
+: "${ENV_TARGET:?Usage: $0 --env <local|neon>}"
+ENV_FILE=".env.${ENV_TARGET}"
+[ -f "$ENV_FILE" ] || { echo "Env file not found: $ENV_FILE"; exit 1; }
+
+echo "Loading environment from $ENV_FILE"
+set -a
+source "$ENV_FILE"
+set +a
 
 # Validate required variables
 : "${PGHOST:?PGHOST not set}"

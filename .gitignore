@@ -219,3 +219,7 @@ input.csv
 /dbt/profiles.yml
 /dbt/.user.yml
 /dbt/dbt_packages
+/scripts/.env.neon
+/scripts/.env.local
+/db/seed/src.the_odds_api_OLD.csv
+dbt/.env.neon

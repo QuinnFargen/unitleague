@@ -1,4 +1,3 @@
-@ -1,154 +0,0 @@
 """
 Manual API test script for syndicate and profile endpoints.
 Usage:

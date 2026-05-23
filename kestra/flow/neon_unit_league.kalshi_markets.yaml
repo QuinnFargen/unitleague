@@ -1,0 +1,169 @@
+id: kalshi_markets
+namespace: neon_unit_league
+
+tasks:
+  - id: python_api
+    type: io.kestra.plugin.scripts.python.Script
+    outputFiles:
+      - "kalshi_predict.csv"
+    beforeCommands:
+      - pip install pandas
+      - pip install requests
+    warningOnStdErr: false
+    script: | 
+      import pandas as pd
+      import requests
+
+      def get_all_markets(series_ticker):
+          """Fetch all markets for a series, handling pagination"""
+          all_markets = []
+          cursor = None
+          base_url = "https://api.elections.kalshi.com/trade-api/v2/markets"
+
+          while True:
+              # Build URL with cursor if we have one
+              url = f"{base_url}?series_ticker={series_ticker}&limit=100&status=open"
+              if cursor:
+                  url += f"&cursor={cursor}"
+
+              response = requests.get(url)
+              data = response.json()
+
+              # Add markets from this page
+              all_markets.extend(data['markets'])
+
+              # Check if there are more pages
+              cursor = data.get('cursor')
+              if not cursor:
+                  break
+
+          return all_markets
+
+      tickers = [
+          'KXNBAGAME',
+          'KXNFLGAME',
+          'KXNHLGAME',
+          'KXMLBGAME',
+          'KXNCAAFGAME',  'KXNCAAFCSGAME',
+          'KXNCAABGAME', 'KXNCAAMBGAME'
+      ]
+
+      all_markets = []
+
+      for t in tickers:
+          markets = get_all_markets(t)
+          all_markets.extend(markets)
+
+      rows = []
+      for m in all_markets:
+          rows.append({
+              "event_ticker": m.get("event_ticker"),
+              "ticker": m.get("ticker"),
+              "expected_expiration_time": m.get("expected_expiration_time"),
+              "title": m.get("title"),
+              "yes_sub_title": m.get("yes_sub_title"),
+              "volume": m.get("volume_fp"),
+              "volume_24h": m.get("volume_24h_fp"),
+              "yes_ask": m.get("yes_ask_dollars"),
+              "yes_bid": m.get("yes_bid_dollars"),
+              "liquidity": m.get("liquidity_dollars"),
+              "open_interest": m.get("open_interest_fp"),
+              "rules_primary": m.get("rules_primary"),
+              "status": m.get("status"),
+          })
+
+      # Convert to DataFrame
+      df = pd.DataFrame(rows)
+      df.to_csv("kalshi_predict.csv", index=False)
+
+
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "etl"."stg_kalshi_market" ;
+
+  - id: pg_copyin_stg_kalshi
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_api.outputFiles['kalshi_predict.csv'] }}"
+    table: etl.stg_kalshi_market
+    header: true
+    delimiter: ","
+
+  - id: pg_exec_sp_all_market
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('etl all_kalshi_market');
+
+  - id: pg_exec_sp_all_game
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('etl all_kalshi_game');
+
+  - id: pg_update_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |     
+        UPDATE etl.all_kalshi_market A
+        SET imported = true
+        FROM ( SELECT DISTINCT A.home_kalshi_market_id AS used_kalshi_market_id FROM etl.all_kalshi_game A
+          UNION SELECT DISTINCT A.away_kalshi_market_id AS used_kalshi_market_id FROM etl.all_kalshi_game A )  
+        WHERE kalshi_market_id = used_kalshi_market_id;
+
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src kalshi_game');
+
+  - id: pg_update_src_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |   
+        UPDATE etl.all_kalshi_game
+        SET imported = true
+        FROM ( SELECT DISTINCT A.kalshi_hash as src_kalshi_hash FROM src.kalshi_game A )  
+        WHERE kalshi_hash = src_kalshi_hash;
+
+
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select odd_bet
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "{{secret('POSTGRES_NEON_HOST')}}"
+                port: 5432
+                dbname: "SPORT"
+                user: "{{ secret('POSTGRES_NEON_USERNAME') }}"
+                password: "{{ secret('POSTGRES_NEON_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "require"
+            target: prod
+
+pluginDefaults:
+  - type: io.kestra.plugin.jdbc.postgresql
+    values:
+      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
+      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 */6 * * *"
+    recoverMissedSchedules: NONE

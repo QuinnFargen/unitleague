@@ -1,10 +1,16 @@
 "job_name","source_schema","source_table","target_schema","target_table","transform_view","load_type","unique_keys","schedule","is_active"
 etl all_the_odds_api,etl,stg_the_odds_api,etl,all_the_odds_api,v_all_the_odds_api,append,,daily,true
-src foot_espn_schedule,etl,stg_foot_espn_schedule,src,foot_espn_schedule,v_foot_espn_schedule,merge,game_id,daily,true
 src the_odds_api,etl,all_the_odds_api_bet,src,the_odds_api,v_the_odds_api,append,,daily,true
 etl all_the_odds_api_bet,etl,all_the_odds_api,etl,all_the_odds_api_bet,v_all_the_odds_api_bet,append,,daily,true
 etl all_open_weather,etl,stg_open_weather,etl,all_open_weather,v_all_open_weather,append,,daily,true
 src weather_forecast,etl,all_open_weather,src,weather_forecast,v_weather_forecast,append,,daily,true
 etl all_kalshi_market,etl,stg_kalshi_market,etl,all_kalshi_market,v_all_kalshi_market,append,,daily,true
 etl all_kalshi_game,etl,all_kalshi_market,etl,all_kalshi_game,v_all_kalshi_game,append,,daily,true
+etl all_foot_espn_weeks,etl,stg_foot_espn_weeks,etl,all_foot_espn_weeks,v_all_foot_espn_weeks,append,,daily,true
+src espn_week,etl,all_foot_espn_weeks,src,espn_week,v_espn_week,merge,"league_id, yr, week_start_dt, week_name",monthly,true
+src puck_espn_schedule,etl,stg_puck_espn_schedule,src,espn_schedule,v_puck_espn_schedule,merge,"league_id,game_id",daily,true
+src base_espn_schedule,etl,stg_base_espn_schedule,src,espn_schedule,v_base_espn_schedule,merge,"league_id,game_id",daily,true
+src basket_espn_schedule,etl,stg_basket_espn_schedule,src,espn_schedule,v_basket_espn_schedule,merge,"league_id,game_id",daily,true
+src foot_espn_schedule,etl,stg_foot_espn_schedule,src,espn_schedule,v_foot_espn_schedule,merge,"league_id,game_id",daily,true
 src espn_schedule_future,etl,stg_espn_schedule_future,src,espn_schedule,v_espn_schedule_future,append,,daily,true
+src kalshi_game,etl,all_kalshi_game,src,kalshi_game,v_kalshi_game,append,,daily,true

@@ -202,6 +202,6 @@ pluginDefaults:
 triggers:
   - id: schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    cron: "0 13 * * *"
+    cron: "20 11 * * *"
     recoverMissedSchedules: NONE
 

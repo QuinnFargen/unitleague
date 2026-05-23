@@ -1,5 +1,5 @@
 id: all_odds_api_daily
-namespace: local_unit_league
+namespace: neon_unit_league
 
 tasks:
   - id: python_the_odds_api
@@ -50,52 +50,94 @@ tasks:
           writer.writerows(results)
  
 
-  - id: if_odds_exist
-    type: io.kestra.plugin.core.flow.If
-    condition: "{{ outputs['odds'].size > 0 }}"
-    then:
-    - id: pg_truncate_stg
-      type: io.kestra.plugin.jdbc.postgresql.Query
-      sql: |
-        truncate TABLE "etl"."stg_the_odds_api" ;
+  - id: pg_truncate_stg
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      truncate TABLE "etl"."stg_the_odds_api" ;
 
-    - id: pg_copyin_stg
-      type: io.kestra.plugin.jdbc.postgresql.CopyIn
-      format: CSV
-      from: "{{ outputs.python_the_odds_api.outputFiles['odds.csv'] }}"
-      table: etl.stg_the_odds_api
-      header: true
-      delimiter: ","
+  - id: pg_copyin_stg
+    type: io.kestra.plugin.jdbc.postgresql.CopyIn
+    format: CSV
+    from: "{{ outputs.python_the_odds_api.outputFiles['odds.csv'] }}"
+    table: etl.stg_the_odds_api
+    header: true
+    delimiter: ","
 
-    - id: pg_exec_sp
-      type: io.kestra.plugin.jdbc.postgresql.Query
-      sql: |
-        CALL "utility"."run_etl_job"('etl all_the_odds_api');
+  - id: pg_exec_sp
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('etl all_the_odds_api');
 
-    - id: pg_exec_sp_bet
-      type: io.kestra.plugin.jdbc.postgresql.Query
-      sql: |
-        CALL "utility"."run_etl_job"('etl all_the_odds_api_bet');
+  - id: pg_exec_sp_bet
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('etl all_the_odds_api_bet');
 
-    - id: pg_update_imported
-      type: io.kestra.plugin.jdbc.postgresql.Query
-      sql: |     
-          UPDATE etl.all_the_odds_api A
-          SET imported = true
-          FROM ( SELECT DISTINCT A.the_odds_api_id AS imp_the_odds_api_id FROM etl.all_the_odds_api_bet A )  
-          WHERE the_odds_api_id = imp_the_odds_api_id;
-          
+  - id: pg_update_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |     
+        UPDATE etl.all_the_odds_api A
+        SET imported = true
+        FROM ( SELECT DISTINCT A.the_odds_api_id AS imp_the_odds_api_id FROM etl.all_the_odds_api_bet A )  
+        WHERE the_odds_api_id = imp_the_odds_api_id;
+        
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src the_odds_api');
+
+  - id: pg_update_src_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |   
+        UPDATE etl.all_the_odds_api_bet
+        SET imported = true
+        FROM ( SELECT DISTINCT A.odd_hash as src_odd_hash FROM src.the_odds_api A )  
+        WHERE odd_hash = src_odd_hash;
+
+
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select odd_bet
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "{{secret('POSTGRES_NEON_HOST')}}"
+                port: 5432
+                dbname: "SPORT"
+                user: "{{ secret('POSTGRES_NEON_USERNAME') }}"
+                password: "{{ secret('POSTGRES_NEON_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "require"
+            target: prod
+
 
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
-      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
-      username: "{{secret('POSTGRES_USERNAME')}}"
-      password: "{{secret('POSTGRES_PASSWORD')}}"
+      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
+      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
 
 triggers:
   - id: schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    cron: "0 13 * * *"
+    cron: "0 11 * * *"
     recoverMissedSchedules: NONE

@@ -1,5 +1,5 @@
 id: espn_sched_future
-namespace: local_unit_league
+namespace: neon_unit_league
 
 tasks:
 
@@ -274,23 +274,23 @@ tasks:
             outputs:
               prod:
                 type: postgres
-                host: "unit_postgres"
+                host: "{{secret('POSTGRES_NEON_HOST')}}"
                 port: 5432
-                dbname: "sport"
-                user: "{{ secret('POSTGRES_USERNAME') }}"
-                password: "{{ secret('POSTGRES_PASSWORD') }}"
+                dbname: "SPORT"
+                user: "{{ secret('POSTGRES_NEON_USERNAME') }}"
+                password: "{{ secret('POSTGRES_NEON_PASSWORD') }}"
                 schema: public
                 threads: 4
-                sslmode: "disable"
+                sslmode: "require"
             target: prod
 
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
-      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
-      username: "{{secret('POSTGRES_USERNAME')}}"
-      password: "{{secret('POSTGRES_PASSWORD')}}"
+      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
+      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
 
 
 triggers:

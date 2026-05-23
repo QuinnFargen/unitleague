@@ -4,12 +4,11 @@ namespace: neon_unit_league
 tasks:
   - id: pg_query_latlon
     type: io.kestra.plugin.jdbc.postgresql.Query
-    sql: |
-      select distinct t.region_lat, t.region_lon
-      from ball.game g 
-      join ball.team t on g.home_team_id = t.team_id
-      where g.game_dt between CURRENT_DATE and CURRENT_DATE + (case when t.weather = 1 then 1 else 7 end)
-      ;
+    sql: |      
+          select 
+            region_lat
+            ,region_lon
+          from etl.v_fetch_game_latlon;
     fetchType: STORE
 
   - id: ion_to_csv
@@ -68,20 +67,34 @@ tasks:
   - id: pg_truncate_stg
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      truncate TABLE "api"."stg_open_weather" ;
+      truncate TABLE "etl"."stg_open_weather" ;
 
   - id: pg_copyin_stg
     type: io.kestra.plugin.jdbc.postgresql.CopyIn
     format: CSV
     from: "{{ outputs.python_weather_api.outputFiles['weather.csv'] }}"
-    table: api.stg_open_weather
+    table: etl.stg_open_weather
     header: true
     delimiter: ","
 
-  - id: pg_exec_sp
+  - id: pg_exec_sp_all
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      CALL "api"."sp_stg_open_weather_daily"(); ;
+      CALL "utility"."run_etl_job"('etl all_open_weather');
+
+  - id: pg_exec_sp_src
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |
+      CALL "utility"."run_etl_job"('src weather_forecast');
+
+  - id: pg_update_imported
+    type: io.kestra.plugin.jdbc.postgresql.Query
+    sql: |         
+          UPDATE etl.all_open_weather A
+          SET imported = B'1'
+          FROM ( SELECT DISTINCT A.lat as lat_src, A.lon as lon_src, A.daily_epoch FROM src.weather_forecast A )  
+          WHERE lat = lat_src and lon = lon_src and current_epoch = daily_epoch;
+
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
@@ -95,4 +108,3 @@ triggers:
     type: io.kestra.plugin.core.trigger.Schedule
     cron: "0 13 * * *"
     recoverMissedSchedules: NONE
-disabled: true

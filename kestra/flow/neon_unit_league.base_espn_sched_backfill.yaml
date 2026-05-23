@@ -1,13 +1,13 @@
-id: puck_espn_sched_backfill
-namespace: local_unit_league
+id: base_espn_sched_backfill
+namespace: neon_unit_league
 
 tasks:
   - id: fetch_game_dates
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      select league_id, game_dt
+      select game_dt
       from etl.v_fetch_espn_sched_update v
-      where v.league_id = 3 -- NHL
+      where v.league_id = 4 -- MLB
       ;
     fetchType: STORE
 
@@ -15,10 +15,10 @@ tasks:
     type: io.kestra.plugin.serdes.csv.IonToCsv
     from: "{{ outputs.fetch_game_dates.uri }}"
 
-  - id: python_nhl_sched
+  - id: python_base_sched
     type: io.kestra.plugin.scripts.python.Script
     outputFiles:
-      - "nhl_sched.csv"
+      - "base_sched.csv"
     beforeCommands:
       - pip install pandas
       - pip install requests
@@ -31,9 +31,9 @@ tasks:
       import time
 
       HEADERS = {"User-Agent": "Mozilla/5.0"}
-      BASE_URL = "https://site.web.api.espn.com/apis/site/v2/sports/hockey/nhl/scoreboard"
+      BASE_URL = "https://site.web.api.espn.com/apis/site/v2/sports/baseball/mlb/scoreboard"
 
-      LEAGUE_ID = 3  # NHL
+      LEAGUE_ID = 4  # MLB
 
       game_dates_df = pd.read_csv("game_dates.csv")
       calendar_days = game_dates_df["game_dt"].astype(str).tolist()
@@ -67,28 +67,22 @@ tasks:
               right_on=["game.id"],
           ).drop(["id"], axis=1, errors="ignore")
 
-          df["P1"] = 0
-          df["P2"] = 0
-          df["P3"] = 0
-          df["OT"] = 0
-          df["SO"] = 0
+          # MLB innings — accumulate extras into i10
+          for i in range(1, 11):
+              df[f"i{i}"] = 0
 
           if "linescores" in df.columns:
               for idx, row in df.iterrows():
                   scores = row["linescores"] if isinstance(row["linescores"], list) else []
                   for s in scores:
-                      period = s.get("period", 0)
+                      inning = s.get("period", 0)
                       value = s.get("value", 0)
-                      if period == 1:
-                          df.at[idx, "P1"] = value
-                      elif period == 2:
-                          df.at[idx, "P2"] = value
-                      elif period == 3:
-                          df.at[idx, "P3"] = value
-                      elif period == 4:
-                          df.at[idx, "OT"] = value
-                      elif period == 5:
-                          df.at[idx, "SO"] = value
+                      if 1 <= inning <= 9:
+                          df.at[idx, f"i{inning}"] = value
+                      elif inning >= 10:
+                          df.at[idx, "i10"] += value
+
+          inning_cols = [f"i{i}" for i in range(1, 11)]
 
           final_columns = [
               "date", "name", "shortName",
@@ -96,7 +90,7 @@ tasks:
               "homeAway", "score", "winner", "linescores",
               "team.displayName", "team.abbreviation", "team.shortDisplayName",
               "team.id", "game.id",
-              "P1", "P2", "P3", "OT", "SO",
+              *inning_cols,
           ]
           return df.reindex(columns=final_columns)
 
@@ -114,17 +108,17 @@ tasks:
               "team.abbreviation": "home_abbr",
               "team.shortDisplayName": "home_short",
               "team.id": "home_team_id",
-              "P1": "h1", "P2": "h2", "P3": "h3", "OT": "h4", "SO": "h5",
           })
-
           away_df = away_df.rename(columns={
               "score": "away_score",
               "team.displayName": "away_team",
               "team.abbreviation": "away_abbr",
               "team.shortDisplayName": "away_short",
               "team.id": "away_team_id",
-              "P1": "a1", "P2": "a2", "P3": "a3", "OT": "a4", "SO": "a5",
           })
+
+          home_df = home_df.rename(columns={f"i{i}": f"i{i}_home" for i in range(1, 11)})
+          away_df = away_df.rename(columns={f"i{i}": f"i{i}_away" for i in range(1, 11)})
 
           merge_keys = [
               "game.id", "date", "name", "shortName",
@@ -140,12 +134,14 @@ tasks:
           r = requests.get(url, headers=HEADERS)
           games_data = r.json().get("events", [])
           if games_data:
-              df = merge_data(games_data)
-              all_games.append(df)
+              for event in games_data:  # MLB: pass single event
+                  df = merge_data(event)
+                  if not df.empty:
+                      all_games.append(df)
           time.sleep(1)
 
       if not all_games:
-          pd.DataFrame().to_csv("nhl_sched.csv", index=False)
+          pd.DataFrame().to_csv("base_sched.csv", index=False)
           print("No new games to load.")
           exit()
 
@@ -155,19 +151,16 @@ tasks:
       final_df.drop_duplicates(subset="game_id", inplace=True)
       print(f"Games to load: {len(final_df)}")
 
-      # Rename to match src.espn_schedule DDL
+      # Rename innings to match src.espn_schedule DDL
       final_df = final_df.rename(columns={
-          "date":        "gamedate",
-          "shortName":   "shortname",
-          "season_year": "season_year",
-          "season_type": "season_type",
-          "season_slug": "season_slug",
+          "date":       "gamedate",
+          "shortName":  "shortname",
+          **{f"i{i}_home": f"h{i}" for i in range(1, 11)},
+          **{f"i{i}_away": f"a{i}" for i in range(1, 11)},
       })
 
-      # Add league_id and null-fill h6-h10, a6-a10 (NHL has max 5 periods)
+      # Add league_id
       final_df["league_id"] = LEAGUE_ID
-      for col in ["h6", "h7", "h8", "h9", "h10", "a6", "a7", "a8", "a9", "a10"]:
-          final_df[col] = None
 
       # Reorder columns to match DDL
       final_df = final_df[[
@@ -179,28 +172,26 @@ tasks:
           "a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10",
       ]]
 
-      final_df.to_csv("nhl_sched.csv", index=False)
+      final_df.to_csv("base_sched.csv", index=False)
       print("Done.")
 
   - id: pg_truncate_stg
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      truncate TABLE "etl"."stg_puck_espn_schedule" ;
+      truncate TABLE "etl"."stg_base_espn_schedule" ;
 
-  - id: pg_copyin_nhl_sched
+  - id: pg_copyin_base_sched
     type: io.kestra.plugin.jdbc.postgresql.CopyIn
     format: CSV
-    from: "{{ outputs.python_nhl_sched.outputFiles['nhl_sched.csv'] }}"
-    table: etl.stg_puck_espn_schedule
+    from: "{{ outputs.python_base_sched.outputFiles['base_sched.csv'] }}"
+    table: etl.stg_base_espn_schedule
     header: true
     delimiter: ","
 
   - id: pg_exec_sp_src
     type: io.kestra.plugin.jdbc.postgresql.Query
     sql: |
-      CALL "utility"."run_etl_job"('src puck_espn_schedule');
-
-
+      CALL "utility"."run_etl_job"('src base_espn_schedule');
 
   - id: dbt
     type: io.kestra.plugin.core.flow.WorkingDirectory
@@ -224,29 +215,28 @@ tasks:
             outputs:
               prod:
                 type: postgres
-                host: "unit_postgres"
+                host: "{{secret('POSTGRES_NEON_HOST')}}"
                 port: 5432
-                dbname: "sport"
-                user: "{{ secret('POSTGRES_USERNAME') }}"
-                password: "{{ secret('POSTGRES_PASSWORD') }}"
+                dbname: "SPORT"
+                user: "{{ secret('POSTGRES_NEON_USERNAME') }}"
+                password: "{{ secret('POSTGRES_NEON_PASSWORD') }}"
                 schema: public
                 threads: 4
-                sslmode: "disable"
+                sslmode: "require"
             target: prod
 
 
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:
-      url: jdbc:postgresql://{{secret('POSTGRES_HOST')}}/sport
-      username: "{{secret('POSTGRES_USERNAME')}}"
-      password: "{{secret('POSTGRES_PASSWORD')}}"
+      url: jdbc:postgresql://{{secret('POSTGRES_NEON_HOST')}}/SPORT
+      username: "{{secret('POSTGRES_NEON_USERNAME')}}"
+      password: "{{secret('POSTGRES_NEON_PASSWORD')}}"
 
 
 triggers:
   - id: schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    cron: "30 11 * * *"
+    cron: "0 11 * * *"
     recoverMissedSchedules: NONE
-
 

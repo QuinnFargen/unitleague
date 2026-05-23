@@ -2,7 +2,7 @@
 from fastapi import FastAPI, Query, HTTPException
 from sqlalchemy import create_engine, text
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import os
 
 app = FastAPI()
@@ -306,3 +306,95 @@ def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
         if row is None:
             raise HTTPException(status_code=404, detail="Syndicate not found")
         return dict(row._mapping)
+
+
+class TxnCreate(BaseModel):
+    bettor_id: int
+    syndicate_id: int
+    bet_hash: str
+    unit: float
+    price: float
+
+class ParlayLeg(BaseModel):
+    bet_hash: str
+    price: float
+
+class ParlayCreate(BaseModel):
+    bettor_id: int
+    syndicate_id: int
+    unit: float
+    legs: List[ParlayLeg]
+
+
+@app.post("/odd/txn")
+def create_txn(txn: TxnCreate):
+    q = """
+        INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price)
+        VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price)
+        RETURNING *
+    """
+    with engine.begin() as conn:
+        row = conn.execute(text(q), txn.model_dump()).fetchone()
+        return dict(row._mapping)
+
+@app.post("/odd/parlay")
+def create_parlay(parlay: ParlayCreate):
+    if not parlay.legs:
+        raise HTTPException(status_code=400, detail="At least one leg required")
+
+    price_mult = 1.0
+    for leg in parlay.legs:
+        price_mult *= leg.price
+
+    with engine.begin() as conn:
+        parlay_row = conn.execute(text("""
+            INSERT INTO odd.parlay (price_mult)
+            VALUES (:price_mult)
+            RETURNING *
+        """), {"price_mult": price_mult}).fetchone()
+
+        parlay_id = parlay_row._mapping["parlay_id"]
+
+        leg_rows = []
+        for leg in parlay.legs:
+            leg_row = conn.execute(text("""
+                INSERT INTO odd.leg (parlay_id, bet_hash, price)
+                VALUES (:parlay_id, :bet_hash, :price)
+                RETURNING *
+            """), {"parlay_id": parlay_id, "bet_hash": leg.bet_hash, "price": leg.price}).fetchone()
+            leg_rows.append(dict(leg_row._mapping))
+
+        txn_row = conn.execute(text("""
+            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price)
+            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price)
+            RETURNING *
+        """), {
+            "bettor_id": parlay.bettor_id,
+            "syndicate_id": parlay.syndicate_id,
+            "parlay_id": parlay_id,
+            "unit": parlay.unit,
+            "price": price_mult,
+        }).fetchone()
+
+    return {
+        "parlay": dict(parlay_row._mapping),
+        "legs": leg_rows,
+        "txn": dict(txn_row._mapping),
+    }
+
+@app.get("/odd/txn")
+def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
+    q = "SELECT * FROM odd.txn WHERE won IS NULL AND canceled = false"
+    query_params = {}
+
+    if bettor_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    if syndicate_id:
+        q += " AND syndicate_id = :syndicate_id"
+        query_params["syndicate_id"] = syndicate_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]

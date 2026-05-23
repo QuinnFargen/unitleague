@@ -47,3 +47,33 @@ sources:
     tables:
       - name: syndicate
         description: "One row per syndicate. Which bettors are connected to syndicates in the Runner table"
+
+      - name: txn
+        description: "One row per bet or parlay transaction placed by a bettor. bet_hash xor parlay_id is non-null."
+        columns:
+          - name: txn_id
+            tests: [not_null, unique]
+          - name: bettor_id
+            tests: [not_null]
+          - name: syndicate_id
+            tests: [not_null]
+
+      - name: enhanced
+        description: "Applied enhancement rows — one per bettor/syndicate/enhancement/team/week combo."
+        columns:
+          - name: enhanced_id
+            tests: [not_null, unique]
+          - name: bettor_id
+            tests: [not_null]
+          - name: syndicate_id
+            tests: [not_null]
+          - name: enhancement_id
+            tests: [not_null]
+
+      - name: enhancement
+        description: "Enhancement definitions with config jsonb holding price_mult and unit_mult."
+        columns:
+          - name: enhancement_id
+            tests: [not_null, unique]
+          - name: enhancement_type
+            tests: [not_null]

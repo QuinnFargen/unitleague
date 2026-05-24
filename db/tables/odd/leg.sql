@@ -3,7 +3,5 @@ CREATE TABLE IF NOT EXISTS odd.leg (
   insert_ts timestamp not null default now(),
   parlay_id bigint,
   bet_hash  varchar(32),
-  price     float,
-  won       boolean,
-  won_ts    timestamp
+  price     float
 );

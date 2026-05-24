@@ -26,8 +26,7 @@ select
     t.price,
     t.unit  * coalesce(e.combined_unit_mult,  1)  as unit_enhanced,
     t.price * coalesce(e.combined_price_mult, 1)  as price_enhanced,
-    t.won,
-    t.won_ts,
+    false   as won,
     t.canceled,
     t.cancel_ts
 

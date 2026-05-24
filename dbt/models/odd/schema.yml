@@ -41,3 +41,71 @@ models:
         tests: [not_null]
       - name: end_ts
         description: "Timestamp when this snapshot was superseded by the next pull; NULL for the current active row. Managed by dbt via LEAD window function."
+
+  - name: v_parlay
+    description: >
+      View with one row per parlay leg. Joins odd.parlay → odd.leg → odd_bet → mart_game
+      so all bet and game context is pre-resolved. Consumed by v_txn.
+    columns:
+      - name: parlay_id
+        description: "Foreign key to odd.parlay"
+        tests: [not_null]
+      - name: price_mult
+        description: "Combined price multiplier for the parlay (product of all leg prices)"
+      - name: bet_hash
+        description: "Leg's bet_hash linking to odd.bet"
+      - name: leg_price
+        description: "Price for this individual leg at time of placement"
+      - name: game_id
+        description: "Game this leg is on"
+      - name: bookmaker
+        description: "Sportsbook for this leg"
+      - name: bet_type
+        description: "ML, SPR, OVER, or UNDER"
+      - name: bet_concat
+        description: "Human-readable bet identifier"
+      - name: points
+        description: "Spread or total value; null for moneylines"
+      - name: home
+        description: "Home team abbreviation"
+      - name: away
+        description: "Away team abbreviation"
+      - name: game_time
+        description: "Scheduled tip/kick-off time"
+
+  - name: v_txn
+    description: >
+      View over odd.txn with bet and game context joined in. Straight bets produce one row per txn;
+      parlay bets produce one row per leg. Columns are unified via COALESCE so callers get a
+      consistent shape. txn_type distinguishes 'straight' vs 'parlay'.
+    columns:
+      - name: txn_id
+        description: "Primary key of odd.txn"
+        tests: [not_null]
+      - name: txn_type
+        description: "'straight' when bet_hash is set on txn; 'parlay' when parlay_id is set"
+        tests: [not_null]
+      - name: bet_hash
+        description: "Resolved bet_hash: txn.bet_hash for straight bets, leg.bet_hash for parlay legs"
+      - name: price
+        description: "Resolved price: odd_bet.price for straight bets, leg.price for parlay legs"
+      - name: game_dt
+        description: "Game date stored on the txn — used to determine active vs complete"
+      - name: bookmaker
+        description: "Sportsbook (straight) or leg bookmaker (parlay)"
+      - name: bet_type
+        description: "ML, SPR, OVER, or UNDER"
+      - name: bet_concat
+        description: "Human-readable bet identifier"
+      - name: parlay_id
+        description: "null for straight bets"
+      - name: parlay_price_mult
+        description: "Combined parlay multiplier; null for straight bets"
+      - name: game_id
+        description: "Game the bet is on"
+      - name: home
+        description: "Home team abbreviation"
+      - name: away
+        description: "Away team abbreviation"
+      - name: game_time
+        description: "Scheduled tip/kick-off time"

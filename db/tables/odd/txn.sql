@@ -7,8 +7,7 @@ CREATE TABLE IF NOT EXISTS odd.txn (
   parlay_id    bigint,
   unit         float,
   price        float,
-  won          boolean,
-  won_ts       timestamp,
+  game_dt      date,
   canceled     boolean default (false),
   cancel_ts    timestamp,
 

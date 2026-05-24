@@ -77,3 +77,9 @@ sources:
             tests: [not_null, unique]
           - name: enhancement_type
             tests: [not_null]
+
+      - name: parlay
+        description: "One row per parlay. price_mult is the product of all leg prices."
+
+      - name: leg
+        description: "One row per leg within a parlay. bet_hash links to odd.bet."

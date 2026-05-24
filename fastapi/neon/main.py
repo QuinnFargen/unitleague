@@ -112,6 +112,23 @@ def get_game_oddbest(game_id: int = Query(None)
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@app.get("/mart/txn")
+def get_mart_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
+    q = "SELECT * FROM mart.txn WHERE 1=1"
+    query_params = {}
+
+    if bettor_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    if syndicate_id:
+        q += " AND syndicate_id = :syndicate_id"
+        query_params["syndicate_id"] = syndicate_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @app.get("/mart/syndicate")
 def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None)):
     q = """
@@ -314,6 +331,7 @@ class TxnCreate(BaseModel):
     bet_hash: str
     unit: float
     price: float
+    game_dt: Optional[str] = None
 
 class ParlayLeg(BaseModel):
     bet_hash: str
@@ -324,13 +342,14 @@ class ParlayCreate(BaseModel):
     syndicate_id: int
     unit: float
     legs: List[ParlayLeg]
+    game_dt: Optional[str] = None
 
 
 @app.post("/odd/txn")
 def create_txn(txn: TxnCreate):
     q = """
-        INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price)
-        VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price)
+        INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt)
+        VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price, :game_dt)
         RETURNING *
     """
     with engine.begin() as conn:
@@ -365,8 +384,8 @@ def create_parlay(parlay: ParlayCreate):
             leg_rows.append(dict(leg_row._mapping))
 
         txn_row = conn.execute(text("""
-            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price)
-            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price)
+            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, game_dt)
+            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price, :game_dt)
             RETURNING *
         """), {
             "bettor_id": parlay.bettor_id,
@@ -374,6 +393,7 @@ def create_parlay(parlay: ParlayCreate):
             "parlay_id": parlay_id,
             "unit": parlay.unit,
             "price": price_mult,
+            "game_dt": parlay.game_dt,
         }).fetchone()
 
     return {
@@ -381,6 +401,20 @@ def create_parlay(parlay: ParlayCreate):
         "legs": leg_rows,
         "txn": dict(txn_row._mapping),
     }
+
+@app.patch("/odd/txn/{txn_id}/cancel")
+def cancel_txn(txn_id: int):
+    q = """
+        UPDATE odd.txn
+        SET canceled = true, cancel_ts = now()
+        WHERE txn_id = :txn_id AND canceled = false
+        RETURNING *
+    """
+    with engine.begin() as conn:
+        row = conn.execute(text(q), {"txn_id": txn_id}).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Transaction not found or already canceled")
+        return dict(row._mapping)
 
 @app.get("/odd/txn")
 def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):

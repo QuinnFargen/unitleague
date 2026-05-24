@@ -45,6 +45,7 @@ select
     b.bet_type,
     b.bet_concat,
     b.points,
+    mt.abbr                                                               as team,
     false                                                                 as won
 
 from {{ source('odd', 'txn') }} t
@@ -52,5 +53,6 @@ left join {{ ref('odd_bet') }}   b  on  b.bet_hash   = t.bet_hash and b.active
 left join {{ ref('mart_game') }} g  on  g.game_id    = b.game_id
 left join parlay_cte             pc on  pc.parlay_id = t.parlay_id
 left join enhancement_agg        e  on  e.txn_id     = t.txn_id
+left join {{ ref('mart_team') }} mt on  mt.team_id   = b.team_id
 
 where t.canceled = false

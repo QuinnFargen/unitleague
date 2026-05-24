@@ -21,7 +21,7 @@ select
     case when s.won is not null then abs(s.team - s.opp) end        as margin,
     case when s.team is not null and s.opp is not null
          then s.team + s.opp end                                    as total,
-    s.source_game_id,
+    s.game_id,
     s.league_id,
     s.team_id,
     s.opp_team_id

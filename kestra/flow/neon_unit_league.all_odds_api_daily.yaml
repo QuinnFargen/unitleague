@@ -128,7 +128,6 @@ tasks:
             target: prod
 
 
-
 pluginDefaults:
   - type: io.kestra.plugin.jdbc.postgresql
     values:

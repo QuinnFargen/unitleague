@@ -79,7 +79,7 @@ select
     h,
     a,
     won_team_id,
-    source_game_id,
+    source_game_id          as game_id,
     home_concat
         || '_' || away_abbr
         || '_' || to_char(game_dt, 'YYYYMMDD')

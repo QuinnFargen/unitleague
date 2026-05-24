@@ -11,7 +11,7 @@ with completed as (
         *,
         row_number() over (
             partition by team_id, season_id
-            order by game_dt desc, source_game_id desc
+            order by game_dt desc, game_id desc
         )                                                               as recency_rank
     from {{ ref('ball_sched') }}
     where team is not null

@@ -1,7 +1,7 @@
 {{
     config(
         materialized  = 'incremental',
-        unique_key    = ['league_id', 'season_id', 'team_id', 'source_game_id'],
+        unique_key    = ['league_id', 'season_id', 'team_id', 'game_id'],
         schema        = 'ball',
         alias         = 'sched'
     )
@@ -24,7 +24,7 @@ with unpivoted_games as (
         end                                                         as won,
         g.h                                                         as team_score,
         g.a                                                         as opp_score,
-        g.source_game_id,
+        g.game_id,
         s.season_concat
     from {{ ref('ball_game') }} g
     join {{ ref('season') }} s
@@ -50,7 +50,7 @@ with unpivoted_games as (
         end                                                         as won,
         g.a                                                         as team_score,
         g.h                                                         as opp_score,
-        g.source_game_id,
+        g.game_id,
         s.season_concat
     from {{ ref('ball_game') }} g
     join {{ ref('season') }} s
@@ -76,19 +76,19 @@ with_week as (
 with_game_num as (
 
     -- row_number over ALL games so game_num is correct across the full season.
-    -- source_game_id as tiebreaker makes double-header ordering deterministic.
+    -- game_id as tiebreaker makes double-header ordering deterministic.
     select
         ww.*,
         row_number() over (
             partition by ww.season_id, ww.team_id
-            order by ww.game_dt, ww.source_game_id
+            order by ww.game_dt, ww.game_id
         )                                                           as game_num
     from with_week ww
 
 )
 
 select
-    {{ dbt_utils.generate_surrogate_key(['g.league_id', 'g.season_id', 'g.team_id', 'g.source_game_id']) }} as sched_id,
+    {{ dbt_utils.generate_surrogate_key(['g.league_id', 'g.season_id', 'g.team_id', 'g.game_id']) }} as sched_id,
     g.league_id,
     g.season_id,
     g.week_id,
@@ -104,7 +104,7 @@ select
     g.won,
     g.team_score                                                    as team,
     g.opp_score                                                     as opp,
-    g.source_game_id
+    g.game_id
 
 from with_game_num g
 join {{ ref('team') }} t on g.team_id     = t.team_id

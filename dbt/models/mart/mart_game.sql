@@ -7,7 +7,7 @@
 }}
 
 select
-    g.source_game_id                                                as game_id,
+    g.game_id,
     h.abbr                                                          as home,
     a.abbr                                                          as away,
     g.game_dt,

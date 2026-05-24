@@ -11,7 +11,7 @@ with odds_api as (
     select
         o.odd_hash                                                          as bet_source_id,
         o.bookmakers_title                                                  as bookmaker,
-        g.source_game_id                                                    as game_id,
+        g.game_id ,
         case
             when o.market_name = o.home_team then ht.team_id
             when o.market_name = o.away_team then at.team_id
@@ -69,7 +69,7 @@ kalshi_home as (
     select
         kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
-        g.source_game_id                                                    as game_id,
+        g.game_id ,
         ht.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
         g.game_concat || '_ML_' || ht.abbr                                  as bet_concat,
@@ -108,7 +108,7 @@ kalshi_away as (
     select
         kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
-        g.source_game_id                                                    as game_id,
+        g.game_id,
         at.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
         g.game_concat || '_ML_' || at.abbr                                  as bet_concat,

@@ -384,7 +384,7 @@ def create_parlay(parlay: ParlayCreate):
 
 @app.get("/odd/txn")
 def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
-    q = "SELECT * FROM odd.txn WHERE won IS NULL AND canceled = false"
+    q = "SELECT * FROM odd.v_txn WHERE game_dt >= CURRENT_DATE AND canceled = false"
     query_params = {}
 
     if bettor_id:

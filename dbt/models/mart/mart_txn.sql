@@ -29,7 +29,7 @@ select
     t.insert_dt,
     t.bettor_id,
     t.syndicate_id,
-    case when t.parlay_id is not null then 'parlay' else 'straight' end  as txn_type,
+    tt.name                                                              as txn_type,
     t.bet_hash,
     t.parlay_id,
     t.price,
@@ -50,6 +50,7 @@ select
     false                                                                 as won
 
 from {{ source('odd', 'txn') }} t
+left join {{ source('odd', 'txn_type') }} tt on  tt.txn_type_id = t.txn_type_id
 left join {{ ref('odd_bet') }}   b  on  b.bet_hash   = t.bet_hash and b.active
 left join {{ ref('mart_game') }} g  on  g.game_id    = b.game_id
 left join parlay_cte             pc on  pc.parlay_id = t.parlay_id

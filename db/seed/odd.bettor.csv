@@ -1,0 +1,6 @@
+bettor_id,apple_sub,apple_email,apple_name,profile_name,symbol,color
+1,seed_sub_001,quinn@seed.dev,Quinn,SharpMike,figure.american.football.circle.fill,red
+2,seed_sub_002,alex@seed.dev,Alex,LineBuster,figure.basketball.circle.fill,teal
+3,seed_sub_003,sam@seed.dev,Sam,GrindQueen,figure.baseball.circle.fill,green
+4,seed_sub_004,jordan@seed.dev,Jordan,ValueHunter,figure.hockey.circle.fill,yellow
+5,seed_sub_005,taylor@seed.dev,Taylor,SlateBlue,figure.pickleball.circle.fill,orange

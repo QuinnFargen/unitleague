@@ -201,12 +201,18 @@ def create_bettor(bettor: BettorCreate):
             SET apple_email = COALESCE(EXCLUDED.apple_email, odd.bettor.apple_email),
                 apple_name  = COALESCE(EXCLUDED.apple_name,  odd.bettor.apple_name),
                 last_login_ts = now()
-        RETURNING *
+        RETURNING *, (xmax = 0) AS is_new
     """
     with engine.begin() as conn:
         result = conn.execute(text(q), bettor.model_dump())
         row = result.fetchone()
-        return dict(row._mapping)
+        mapping = dict(row._mapping)
+        if mapping.pop("is_new"):
+            conn.execute(text("""
+                INSERT INTO odd.txn (bettor_id, syndicate_id, unit, price, txn_type_id, description)
+                VALUES (:bettor_id, 0, 100, 1.0, 3, 'initial units')
+            """), {"bettor_id": mapping["bettor_id"]})
+        return mapping
 
 @app.post("/odd/bettor/signin")
 def signin_bettor(signin: BettorSignin):
@@ -342,8 +348,8 @@ class ParlayCreate(BaseModel):
 @app.post("/odd/txn")
 def create_txn(txn: TxnCreate):
     q = """
-        INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt)
-        VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price, :game_dt)
+        INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
+        VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price, :game_dt, 1)
         RETURNING *
     """
     with engine.begin() as conn:
@@ -378,8 +384,8 @@ def create_parlay(parlay: ParlayCreate):
             leg_rows.append(dict(leg_row._mapping))
 
         txn_row = conn.execute(text("""
-            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, game_dt)
-            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price, :game_dt)
+            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, game_dt, txn_type_id)
+            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price, :game_dt, 2)
             RETURNING *
         """), {
             "bettor_id": parlay.bettor_id,

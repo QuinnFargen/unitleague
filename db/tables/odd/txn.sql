@@ -8,8 +8,10 @@ CREATE TABLE IF NOT EXISTS odd.txn (
   unit         float,
   price        float,
   game_dt      date,
+  txn_type_id  smallint not null default 1,
+  description  varchar(500),
   canceled     boolean default (false),
   cancel_ts    timestamp,
 
-  CONSTRAINT chk_bet_or_parlay CHECK (bet_hash IS NOT NULL OR parlay_id IS NOT NULL)
+  CONSTRAINT chk_bet_or_parlay CHECK (txn_type_id = 3 OR bet_hash IS NOT NULL OR parlay_id IS NOT NULL)
 );

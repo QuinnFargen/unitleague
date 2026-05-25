@@ -12,6 +12,7 @@ with odds_api as (
         o.odd_hash                                                          as bet_source_id,
         o.bookmakers_title                                                  as bookmaker,
         g.game_id ,
+        g.league_id,
         case
             when o.market_name = o.home_team then ht.team_id
             when o.market_name = o.away_team then at.team_id
@@ -34,7 +35,6 @@ with odds_api as (
                     || case when o.market_name = o.home_team then ht.abbr else at.abbr end
             else g.game_concat || '_' || upper(o.markets_key)
         end                                                                 as bet_concat,
-        g.league_id,
         o.price::numeric(10, 4)                                             as price,
         o.point                                                             as points,
         o.markets_last_update_ts                                            as start_ts,

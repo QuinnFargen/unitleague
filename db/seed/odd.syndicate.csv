@@ -1,0 +1,3 @@
+syndicate_id,name,description,code,is_public,password,max_runner,created_by_bettor_id,symbol,color
+1,SharpSquad,Elite private group,SQAD,false,,10,1,figure.american.football.circle.fill,red
+2,PublicLeague,Open to all,PUBL,true,,20,4,figure.basketball.circle.fill,blue

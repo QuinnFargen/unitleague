@@ -12,7 +12,7 @@ select
     t.bettor_id,
     t.syndicate_id,
     t.unit,
-    case when t.parlay_id is not null then 'parlay' else 'straight' end  as txn_type,
+    tt.name                                                              as txn_type,
     coalesce(t.bet_hash,   vp.bet_hash)    as bet_hash,
     coalesce(b.price,      vp.leg_price)   as price,
     t.game_dt,
@@ -32,6 +32,7 @@ select
     coalesce(g.game_time,  vp.game_time)   as game_time
 
 from {{ source('odd', 'txn') }} t
+left join {{ source('odd', 'txn_type') }}   tt on  tt.txn_type_id = t.txn_type_id
 left join {{ ref('odd_bet') }}      b  on  b.bet_hash   = t.bet_hash    and b.active
 left join {{ ref('odd_v_parlay') }} vp on  vp.parlay_id = t.parlay_id
 left join {{ ref('mart_game') }}    g  on  g.game_id    = b.game_id

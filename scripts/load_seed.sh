@@ -58,6 +58,134 @@ SEED_DIR="$(git rev-parse --show-toplevel)/db/seed"
 
 psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
 
+-- -----------------------------------------------
+-- DDL: ensure new txn columns exist (idempotent)
+-- -----------------------------------------------
+CREATE TABLE IF NOT EXISTS odd.txn_type (
+  txn_type_id smallint PRIMARY KEY,
+  name        varchar(20) not null
+);
+
+ALTER TABLE odd.txn ADD COLUMN IF NOT EXISTS txn_type_id smallint not null default 1;
+ALTER TABLE odd.txn ADD COLUMN IF NOT EXISTS description varchar(500);
+ALTER TABLE odd.txn DROP CONSTRAINT IF EXISTS chk_bet_or_parlay;
+ALTER TABLE odd.txn ADD CONSTRAINT chk_bet_or_parlay
+  CHECK (txn_type_id = 3 OR bet_hash IS NOT NULL OR parlay_id IS NOT NULL);
+
+-- -----------------------------------------------
+-- odd.txn_type lookup
+-- -----------------------------------------------
+INSERT INTO odd.txn_type (txn_type_id, name) VALUES
+  (1, 'straight'), (2, 'parlay'), (3, 'unit')
+ON CONFLICT (txn_type_id) DO NOTHING;
+
+-- -----------------------------------------------
+-- odd.bettor / odd.syndicate / odd.runner
+-- -----------------------------------------------
+TRUNCATE TABLE odd.runner;
+TRUNCATE TABLE odd.syndicate CASCADE;
+TRUNCATE TABLE odd.bettor RESTART IDENTITY;
+
+\copy odd.bettor(bettor_id, apple_sub, apple_email, apple_name, profile_name, symbol, color) FROM '${SEED_DIR}/odd.bettor.csv' DELIMITER ',' CSV HEADER;
+\copy odd.syndicate(syndicate_id, name, description, code, is_public, password, max_runner, created_by_bettor_id, symbol, color) FROM '${SEED_DIR}/odd.syndicate.csv' DELIMITER ',' CSV HEADER;
+\copy odd.runner(runner_id, bettor_id, syndicate_id, role, profile_name, symbol, color, active) FROM '${SEED_DIR}/odd.runner.csv' DELIMITER ',' CSV HEADER;
+
+SELECT setval(pg_get_serial_sequence('odd.bettor',    'bettor_id'),    max(bettor_id))    FROM odd.bettor;
+SELECT setval(pg_get_serial_sequence('odd.syndicate', 'syndicate_id'), max(syndicate_id)) FROM odd.syndicate;
+SELECT setval(pg_get_serial_sequence('odd.runner',    'runner_id'),    max(runner_id))    FROM odd.runner;
+
+-- -----------------------------------------------
+-- odd.txn / odd.parlay / odd.leg
+-- -----------------------------------------------
+TRUNCATE TABLE odd.leg;
+TRUNCATE TABLE odd.parlay RESTART IDENTITY;
+TRUNCATE TABLE odd.txn RESTART IDENTITY;
+
+-- Unit balance grants (txn_type_id=3, one per bettor)
+INSERT INTO odd.txn (bettor_id, syndicate_id, unit, price, txn_type_id, description)
+VALUES
+  (1, 0, 100, 1.0, 3, 'initial units'),
+  (2, 0, 100, 1.0, 3, 'initial units'),
+  (3, 0, 100, 1.0, 3, 'initial units'),
+  (4, 0, 100, 1.0, 3, 'initial units'),
+  (5, 0, 100, 1.0, 3, 'initial units');
+
+-- Bet-based txns — only if odd.bet has been materialized by dbt
+DO \$\$
+BEGIN
+  IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'odd' AND tablename = 'bet') THEN
+
+    -- Past-week straight bets: bettor 1 in syndicate 1 (ML)
+    INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
+    SELECT 1, 1, b.bet_hash, 1.0, b.price, b.game_dt, 1
+    FROM odd.bet b
+    WHERE b.game_dt BETWEEN current_date - 7 AND current_date - 1
+      AND b.bet_type = 'ML'
+      AND b.active = true
+    ORDER BY b.game_dt DESC
+    LIMIT 3;
+
+    -- Past-week straight bets: bettor 2 in syndicate 1 (SPR)
+    INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
+    SELECT 2, 1, b.bet_hash, 0.5, b.price, b.game_dt, 1
+    FROM odd.bet b
+    WHERE b.game_dt BETWEEN current_date - 7 AND current_date - 1
+      AND b.bet_type = 'SPR'
+      AND b.active = true
+    ORDER BY b.game_dt DESC
+    LIMIT 2;
+
+    -- Future straight bets: bettor 1 in syndicate 1 (ML)
+    INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
+    SELECT 1, 1, b.bet_hash, 2.0, b.price, b.game_dt, 1
+    FROM odd.bet b
+    WHERE b.game_dt >= current_date
+      AND b.bet_type = 'ML'
+      AND b.active = true
+    ORDER BY b.game_dt
+    LIMIT 3;
+
+    -- Future straight bets: bettor 4 in syndicate 2 (ML)
+    INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
+    SELECT 4, 2, b.bet_hash, 1.0, b.price, b.game_dt, 1
+    FROM odd.bet b
+    WHERE b.game_dt >= current_date
+      AND b.bet_type = 'ML'
+      AND b.active = true
+    ORDER BY b.game_dt
+    LIMIT 2;
+
+    -- Parlay: bettor 1, syndicate 1 — 2 future ML legs
+    WITH legs AS (
+      SELECT bet_hash, price
+      FROM odd.bet
+      WHERE game_dt >= current_date
+        AND bet_type = 'ML'
+        AND active = true
+      ORDER BY game_dt
+      LIMIT 2
+    ),
+    inserted_parlay AS (
+      INSERT INTO odd.parlay (price_mult)
+      SELECT round(exp(sum(ln(price)))::numeric, 4) FROM legs
+      RETURNING parlay_id, price_mult
+    )
+    INSERT INTO odd.leg (parlay_id, bet_hash, price)
+    SELECT ip.parlay_id, l.bet_hash, l.price
+    FROM legs l CROSS JOIN inserted_parlay ip;
+
+    INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, game_dt, txn_type_id)
+    SELECT 1, 1, p.parlay_id, 0.5, p.price_mult, current_date + 1, 2
+    FROM odd.parlay p
+    ORDER BY p.parlay_id DESC
+    LIMIT 1;
+
+  ELSE
+    RAISE NOTICE 'odd.bet not found — skipping bet-based txns. Run dbt first to materialize odd.bet.';
+  END IF;
+END
+\$\$;
+
 TRUNCATE TABLE src.espn_schedule;
 \copy src.espn_schedule FROM '${SEED_DIR}/src.espn_schedule.csv' DELIMITER ',' CSV HEADER;
 

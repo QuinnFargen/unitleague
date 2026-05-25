@@ -83,3 +83,9 @@ sources:
 
       - name: leg
         description: "One row per leg within a parlay. bet_hash links to odd.bet."
+
+      - name: txn_type
+        description: "Lookup table for transaction types: 1=straight, 2=parlay, 3=unit."
+        columns:
+          - name: txn_type_id
+            tests: [not_null, unique]

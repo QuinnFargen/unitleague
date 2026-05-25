@@ -2,7 +2,7 @@
     config(
         materialized = 'view',
         schema       = 'odd',
-        alias        = 'v_txn'
+        alias        = 'odd_v_txn'
     )
 }}
 
@@ -25,13 +25,14 @@ select
     mt.abbr                                as team,
     t.parlay_id,
     vp.price_mult                          as parlay_price_mult,
-    coalesce(b.game_id,   vp.game_id)      as game_id,
-    coalesce(g.home,      vp.home)         as home,
-    coalesce(g.away,      vp.away)         as away,
-    coalesce(g.game_time, vp.game_time)    as game_time
+    coalesce(b.game_id,    vp.game_id)     as game_id,
+    coalesce(b.league_id,  vp.league_id)   as league_id,
+    coalesce(g.home,       vp.home)        as home,
+    coalesce(g.away,       vp.away)        as away,
+    coalesce(g.game_time,  vp.game_time)   as game_time
 
 from {{ source('odd', 'txn') }} t
-left join {{ ref('odd_bet') }}   b  on  b.bet_hash   = t.bet_hash    and b.active
-left join {{ ref('v_parlay') }}  vp on  vp.parlay_id = t.parlay_id
-left join {{ ref('mart_game') }} g  on  g.game_id    = b.game_id
-left join {{ ref('mart_team') }} mt on  mt.team_id   = b.team_id
+left join {{ ref('odd_bet') }}      b  on  b.bet_hash   = t.bet_hash    and b.active
+left join {{ ref('odd_v_parlay') }} vp on  vp.parlay_id = t.parlay_id
+left join {{ ref('mart_game') }}    g  on  g.game_id    = b.game_id
+left join {{ ref('mart_team') }}    mt on  mt.team_id   = b.team_id

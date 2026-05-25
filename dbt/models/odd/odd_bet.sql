@@ -34,6 +34,7 @@ with odds_api as (
                     || case when o.market_name = o.home_team then ht.abbr else at.abbr end
             else g.game_concat || '_' || upper(o.markets_key)
         end                                                                 as bet_concat,
+        g.league_id,
         o.price::numeric(10, 4)                                             as price,
         o.point                                                             as points,
         o.markets_last_update_ts                                            as start_ts,
@@ -70,6 +71,7 @@ kalshi_home as (
         kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
         g.game_id ,
+        g.league_id,
         ht.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
         g.game_concat || '_ML_' || ht.abbr                                  as bet_concat,
@@ -109,6 +111,7 @@ kalshi_away as (
         kg.kalshi_hash                                                      as bet_source_id,
         'Kalshi'                                                            as bookmaker,
         g.game_id,
+        g.league_id,
         at.team_id                                                          as team_id,
         'ML'                                                                as bet_type,
         g.game_concat || '_ML_' || at.abbr                                  as bet_concat,
@@ -156,6 +159,7 @@ select
     bet_source_id,
     bookmaker,
     game_id,
+    league_id,
     team_id,
     bet_type,
     bet_concat,

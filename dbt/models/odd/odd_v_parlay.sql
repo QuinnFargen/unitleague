@@ -2,7 +2,7 @@
     config(
         materialized = 'view',
         schema       = 'odd',
-        alias        = 'v_parlay'
+        alias        = 'odd_v_parlay'
     )
 }}
 
@@ -13,6 +13,7 @@ select
     l.bet_hash,
     l.price         as leg_price,
     b.game_id,
+    b.league_id,
     b.bookmaker,
     b.bet_type,
     b.bet_concat,

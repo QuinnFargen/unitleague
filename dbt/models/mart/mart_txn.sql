@@ -19,7 +19,7 @@ parlay_cte as (
     select
         vp.parlay_id,
         max(g.game_dt) as game_dt
-    from {{ ref('v_parlay') }} vp
+    from {{ ref('odd_v_parlay') }} vp
     left join {{ ref('mart_game') }} g on g.game_id = vp.game_id
     group by vp.parlay_id
 )
@@ -41,6 +41,7 @@ select
     g.game_time,
     g.home,
     g.away,
+    b.league_id,
     b.bookmaker,
     b.bet_type,
     b.bet_concat,

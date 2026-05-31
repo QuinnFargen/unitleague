@@ -29,6 +29,16 @@ seeds:
       - name: yr
         tests: [not_null]
 
+  - name: txn_type
+    description: "Lookup table for transaction types: straight, parlay, unit"
+    config:
+      schema: odd
+    columns:
+      - name: txn_type_id
+        tests: [not_null, unique]
+      - name: name
+        tests: [not_null]
+
   - name: meta
     description: "Key-value metadata mapping teams to external source IDs (ESPN, CFBD, odds APIs)"
     columns:

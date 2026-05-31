@@ -42,7 +42,7 @@ models:
       - name: end_ts
         description: "Timestamp when this snapshot was superseded by the next pull; NULL for the current active row. Managed by dbt via LEAD window function."
 
-  - name: v_parlay
+  - name: odd_v_parlay
     description: >
       View with one row per parlay leg. Joins odd.parlay → odd.leg → odd_bet → mart_game
       so all bet and game context is pre-resolved. Consumed by v_txn.
@@ -73,7 +73,7 @@ models:
       - name: game_time
         description: "Scheduled tip/kick-off time"
 
-  - name: v_txn
+  - name: odd_v_txn
     description: >
       View over odd.txn with bet and game context joined in. Straight bets produce one row per txn;
       parlay bets produce one row per leg. Columns are unified via COALESCE so callers get a

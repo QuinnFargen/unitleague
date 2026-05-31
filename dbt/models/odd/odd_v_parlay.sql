@@ -2,7 +2,7 @@
     config(
         materialized = 'view',
         schema       = 'odd',
-        alias        = 'odd_v_parlay'
+        alias        = 'v_parlay'
     )
 }}
 

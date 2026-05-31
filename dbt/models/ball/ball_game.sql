@@ -1,7 +1,7 @@
 {{
     config(
         materialized  = 'incremental',
-        unique_key    = ['league_id', 'source_game_id'],
+        unique_key    = ['league_id', 'game_id'],
         schema        = 'ball',
         alias         = 'game'
     )
@@ -22,7 +22,7 @@ with mapped as (
             when fs.home_score > fs.away_score           then coalesce(t.team_id, (fs.league_id * 10000))
             else                                              coalesce(a.team_id, (fs.league_id * 10000))
         end                                                         as won_team_id,
-        fs.game_id                                                  as source_game_id,
+        fs.game_id,
         coalesce(t.team_concat, l.abbr || '_TBD')                  as home_concat,
         coalesce(a.abbr, 'TBD')                                    as away_abbr,
         fs.a1,  fs.h1,
@@ -61,7 +61,7 @@ with_dh as (
         m.*,
         row_number() over (
             partition by m.league_id, m.home_team_id, m.away_team_id, m.game_dt
-            order by m.source_game_id
+            order by m.game_id
         )                                                           as dh_num,
         count(*) over (
             partition by m.league_id, m.home_team_id, m.away_team_id, m.game_dt
@@ -79,7 +79,7 @@ select
     h,
     a,
     won_team_id,
-    source_game_id          as game_id,
+    game_id,
     home_concat
         || '_' || away_abbr
         || '_' || to_char(game_dt, 'YYYYMMDD')

@@ -46,7 +46,7 @@ models:
       Fixes a copy-paste bug in the original procedure where period score nullification
       used `case when x = 0 and x = 0` (same column twice); replaced with nullif(x, 0).
     columns:
-      - name: source_game_id
+      - name: game_id
         description: "ESPN game_id — not unique across leagues"
         tests: [not_null]
       - name: league_id
@@ -80,7 +80,7 @@ models:
         tests: [not_null]
       - name: opp_team_id
         tests: [not_null]
-      - name: source_game_id
+      - name: game_id
         tests: [not_null]
       - name: game_num
         tests: [not_null]

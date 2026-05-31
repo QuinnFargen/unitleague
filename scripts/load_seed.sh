@@ -58,26 +58,6 @@ SEED_DIR="$(git rev-parse --show-toplevel)/db/seed"
 
 psql "postgresql://${PGUSER}@${PGHOST}:${PGPORT}/${PGDATABASE}" <<EOF
 
--- -----------------------------------------------
--- DDL: ensure new txn columns exist (idempotent)
--- -----------------------------------------------
-CREATE TABLE IF NOT EXISTS odd.txn_type (
-  txn_type_id smallint PRIMARY KEY,
-  name        varchar(20) not null
-);
-
-ALTER TABLE odd.txn ADD COLUMN IF NOT EXISTS txn_type_id smallint not null default 1;
-ALTER TABLE odd.txn ADD COLUMN IF NOT EXISTS description varchar(500);
-ALTER TABLE odd.txn DROP CONSTRAINT IF EXISTS chk_bet_or_parlay;
-ALTER TABLE odd.txn ADD CONSTRAINT chk_bet_or_parlay
-  CHECK (txn_type_id = 3 OR bet_hash IS NOT NULL OR parlay_id IS NOT NULL);
-
--- -----------------------------------------------
--- odd.txn_type lookup
--- -----------------------------------------------
-INSERT INTO odd.txn_type (txn_type_id, name) VALUES
-  (1, 'straight'), (2, 'parlay'), (3, 'unit')
-ON CONFLICT (txn_type_id) DO NOTHING;
 
 -- -----------------------------------------------
 -- odd.bettor / odd.syndicate / odd.runner

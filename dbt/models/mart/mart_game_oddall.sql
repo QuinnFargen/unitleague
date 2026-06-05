@@ -12,7 +12,7 @@ select distinct on (b.game_id, b.bet_concat, b.price, b.points)
     b.game_id,
     b.league_id,
     g.game_dt,
-    g.game_time,
+    g.game_ts,
     g.home          as home_abbr,
     g.away          as away_abbr,
     b.team_id,

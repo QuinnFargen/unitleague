@@ -29,7 +29,7 @@ select
     coalesce(b.league_id,  vp.league_id)   as league_id,
     coalesce(g.home,       vp.home)        as home,
     coalesce(g.away,       vp.away)        as away,
-    coalesce(g.game_time,  vp.game_time)   as game_time
+    coalesce(g.game_ts,  vp.game_ts)   as game_ts
 
 from {{ source('odd', 'txn') }} t
 left join {{ source('odd', 'txn_type') }}   tt on  tt.txn_type_id = t.txn_type_id

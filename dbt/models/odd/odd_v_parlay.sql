@@ -20,7 +20,7 @@ select
     b.points,
     g.home,
     g.away,
-    g.game_time
+    g.game_ts
 
 from {{ source('odd', 'parlay') }} p
 join {{ source('odd', 'leg') }}    l  on  l.parlay_id = p.parlay_id

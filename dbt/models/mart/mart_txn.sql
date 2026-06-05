@@ -38,7 +38,7 @@ select
     t.price * coalesce(e.combined_price_mult, 1)                         as price_enhanced,
     b.game_id,
     coalesce(g.game_dt, pc.game_dt)                                      as game_dt,
-    g.game_time,
+    g.game_ts,
     g.home,
     g.away,
     b.league_id,

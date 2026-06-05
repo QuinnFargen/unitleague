@@ -11,7 +11,7 @@ select
     h.abbr                                                          as home,
     a.abbr                                                          as away,
     g.game_dt,
-    g.game_time,
+    g.game_ts,
     g.game_concat,
     g.h,
     g.a,

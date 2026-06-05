@@ -13,8 +13,8 @@ with mapped as (
         fs.league_id,
         coalesce(t.team_id, (fs.league_id * 10000))                as home_team_id,
         coalesce(a.team_id, (fs.league_id * 10000))                as away_team_id,
-        fs.gamedate::date                                           as game_dt,
-        fs.gamedate::time                                           as game_time,
+        (fs.gamedate AT TIME ZONE 'America/New_York')::date         as game_dt,
+        fs.gamedate                                                 as game_ts,
         fs.home_score                                               as h,
         fs.away_score                                               as a,
         case
@@ -49,7 +49,7 @@ with mapped as (
        or a.team_id is not null
 
     {% if is_incremental() %}
-        and fs.gamedate >= (select max(game_dt) - interval '7 days' from {{ this }})
+        and fs.gamedate >= (select max(game_ts) - interval '7 days' from {{ this }})
     {% endif %}
 
 ),
@@ -75,7 +75,7 @@ select
     home_team_id,
     away_team_id,
     game_dt,
-    game_time,
+    game_ts,
     h,
     a,
     won_team_id,

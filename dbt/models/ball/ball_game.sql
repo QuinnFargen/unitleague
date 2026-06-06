@@ -18,7 +18,7 @@ with mapped as (
         fs.home_score                                               as h,
         fs.away_score                                               as a,
         case
-            when fs.home_score = 0 and fs.away_score = 0 then null
+            when (fs.home_score = 0 and fs.away_score = 0) or (fs.home_score is null or fs.away_score is null) then null
             when fs.home_score > fs.away_score           then coalesce(t.team_id, (fs.league_id * 10000))
             else                                              coalesce(a.team_id, (fs.league_id * 10000))
         end                                                         as won_team_id,

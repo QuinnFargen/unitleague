@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         schema       = 'odd',
         alias        = 'enhance_options'
     )

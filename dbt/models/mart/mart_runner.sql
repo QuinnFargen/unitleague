@@ -7,20 +7,45 @@
 }}
 
 select
-    runner_id,
-    bettor_id,
-    syndicate_id,
-    role,
-    active,
-    balance,
-    profile_name,
-    symbol,
-    color
-from (
-    values
-        (1, 1, 1, 'admin',  true, 142, 'SharpMike',    'figure.american.football.circle.fill',  'red'),
-        (2, 102, 1, 'member', true,  87, 'LineBuster',   'figure.basketball.circle.fill',          'teal'),
-        (3, 103, 1, 'member', true, 195, 'GrindQueen',   'figure.baseball.circle.fill',            'green'),
-        (4, 104, 2, 'admin',  true,  63, 'ValueHunter',  'figure.hockey.circle.fill',              'yellow'),
-        (5, 105, 2, 'member', true, 118, 'SlateBlue',    'figure.pickleball.circle.fill',          'stadium')
-) as t(runner_id, bettor_id, syndicate_id, role, active, balance, profile_name, symbol, color)
+    r.runner_id,
+    r.bettor_id,
+    r.syndicate_id,
+    r.role,
+    r.active,
+    r.profile_name,
+    r.symbol,
+    r.color,
+
+    coalesce(sum(
+        case
+            when t.txn_type = 'unit' then t.unit
+            when t.won               then t.unit  * t.price
+            else                         -t.unit
+        end
+    ), 0) as balance,
+
+    coalesce(sum(
+        case
+            when t.txn_type = 'unit' then t.unit
+            when t.won               then t.unit_enhanced  * t.price_enhanced
+            else                         -t.unit_enhanced
+        end
+    ), 0) as balance_enhanced
+
+from {{ source('odd', 'runner') }} r
+left join {{ source('odd', 'syndicate') }} s on s.syndicate_id = r.syndicate_id
+left join {{ ref('mart_txn') }} t
+    on  t.bettor_id    = r.bettor_id
+    and t.syndicate_id = case when s.is_started then r.syndicate_id else 0 end
+
+where r.active = true
+
+group by
+    r.runner_id,
+    r.bettor_id,
+    r.syndicate_id,
+    r.role,
+    r.active,
+    r.profile_name,
+    r.symbol,
+    r.color

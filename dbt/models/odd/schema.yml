@@ -109,3 +109,38 @@ models:
         description: "Away team abbreviation"
       - name: game_time
         description: "Scheduled tip/kick-off time"
+
+  - name: odd_enhance_options
+    description: >
+      View offering one row per runner × enhancement × current week, excluding enhancements
+      the runner has already chosen this week. option_hash is md5(runner_id || enhancement_id)
+      and must be submitted with the selection to prevent reuse.
+    columns:
+      - name: runner_id
+        description: "Foreign key to odd.runner"
+        tests: [not_null]
+      - name: bettor_id
+        description: "Foreign key to odd.bettor"
+        tests: [not_null]
+      - name: syndicate_id
+        description: "Foreign key to odd.syndicate"
+        tests: [not_null]
+      - name: enhancement_id
+        description: "Foreign key to odd.enhancement"
+        tests: [not_null]
+      - name: enhancement_type
+        description: "'clv', 'edge', or 'team'"
+      - name: name
+        description: "Display name of the enhancement"
+      - name: description
+        description: "Description of what the enhancement does"
+      - name: bet_type
+        description: "For clv enhancements: 'h2h', 'spread', or 'total'. NULL for edge/team."
+      - name: config
+        description: "JSON config with price_mult and unit_mult factors"
+      - name: week_id
+        description: "Current week_id from ball.week"
+      - name: league_id
+        description: "League the week belongs to"
+      - name: option_hash
+        description: "md5(runner_id || enhancement_id) — submit with selection to validate and prevent reuse"

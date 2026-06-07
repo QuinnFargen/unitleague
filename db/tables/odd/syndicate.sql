@@ -9,5 +9,8 @@ create table IF NOT EXISTS odd.syndicate(
   created_by_bettor_id  bigint,
   symbol                varchar(100),
   color                 varchar(100),
+  start_units           smallint,
+  config                json,
+  is_started            boolean not null default false,
   insert_ts             timestamp not null default now()
 );

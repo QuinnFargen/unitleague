@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from pydantic import BaseModel
 from typing import Optional, List
 import os
+import json
 
 app = FastAPI()
 
@@ -158,14 +159,52 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
-@app.get("/mart/runner")
-def get_runner(syndicate_id: int = Query(None)):
-    q = "SELECT * FROM mart.runner WHERE 1=1"
+@app.get("/mart/enhance_options")
+def get_enhance_options(syndicate_id: int = Query(None),
+                        runner_id: int = Query(None),
+                        bettor_id: int = Query(None)):
+    q = "SELECT * FROM odd.enhance_options WHERE 1=1"
     query_params = {}
 
     if syndicate_id:
         q += " AND syndicate_id = :syndicate_id"
         query_params["syndicate_id"] = syndicate_id
+
+    if runner_id:
+        q += " AND runner_id = :runner_id"
+        query_params["runner_id"] = runner_id
+
+    if bettor_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
+@app.get("/mart/runner")
+def get_runner(syndicate_id: int = Query(None),
+               bettor_id: int = Query(None),
+               competition: bool = Query(False)):
+    query_params = {}
+
+    if bettor_id and competition:
+        q = """
+            SELECT r.* FROM mart.runner r
+            WHERE r.syndicate_id IN (
+                SELECT syndicate_id FROM odd.runner
+                WHERE bettor_id = :bettor_id AND active = true
+            )
+        """
+        query_params["bettor_id"] = bettor_id
+    else:
+        q = "SELECT * FROM mart.runner WHERE 1=1"
+        if syndicate_id:
+            q += " AND syndicate_id = :syndicate_id"
+            query_params["syndicate_id"] = syndicate_id
+        if bettor_id:
+            q += " AND bettor_id = :bettor_id"
+            query_params["bettor_id"] = bettor_id
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)
@@ -194,10 +233,24 @@ class SyndicateCreate(BaseModel):
     is_public: Optional[bool] = False
     password: Optional[str] = None
     max_runner: Optional[int] = None
+    start_units: Optional[int] = None
+    config: Optional[dict] = None
 
 class RunnerCreate(BaseModel):
     bettor_id: int
     password: Optional[str] = None
+
+class EnhancedCreate(BaseModel):
+    bettor_id: int
+    syndicate_id: int
+    enhancement_id: int
+    team_id: Optional[int] = 0
+    level: Optional[int] = 1
+    week_id: int
+    option_hash: str
+
+class SyndicateStart(BaseModel):
+    bettor_id: int
 
 class SyndicateUpdate(BaseModel):
     name: Optional[str] = None
@@ -269,10 +322,10 @@ def set_bettor_profile(bettor_id: int, profile: BettorProfile):
 def create_syndicate(syndicate: SyndicateCreate):
     with engine.begin() as conn:
         syndicate_row = conn.execute(text("""
-            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id)
-            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id)
+            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config)
+            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id, :start_units, :config)
             RETURNING *
-        """), syndicate.model_dump()).fetchone()
+        """), {**syndicate.model_dump(), "config": json.dumps(syndicate.config) if syndicate.config else None}).fetchone()
 
         runner_row = conn.execute(text("""
             INSERT INTO odd.runner (bettor_id, syndicate_id, role)
@@ -319,6 +372,112 @@ def join_syndicate(code: str, body: RunnerCreate):
         """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate.syndicate_id}).fetchone()
 
     return dict(runner_row._mapping)
+
+@app.post("/odd/enhanced")
+def choose_enhancement(body: EnhancedCreate):
+    with engine.begin() as conn:
+        option = conn.execute(text("""
+            SELECT option_hash FROM odd.enhance_options
+            WHERE bettor_id      = :bettor_id
+              AND syndicate_id   = :syndicate_id
+              AND enhancement_id = :enhancement_id
+              AND week_id        = :week_id
+            LIMIT 1
+        """), {
+            "bettor_id":      body.bettor_id,
+            "syndicate_id":   body.syndicate_id,
+            "enhancement_id": body.enhancement_id,
+            "week_id":        body.week_id,
+        }).fetchone()
+
+        if option is None:
+            raise HTTPException(status_code=404, detail="Enhancement option not available or already chosen")
+        if option.option_hash != body.option_hash:
+            raise HTTPException(status_code=400, detail="Invalid option_hash")
+
+        row = conn.execute(text("""
+            INSERT INTO odd.enhanced (bettor_id, syndicate_id, enhancement_id, team_id, level, week_id)
+            VALUES (:bettor_id, :syndicate_id, :enhancement_id, :team_id, :level, :week_id)
+            RETURNING *
+        """), body.model_dump(exclude={"option_hash"})).fetchone()
+
+    return dict(row._mapping)
+
+@app.patch("/odd/syndicate/{syndicate_id}/start")
+def start_syndicate(syndicate_id: int, body: SyndicateStart):
+    with engine.begin() as conn:
+        admin = conn.execute(text("""
+            SELECT runner_id FROM odd.runner
+            WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id
+              AND role = 'admin' AND active = true
+        """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id}).fetchone()
+
+        if admin is None:
+            raise HTTPException(status_code=403, detail="Only an active admin can start the syndicate")
+
+        syndicate = conn.execute(text("""
+            SELECT syndicate_id, start_units, is_started FROM odd.syndicate
+            WHERE syndicate_id = :syndicate_id
+        """), {"syndicate_id": syndicate_id}).fetchone()
+
+        if syndicate is None:
+            raise HTTPException(status_code=404, detail="Syndicate not found")
+        if syndicate.is_started:
+            raise HTTPException(status_code=409, detail="Syndicate already started")
+
+        start_units = syndicate.start_units or 0
+
+        runners = conn.execute(text("""
+            SELECT runner_id, bettor_id FROM odd.runner
+            WHERE syndicate_id = :syndicate_id AND active = true
+        """), {"syndicate_id": syndicate_id}).fetchall()
+
+        if start_units > 0:
+            shortfall = []
+            for runner in runners:
+                balance = conn.execute(text("""
+                    SELECT COALESCE(SUM(unit), 0) AS balance FROM odd.txn
+                    WHERE bettor_id = :bettor_id AND syndicate_id = 0 AND canceled = false
+                """), {"bettor_id": runner.bettor_id}).scalar()
+                if balance < start_units:
+                    shortfall.append({"bettor_id": runner.bettor_id, "balance": balance})
+            if shortfall:
+                raise HTTPException(status_code=402, detail={"message": "Insufficient balance", "runners": shortfall})
+
+        conn.execute(text("""
+            UPDATE odd.syndicate SET is_started = true WHERE syndicate_id = :syndicate_id
+        """), {"syndicate_id": syndicate_id})
+
+        txn_pairs = []
+        for runner in runners:
+            debit = conn.execute(text("""
+                INSERT INTO odd.txn (bettor_id, syndicate_id, unit, price, txn_type_id, description)
+                VALUES (:bettor_id, 0, :unit, 1.0, 3, :description)
+                RETURNING *
+            """), {
+                "bettor_id":   runner.bettor_id,
+                "unit":        -start_units,
+                "description": f"syndicate buy-in {syndicate_id}",
+            }).fetchone()
+
+            credit = conn.execute(text("""
+                INSERT INTO odd.txn (bettor_id, syndicate_id, unit, price, txn_type_id, description)
+                VALUES (:bettor_id, :syndicate_id, :unit, 1.0, 3, :description)
+                RETURNING *
+            """), {
+                "bettor_id":    runner.bettor_id,
+                "syndicate_id": syndicate_id,
+                "unit":         start_units,
+                "description":  "syndicate start units",
+            }).fetchone()
+
+            txn_pairs.append({"debit": dict(debit._mapping), "credit": dict(credit._mapping)})
+
+        syndicate_row = conn.execute(text("""
+            SELECT * FROM odd.syndicate WHERE syndicate_id = :syndicate_id
+        """), {"syndicate_id": syndicate_id}).fetchone()
+
+    return {"syndicate": dict(syndicate_row._mapping), "txns": txn_pairs}
 
 @app.patch("/odd/syndicate/{syndicate_id}")
 def update_syndicate(syndicate_id: int, body: SyndicateUpdate):

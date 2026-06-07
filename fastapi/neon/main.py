@@ -161,7 +161,6 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
 
 @app.get("/mart/enhance_options")
 def get_enhance_options(syndicate_id: int = Query(None),
-                        runner_id: int = Query(None),
                         bettor_id: int = Query(None)):
     q = "SELECT * FROM odd.enhance_options WHERE 1=1"
     query_params = {}
@@ -169,10 +168,6 @@ def get_enhance_options(syndicate_id: int = Query(None),
     if syndicate_id:
         q += " AND syndicate_id = :syndicate_id"
         query_params["syndicate_id"] = syndicate_id
-
-    if runner_id:
-        q += " AND runner_id = :runner_id"
-        query_params["runner_id"] = runner_id
 
     if bettor_id:
         q += " AND bettor_id = :bettor_id"
@@ -185,7 +180,7 @@ def get_enhance_options(syndicate_id: int = Query(None),
 @app.get("/mart/runner")
 def get_runner(syndicate_id: int = Query(None),
                bettor_id: int = Query(None),
-               competition: bool = Query(False)):
+               competition: bool = Query(True)):
     query_params = {}
 
     if bettor_id and competition:
@@ -396,10 +391,10 @@ def choose_enhancement(body: EnhancedCreate):
             raise HTTPException(status_code=400, detail="Invalid option_hash")
 
         row = conn.execute(text("""
-            INSERT INTO odd.enhanced (bettor_id, syndicate_id, enhancement_id, team_id, level, week_id)
-            VALUES (:bettor_id, :syndicate_id, :enhancement_id, :team_id, :level, :week_id)
+            INSERT INTO odd.enhanced (bettor_id, syndicate_id, enhancement_id, team_id, level, week_id, option_hash)
+            VALUES (:bettor_id, :syndicate_id, :enhancement_id, :team_id, :level, :week_id, :option_hash)
             RETURNING *
-        """), body.model_dump(exclude={"option_hash"})).fetchone()
+        """), body.model_dump()).fetchone()
 
     return dict(row._mapping)
 

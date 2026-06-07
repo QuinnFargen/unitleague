@@ -1,6 +1,6 @@
 {{
     config(
-        materialized = 'view',
+        materialized = 'table',
         schema       = 'odd',
         alias        = 'enhance_options'
     )
@@ -32,11 +32,3 @@ join current_week cw on true
 
 where r.active  = true
   and en.active = true
-  and not exists (
-      select 1 from {{ source('odd', 'enhanced') }} ed
-      where ed.bettor_id      = r.bettor_id
-        and ed.syndicate_id   = r.syndicate_id
-        and ed.enhancement_id = en.enhancement_id
-        and ed.week_id        = cw.week_id
-        and ed.active         = true
-  )

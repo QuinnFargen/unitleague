@@ -1,3 +1,5 @@
-syndicate_id,name,description,code,is_public,password,max_runner,created_by_bettor_id,symbol,color
-1,SharpSquad,Elite private group,SQAD,false,,10,1,figure.american.football.circle.fill,red
-2,PublicLeague,Open to all,PUBL,true,,20,4,figure.basketball.circle.fill,blue
+syndicate_id,name,description,code,is_public,password,max_runner,created_by_bettor_id,symbol,color,start_units,is_started
+1,SharpSquad,Elite private group,SQAD,false,,10,1,figure.american.football.circle.fill,red,50,false
+2,PublicLeague,Open to all,PUBL,true,,20,4,figure.basketball.circle.fill,blue,25,false
+3,OpenRun,Public syndicate anyone can join,OPEN,true,,15,102,figure.soccer.circle.fill,orange,20,false
+4,QuinnLeague,Admin syndicate ready to start,QUIN,false,,8,1,figure.tennis.racket.circle.fill,purple,50,false

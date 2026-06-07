@@ -97,52 +97,57 @@ BEGIN
 
     -- Past-week straight bets: bettor 1 in syndicate 1 (ML)
     INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
-    SELECT 1, 1, b.bet_hash, 1.0, b.price, b.game_dt, 1
+    SELECT 1, 1, b.bet_hash, 1.0, b.price, g.game_dt, 1
     FROM odd.bet b
-    WHERE b.game_dt BETWEEN current_date - 7 AND current_date - 1
+    join ball.game g on b.game_id = g.game_id 
+    WHERE g.game_dt BETWEEN current_date - 7 AND current_date - 1
       AND b.bet_type = 'ML'
       AND b.active = true
-    ORDER BY b.game_dt DESC
+    ORDER BY g.game_dt DESC
     LIMIT 3;
 
     -- Past-week straight bets: bettor 2 in syndicate 1 (SPR)
     INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
-    SELECT 2, 1, b.bet_hash, 0.5, b.price, b.game_dt, 1
+    SELECT 2, 1, b.bet_hash, 0.5, b.price, g.game_dt, 1
     FROM odd.bet b
-    WHERE b.game_dt BETWEEN current_date - 7 AND current_date - 1
+    join ball.game g on b.game_id = g.game_id 
+    WHERE g.game_dt BETWEEN current_date - 7 AND current_date - 1
       AND b.bet_type = 'SPR'
       AND b.active = true
-    ORDER BY b.game_dt DESC
+    ORDER BY g.game_dt DESC
     LIMIT 2;
 
     -- Future straight bets: bettor 1 in syndicate 1 (ML)
     INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
-    SELECT 1, 1, b.bet_hash, 2.0, b.price, b.game_dt, 1
+    SELECT 1, 1, b.bet_hash, 2.0, b.price, g.game_dt, 1
     FROM odd.bet b
-    WHERE b.game_dt >= current_date
+    join ball.game g on b.game_id = g.game_id 
+    WHERE g.game_dt >= current_date
       AND b.bet_type = 'ML'
       AND b.active = true
-    ORDER BY b.game_dt
+    ORDER BY g.game_dt
     LIMIT 3;
 
     -- Future straight bets: bettor 4 in syndicate 2 (ML)
     INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, game_dt, txn_type_id)
-    SELECT 4, 2, b.bet_hash, 1.0, b.price, b.game_dt, 1
+    SELECT 4, 2, b.bet_hash, 1.0, b.price, g.game_dt, 1
     FROM odd.bet b
-    WHERE b.game_dt >= current_date
+    join ball.game g on b.game_id = g.game_id 
+    WHERE g.game_dt >= current_date
       AND b.bet_type = 'ML'
       AND b.active = true
-    ORDER BY b.game_dt
+    ORDER BY g.game_dt
     LIMIT 2;
 
     -- Parlay: bettor 1, syndicate 1 — 2 future ML legs
     WITH legs AS (
-      SELECT bet_hash, price
-      FROM odd.bet
-      WHERE game_dt >= current_date
-        AND bet_type = 'ML'
-        AND active = true
-      ORDER BY game_dt
+      SELECT b.bet_hash, b.price
+      FROM odd.bet b
+      join ball.game g on b.game_id = g.game_id 
+      WHERE g.game_dt >= current_date
+        AND b.bet_type = 'ML'
+        AND b.active = true
+      ORDER BY g.game_dt
       LIMIT 2
     ),
     inserted_parlay AS (

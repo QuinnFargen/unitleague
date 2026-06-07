@@ -1,0 +1,45 @@
+id: neon_backup_cleanup
+namespace: neon_unit_league
+
+# Runs on the 1st of each month at 3am UTC.
+# For each prior month, keeps only the last backup file and deletes the rest.
+tasks:
+  - id: cleanup
+    type: io.kestra.plugin.scripts.python.Script
+    warningOnStdErr: false
+    script: |
+      import os
+      import re
+      from collections import defaultdict
+      from datetime import date
+
+      BACKUP_DIR = "/backups/neon"
+      today_month = date.today().strftime("%Y-%m")
+
+      pattern = re.compile(r"SPORT_(\d{4}-\d{2})-\d{2}\.dump$")
+      by_month = defaultdict(list)
+
+      for fname in os.listdir(BACKUP_DIR):
+          m = pattern.match(fname)
+          if m:
+              month = m.group(1)
+              if month != today_month:
+                  by_month[month].append(fname)
+
+      for month, files in by_month.items():
+          files.sort()
+          to_keep = files[-1]
+          to_delete = files[:-1]
+          for f in to_delete:
+              path = os.path.join(BACKUP_DIR, f)
+              os.remove(path)
+              print(f"Deleted: {path}")
+          print(f"Kept for {month}: {to_keep}")
+
+      print("Cleanup complete.")
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 3 1 * *"
+    recoverMissedSchedules: NONE

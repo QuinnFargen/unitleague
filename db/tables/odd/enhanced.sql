@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS odd.enhanced (
     enhancement_id   bigint NOT NULL,
     team_id          int NOT NULL DEFAULT 0, -- 0 for non-Team enhancements; ball.team.team_id for Team type
     level            smallint NOT NULL DEFAULT 1,
+    option_hash      varchar(32),
     active           boolean NOT NULL DEFAULT true,
     insert_ts        timestamp NOT NULL DEFAULT now(),
 

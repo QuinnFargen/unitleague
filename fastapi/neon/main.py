@@ -162,7 +162,7 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
 @app.get("/mart/enhance_options")
 def get_enhance_options(syndicate_id: int = Query(None),
                         bettor_id: int = Query(None)):
-    q = "SELECT * FROM odd.enhance_options WHERE 1=1"
+    q = "SELECT * FROM odd.v_enhance_options WHERE 1=1"
     query_params = {}
 
     if syndicate_id:

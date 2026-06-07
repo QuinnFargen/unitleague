@@ -1,0 +1,28 @@
+id: neon_backup_daily
+namespace: neon_unit_league
+
+tasks:
+  - id: pg_dump
+    type: io.kestra.plugin.scripts.shell.Commands
+    warningOnStdErr: false
+    commands:
+      - |
+        mkdir -p /backups/neon
+        FILENAME="/backups/neon/SPORT_$(date +%Y-%m-%d).dump"
+        pg_dump \
+          --host="{{secret('POSTGRES_NEON_HOST')}}" \
+          --port=5432 \
+          --username="{{secret('POSTGRES_NEON_USERNAME')}}" \
+          --dbname="SPORT" \
+          --format=custom \
+          --no-password \
+          --file="$FILENAME"
+        echo "Backup written to $FILENAME"
+    env:
+      PGPASSWORD: "{{secret('POSTGRES_NEON_PASSWORD')}}"
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 2 * * *"
+    recoverMissedSchedules: NONE

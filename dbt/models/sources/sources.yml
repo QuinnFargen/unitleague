@@ -89,3 +89,13 @@ sources:
         columns:
           - name: txn_type_id
             tests: [not_null, unique]
+
+      - name: runner
+        description: "One row per bettor/syndicate pairing. Active runners are eligible for enhancements."
+        columns:
+          - name: runner_id
+            tests: [not_null, unique]
+          - name: bettor_id
+            tests: [not_null]
+          - name: syndicate_id
+            tests: [not_null]

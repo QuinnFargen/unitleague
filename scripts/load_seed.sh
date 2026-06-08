@@ -67,7 +67,7 @@ TRUNCATE TABLE odd.syndicate CASCADE;
 TRUNCATE TABLE odd.bettor RESTART IDENTITY;
 
 \copy odd.bettor(bettor_id, apple_sub, apple_email, apple_name, profile_name, symbol, color) FROM '${SEED_DIR}/odd.bettor.csv' DELIMITER ',' CSV HEADER;
-\copy odd.syndicate(syndicate_id, name, description, code, is_public, password, max_runner, created_by_bettor_id, symbol, color) FROM '${SEED_DIR}/odd.syndicate.csv' DELIMITER ',' CSV HEADER;
+\copy odd.syndicate(syndicate_id,name,description,code,is_public,password,max_runner,created_by_bettor_id,symbol,color,start_units,is_started) FROM '${SEED_DIR}/odd.syndicate.csv' DELIMITER ',' CSV HEADER;
 \copy odd.runner(runner_id, bettor_id, syndicate_id, role, profile_name, symbol, color, active) FROM '${SEED_DIR}/odd.runner.csv' DELIMITER ',' CSV HEADER;
 
 SELECT setval(pg_get_serial_sequence('odd.bettor',    'bettor_id'),    max(bettor_id))    FROM odd.bettor;

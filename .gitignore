@@ -223,3 +223,4 @@ input.csv
 /scripts/.env.local
 /db/seed/src.the_odds_api_OLD.csv
 dbt/.env.neon
+/dbt/logs

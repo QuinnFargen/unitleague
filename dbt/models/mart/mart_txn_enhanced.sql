@@ -67,7 +67,6 @@ from txn_with_week tw
 join {{ source('odd', 'enhanced') }} ed
     on  ed.bettor_id    = tw.bettor_id
     and ed.syndicate_id = tw.syndicate_id
-    and ed.week_id      = tw.week_id
     and ed.active       = true
 join {{ source('odd', 'enhancement') }} en
     on  en.enhancement_id = ed.enhancement_id

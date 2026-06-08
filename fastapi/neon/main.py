@@ -33,17 +33,36 @@ def get_league():
 
 @app.get("/mart/team")
 def get_team(league_id: int = Query(None)
-            ,team_id: int = Query(None)):
+            ,team_id: int = Query(None)
+            ,conf: str = Query(None)
+            ,color: str = Query(None)
+            ,region: str = Query(None)
+            ,category: str = Query(None)):
     q = "SELECT * FROM mart.team WHERE 1=1"
     query_params = {}
+
+    q += " AND league_id = :league_id"
+    query_params["league_id"] = league_id
 
     if team_id:
         q += " AND team_id = :team_id"
         query_params["team_id"] = team_id
 
-    if league_id:
-        q += " AND league_id = :league_id"
-        query_params["league_id"] = league_id
+    if conf:
+        q += " AND conf = :conf"
+        query_params["conf"] = conf
+
+    if color:
+        q += " AND color = :color"
+        query_params["color"] = color
+
+    if region:
+        q += " AND region = :region"
+        query_params["region"] = region
+
+    if category:
+        q += " AND category = :category"
+        query_params["category"] = category
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)

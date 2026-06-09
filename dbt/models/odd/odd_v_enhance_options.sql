@@ -16,8 +16,7 @@ select
     o.description,
     o.bet_type,
     o.config,
-    o.week_id,
-    o.league_id,
+    o.selected_value,
     o.option_hash
 
 from {{ ref('odd_enhance_options') }} o

@@ -10,35 +10,35 @@
 with syndicate_leagues as (
     select
         syndicate_id,
-        (jsonb_array_elements_text(config -> 'league_ids'))::int as league_id
+        (json_array_elements_text(config -> 'league_ids'))::int as league_id
     from {{ source('odd', 'syndicate') }}
-    where config ? 'league_ids'
+    where config -> 'league_ids' is not null
 ),
 
--- For team-type enhancements, randomly pick one distinct attribute value
--- (e.g. "red", "south") present in the syndicate's leagues that falls within valid_values.
--- enhancement.config format: {"attribute": "region", "valid_values": ["south", "north"]}
--- Supported attributes: region, conf, category, color
+-- Distinct attribute values available per league from the team table
+team_attr_values as (
+    select distinct league_id, 'region'   as attribute, region   as value from {{ ref('mart_team') }} where region   is not null
+    union all
+    select distinct league_id, 'conf'     as attribute, conf     as value from {{ ref('mart_team') }} where conf     is not null
+    union all
+    select distinct league_id, 'category' as attribute, category as value from {{ ref('mart_team') }} where category is not null
+    union all
+    select distinct league_id, 'color'    as attribute, color    as value from {{ ref('mart_team') }} where color    is not null
+),
+
+-- For team-type enhancements, randomly pick one available attribute value
+-- from the syndicate's leagues. enhancement.config format: {"attribute": "region"}
 team_picks as (
     select distinct on (r.runner_id, en.enhancement_id)
         r.runner_id,
         en.enhancement_id,
-        case en.config ->> 'attribute'
-            when 'region'   then t.region
-            when 'conf'     then t.conf
-            when 'category' then t.category
-            when 'color'    then t.color
-        end as selected_value
+        tav.value as selected_value
     from {{ source('odd', 'runner') }} r
-    join syndicate_leagues sl on sl.syndicate_id = r.syndicate_id
+    join syndicate_leagues sl  on sl.syndicate_id = r.syndicate_id
     cross join {{ source('odd', 'enhancement') }} en
-    join {{ ref('team') }} t on t.league_id = sl.league_id
-        and (
-            (en.config ->> 'attribute' = 'region'   and t.region   = any(array(select jsonb_array_elements_text(en.config -> 'valid_values'))))
-         or (en.config ->> 'attribute' = 'conf'     and t.conf     = any(array(select jsonb_array_elements_text(en.config -> 'valid_values'))))
-         or (en.config ->> 'attribute' = 'category' and t.category = any(array(select jsonb_array_elements_text(en.config -> 'valid_values'))))
-         or (en.config ->> 'attribute' = 'color'    and t.color    = any(array(select jsonb_array_elements_text(en.config -> 'valid_values'))))
-        )
+    join team_attr_values tav
+        on  tav.league_id = sl.league_id
+        and tav.attribute = en.config ->> 'attribute'
     where r.active              = true
       and en.active             = true
       and en.enhancement_type   = 'team'

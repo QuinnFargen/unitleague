@@ -17,13 +17,13 @@ with syndicate_leagues as (
 
 -- Distinct attribute values available per league from the team table
 team_attr_values as (
-    select distinct league_id, 'region'   as attribute, region   as value from {{ ref('mart_team') }} where region   is not null
+    select distinct league_id, 'Region'   as attribute, region   as value from {{ ref('mart_team') }} where region   is not null
     union all
-    select distinct league_id, 'conf'     as attribute, conf     as value from {{ ref('mart_team') }} where conf     is not null
+    select distinct league_id, 'Conference'     as attribute, conf     as value from {{ ref('mart_team') }} where conf     is not null
     union all
-    select distinct league_id, 'category' as attribute, category as value from {{ ref('mart_team') }} where category is not null
+    select distinct league_id, 'Mascot' as attribute, category as value from {{ ref('mart_team') }} where category is not null
     union all
-    select distinct league_id, 'color'    as attribute, color    as value from {{ ref('mart_team') }} where color    is not null
+    select distinct league_id, 'Color'    as attribute, color    as value from {{ ref('mart_team') }} where color    is not null
 ),
 
 -- For team-type enhancements, randomly pick one available attribute value
@@ -38,7 +38,7 @@ team_picks as (
     cross join {{ source('odd', 'enhancement') }} en
     join team_attr_values tav
         on  tav.league_id = sl.league_id
-        and tav.attribute = en.config ->> 'attribute'
+        and tav.attribute = en.name
     where r.active              = true
       and en.active             = true
       and en.enhancement_type   = 'team'

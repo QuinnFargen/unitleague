@@ -10,13 +10,14 @@ select
     o.runner_id,
     o.bettor_id,
     o.syndicate_id,
+    o.league_id,
     o.enhancement_id,
     o.enhancement_type,
     o.name,
     o.description,
     o.bet_type,
     o.config,
-    o.selected_value,
+    o.available_attr_value,
     o.option_hash
 
 from {{ ref('odd_enhance_options') }} o

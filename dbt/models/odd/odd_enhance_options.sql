@@ -28,11 +28,21 @@ team_attr_values as (
 
 -- For team-type enhancements, randomly pick one available attribute value
 -- from the syndicate's leagues. enhancement.config format: {"attribute": "region"}
+-- league_id and the enhancement columns are carried through so the final
+-- select doesn't need a second join back to the enhancement table.
 team_picks as (
     select distinct on (r.runner_id, en.enhancement_id)
         r.runner_id,
+        r.bettor_id,
+        r.syndicate_id,
+        sl.league_id,
         en.enhancement_id,
-        tav.value as selected_value
+        en.enhancement_type,
+        en.name,
+        en.description,
+        en.bet_type,
+        en.config,
+        tav.value as available_attr_value
     from {{ source('odd', 'runner') }} r
     join syndicate_leagues sl  on sl.syndicate_id = r.syndicate_id
     cross join {{ source('odd', 'enhancement') }} en
@@ -43,30 +53,68 @@ team_picks as (
       and en.active             = true
       and en.enhancement_type   = 'team'
     order by r.runner_id, en.enhancement_id, random()
+),
+
+-- For non-team-type enhancements there's no attribute value to pick, but we
+-- still need a league_id — randomly pick one from the syndicate's leagues.
+non_team_picks as (
+    select distinct on (r.runner_id, en.enhancement_id)
+        r.runner_id,
+        r.bettor_id,
+        r.syndicate_id,
+        sl.league_id,
+        en.enhancement_id,
+        en.enhancement_type,
+        en.name,
+        en.description,
+        en.bet_type,
+        en.config
+    from {{ source('odd', 'runner') }} r
+    join syndicate_leagues sl on sl.syndicate_id = r.syndicate_id
+    cross join {{ source('odd', 'enhancement') }} en
+    where r.active            = true
+      and en.active            = true
+      and en.enhancement_type <> 'team'
+    order by r.runner_id, en.enhancement_id, random()
 )
 
 select
-    r.runner_id,
-    r.bettor_id,
-    r.syndicate_id,
-    en.enhancement_id,
-    en.enhancement_type,
-    en.name,
-    en.description,
-    en.bet_type,
-    en.config,
-    tp.selected_value,
-    md5(r.runner_id::text || en.enhancement_id::text) as option_hash
+    runner_id,
+    bettor_id,
+    syndicate_id,
+    league_id,
+    enhancement_id,
+    enhancement_type,
+    name,
+    description,
+    bet_type,
+    config,
+    available_attr_value,
+    md5(
+        runner_id::text
+        || enhancement_id::text
+        || coalesce(league_id::text, '')
+        || coalesce(available_attr_value, '')
+    ) as option_hash
+from team_picks
 
-from {{ source('odd', 'runner') }} r
-cross join {{ source('odd', 'enhancement') }} en
-left join team_picks tp
-    on  tp.runner_id      = r.runner_id
-    and tp.enhancement_id = en.enhancement_id
+union all
 
-where r.active  = true
-  and en.active = true
-  and (
-      en.enhancement_type <> 'team'
-      or tp.runner_id is not null
-  )
+select
+    runner_id,
+    bettor_id,
+    syndicate_id,
+    league_id,
+    enhancement_id,
+    enhancement_type,
+    name,
+    description,
+    bet_type,
+    config,
+    null::text as available_attr_value,
+    md5(
+        runner_id::text
+        || enhancement_id::text
+        || coalesce(league_id::text, '')
+    ) as option_hash
+from non_team_picks

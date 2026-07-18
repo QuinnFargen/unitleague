@@ -11,6 +11,7 @@ struct EnhanceOption: Codable, Identifiable {
     let description: String
     let betType: String?
     let leagueId: Int
+    let availableAttrValue: String?
     let optionHash: String
 
     enum CodingKeys: String, CodingKey {
@@ -22,6 +23,7 @@ struct EnhanceOption: Codable, Identifiable {
         case name, description
         case betType       = "bet_type"
         case leagueId      = "league_id"
+        case availableAttrValue = "available_attr_value"
         case optionHash    = "option_hash"
     }
 }

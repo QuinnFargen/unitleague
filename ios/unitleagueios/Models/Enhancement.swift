@@ -38,6 +38,7 @@ struct Enhanced: Codable, Identifiable {
     let level: Int
     let optionHash: String
     let active: Bool
+    let teamAbbr: String?
 
     enum CodingKeys: String, CodingKey {
         case enhancedId    = "enhanced_id"
@@ -48,5 +49,6 @@ struct Enhanced: Codable, Identifiable {
         case level
         case optionHash    = "option_hash"
         case active
+        case teamAbbr      = "team_abbr"
     }
 }

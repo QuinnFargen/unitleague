@@ -18,7 +18,7 @@ tasks:
           networkMode: compose_default
         commands:
           - dbt deps --project-dir dbt --profiles-dir .
-          - dbt run --project-dir dbt --profiles-dir . --select mart_game mart_league mart_sched mart_season mart_syndicate mart_team mart_team_season mart_txn mart_txn_enhanced mart_game_oddbest odd_enhance_options mart_game_oddall mart_runner odd_v_parlay odd_v_txn odd_v_enhance_options
+          - dbt run --project-dir dbt --profiles-dir . --select mart_game mart_league mart_sched mart_season mart_syndicate mart_team mart_team_season mart_txn mart_txn_enhanced mart_game_oddbest odd_enhance_options mart_game_oddall mart_runner odd_v_parlay odd_v_txn odd_v_enhance_options odd_v_enhanced
         profiles: |
           unitleague:
             outputs:

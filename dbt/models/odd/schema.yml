@@ -110,6 +110,35 @@ models:
       - name: game_time
         description: "Scheduled tip/kick-off time"
 
+  - name: odd_v_enhanced
+    description: >
+      View over odd.enhanced with the chosen team's abbreviation resolved for team-type
+      enhancements. Left joins mart_team on team_id (team_id = 0 is the "no team" sentinel
+      used by non-team enhancements and is excluded from the join).
+    columns:
+      - name: enhanced_id
+        description: "Primary key of odd.enhanced"
+        tests: [not_null]
+      - name: bettor_id
+        description: "Foreign key to odd.bettor"
+        tests: [not_null]
+      - name: syndicate_id
+        description: "Foreign key to odd.syndicate"
+        tests: [not_null]
+      - name: enhancement_id
+        description: "Foreign key to odd.enhancement"
+        tests: [not_null]
+      - name: team_id
+        description: "Foreign key to mart.team; 0 means no team (non-team enhancement)"
+      - name: level
+        description: "Enhancement level chosen"
+      - name: option_hash
+        description: "Hash of the enhance_options row this was chosen from"
+      - name: active
+        description: "True while the enhancement is in effect"
+      - name: team_abbr
+        description: "Team abbreviation resolved from mart.team; NULL for non-team enhancements (team_id = 0)"
+
   - name: odd_enhance_options
     description: >
       View offering one row per runner × enhancement × current week, excluding enhancements

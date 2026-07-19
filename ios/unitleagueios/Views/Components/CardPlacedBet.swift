@@ -25,30 +25,20 @@ func txnWagerLabel(_ units: Double) -> String {
 // MARK: - CardPlacedBet
 
 struct CardPlacedBet: View {
-    @EnvironmentObject private var theme: AppTheme
-    @Environment(\.colorScheme) private var colorScheme
     let txn: Txn
     var onCancel: (() -> Void)? = nil
 
     @State private var showCancelConfirm = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            if let won = txn.won {
-                Circle()
-                    .fill(won ? theme.win : theme.loss)
-                    .frame(width: 7, height: 7)
-                    .padding(.horizontal, 4)
-            }
-            Button {
-                if onCancel != nil { showCancelConfirm = true }
-            } label: {
-                CardBet(bet: selectedBet(from: txn))
-            }
-            .buttonStyle(.plain)
-            .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
-                Button("Cancel Bet", role: .destructive) { onCancel?() }
-            }
+        Button {
+            if onCancel != nil { showCancelConfirm = true }
+        } label: {
+            CardBet(bet: selectedBet(from: txn), won: txn.won)
+        }
+        .buttonStyle(.plain)
+        .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
+            Button("Cancel Bet", role: .destructive) { onCancel?() }
         }
     }
 }
@@ -57,6 +47,7 @@ struct CardPlacedBet: View {
     VStack(spacing: 12) {
         CardPlacedBet(txn: Mock.txnML)
         CardPlacedBet(txn: Mock.txnSPR)
+        CardPlacedBet(txn: Mock.txnOU)
         CardPlacedBet(txn: Mock.txnWon)
         CardPlacedBet(txn: Mock.txnLost)
     }

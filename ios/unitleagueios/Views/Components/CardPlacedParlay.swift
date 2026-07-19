@@ -12,6 +12,16 @@ struct CardPlacedParlay: View {
         legs.map(\.price).reduce(1.0, *)
     }
 
+    private var won: Bool? {
+        legs.first?.won
+    }
+
+    private func legBet(_ leg: Txn) -> SelectedBet {
+        var bet = selectedBet(from: leg)
+        bet.unit = nil
+        return bet
+    }
+
     var body: some View {
         Button {
             if onCancel != nil { showCancelConfirm = true }
@@ -22,11 +32,6 @@ struct CardPlacedParlay: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Spacer()
-                    if let won = legs.first?.won {
-                        Circle()
-                            .fill(won ? theme.win : theme.loss)
-                            .frame(width: 7, height: 7)
-                    }
                     HStack(alignment: .firstTextBaseline, spacing: 2) {
                         Text(String(format: "%.2f", combinedOdds))
                             .font(.subheadline.weight(.semibold))
@@ -36,17 +41,25 @@ struct CardPlacedParlay: View {
                             .foregroundStyle(theme.accent)
                         Text(txnWagerLabel(legs.first?.unit ?? 0))
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(won == false ? theme.loss : .secondary)
                         Image(systemName: "nairasign.circle.fill")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(won == false ? theme.loss : .secondary)
+                        if won == true {
+                            Text("=")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(theme.win)
+                            Text(String(format: "%.2f", combinedOdds * (legs.first?.unit ?? 0)))
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(theme.win)
+                        }
                     }
                 }
 
                 Divider()
 
                 ForEach(legs) { leg in
-                    CardBet(bet: selectedBet(from: leg))
+                    CardBet(bet: legBet(leg))
                 }
             }
             .padding(14)

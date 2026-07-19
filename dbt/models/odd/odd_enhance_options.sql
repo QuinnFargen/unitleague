@@ -42,6 +42,7 @@ team_picks as (
         en.description,
         en.bet_type,
         en.config,
+        en.symbol,
         tav.value as available_attr_value
     from {{ source('odd', 'runner') }} r
     join syndicate_leagues sl  on sl.syndicate_id = r.syndicate_id
@@ -68,7 +69,8 @@ non_team_picks as (
         en.name,
         en.description,
         en.bet_type,
-        en.config
+        en.config,
+        en.symbol
     from {{ source('odd', 'runner') }} r
     join syndicate_leagues sl on sl.syndicate_id = r.syndicate_id
     cross join {{ source('odd', 'enhancement') }} en
@@ -89,6 +91,7 @@ select
     description,
     bet_type,
     config,
+    symbol,
     available_attr_value,
     md5(
         runner_id::text
@@ -111,6 +114,7 @@ select
     description,
     bet_type,
     config,
+    symbol,
     null::text as available_attr_value,
     md5(
         runner_id::text

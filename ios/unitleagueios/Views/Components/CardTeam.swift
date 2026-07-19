@@ -6,6 +6,7 @@ struct CardTeam: View {
     let team: Team
     let league: League
     var showChevron: Bool = false
+    var level: Int? = nil
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -35,7 +36,7 @@ struct CardTeam: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    TeamMetaRow(team: team)
+                    TeamMetaRow(team: team, level: level)
                 }
 
                 Spacer()
@@ -57,10 +58,16 @@ struct CardTeam: View {
 
 struct TeamMetaRow: View {
     let team: Team
+    var level: Int? = nil
 
     var body: some View {
         let confDiv = [team.conf, team.div].compactMap { $0 }.joined(separator: " · ")
         HStack(spacing: 6) {
+            if let level {
+                Text("\(level)")
+                Image(systemName: "nairasign.circle.fill")
+                if !confDiv.isEmpty { Text("·").foregroundStyle(.tertiary) }
+            }
             if !confDiv.isEmpty {
                 Text(confDiv)
             }

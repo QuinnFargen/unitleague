@@ -289,6 +289,21 @@ enum Mock {
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
     }()
 
+    static let txnOU: Txn = {
+        let json = """
+        {
+          "txn_id": 5, "bettor_id": 42, "syndicate_id": 1,
+          "txn_type": "bet", "bet_hash": "ou_bos_lal_001", "parlay_id": null,
+          "unit": 1.0, "price": 1.91, "won": null, "canceled": null,
+          "bet_type": "OVER", "points": 224.5, "team": null,
+          "home": "LAL", "away": "BOS",
+          "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
+          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "TOTAL_OVER"
+        }
+        """
+        return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
+    }()
+
     static let txnWon: Txn = {
         let json = """
         {
@@ -353,32 +368,32 @@ enum Mock {
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 10,
         enhancementType: "clv", name: "Closing Line Value",
         description: "Boosts payout when you beat the closing line.",
-        betType: "h2h", leagueId: 1, availableAttrValue: nil,
+        betType: "h2h", leagueId: 1, symbol: "chart.line.uptrend.xyaxis", availableAttrValue: nil,
         optionHash: "mockhash_clv"
     )
     static let enhanceOptionTeam = EnhanceOption(
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 76,
         enhancementType: "team", name: "Color",
         description: "Team primary color",
-        betType: nil, leagueId: 1, availableAttrValue: "Blue",
+        betType: nil, leagueId: 1, symbol: nil, availableAttrValue: "Blue",
         optionHash: "mockhash_team"
     )
     static let enhanceOptionEdge = EnhanceOption(
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 20,
         enhancementType: "edge", name: "Underdog Edge",
         description: "Boosts payout on underdog wins.",
-        betType: nil, leagueId: 1, availableAttrValue: nil,
+        betType: nil, leagueId: 1, symbol: "bolt.fill", availableAttrValue: nil,
         optionHash: "mockhash_edge"
     )
     static var enhanceOptions: [EnhanceOption] { [enhanceOptionCLV, enhanceOptionTeam, enhanceOptionEdge] }
 
     static let enhancedTeam = Enhanced(
         bettorId: 42, syndicateId: 1, runnerId: 5,
-        teamId: 1, enhancementType: "team", name: "LAL", leagueId: 1, level: 1
+        teamId: 1, enhancementType: "team", name: "LAL", symbol: nil, leagueId: 1, level: 1
     )
     static let enhancedCLV = Enhanced(
         bettorId: 42, syndicateId: 1, runnerId: 5,
-        teamId: 0, enhancementType: "clv", name: "ML", leagueId: nil, level: 1
+        teamId: 0, enhancementType: "clv", name: "ML", symbol: nil, leagueId: nil, level: 1
     )
     static var enhanced: [Enhanced] { [enhancedTeam, enhancedCLV] }
 

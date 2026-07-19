@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS odd.enhancement (
     enhancement_type varchar(10) NOT NULL,  -- 'clv' | 'edge' | 'team'
     name             varchar(100) NOT NULL,
     description      varchar(500),
+    symbol           varchar(100),
     bet_type         varchar(15),           -- non-null for CLV only ('h2h','spread','total')
     config           jsonb NOT NULL DEFAULT '{}',
     active           boolean NOT NULL DEFAULT true,

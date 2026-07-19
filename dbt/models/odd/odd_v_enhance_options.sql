@@ -17,6 +17,7 @@ select
     o.description,
     o.bet_type,
     o.config,
+    o.symbol,
     o.available_attr_value,
     o.option_hash
 

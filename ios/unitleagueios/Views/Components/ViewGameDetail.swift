@@ -20,11 +20,13 @@ struct ViewGameDetail: View {
     @State private var league: League?
     @State private var selectedBet: SelectedBet?
     @State private var oddMany: [OddMany] = []
+    @State private var teamLevels: [Int: Int] = [:]
 
     private let oddService = OddsService()
     private let teamService = TeamService()
     private let leagueService = LeagueService()
     private let oddManyService = OddManyService()
+    private let enhancementService = EnhancementService()
 
     // Standard init — data loaded via .task { fetchData() }
     init(gameId: Int, home: String, away: String,
@@ -90,7 +92,7 @@ struct ViewGameDetail: View {
                             NavigationLink {
                                 ViewSched(team: awayTeam, league: league)
                             } label: {
-                                CardTeam(team: awayTeam, league: league, showChevron: true)
+                                CardTeam(team: awayTeam, league: league, showChevron: true, level: teamLevels[awayTeam.id])
                             }
                             .buttonStyle(.plain)
                         }
@@ -99,7 +101,7 @@ struct ViewGameDetail: View {
                             NavigationLink {
                                 ViewSched(team: homeTeam, league: league)
                             } label: {
-                                CardTeam(team: homeTeam, league: league, showChevron: true)
+                                CardTeam(team: homeTeam, league: league, showChevron: true, level: teamLevels[homeTeam.id])
                             }
                             .buttonStyle(.plain)
                         }
@@ -120,6 +122,7 @@ struct ViewGameDetail: View {
         .navigationTitle("\(away) @ \(home)")
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchData() }
+        .task { await loadTeamLevels() }
         .sheet(item: $selectedBet) { bet in
             SheetConfirmBet(bet: bet, bettorId: bettorId, syndicateId: selectedSyndicateId)
         }
@@ -140,6 +143,16 @@ struct ViewGameDetail: View {
         homeTeam = teams?.first { $0.id == homeTeamId }
         league = leagues?.first { $0.id == leagueId }
         oddMany = many ?? []
+    }
+
+    private func loadTeamLevels() async {
+        guard bettorId != 0, selectedSyndicateId != 0 else { return }
+        let enhanced = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: selectedSyndicateId)) ?? []
+        var levels: [Int: Int] = [:]
+        for item in enhanced where item.enhancementType == "team" {
+            levels[item.teamId] = item.level
+        }
+        teamLevels = levels
     }
 }
 

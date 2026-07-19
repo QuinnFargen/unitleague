@@ -113,8 +113,9 @@ models:
   - name: odd_enhance_options
     description: >
       View offering one row per runner × enhancement × current week, excluding enhancements
-      the runner has already chosen this week. option_hash is md5(runner_id || enhancement_id)
-      and must be submitted with the selection to prevent reuse.
+      the runner has already chosen this week. option_hash is md5(runner_id || enhancement_id
+      || league_id || available_attr_value) and must be submitted with the selection to
+      prevent reuse.
     columns:
       - name: runner_id
         description: "Foreign key to odd.runner"
@@ -141,6 +142,8 @@ models:
       - name: week_id
         description: "Current week_id from ball.week"
       - name: league_id
-        description: "League the week belongs to"
+        description: "League the available_attr_value belongs to (team-type enhancements only; NULL otherwise)"
+      - name: available_attr_value
+        description: "For team-type enhancements: the randomly-picked attribute value (e.g. a region or conference) available within league_id. NULL for non-team enhancements."
       - name: option_hash
-        description: "md5(runner_id || enhancement_id) — submit with selection to validate and prevent reuse"
+        description: "md5(runner_id || enhancement_id || league_id || available_attr_value) — submit with selection to validate and prevent reuse"

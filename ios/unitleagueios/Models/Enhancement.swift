@@ -29,26 +29,24 @@ struct EnhanceOption: Codable, Identifiable {
 }
 
 struct Enhanced: Codable, Identifiable {
-    var id: Int { enhancedId }
-    let enhancedId: Int
+    var id: String { "\(bettorId)-\(syndicateId)-\(runnerId ?? 0)-\(teamId)-\(enhancementType)-\(name)" }
     let bettorId: Int
     let syndicateId: Int
-    let enhancementId: Int
-    let teamId: Int?
+    let runnerId: Int?
+    let teamId: Int
+    let enhancementType: String
+    let name: String
+    let leagueId: Int?
     let level: Int
-    let optionHash: String
-    let active: Bool
-    let teamAbbr: String?
 
     enum CodingKeys: String, CodingKey {
-        case enhancedId    = "enhanced_id"
         case bettorId      = "bettor_id"
         case syndicateId   = "syndicate_id"
-        case enhancementId = "enhancement_id"
+        case runnerId      = "runner_id"
         case teamId        = "team_id"
+        case enhancementType = "enhancement_type"
+        case name
+        case leagueId      = "league_id"
         case level
-        case optionHash    = "option_hash"
-        case active
-        case teamAbbr      = "team_abbr"
     }
 }

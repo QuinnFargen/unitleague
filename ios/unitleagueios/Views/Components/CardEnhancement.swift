@@ -5,9 +5,9 @@ struct EnhancementTypeBadge: View {
 
     var badgeColor: Color {
         switch type {
-        case "clv":  return .blue
-        case "team": return .green
-        case "edge": return .orange
+        case "clv":  return .green
+        case "team": return .yellow
+        case "edge": return .red
         default:     return .secondary
         }
     }
@@ -43,10 +43,6 @@ struct CardEnhancement: View {
                         Text(betType.uppercased())
                             .font(.system(size: 9, weight: .medium))
                             .foregroundStyle(.secondary)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 2)
-                            .background(Color.secondary.opacity(0.12))
-                            .clipShape(Capsule())
                     }
                 }
                 Text(option.description)

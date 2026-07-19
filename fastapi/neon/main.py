@@ -390,7 +390,7 @@ def join_syndicate(code: str, body: RunnerCreate):
 
 @app.get("/odd/enhanced")
 def get_enhanced(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
-    q = "SELECT * FROM odd.v_enhanced WHERE active = true"
+    q = "SELECT * FROM odd.v_enhanced WHERE 1=1"
     query_params = {}
 
     if bettor_id:

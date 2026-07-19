@@ -48,3 +48,15 @@ seeds:
         tests: [not_null]
       - name: meta_source
         tests: [not_null]
+
+  - name: enhancement
+    description: "Enhancement definitions with config jsonb holding price_mult and unit_mult."
+    config:
+      schema: odd
+      column_types:
+        config: jsonb
+    columns:
+      - name: enhancement_id
+        tests: [not_null, unique]
+      - name: enhancement_type
+        tests: [not_null]

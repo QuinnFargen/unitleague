@@ -373,11 +373,14 @@ enum Mock {
     static var enhanceOptions: [EnhanceOption] { [enhanceOptionCLV, enhanceOptionTeam, enhanceOptionEdge] }
 
     static let enhancedTeam = Enhanced(
-        enhancedId: 1, bettorId: 42, syndicateId: 1, enhancementId: 76,
-        teamId: 1, level: 1, optionHash: "mockhash_team_chosen",
-        active: true, teamAbbr: "LAL"
+        bettorId: 42, syndicateId: 1, runnerId: 5,
+        teamId: 1, enhancementType: "team", name: "LAL", leagueId: 1, level: 1
     )
-    static var enhanced: [Enhanced] { [enhancedTeam] }
+    static let enhancedCLV = Enhanced(
+        bettorId: 42, syndicateId: 1, runnerId: 5,
+        teamId: 0, enhancementType: "clv", name: "ML", leagueId: nil, level: 1
+    )
+    static var enhanced: [Enhanced] { [enhancedTeam, enhancedCLV] }
 
     // MARK: Schedule
 

@@ -4,16 +4,15 @@ struct TabJuiceView: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId") private var bettorId: Int = 0
-    @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
 
     @State private var txnRecords: [Txn] = []
     @State private var syndicates: [Int: Syndicate] = [:]
+    @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoading = false
     @State private var segment: BetSegment = .slips
 
     // Juice state
     @State private var juiceSyndicates: [Syndicate] = []
-    @State private var juiceSyndicateId: Int = 0
     @State private var syndicateEnhanced: [Enhanced] = []
     @State private var isLoadingJuice = false
     @State private var showAddJuice = false
@@ -21,6 +20,7 @@ struct TabJuiceView: View {
     private let txnService = TxnService()
     private let syndicateService = SyndicateService()
     private let enhancementService = EnhancementService()
+    private let runnerService = RunnerService()
 
     private enum BetSegment: String, CaseIterable {
         case slips = "Slips"
@@ -42,7 +42,7 @@ struct TabJuiceView: View {
         }
     }
 
-    private var juiceGroups: [(syndicateId: Int, team: [Enhanced], clv: [Enhanced], others: [Enhanced])] {
+    private var juiceGroups: [(syndicateId: Int, team: [Enhanced], edge: [Enhanced], clv: [Enhanced], others: [Enhanced])] {
         let mine = syndicateEnhanced.filter { $0.bettorId == bettorId }
         let others = syndicateEnhanced.filter { $0.bettorId != bettorId }
         let sids = Set(mine.map(\.syndicateId)).union(others.map(\.syndicateId))
@@ -50,7 +50,8 @@ struct TabJuiceView: View {
             let mineIn = mine.filter { $0.syndicateId == sid }
             return (
                 syndicateId: sid,
-                team: mineIn.filter { $0.enhancementType != "clv" }.sorted { $0.name < $1.name },
+                team: mineIn.filter { $0.enhancementType == "team" }.sorted { $0.name < $1.name },
+                edge: mineIn.filter { $0.enhancementType == "edge" }.sorted { $0.name < $1.name },
                 clv: mineIn.filter { $0.enhancementType == "clv" },
                 others: others.filter { $0.syndicateId == sid }
             )
@@ -96,8 +97,9 @@ struct TabJuiceView: View {
             .tabToolbar()
             .task { await fetchData() }
             .task { await loadJuiceSyndicates() }
+            .task { await loadRunners() }
             .sheet(isPresented: $showAddJuice, onDismiss: { Task { await fetchJuiceData() } }) {
-                SheetAddJuice(bettorId: bettorId, syndicates: juiceSyndicates, syndicateId: juiceSyndicateId)
+                SheetAddJuice(bettorId: bettorId, syndicates: juiceSyndicates)
             }
         }
     }
@@ -126,16 +128,7 @@ struct TabJuiceView: View {
 
                     ForEach(syndicateGroups, id: \.syndicateId) { group in
                         VStack(alignment: .leading, spacing: 10) {
-                            let syndicate = syndicates[group.syndicateId]
-                            HStack(spacing: 6) {
-                                Image(systemName: syndicate?.symbol ?? "house.fill")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                Text(syndicate?.name ?? "Syndicate \(group.syndicateId)")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.horizontal, 4)
+                            syndicateHeader(syndicate: syndicates[group.syndicateId], syndicateId: group.syndicateId)
 
                             ForEach(group.singles) { txn in
                                 CardPlacedBet(
@@ -195,26 +188,53 @@ struct TabJuiceView: View {
                     ForEach(juiceGroups, id: \.syndicateId) { group in
                         VStack(alignment: .leading, spacing: 10) {
                             let syndicate = juiceSyndicates.first { $0.syndicateId == group.syndicateId }
-                            HStack(spacing: 6) {
-                                Image(systemName: syndicate?.symbol ?? "house.fill")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                Text(syndicate?.name ?? "Syndicate \(group.syndicateId)")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.horizontal, 4)
+                            syndicateHeader(syndicate: syndicate, syndicateId: group.syndicateId)
 
                             if !group.team.isEmpty {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    ForEach(group.team) { item in
-                                        EnhancedLevelCapsule(item: item)
+                                let teamsByLeague = Dictionary(grouping: group.team, by: { $0.leagueId ?? 0 })
+                                VStack(alignment: .leading, spacing: 10) {
+                                    ForEach(teamsByLeague.keys.sorted(), id: \.self) { lid in
+                                        HStack(alignment: .center, spacing: 12) {
+                                            Image(systemName: League.sportIcon(for: lid))
+                                                .font(.title2)
+                                                .foregroundStyle(theme.primaryText(colorScheme))
+                                                .frame(width: 44, height: 44)
+                                                .background(theme.cardBackground(colorScheme))
+                                                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                                            ScrollView(.horizontal, showsIndicators: false) {
+                                                HStack(spacing: 8) {
+                                                    ForEach(teamsByLeague[lid] ?? []) { item in
+                                                        TeamLevelCapsule(item: item)
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
 
                             if !group.clv.isEmpty {
                                 CLVLevelLine(items: group.clv)
+                            }
+
+                            if !group.edge.isEmpty {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    ForEach(group.edge) { item in
+                                        HStack(spacing: 8) {
+                                            Image(systemName: item.symbol ?? "bolt.fill")
+                                                .font(.subheadline)
+                                                .foregroundStyle(theme.accent)
+                                            Text(item.name)
+                                                .font(.subheadline.weight(.semibold))
+                                                .foregroundStyle(theme.primaryText(colorScheme))
+                                            Spacer()
+                                        }
+                                        .padding(12)
+                                        .background(theme.cardBackground(colorScheme))
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                    }
+                                }
                             }
 
                             if !group.others.isEmpty {
@@ -242,6 +262,32 @@ struct TabJuiceView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Shared header
+
+    @ViewBuilder
+    private func syndicateHeader(syndicate: Syndicate?, syndicateId: Int) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: syndicate?.symbol ?? "house.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+            Text(syndicate?.name ?? "Syndicate \(syndicateId)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            if let runner = myRunners[syndicateId] {
+                Text("-")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Image(systemName: runner.symbol ?? "person.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(runner.profileName ?? "Runner \(bettorId)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 4)
     }
 
     // MARK: - Actions
@@ -274,16 +320,19 @@ struct TabJuiceView: View {
         }
     }
 
+    private func loadRunners() async {
+        guard bettorId != 0 else { return }
+        let fetched = (try? await runnerService.fetchRunner(bettorId: bettorId)) ?? []
+        var map: [Int: Runner] = [:]
+        for runner in fetched where runner.bettorId == bettorId {
+            map[runner.syndicateId] = runner
+        }
+        myRunners = map
+    }
+
     private func loadJuiceSyndicates() async {
         guard bettorId != 0 else { return }
         juiceSyndicates = (try? await syndicateService.fetchSyndicate(bettorId: bettorId)) ?? []
-        if juiceSyndicateId == 0 {
-            if juiceSyndicates.contains(where: { $0.syndicateId == selectedSyndicateId }) {
-                juiceSyndicateId = selectedSyndicateId
-            } else if let first = juiceSyndicates.first {
-                juiceSyndicateId = first.syndicateId
-            }
-        }
         await fetchJuiceData()
     }
 
@@ -303,24 +352,18 @@ struct TabJuiceView: View {
 
 // MARK: - Sub-views
 
-private struct EnhancedLevelCapsule: View {
+private struct TeamLevelCapsule: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
 
     let item: Enhanced
 
     var body: some View {
-        HStack(spacing: 8) {
-            if item.enhancementType == "team" {
-                Image(systemName: League.sportIcon(for: item.leagueId ?? 0))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
+        HStack(spacing: 6) {
             Text(item.name)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(theme.primaryText(colorScheme))
-            Spacer()
-            Text("Level \(item.level)")
+            Text("\(item.level)")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Image(systemName: "nairasign.circle.fill")
@@ -341,30 +384,42 @@ private struct CLVLevelLine: View {
     let items: [Enhanced]
 
     private static let order = ["ML", "SPR", "O/U"]
+    private static let pivot = 1.5
 
     private func level(for name: String) -> Int? {
         items.first { $0.name == name }?.level
     }
 
-    private func multiplierLabel(_ level: Int?) -> String {
-        guard let level, level > 0 else { return "1x" }
-        return String(format: "%.1fx", Double(level) * 0.1 + 1.0)
+    private func multiplier(_ level: Int?) -> Double {
+        guard let level, level > 0 else { return 1.0 }
+        return Double(level) * 0.1 + 1.0
+    }
+
+    private func multiplierLabel(_ multiplier: Double) -> String {
+        String(format: "%.1fx", multiplier)
+    }
+
+    private func capsuleColor(_ multiplier: Double) -> Color {
+        let distance = min(abs(multiplier - Self.pivot) * 1.7, 0.85)
+        let base = multiplier < Self.pivot ? theme.loss : theme.win
+        return base.opacity(0.15 + distance)
     }
 
     var body: some View {
         HStack(spacing: 10) {
             ForEach(Self.order, id: \.self) { name in
+                let mult = multiplier(level(for: name))
                 VStack(spacing: 2) {
                     Text(name)
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Text(multiplierLabel(level(for: name)))
+                    Text(multiplierLabel(mult))
                         .font(.subheadline.weight(.bold))
-                        .foregroundStyle(theme.accent)
+                        .foregroundStyle(theme.primaryText(colorScheme))
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .background(theme.cardBackground(colorScheme))
+                .background(capsuleColor(mult))
                 .clipShape(Capsule())
             }
         }

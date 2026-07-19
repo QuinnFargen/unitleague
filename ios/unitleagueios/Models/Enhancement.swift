@@ -11,6 +11,7 @@ struct EnhanceOption: Codable, Identifiable {
     let description: String
     let betType: String?
     let leagueId: Int
+    let symbol: String?
     let availableAttrValue: String?
     let optionHash: String
 
@@ -23,6 +24,7 @@ struct EnhanceOption: Codable, Identifiable {
         case name, description
         case betType       = "bet_type"
         case leagueId      = "league_id"
+        case symbol
         case availableAttrValue = "available_attr_value"
         case optionHash    = "option_hash"
     }
@@ -36,6 +38,7 @@ struct Enhanced: Codable, Identifiable {
     let teamId: Int
     let enhancementType: String
     let name: String
+    let symbol: String?
     let leagueId: Int?
     let level: Int
 
@@ -46,6 +49,7 @@ struct Enhanced: Codable, Identifiable {
         case teamId        = "team_id"
         case enhancementType = "enhancement_type"
         case name
+        case symbol
         case leagueId      = "league_id"
         case level
     }

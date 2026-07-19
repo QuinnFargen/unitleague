@@ -4,6 +4,7 @@ struct CardBet: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let bet: SelectedBet
+    var won: Bool? = nil
 
     private let timeInputFmt: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -55,26 +56,63 @@ struct CardBet: View {
                 return "\(teamSide) \(s)"
             }
             return "\(teamSide) O/U"
+        case "OVER", "UNDER":
+            if let p = bet.points {
+                let s = p == p.rounded() ? "\(Int(p))" : String(format: "%.1f", p)
+                return "\(bet.type) \(s)"
+            }
+            return bet.type
         default:
             return bet.type.isEmpty ? teamSide : "\(teamSide) \(bet.type)"
+        }
+    }
+
+    private func teamCapsule(_ abbr: String) -> some View {
+        Text(abbr)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 2)
+            .background(theme.cardBackgroundProminent(colorScheme))
+            .clipShape(Capsule())
+    }
+
+    @ViewBuilder
+    private var matchupLine: some View {
+        if (bet.type == "ML" || bet.type == "SPR"),
+           let team = bet.team,
+           team == bet.awayAbbr || team == bet.homeAbbr {
+            HStack(spacing: 4) {
+                if team == bet.awayAbbr {
+                    teamCapsule(bet.awayAbbr)
+                    Text("@ " + bet.homeAbbr)
+                } else {
+                    Text(bet.awayAbbr + " @")
+                    teamCapsule(bet.homeAbbr)
+                }
+            }
+            .font(.headline)
+            .foregroundStyle(theme.primaryText(colorScheme))
+        } else {
+            Text(bet.awayAbbr + " @ " + bet.homeAbbr)
+                .font(.headline)
+                .foregroundStyle(theme.primaryText(colorScheme))
         }
     }
 
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(bet.awayAbbr + " @ " + bet.homeAbbr)
-                    .font(.headline)
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                if let date = formattedDate {
-                    Text(date)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                if let time = formattedTime {
-                    Text(time)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                matchupLine
+                HStack(spacing: 6) {
+                    if let date = formattedDate {
+                        Text(date)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let time = formattedTime {
+                        Text(time)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 
@@ -93,11 +131,19 @@ struct CardBet: View {
                         .foregroundStyle(theme.accent)
                     if let u = bet.unit {
                         Text(txnWagerLabel(u))
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(won == false ? theme.loss : .secondary)
                         Image(systemName: "nairasign.circle.fill")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(won == false ? theme.loss : .secondary)
+                        if won == true {
+                            Text("=")
+                                .font(.title2.weight(.bold))
+                                .foregroundStyle(theme.win)
+                            Text(String(format: "%.2f", bet.price * u))
+                                .font(.title2.weight(.bold))
+                                .foregroundStyle(theme.win)
+                        }
                     }
                 }
             }

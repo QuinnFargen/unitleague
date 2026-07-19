@@ -11,13 +11,18 @@ struct ViewTeamList: View {
     var pickerTitle: String? = nil
     var onSelect: ((Team) -> Void)? = nil
 
+    @AppStorage("bettorId") private var bettorId: Int = 0
+    @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
+
     @State private var teams: [Team] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedConf: String? = nil
     @State private var selectedDiv: String? = nil
+    @State private var teamLevels: [Int: Int] = [:]
 
     private let teamService = TeamService()
+    private let enhancementService = EnhancementService()
 
     private var confs: [String] {
         Array(Set(teams.filter { $0.id != 50000 && $0.id != 60000 }.compactMap(\.conf))).sorted()
@@ -123,14 +128,14 @@ struct ViewTeamList: View {
                                     Button {
                                         onSelect(team)
                                     } label: {
-                                        CardTeam(team: team, league: league, showChevron: true)
+                                        CardTeam(team: team, league: league, showChevron: true, level: teamLevels[team.id])
                                     }
                                     .buttonStyle(.plain)
                                 } else {
                                     NavigationLink {
                                         ViewSched(team: team, league: league)
                                     } label: {
-                                        CardTeam(team: team, league: league, showChevron: true)
+                                        CardTeam(team: team, league: league, showChevron: true, level: teamLevels[team.id])
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -146,6 +151,17 @@ struct ViewTeamList: View {
         .navigationTitle(pickerTitle ?? league.abbr)
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchTeams() }
+        .task { await loadTeamLevels() }
+    }
+
+    private func loadTeamLevels() async {
+        guard bettorId != 0, selectedSyndicateId != 0 else { return }
+        let enhanced = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: selectedSyndicateId)) ?? []
+        var levels: [Int: Int] = [:]
+        for item in enhanced where item.enhancementType == "team" {
+            levels[item.teamId] = item.level
+        }
+        teamLevels = levels
     }
 
     private func fetchTeams() async {

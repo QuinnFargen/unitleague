@@ -15,6 +15,7 @@ with active_enhanced as (
         ed.team_id,
         en.enhancement_type,
         coalesce(t.abbr, en.name) as name,
+        en.symbol,
         t.league_id,
         ed.level
 
@@ -35,6 +36,7 @@ select
     team_id,
     enhancement_type,
     name,
+    max(symbol) as symbol,
     league_id,
     sum(level) as level
 from active_enhanced

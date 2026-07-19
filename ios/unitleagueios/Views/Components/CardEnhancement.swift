@@ -35,16 +35,9 @@ struct CardEnhancement: View {
             EnhancementTypeBadge(type: option.enhancementType)
 
             VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(option.name)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.primaryText(colorScheme))
-                    if let betType = option.betType {
-                        Text(betType.uppercased())
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                Text(option.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(theme.primaryText(colorScheme))
                 Text(option.description)
                     .font(.caption)
                     .foregroundStyle(.secondary)

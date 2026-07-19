@@ -11,18 +11,23 @@ struct ViewSched: View {
     let team: Team
     let league: League
 
+    @AppStorage("bettorId") private var bettorId: Int = 0
+    @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
+
     @State private var selectedMode: SchedMode = .year
     @State private var selectedYear: Int = Calendar.current.component(.year, from: .now)
     @State private var schedule: [Sched] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var scrollTarget: String? = nil
+    @State private var teamLevel: Int? = nil
 
     private var lastFinalId: String? {
         schedule.first { $0.teamScore != nil && $0.oppScore != nil }?.id
     }
 
     private let schedService = SchedService()
+    private let enhancementService = EnhancementService()
 
     private var years: [Int] {
         let currentYear = Calendar.current.component(.year, from: .now)
@@ -36,7 +41,7 @@ struct ViewSched: View {
             theme.appBackground(colorScheme).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                CardTeam(team: team, league: league)
+                CardTeam(team: team, league: league, level: teamLevel)
                     .padding(.horizontal)
                     .padding(.top, 8)
 
@@ -125,6 +130,13 @@ struct ViewSched: View {
         .navigationTitle(team.name)
         .navigationBarTitleDisplayMode(.inline)
         .task(id: selectedYear) { await fetchSchedule() }
+        .task { await loadTeamLevel() }
+    }
+
+    private func loadTeamLevel() async {
+        guard bettorId != 0, selectedSyndicateId != 0 else { return }
+        let enhanced = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: selectedSyndicateId)) ?? []
+        teamLevel = enhanced.first { $0.enhancementType == "team" && $0.teamId == team.id }?.level
     }
 
     private func fetchSchedule() async {

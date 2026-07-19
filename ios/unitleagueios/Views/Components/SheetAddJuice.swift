@@ -8,25 +8,20 @@ struct SheetAddJuice: View {
     let bettorId: Int
     let syndicates: [Syndicate]
 
-    @State private var syndicateId: Int
     @State private var options: [EnhanceOption] = []
     @State private var leagues: [League] = []
+    @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoading = false
     @State private var isSubmitting = false
     @State private var confirmOption: EnhanceOption? = nil
 
     private let enhancementService = EnhancementService()
     private let leagueService = LeagueService()
+    private let runnerService = RunnerService()
 
-    init(bettorId: Int, syndicates: [Syndicate], syndicateId: Int) {
-        self.bettorId = bettorId
-        self.syndicates = syndicates
-        self._syndicateId = State(initialValue: syndicateId)
+    private func syndicateOptions(_ syndicateId: Int) -> [EnhanceOption] {
+        options.filter { $0.syndicateId == syndicateId }
     }
-
-    private var clvOptions: [EnhanceOption]  { options.filter { $0.enhancementType == "clv" } }
-    private var teamOptions: [EnhanceOption] { options.filter { $0.enhancementType == "team" } }
-    private var edgeOptions: [EnhanceOption] { options.filter { $0.enhancementType == "edge" } }
 
     private func league(for option: EnhanceOption) -> League? {
         leagues.first { $0.id == option.leagueId }
@@ -34,45 +29,31 @@ struct SheetAddJuice: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                if syndicates.count > 1 {
-                    Picker("Syndicate", selection: $syndicateId) {
-                        ForEach(syndicates) { syn in
-                            Text(syn.name).tag(syn.syndicateId)
-                        }
+            addJuiceContent
+                .navigationTitle("Add Juice")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
                     }
-                    .pickerStyle(.menu)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .onChange(of: syndicateId) { _, _ in Task { await load() } }
                 }
-
-                addJuiceContent
-            }
-            .navigationTitle("Add Juice")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                .task { await load() }
+                .confirmationDialog(
+                    confirmOption?.name ?? "",
+                    isPresented: Binding(get: { confirmOption != nil }, set: { if !$0 { confirmOption = nil } }),
+                    titleVisibility: .visible
+                ) {
+                    Button("Choose Enhancement") {
+                        guard let opt = confirmOption else { return }
+                        Task { await submit(opt, teamId: 0) }
+                        confirmOption = nil
+                    }
+                    Button("Cancel", role: .cancel) { confirmOption = nil }
+                } message: {
+                    if let opt = confirmOption {
+                        Text(opt.description)
+                    }
                 }
-            }
-            .task { await load() }
-            .confirmationDialog(
-                confirmOption?.name ?? "",
-                isPresented: Binding(get: { confirmOption != nil }, set: { if !$0 { confirmOption = nil } }),
-                titleVisibility: .visible
-            ) {
-                Button("Choose Enhancement") {
-                    guard let opt = confirmOption else { return }
-                    Task { await submit(opt, teamId: 0) }
-                    confirmOption = nil
-                }
-                Button("Cancel", role: .cancel) { confirmOption = nil }
-            } message: {
-                if let opt = confirmOption {
-                    Text(opt.description)
-                }
-            }
         }
     }
 
@@ -91,52 +72,66 @@ struct SheetAddJuice: View {
                         .padding(.top, 40)
                 } else {
                     ScrollView {
-                        VStack(alignment: .leading, spacing: 16) {
-                            if !clvOptions.isEmpty {
-                                EnhancementGroupHeader("CLV", color: .green)
-                                ForEach(clvOptions) { opt in
-                                    Button {
-                                        confirmOption = opt
-                                    } label: {
-                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
+                        VStack(alignment: .leading, spacing: 20) {
+                            ForEach(syndicates) { syn in
+                                let synOptions = syndicateOptions(syn.syndicateId)
+                                if !synOptions.isEmpty {
+                                    let clvOptions = synOptions.filter { $0.enhancementType == "clv" }
+                                    let teamOptions = synOptions.filter { $0.enhancementType == "team" }
+                                    let edgeOptions = synOptions.filter { $0.enhancementType == "edge" }
 
-                            if !teamOptions.isEmpty {
-                                EnhancementGroupHeader("Team", color: .yellow)
-                                ForEach(teamOptions) { opt in
-                                    if let lg = league(for: opt) {
-                                        NavigationLink {
-                                            ViewTeamList(
-                                                league: lg,
-                                                presetConf: opt.name == "Conference" ? opt.availableAttrValue : nil,
-                                                presetColor: opt.name == "Color" ? opt.availableAttrValue : nil,
-                                                presetRegion: opt.name == "Region" ? opt.availableAttrValue : nil,
-                                                presetCategory: opt.name == "Mascot" ? opt.availableAttrValue : nil,
-                                                pickerTitle: opt.name,
-                                                onSelect: { team in
-                                                    Task { await submit(opt, teamId: team.id) }
+                                    VStack(alignment: .leading, spacing: 16) {
+                                        syndicateHeader(syndicate: syn)
+
+                                        if !clvOptions.isEmpty {
+                                            EnhancementGroupHeader("CLV", color: .green)
+                                            ForEach(clvOptions) { opt in
+                                                Button {
+                                                    confirmOption = opt
+                                                } label: {
+                                                    CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
                                                 }
-                                            )
-                                        } label: {
-                                            CardEnhancement(option: opt, leagueName: lg.abbr)
+                                                .buttonStyle(.plain)
+                                            }
                                         }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                            }
 
-                            if !edgeOptions.isEmpty {
-                                EnhancementGroupHeader("Edge", color: .red)
-                                ForEach(edgeOptions) { opt in
-                                    Button {
-                                        confirmOption = opt
-                                    } label: {
-                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
+                                        if !teamOptions.isEmpty {
+                                            EnhancementGroupHeader("Team", color: .yellow)
+                                            ForEach(teamOptions) { opt in
+                                                if let lg = league(for: opt) {
+                                                    NavigationLink {
+                                                        ViewTeamList(
+                                                            league: lg,
+                                                            presetConf: opt.name == "Conference" ? opt.availableAttrValue : nil,
+                                                            presetColor: opt.name == "Color" ? opt.availableAttrValue : nil,
+                                                            presetRegion: opt.name == "Region" ? opt.availableAttrValue : nil,
+                                                            presetCategory: opt.name == "Mascot" ? opt.availableAttrValue : nil,
+                                                            pickerTitle: opt.name,
+                                                            onSelect: { team in
+                                                                Task { await submit(opt, teamId: team.id) }
+                                                            }
+                                                        )
+                                                    } label: {
+                                                        CardEnhancement(option: opt, leagueName: lg.abbr)
+                                                    }
+                                                    .buttonStyle(.plain)
+                                                }
+                                            }
+                                        }
+
+                                        if !edgeOptions.isEmpty {
+                                            EnhancementGroupHeader("Edge", color: .red)
+                                            ForEach(edgeOptions) { opt in
+                                                Button {
+                                                    confirmOption = opt
+                                                } label: {
+                                                    CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
+                                                }
+                                                .buttonStyle(.plain)
+                                            }
+                                        }
                                     }
-                                    .buttonStyle(.plain)
+                                    .padding(.bottom, 4)
                                 }
                             }
                         }
@@ -152,13 +147,51 @@ struct SheetAddJuice: View {
         }
     }
 
+    @ViewBuilder
+    private func syndicateHeader(syndicate: Syndicate) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: syndicate.symbol ?? "house.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(ProfileOption.color(for: syndicate.color ?? ""))
+            Text(syndicate.name)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            if let runner = myRunners[syndicate.syndicateId] {
+                Text("-")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Image(systemName: runner.symbol ?? "person.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(runner.profileName ?? "Runner \(bettorId)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+
     private func load() async {
         isLoading = true
         defer { isLoading = false }
-        async let optsFetch = enhancementService.fetchOptions(bettorId: bettorId, syndicateId: syndicateId)
         async let leaguesFetch = leagueService.fetchLeagues()
-        options = (try? await optsFetch) ?? []
+        async let runnersFetch = runnerService.fetchRunner(bettorId: bettorId)
+
+        var combined: [EnhanceOption] = []
+        for syn in syndicates {
+            if let opts = try? await enhancementService.fetchOptions(bettorId: bettorId, syndicateId: syn.syndicateId) {
+                combined.append(contentsOf: opts)
+            }
+        }
+        options = combined
         leagues = (try? await leaguesFetch) ?? []
+
+        let fetchedRunners = (try? await runnersFetch) ?? []
+        var map: [Int: Runner] = [:]
+        for runner in fetchedRunners where runner.bettorId == bettorId {
+            map[runner.syndicateId] = runner
+        }
+        myRunners = map
     }
 
     private func submit(_ option: EnhanceOption, teamId: Int) async {
@@ -166,7 +199,7 @@ struct SheetAddJuice: View {
         defer { isSubmitting = false }
         guard (try? await enhancementService.chooseEnhancement(
             bettorId: bettorId,
-            syndicateId: syndicateId,
+            syndicateId: option.syndicateId,
             enhancementId: option.enhancementId,
             teamId: teamId,
             level: 1,
@@ -198,7 +231,7 @@ struct EnhancementGroupHeader: View {
 
 #Preview("SheetAddJuice") {
     Color.clear.sheet(isPresented: .constant(true)) {
-        SheetAddJuice(bettorId: 1, syndicates: Mock.syndicates, syndicateId: 2)
+        SheetAddJuice(bettorId: 1, syndicates: Mock.syndicates)
             .environmentObject(AppTheme())
     }
 }

@@ -6,8 +6,9 @@ struct SheetAddJuice: View {
     @Environment(\.dismiss) private var dismiss
 
     let bettorId: Int
-    let syndicateId: Int
+    let syndicates: [Syndicate]
 
+    @State private var syndicateId: Int
     @State private var options: [EnhanceOption] = []
     @State private var leagues: [League] = []
     @State private var isLoading = false
@@ -16,6 +17,12 @@ struct SheetAddJuice: View {
 
     private let enhancementService = EnhancementService()
     private let leagueService = LeagueService()
+
+    init(bettorId: Int, syndicates: [Syndicate], syndicateId: Int) {
+        self.bettorId = bettorId
+        self.syndicates = syndicates
+        self._syndicateId = State(initialValue: syndicateId)
+    }
 
     private var clvOptions: [EnhanceOption]  { options.filter { $0.enhancementType == "clv" } }
     private var teamOptions: [EnhanceOption] { options.filter { $0.enhancementType == "team" } }
@@ -27,76 +34,20 @@ struct SheetAddJuice: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                theme.appBackground(colorScheme).ignoresSafeArea()
-
-                if isLoading {
-                    ProgressView()
-                } else if options.isEmpty {
-                    Text("No enhancements available.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
-                } else {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 16) {
-                            if !clvOptions.isEmpty {
-                                EnhancementGroupHeader("CLV", color: .blue)
-                                ForEach(clvOptions) { opt in
-                                    Button {
-                                        confirmOption = opt
-                                    } label: {
-                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-
-                            if !teamOptions.isEmpty {
-                                EnhancementGroupHeader("Team", color: .green)
-                                ForEach(teamOptions) { opt in
-                                    if let lg = league(for: opt) {
-                                        NavigationLink {
-                                            ViewTeamList(
-                                                league: lg,
-                                                presetConf: opt.name == "Conference" ? opt.availableAttrValue : nil,
-                                                presetColor: opt.name == "Color" ? opt.availableAttrValue : nil,
-                                                presetRegion: opt.name == "Region" ? opt.availableAttrValue : nil,
-                                                presetCategory: opt.name == "Mascot" ? opt.availableAttrValue : nil,
-                                                pickerTitle: opt.name,
-                                                onSelect: { team in
-                                                    Task { await submit(opt, teamId: team.id) }
-                                                }
-                                            )
-                                        } label: {
-                                            CardEnhancement(option: opt, leagueName: lg.abbr)
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                            }
-
-                            if !edgeOptions.isEmpty {
-                                EnhancementGroupHeader("Edge", color: .orange)
-                                ForEach(edgeOptions) { opt in
-                                    Button {
-                                        confirmOption = opt
-                                    } label: {
-                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
+            VStack(spacing: 0) {
+                if syndicates.count > 1 {
+                    Picker("Syndicate", selection: $syndicateId) {
+                        ForEach(syndicates) { syn in
+                            Text(syn.name).tag(syn.syndicateId)
                         }
-                        .padding(16)
                     }
+                    .pickerStyle(.menu)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .onChange(of: syndicateId) { _, _ in Task { await load() } }
                 }
 
-                if isSubmitting {
-                    Color.black.opacity(0.2).ignoresSafeArea()
-                    ProgressView()
-                }
+                addJuiceContent
             }
             .navigationTitle("Add Juice")
             .navigationBarTitleDisplayMode(.inline)
@@ -120,6 +71,82 @@ struct SheetAddJuice: View {
             } message: {
                 if let opt = confirmOption {
                     Text(opt.description)
+                }
+            }
+        }
+    }
+
+    private var addJuiceContent: some View {
+        ZStack {
+            theme.appBackground(colorScheme).ignoresSafeArea()
+
+            Group {
+                if isLoading {
+                    ProgressView()
+                } else if options.isEmpty {
+                    Text("No enhancements available.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 40)
+                } else {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16) {
+                            if !clvOptions.isEmpty {
+                                EnhancementGroupHeader("CLV", color: .green)
+                                ForEach(clvOptions) { opt in
+                                    Button {
+                                        confirmOption = opt
+                                    } label: {
+                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+
+                            if !teamOptions.isEmpty {
+                                EnhancementGroupHeader("Team", color: .yellow)
+                                ForEach(teamOptions) { opt in
+                                    if let lg = league(for: opt) {
+                                        NavigationLink {
+                                            ViewTeamList(
+                                                league: lg,
+                                                presetConf: opt.name == "Conference" ? opt.availableAttrValue : nil,
+                                                presetColor: opt.name == "Color" ? opt.availableAttrValue : nil,
+                                                presetRegion: opt.name == "Region" ? opt.availableAttrValue : nil,
+                                                presetCategory: opt.name == "Mascot" ? opt.availableAttrValue : nil,
+                                                pickerTitle: opt.name,
+                                                onSelect: { team in
+                                                    Task { await submit(opt, teamId: team.id) }
+                                                }
+                                            )
+                                        } label: {
+                                            CardEnhancement(option: opt, leagueName: lg.abbr)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                            }
+
+                            if !edgeOptions.isEmpty {
+                                EnhancementGroupHeader("Edge", color: .red)
+                                ForEach(edgeOptions) { opt in
+                                    Button {
+                                        confirmOption = opt
+                                    } label: {
+                                        CardEnhancement(option: opt, leagueName: league(for: opt)?.abbr)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
+                        .padding(16)
+                    }
+                }
+
+                if isSubmitting {
+                    Color.black.opacity(0.2).ignoresSafeArea()
+                    ProgressView()
                 }
             }
         }
@@ -171,7 +198,7 @@ struct EnhancementGroupHeader: View {
 
 #Preview("SheetAddJuice") {
     Color.clear.sheet(isPresented: .constant(true)) {
-        SheetAddJuice(bettorId: 1, syndicateId: 2)
+        SheetAddJuice(bettorId: 1, syndicates: Mock.syndicates, syndicateId: 2)
             .environmentObject(AppTheme())
     }
 }

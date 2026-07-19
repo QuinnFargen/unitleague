@@ -198,10 +198,6 @@ TRUNCATE TABLE src.kalshi_game;
 \copy src.kalshi_game FROM '${SEED_DIR}/src.kalshi_game.csv' DELIMITER ',' CSV HEADER;
 
 
-TRUNCATE TABLE odd.enhancement;
-\copy odd.enhancement(enhancement_type,name,description,bet_type,config,active) FROM '${SEED_DIR}/odd.enhancement.csv' DELIMITER ',' CSV HEADER;
-
-
 TRUNCATE TABLE utility.weather;
 \copy utility.weather FROM '${SEED_DIR}/utility.weather.csv' DELIMITER ',' CSV HEADER;
 TRUNCATE TABLE utility.job;

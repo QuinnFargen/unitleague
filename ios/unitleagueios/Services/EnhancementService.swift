@@ -23,7 +23,7 @@ class EnhancementService {
         return try JSONDecoder().decode([Enhanced].self, from: data)
     }
 
-    func chooseEnhancement(bettorId: Int, syndicateId: Int, enhancementId: Int, teamId: Int, level: Int, optionHash: String) async throws -> Enhanced {
+    func chooseEnhancement(bettorId: Int, syndicateId: Int, enhancementId: Int, teamId: Int, level: Int, optionHash: String) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/enhanced") else { throw URLError(.badURL) }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -37,7 +37,9 @@ class EnhancementService {
             "option_hash":    optionHash,
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (data, _) = try await URLSession.shared.data(for: request)
-        return try JSONDecoder().decode(Enhanced.self, from: data)
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
     }
 }

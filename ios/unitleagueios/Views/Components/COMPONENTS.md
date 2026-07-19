@@ -43,16 +43,17 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ## ViewTeamList
 
-**Purpose:** Browseable list of all teams in a league with conference/division filter chips.
+**Purpose:** Browseable list of all teams in a league with conference/division filter chips. Also supports a picker mode: optional `presetConf`/`presetColor`/`presetRegion`/`presetCategory` pre-filter the server-side fetch, `pickerTitle` overrides the nav title, and `onSelect` (if set) replaces the `ViewSched` `NavigationLink` with a tap callback for the selected `Team`.
 
 **Models:** `Team`, `League`
 
-**Data source:** `TeamService.fetchTeams(leagueId:)` on `.task`.
+**Data source:** `TeamService.fetchTeams(leagueId:conf:color:region:category:)` on `.task`.
 
 **Used in:**
-- `TabResearchView` (one instance per selected league)
+- `TabResearchView` (one instance per selected league, browse mode)
+- `SheetAddJuice` (team-enhancement picker, preset-filtered by the enhancement's attribute + `onSelect`)
 
-**Sub-components:** `ViewTeamBanner`, `FilterChip`, `ViewSched` (NavigationLink destination)
+**Sub-components:** `ViewTeamBanner`, `FilterChip`, `ViewSched` (NavigationLink destination, browse mode only)
 
 **Environment:** `AppTheme`
 
@@ -172,7 +173,8 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabJuiceView` (active and history bet lists)
+- `TabJuiceView` (active bet list, Slips segment)
+- `TabProfileView` (Bet History section, `onCancel: nil`)
 
 **Sub-components:** `CardBet`
 
@@ -189,7 +191,8 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabJuiceView` (active and history parlay groups)
+- `TabJuiceView` (active parlay groups, Slips segment)
+- `TabProfileView` (Bet History section, `onCancel: nil`)
 
 **Sub-components:** `CardBet`
 
@@ -341,6 +344,40 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ---
 
+## SheetAddJuice
+
+**Purpose:** Browse and choose available enhancements (CLV / Team / Edge) for the selected syndicate. Team-type cards show the `available_attr_value` (e.g. "Blue") and league abbreviation as badges, and tap through to `ViewTeamList` pre-filtered by the matching `conf`/`color`/`region`/`category` param; CLV/Edge cards confirm via `.confirmationDialog`. Every successful choice dismisses the sheet.
+
+**Models:** `EnhanceOption`, `League`, `Team`
+
+**Data source:** `EnhancementService.fetchOptions(bettorId:syndicateId:)` + `LeagueService.fetchLeagues()` in parallel on `.task`. Submits via `EnhancementService.chooseEnhancement(...)`.
+
+**Used in:**
+- `TabJuiceView` ("Add Juice" button, `onDismiss` triggers a juice-data refetch)
+
+**Sub-components:** `EnhancementGroupHeader`, `CardEnhancement`, `ViewTeamList` (NavigationLink destination for team-type options)
+
+**Environment:** `AppTheme`
+
+---
+
+## CardEnhancement
+
+**Purpose:** Tile summarizing a single `EnhanceOption` — type badge, name, bet-type tag, description, and (for team-type options) a highlighted badge row showing `available_attr_value` (e.g. "Blue") plus the league abbreviation. Purely presentational — the parent wraps it in a `Button` or `NavigationLink` to handle the tap.
+
+**Models:** `EnhanceOption`
+
+**Data source:** Passed in by parent — no network calls.
+
+**Used in:**
+- `SheetAddJuice` (CLV/Team/Edge option rows)
+
+**Sub-components:** `EnhancementTypeBadge`
+
+**Environment:** `AppTheme`
+
+---
+
 ## SheetJoinSyndicate
 
 **Purpose:** Join-syndicate form — code entry + optional password, submits via `SyndicateService.joinSyndicate`.
@@ -400,6 +437,12 @@ All preview mock data lives in `PreviewMocks.swift` inside a `#if DEBUG` block. 
 | `Mock.odds` | `Odds` | BOS @ LAL gameId 101 — full ML/SPR/O/U odds set |
 | `Mock.oddMany` | `[OddMany]` | 3 individual book odds for the same game |
 | `Mock.schedItems` | `[Sched]` | 3 LAL schedule entries (1 win, 1 upcoming, 1 loss) |
+| `Mock.enhanceOptionCLV` | `EnhanceOption` | CLV enhancement, no team attribute |
+| `Mock.enhanceOptionTeam` | `EnhanceOption` | Team "Color" enhancement, `availableAttrValue: "Blue"`, NBA |
+| `Mock.enhanceOptionEdge` | `EnhanceOption` | Edge enhancement, no team attribute |
+| `Mock.enhanceOptions` | `[EnhanceOption]` | All three enhancement types |
+| `Mock.enhancedTeam` | `Enhanced` | Chosen team enhancement with `teamAbbr: "LAL"` |
+| `Mock.enhanced` | `[Enhanced]` | `[enhancedTeam]` |
 | `Mock.gameLive` | `Game` | BOS @ LAL — completed, BOS won 112–104 |
 | `Mock.gameUpcoming` | `Game` | BOS @ LAL — upcoming, 6/10 7:30 PM |
 | `Mock.games` | `[Game]` | Live and upcoming game |

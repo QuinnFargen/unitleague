@@ -15,8 +15,26 @@ struct TabProfileView: View {
     @State private var authError: String?
     @State private var showingEditProfile = false
 
+    @State private var completedRecords: [Txn] = []
+    @State private var historySyndicates: [Int: Syndicate] = [:]
+    @State private var isLoadingHistory = false
+
+    private let txnService = TxnService()
+    private let syndicateService = SyndicateService()
+
     private var displayName: String {
         customUserName.isEmpty ? appleUserName : customUserName
+    }
+
+    private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
+        let bySyndicate = Dictionary(grouping: completedRecords, by: \.syndicateId)
+        return bySyndicate.keys.sorted().map { sid in
+            let group = bySyndicate[sid] ?? []
+            let singles = group.filter { $0.parlayId == nil }
+            let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
+            let parlays = parlayMap.values.map { $0 }
+            return (syndicateId: sid, singles: singles, parlays: parlays)
+        }
     }
 
     var body: some View {
@@ -39,6 +57,7 @@ struct TabProfileView: View {
                     showingEditProfile = true
                 }
             }
+            .task { await loadHistory() }
         }
     }
 
@@ -157,10 +176,67 @@ struct TabProfileView: View {
                 .background(theme.cardBackground(colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
 
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text("Bet History")
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                        Spacer()
+                        Text("\(completedRecords.count)")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if isLoadingHistory {
+                        ProgressView().frame(maxWidth: .infinity).padding(.top, 20)
+                    } else if completedRecords.isEmpty {
+                        Text("No bet history")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .padding(.top, 8)
+                    } else {
+                        ForEach(historyGroups, id: \.syndicateId) { group in
+                            VStack(alignment: .leading, spacing: 10) {
+                                let syndicate = historySyndicates[group.syndicateId]
+                                HStack(spacing: 6) {
+                                    Image(systemName: syndicate?.symbol ?? "house.fill")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                    Text(syndicate?.name ?? "Syndicate \(group.syndicateId)")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                ForEach(group.singles) { txn in
+                                    CardPlacedBet(txn: txn, onCancel: nil)
+                                }
+
+                                ForEach(group.parlays, id: \.first?.parlayId) { legs in
+                                    CardPlacedParlay(legs: legs, onCancel: nil)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.top, 8)
+
             }
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .padding(.bottom, 32)
+        }
+    }
+
+    private func loadHistory() async {
+        guard bettorId != 0 else { return }
+        isLoadingHistory = completedRecords.isEmpty
+        defer { isLoadingHistory = false }
+        completedRecords = (try? await txnService.fetchCompletedBets(bettorId: bettorId)) ?? []
+        let ids = Set(completedRecords.map(\.syndicateId))
+        for sid in ids where historySyndicates[sid] == nil {
+            if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
+                historySyndicates[sid] = result.first
+            }
         }
     }
 }

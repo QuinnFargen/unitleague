@@ -6,10 +6,9 @@ struct TabJuiceView: View {
     @AppStorage("bettorId") private var bettorId: Int = 0
 
     @State private var txnRecords: [Txn] = []
-    @State private var completedRecords: [Txn] = []
     @State private var syndicates: [Int: Syndicate] = [:]
     @State private var isLoading = false
-    @State private var segment: BetSegment = .active
+    @State private var segment: BetSegment = .slips
 
     // Juice state
     @State private var juiceSyndicates: [Syndicate] = []
@@ -17,21 +16,15 @@ struct TabJuiceView: View {
     @State private var availableOptions: [EnhanceOption] = []
     @State private var myEnhanced: [Enhanced] = []
     @State private var syndicateEnhanced: [Enhanced] = []
-    @State private var pendingOption: EnhanceOption? = nil
-    @State private var teamPickerTeams: [Team] = []
     @State private var isLoadingJuice = false
-    @State private var isLoadingTeams = false
-    @State private var showTeamPicker = false
-    @State private var confirmOption: EnhanceOption? = nil
+    @State private var showAddJuice = false
 
     private let txnService = TxnService()
     private let syndicateService = SyndicateService()
     private let enhancementService = EnhancementService()
-    private let teamService = TeamService()
 
     private enum BetSegment: String, CaseIterable {
-        case active = "Active"
-        case history = "History"
+        case slips = "Slips"
         case juice = "Juice"
     }
 
@@ -39,12 +32,8 @@ struct TabJuiceView: View {
         txnRecords.filter { $0.canceled != true }
     }
 
-    private var displayBets: [Txn] {
-        segment == .active ? activeBets : completedRecords
-    }
-
     private var syndicateGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
-        let bySyndicate = Dictionary(grouping: displayBets, by: \.syndicateId)
+        let bySyndicate = Dictionary(grouping: activeBets, by: \.syndicateId)
         return bySyndicate.keys.sorted().map { sid in
             let group = bySyndicate[sid] ?? []
             let singles = group.filter { $0.parlayId == nil }
@@ -53,18 +42,6 @@ struct TabJuiceView: View {
             return (syndicateId: sid, singles: singles, parlays: parlays)
         }
     }
-
-    // Deduplicated options by optionHash
-    private var uniqueOptions: [EnhanceOption] {
-        var seen = Set<String>()
-        return availableOptions.filter { seen.insert($0.optionHash).inserted }
-    }
-
-    private var clvOptions: [EnhanceOption]  { uniqueOptions.filter { $0.enhancementType == "clv" } }
-    private var teamOptions: [EnhanceOption] { uniqueOptions.filter { $0.enhancementType == "team" } }
-    private var edgeOptions: [EnhanceOption] { uniqueOptions.filter { $0.enhancementType == "edge" } }
-
-    private var chosenOptionHashes: Set<String> { Set(myEnhanced.map(\.optionHash)) }
 
     private func resolvedName(for enhanced: Enhanced) -> String {
         availableOptions.first { $0.enhancementId == enhanced.enhancementId }?.name ?? "Enhancement \(enhanced.enhancementId)"
@@ -113,45 +90,29 @@ struct TabJuiceView: View {
             .tabToolbar()
             .task { await fetchData() }
             .task { await loadJuiceSyndicates() }
-            .sheet(isPresented: $showTeamPicker) {
-                teamPickerSheet
-            }
-            .confirmationDialog(
-                confirmOption?.name ?? "",
-                isPresented: Binding(get: { confirmOption != nil }, set: { if !$0 { confirmOption = nil } }),
-                titleVisibility: .visible
-            ) {
-                Button("Choose Enhancement") {
-                    guard let opt = confirmOption else { return }
-                    Task { await submitEnhancement(opt, teamId: 0) }
-                    confirmOption = nil
-                }
-                Button("Cancel", role: .cancel) { confirmOption = nil }
-            } message: {
-                if let opt = confirmOption {
-                    Text(opt.description)
-                }
+            .sheet(isPresented: $showAddJuice, onDismiss: { Task { await fetchJuiceData() } }) {
+                SheetAddJuice(bettorId: bettorId, syndicateId: juiceSyndicateId)
             }
         }
     }
 
-    // MARK: - Bet content (Active / History)
+    // MARK: - Bet content (Slips)
 
     private var betContent: some View {
         Group {
-            if displayBets.isEmpty {
-                Text(segment == .active ? "No active bets" : "No bet history")
+            if activeBets.isEmpty {
+                Text("No active bets")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.top, 40)
             } else {
                 VStack(alignment: .leading, spacing: 20) {
                     HStack {
-                        Text(segment == .active ? "Active Bets" : "Bet History")
+                        Text("Active Bets")
                             .font(.title3.weight(.bold))
                             .foregroundStyle(theme.primaryText(colorScheme))
                         Spacer()
-                        Text("\(displayBets.count)")
+                        Text("\(activeBets.count)")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.secondary)
                     }
@@ -173,14 +134,14 @@ struct TabJuiceView: View {
                             ForEach(group.singles) { txn in
                                 CardPlacedBet(
                                     txn: txn,
-                                    onCancel: segment == .active ? { cancelBet(txn) } : nil
+                                    onCancel: { cancelBet(txn) }
                                 )
                             }
 
                             ForEach(group.parlays, id: \.first?.parlayId) { legs in
                                 CardPlacedParlay(
                                     legs: legs,
-                                    onCancel: segment == .active ? { cancelParlay(legs) } : nil
+                                    onCancel: { cancelParlay(legs) }
                                 )
                             }
                         }
@@ -216,40 +177,19 @@ struct TabJuiceView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
             } else {
-                // Available enhancements
-                if !uniqueOptions.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader("Enhancements")
-
-                        if !clvOptions.isEmpty {
-                            EnhancementGroupHeader("CLV", color: .blue)
-                            ForEach(clvOptions) { opt in
-                                EnhancementCard(option: opt, isChosen: chosenOptionHashes.contains(opt.optionHash)) {
-                                    confirmOption = opt
-                                }
-                            }
-                        }
-
-                        if !teamOptions.isEmpty {
-                            EnhancementGroupHeader("Team", color: .green)
-                            ForEach(teamOptions) { opt in
-                                EnhancementCard(option: opt, isChosen: chosenOptionHashes.contains(opt.optionHash)) {
-                                    Task { await openTeamPicker(for: opt) }
-                                }
-                            }
-                        }
-
-                        if !edgeOptions.isEmpty {
-                            EnhancementGroupHeader("Edge", color: .orange)
-                            ForEach(edgeOptions) { opt in
-                                EnhancementCard(option: opt, isChosen: chosenOptionHashes.contains(opt.optionHash)) {
-                                    confirmOption = opt
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
+                Button {
+                    showAddJuice = true
+                } label: {
+                    Label("Add Juice", systemImage: "syringe.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(theme.accent.opacity(0.15))
+                        .foregroundStyle(theme.accent)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(theme.accent.opacity(0.35), lineWidth: 1))
                 }
+                .padding(.horizontal, 16)
 
                 // My enhancements
                 if !myEnhanced.isEmpty {
@@ -259,8 +199,7 @@ struct TabJuiceView: View {
                             ActiveEnhancementRow(
                                 name: resolvedName(for: item),
                                 type: resolvedType(for: item),
-                                teamId: item.teamId,
-                                teams: teamPickerTeams
+                                teamAbbr: item.teamAbbr
                             )
                         }
                     }
@@ -293,56 +232,12 @@ struct TabJuiceView: View {
                     .padding(.horizontal, 16)
                 }
 
-                if uniqueOptions.isEmpty && myEnhanced.isEmpty && othersEnhanced.isEmpty {
-                    Text("No enhancements available.")
+                if myEnhanced.isEmpty && othersEnhanced.isEmpty {
+                    Text("No enhancements yet. Tap Add Juice to choose one.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 20)
-                }
-            }
-        }
-    }
-
-    // MARK: - Team picker sheet
-
-    private var teamPickerSheet: some View {
-        NavigationStack {
-            Group {
-                if isLoadingTeams {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else {
-                    List(teamPickerTeams) { team in
-                        Button {
-                            guard let opt = pendingOption else { return }
-                            showTeamPicker = false
-                            Task { await submitEnhancement(opt, teamId: team.id) }
-                            pendingOption = nil
-                        } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(team.abbr)
-                                    .font(.headline)
-                                    .foregroundStyle(team.teamColor)
-                                Text(team.name)
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                                TeamMetaRow(team: team)
-                            }
-                            .padding(.vertical, 4)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-            .navigationTitle(pendingOption?.name ?? "Choose Team")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        showTeamPicker = false
-                        pendingOption = nil
-                    }
                 }
             }
         }
@@ -358,26 +253,6 @@ struct TabJuiceView: View {
     }
 
     // MARK: - Actions
-
-    private func openTeamPicker(for option: EnhanceOption) async {
-        pendingOption = option
-        isLoadingTeams = true
-        showTeamPicker = true
-        teamPickerTeams = (try? await teamService.fetchTeams(leagueId: option.leagueId)) ?? []
-        isLoadingTeams = false
-    }
-
-    private func submitEnhancement(_ option: EnhanceOption, teamId: Int) async {
-        guard let result = try? await enhancementService.chooseEnhancement(
-            bettorId: bettorId,
-            syndicateId: juiceSyndicateId,
-            enhancementId: option.enhancementId,
-            teamId: teamId,
-            level: 1,
-            optionHash: option.optionHash
-        ) else { return }
-        myEnhanced.append(result)
-    }
 
     private func cancelBet(_ txn: Txn) {
         Task {
@@ -396,13 +271,10 @@ struct TabJuiceView: View {
 
     private func fetchData() async {
         guard bettorId != 0 else { return }
-        isLoading = txnRecords.isEmpty && completedRecords.isEmpty
+        isLoading = txnRecords.isEmpty
         defer { isLoading = false }
-        async let activeFetch = txnService.fetchActiveBets(bettorId: bettorId)
-        async let completedFetch = txnService.fetchCompletedBets(bettorId: bettorId)
-        txnRecords = (try? await activeFetch) ?? []
-        completedRecords = (try? await completedFetch) ?? []
-        let ids = Set((txnRecords + completedRecords).map(\.syndicateId))
+        txnRecords = (try? await txnService.fetchActiveBets(bettorId: bettorId)) ?? []
+        let ids = Set(txnRecords.map(\.syndicateId))
         for sid in ids where syndicates[sid] == nil {
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
                 syndicates[sid] = result.first
@@ -434,114 +306,13 @@ struct TabJuiceView: View {
 
 // MARK: - Sub-views
 
-private struct EnhancementGroupHeader: View {
-    let title: String
-    let color: Color
-    init(_ title: String, color: Color) { self.title = title; self.color = color }
-
-    var body: some View {
-        HStack(spacing: 6) {
-            Capsule()
-                .fill(color.opacity(0.2))
-                .frame(width: 4, height: 14)
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(color)
-        }
-        .padding(.top, 4)
-    }
-}
-
-private struct EnhancementTypeBadge: View {
-    let type: String
-
-    var badgeColor: Color {
-        switch type {
-        case "clv":  return .blue
-        case "team": return .green
-        case "edge": return .orange
-        default:     return .secondary
-        }
-    }
-
-    var body: some View {
-        Text(type.uppercased())
-            .font(.system(size: 9, weight: .bold))
-            .foregroundStyle(badgeColor)
-            .padding(.horizontal, 6)
-            .padding(.vertical, 3)
-            .background(badgeColor.opacity(0.15))
-            .clipShape(Capsule())
-    }
-}
-
-private struct EnhancementCard: View {
-    @EnvironmentObject private var theme: AppTheme
-    @Environment(\.colorScheme) private var colorScheme
-
-    let option: EnhanceOption
-    let isChosen: Bool
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: { if !isChosen { onTap() } }) {
-            HStack(spacing: 12) {
-                EnhancementTypeBadge(type: option.enhancementType)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text(option.name)
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                        if let betType = option.betType {
-                            Text(betType.uppercased())
-                                .font(.system(size: 9, weight: .medium))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 5)
-                                .padding(.vertical, 2)
-                                .background(Color.secondary.opacity(0.12))
-                                .clipShape(Capsule())
-                        }
-                    }
-                    Text(option.description)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-
-                Spacer()
-
-                if isChosen {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                } else {
-                    Image(systemName: "plus.circle")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .padding(12)
-            .background(theme.cardBackground(colorScheme))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
-            .opacity(isChosen ? 0.6 : 1.0)
-        }
-        .buttonStyle(.plain)
-        .disabled(isChosen)
-    }
-}
-
 private struct ActiveEnhancementRow: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
 
     let name: String
     let type: String
-    let teamId: Int?
-    let teams: [Team]
-
-    private var teamAbbr: String? {
-        guard let tid = teamId, tid != 0 else { return nil }
-        return teams.first { $0.id == tid }?.abbr
-    }
+    let teamAbbr: String?
 
     var body: some View {
         HStack(spacing: 10) {
@@ -552,8 +323,8 @@ private struct ActiveEnhancementRow: View {
                 Text(name)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(theme.primaryText(colorScheme))
-                if let abbr = teamAbbr {
-                    Text(abbr)
+                if let teamAbbr {
+                    Text(teamAbbr)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

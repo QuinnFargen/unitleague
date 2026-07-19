@@ -347,6 +347,38 @@ enum Mock {
         return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
     }
 
+    // MARK: Enhancements
+
+    static let enhanceOptionCLV = EnhanceOption(
+        runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 10,
+        enhancementType: "clv", name: "Closing Line Value",
+        description: "Boosts payout when you beat the closing line.",
+        betType: "h2h", leagueId: 1, availableAttrValue: nil,
+        optionHash: "mockhash_clv"
+    )
+    static let enhanceOptionTeam = EnhanceOption(
+        runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 76,
+        enhancementType: "team", name: "Color",
+        description: "Team primary color",
+        betType: nil, leagueId: 1, availableAttrValue: "Blue",
+        optionHash: "mockhash_team"
+    )
+    static let enhanceOptionEdge = EnhanceOption(
+        runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 20,
+        enhancementType: "edge", name: "Underdog Edge",
+        description: "Boosts payout on underdog wins.",
+        betType: nil, leagueId: 1, availableAttrValue: nil,
+        optionHash: "mockhash_edge"
+    )
+    static var enhanceOptions: [EnhanceOption] { [enhanceOptionCLV, enhanceOptionTeam, enhanceOptionEdge] }
+
+    static let enhancedTeam = Enhanced(
+        enhancedId: 1, bettorId: 42, syndicateId: 1, enhancementId: 76,
+        teamId: 1, level: 1, optionHash: "mockhash_team_chosen",
+        active: true, teamAbbr: "LAL"
+    )
+    static var enhanced: [Enhanced] { [enhancedTeam] }
+
     // MARK: Schedule
 
     static var schedItems: [Sched] {

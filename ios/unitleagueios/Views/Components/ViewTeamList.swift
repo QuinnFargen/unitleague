@@ -4,6 +4,12 @@ struct ViewTeamList: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let league: League
+    var presetConf: String? = nil
+    var presetColor: String? = nil
+    var presetRegion: String? = nil
+    var presetCategory: String? = nil
+    var pickerTitle: String? = nil
+    var onSelect: ((Team) -> Void)? = nil
 
     @State private var teams: [Team] = []
     @State private var isLoading = false
@@ -113,12 +119,21 @@ struct ViewTeamList: View {
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(displayedTeams) { team in
-                                NavigationLink {
-                                    ViewSched(team: team, league: league)
-                                } label: {
-                                    CardTeam(team: team, league: league, showChevron: true)
+                                if let onSelect {
+                                    Button {
+                                        onSelect(team)
+                                    } label: {
+                                        CardTeam(team: team, league: league, showChevron: true)
+                                    }
+                                    .buttonStyle(.plain)
+                                } else {
+                                    NavigationLink {
+                                        ViewSched(team: team, league: league)
+                                    } label: {
+                                        CardTeam(team: team, league: league, showChevron: true)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
                         }
                         .padding(.horizontal)
@@ -128,7 +143,7 @@ struct ViewTeamList: View {
                 .animation(.easeInOut(duration: 0.2), value: selectedConf)
             }
         }
-        .navigationTitle(league.abbr)
+        .navigationTitle(pickerTitle ?? league.abbr)
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchTeams() }
     }
@@ -137,7 +152,13 @@ struct ViewTeamList: View {
         isLoading = true
         errorMessage = nil
         do {
-            teams = try await teamService.fetchTeams(leagueId: league.id)
+            teams = try await teamService.fetchTeams(
+                leagueId: league.id,
+                conf: presetConf,
+                color: presetColor,
+                region: presetRegion,
+                category: presetCategory
+            )
         } catch {
             errorMessage = error.localizedDescription
         }

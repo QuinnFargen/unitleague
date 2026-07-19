@@ -174,6 +174,8 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
         q += " AND r.bettor_id = :bettor_id"
         query_params["bettor_id"] = bettor_id
 
+    q += " ORDER BY s.syndicate_id"
+
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]

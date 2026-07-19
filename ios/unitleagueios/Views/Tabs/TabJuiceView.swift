@@ -4,6 +4,7 @@ struct TabJuiceView: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId") private var bettorId: Int = 0
+    @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
 
     @State private var txnRecords: [Txn] = []
     @State private var syndicates: [Int: Syndicate] = [:]
@@ -285,9 +286,15 @@ struct TabJuiceView: View {
     private func loadJuiceSyndicates() async {
         guard bettorId != 0 else { return }
         juiceSyndicates = (try? await syndicateService.fetchSyndicate(bettorId: bettorId)) ?? []
-        if juiceSyndicateId == 0, let first = juiceSyndicates.first {
-            juiceSyndicateId = first.syndicateId
-            await fetchJuiceData()
+        if juiceSyndicateId == 0 {
+            if juiceSyndicates.contains(where: { $0.syndicateId == selectedSyndicateId }) {
+                juiceSyndicateId = selectedSyndicateId
+            } else if let first = juiceSyndicates.first {
+                juiceSyndicateId = first.syndicateId
+            }
+            if juiceSyndicateId != 0 {
+                await fetchJuiceData()
+            }
         }
     }
 

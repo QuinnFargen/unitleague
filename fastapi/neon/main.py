@@ -260,7 +260,6 @@ class EnhancedCreate(BaseModel):
     enhancement_id: int
     team_id: Optional[int] = 0
     level: Optional[int] = 1
-    week_id: int
     option_hash: str
 
 class SyndicateStart(BaseModel):

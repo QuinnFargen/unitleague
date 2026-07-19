@@ -7,7 +7,7 @@ struct Runner: Codable, Identifiable {
     let syndicateId: Int
     let role: String
     let active: Bool?
-    let balance: Int?
+    let balance: Double?
     let profileName: String?
     let symbol: String?
     let color: String?

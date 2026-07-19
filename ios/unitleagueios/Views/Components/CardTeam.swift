@@ -57,6 +57,7 @@ struct CardTeam: View {
 // MARK: - TeamMetaRow
 
 struct TeamMetaRow: View {
+    @EnvironmentObject private var theme: AppTheme
     let team: Team
     var level: Int? = nil
 
@@ -64,8 +65,16 @@ struct TeamMetaRow: View {
         let confDiv = [team.conf, team.div].compactMap { $0 }.joined(separator: " · ")
         HStack(spacing: 6) {
             if let level {
-                Text("\(level)")
-                Image(systemName: "nairasign.circle.fill")
+                HStack(spacing: 3) {
+                    Text("\(level)")
+                    Image(systemName: "nairasign.circle.fill")
+                }
+                .font(.caption.weight(.bold))
+                .foregroundStyle(theme.accent)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(theme.accent.opacity(0.15))
+                .clipShape(Capsule())
                 if !confDiv.isEmpty { Text("·").foregroundStyle(.tertiary) }
             }
             if !confDiv.isEmpty {

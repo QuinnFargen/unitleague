@@ -125,16 +125,16 @@ struct CardBet: View {
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
                     Text(String(format: "%.2f", bet.price))
                         .font(.title2.weight(.bold))
-                        .foregroundStyle(theme.accent)
+                        .foregroundStyle(won == nil ? theme.accent : theme.primaryText(colorScheme))
                     Text("x")
                         .font(.headline.weight(.bold))
                         .foregroundStyle(theme.accent)
                     if let u = bet.unit {
                         Text(txnWagerLabel(u))
-                            .font(.title2.weight(.bold))
+                            .font(.headline.weight(.bold))
                             .foregroundStyle(won == false ? theme.loss : .secondary)
                         Image(systemName: "nairasign.circle.fill")
-                            .font(.title2.weight(.bold))
+                            .font(.headline.weight(.bold))
                             .foregroundStyle(won == false ? theme.loss : .secondary)
                         if won == true {
                             Text("=")

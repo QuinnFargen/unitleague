@@ -273,7 +273,7 @@ private struct RunnerRow: View {
 
             HStack(spacing: 3) {
                 Image(systemName: "nairasign.circle.fill")
-                Text("\(runner.balance ?? 0)").fontWeight(.semibold)
+                Text(txnWagerLabel(runner.balance ?? 0)).fontWeight(.semibold)
             }
             .font(.subheadline)
             .foregroundStyle(theme.primaryText(colorScheme))

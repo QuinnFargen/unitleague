@@ -1,0 +1,41 @@
+id: all_dbt_daily
+namespace: neon_unit_league
+
+tasks:
+  - id: dbt
+    type: io.kestra.plugin.core.flow.WorkingDirectory
+    tasks:
+      - id: clone
+        type: io.kestra.plugin.git.Clone
+        url: https://github.com/QuinnFargen/unitleague
+        branch: main
+
+      - id: build
+        type: io.kestra.plugin.dbt.cli.DbtCLI
+        containerImage: ghcr.io/kestra-io/dbt-postgres:latest
+        taskRunner:
+          type: io.kestra.plugin.scripts.runner.docker.Docker
+          networkMode: compose_default
+        commands:
+          - dbt deps --project-dir dbt --profiles-dir .
+          - dbt run --project-dir dbt --profiles-dir . --select mart_game mart_league mart_sched mart_season mart_syndicate mart_team mart_team_season mart_txn mart_txn_enhanced mart_game_oddbest odd_enhance_options mart_game_oddall mart_runner odd_v_parlay odd_v_txn odd_v_enhance_options
+        profiles: |
+          unitleague:
+            outputs:
+              prod:
+                type: postgres
+                host: "{{secret('POSTGRES_NEON_HOST')}}"
+                port: 5432
+                dbname: "SPORT"
+                user: "{{ secret('POSTGRES_NEON_USERNAME') }}"
+                password: "{{ secret('POSTGRES_NEON_PASSWORD') }}"
+                schema: public
+                threads: 4
+                sslmode: "require"
+            target: prod
+
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 12 * * *"
+    recoverMissedSchedules: NONE

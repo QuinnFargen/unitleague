@@ -21,6 +21,7 @@ struct SheetSyndicateSelector: View {
     @Binding var leagueRank: Int
 
     @State private var syndicates: [Syndicate] = []
+    @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoading = false
     @State private var fetchError: String?
 
@@ -79,8 +80,19 @@ struct SheetSyndicateSelector: View {
                                         .foregroundStyle(iconColor)
                                         .frame(width: 40, height: 40)
 
-                                    Text(syndicate.name)
-                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(syndicate.name)
+                                            .foregroundStyle(theme.primaryText(colorScheme))
+
+                                        if let mine = myRunners[syndicate.syndicateId] {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: mine.symbol ?? "person.fill")
+                                                Text(mine.profileName ?? "")
+                                            }
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                        }
+                                    }
 
                                     Spacer()
 
@@ -112,9 +124,13 @@ struct SheetSyndicateSelector: View {
         isLoading = true
         fetchError = nil
         do {
-            let raw = try await SyndicateService().fetchSyndicate(bettorId: bettorId)
+            async let syndicatesTask = SyndicateService().fetchSyndicate(bettorId: bettorId)
+            async let runnersTask = RunnerService().fetchRunner(bettorId: bettorId)
+            let raw = try await syndicatesTask
             var seen = Set<Int>()
             syndicates = raw.filter { seen.insert($0.syndicateId).inserted }
+            let runners = (try? await runnersTask) ?? []
+            myRunners = Dictionary(runners.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first })
         } catch {
             fetchError = error.localizedDescription
         }

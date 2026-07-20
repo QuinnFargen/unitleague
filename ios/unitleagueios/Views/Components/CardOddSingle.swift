@@ -5,6 +5,7 @@ struct CardOddSingle: View {
     @Environment(\.colorScheme) private var colorScheme
     let odd: Odds
     let betType: String
+    let onBetSelected: (SelectedBet) -> Void
 
     private let colW: CGFloat = 58
 
@@ -48,29 +49,41 @@ struct CardOddSingle: View {
     }
 
     @ViewBuilder
-    private func priceCapsule(_ price: Double?, subtitle: String = "", betHash: String? = nil, won: Bool? = nil) -> some View {
+    private func priceCapsule(_ price: Double?, subtitle: String = "", betHash: String? = nil, won: Bool? = nil, onTap: (() -> Void)? = nil) -> some View {
         if let p = price {
-            VStack(spacing: 1) {
-                Text(formatPrice(p))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                if !subtitle.isEmpty {
-                    Text(subtitle)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+            if betHash != nil, let onTap {
+                Button(action: onTap) {
+                    priceCapsuleLabel(p, subtitle: subtitle, betHash: betHash, won: won)
                 }
+                .buttonStyle(.plain)
+            } else {
+                priceCapsuleLabel(p, subtitle: subtitle, betHash: betHash, won: won)
             }
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .frame(width: colW)
-            .background(oddsCapsuleColor(p, betHash: betHash, won: won))
-            .clipShape(Capsule())
         } else {
             Text("—")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(width: colW)
         }
+    }
+
+    @ViewBuilder
+    private func priceCapsuleLabel(_ price: Double, subtitle: String, betHash: String?, won: Bool?) -> some View {
+        VStack(spacing: 1) {
+            Text(formatPrice(price))
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+            if !subtitle.isEmpty {
+                Text(subtitle)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .frame(width: colW)
+        .background(oddsCapsuleColor(price, betHash: betHash, won: won))
+        .clipShape(Capsule())
     }
 
     var body: some View {
@@ -86,11 +99,15 @@ struct CardOddSingle: View {
         let awayMLPct: String
         let awayBetHash: String?
         let awayWon: Bool?
+        let awayPoints: Double?
+        let awaySide: String
         let homePrice: Double?
         let homeBetLabel: String
         let homeMLPct: String
         let homeBetHash: String?
         let homeWon: Bool?
+        let homePoints: Double?
+        let homeSide: String
     }
 
     private func singleData() -> SingleData {
@@ -98,32 +115,33 @@ struct CardOddSingle: View {
         case "ML":
             return SingleData(
                 awayPrice: odd.mlAwayPrice, awayBetLabel: "", awayMLPct: impliedPct(odd.mlAwayPrice),
-                awayBetHash: odd.mlAwayBetHash, awayWon: odd.mlAwayWon,
+                awayBetHash: odd.mlAwayBetHash, awayWon: odd.mlAwayWon, awayPoints: nil, awaySide: "Away",
                 homePrice: odd.mlHomePrice, homeBetLabel: "", homeMLPct: impliedPct(odd.mlHomePrice),
-                homeBetHash: odd.mlHomeBetHash, homeWon: odd.mlHomeWon
+                homeBetHash: odd.mlHomeBetHash, homeWon: odd.mlHomeWon, homePoints: nil, homeSide: "Home"
             )
         case "SPR":
             return SingleData(
                 awayPrice: odd.sprAwayPrice,
                 awayBetLabel: odd.sprAwayPoints.map(formatPoints) ?? "",
                 awayMLPct: impliedPct(odd.sprAwayPrice),
-                awayBetHash: odd.sprAwayBetHash, awayWon: odd.sprAwayWon,
+                awayBetHash: odd.sprAwayBetHash, awayWon: odd.sprAwayWon, awayPoints: odd.sprAwayPoints, awaySide: "Away",
                 homePrice: odd.sprHomePrice,
                 homeBetLabel: odd.sprHomePoints.map(formatPoints) ?? "",
                 homeMLPct: impliedPct(odd.sprHomePrice),
-                homeBetHash: odd.sprHomeBetHash, homeWon: odd.sprHomeWon
+                homeBetHash: odd.sprHomeBetHash, homeWon: odd.sprHomeWon, homePoints: odd.sprHomePoints, homeSide: "Home"
             )
         case "O/U":
             let total = (odd.overPoints ?? odd.underPoints).map(formatPoints) ?? ""
+            let pts = odd.overPoints ?? odd.underPoints
             return SingleData(
                 awayPrice: odd.overPrice, awayBetLabel: "O \(total)", awayMLPct: impliedPct(odd.overPrice),
-                awayBetHash: odd.overBetHash, awayWon: odd.overWon,
+                awayBetHash: odd.overBetHash, awayWon: odd.overWon, awayPoints: pts, awaySide: "Over",
                 homePrice: odd.underPrice, homeBetLabel: "U \(total)", homeMLPct: impliedPct(odd.underPrice),
-                homeBetHash: odd.underBetHash, homeWon: odd.underWon
+                homeBetHash: odd.underBetHash, homeWon: odd.underWon, homePoints: pts, homeSide: "Under"
             )
         default:
-            return SingleData(awayPrice: nil, awayBetLabel: "", awayMLPct: "", awayBetHash: nil, awayWon: nil,
-                              homePrice: nil, homeBetLabel: "", homeMLPct: "", homeBetHash: nil, homeWon: nil)
+            return SingleData(awayPrice: nil, awayBetLabel: "", awayMLPct: "", awayBetHash: nil, awayWon: nil, awayPoints: nil, awaySide: "",
+                              homePrice: nil, homeBetLabel: "", homeMLPct: "", homeBetHash: nil, homeWon: nil, homePoints: nil, homeSide: "")
         }
     }
 
@@ -137,7 +155,12 @@ struct CardOddSingle: View {
                 .frame(width: 28)
 
             VStack(spacing: 2) {
-                priceCapsule(d.awayPrice, betHash: d.awayBetHash, won: d.awayWon)
+                priceCapsule(d.awayPrice, betHash: d.awayBetHash, won: d.awayWon) {
+                    guard let p = d.awayPrice, let h = d.awayBetHash else { return }
+                    onBetSelected(SelectedBet(betHash: h, type: betType, side: d.awaySide, price: p, points: d.awayPoints,
+                                              awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                              gameTime: odd.gameTime, gameDate: odd.gameDt))
+                }
                 if !d.awayBetLabel.isEmpty {
                     Text(d.awayBetLabel)
                         .font(.caption2)
@@ -169,7 +192,12 @@ struct CardOddSingle: View {
             }
 
             VStack(spacing: 2) {
-                priceCapsule(d.homePrice, betHash: d.homeBetHash, won: d.homeWon)
+                priceCapsule(d.homePrice, betHash: d.homeBetHash, won: d.homeWon) {
+                    guard let p = d.homePrice, let h = d.homeBetHash else { return }
+                    onBetSelected(SelectedBet(betHash: h, type: betType, side: d.homeSide, price: p, points: d.homePoints,
+                                              awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                              gameTime: odd.gameTime, gameDate: odd.gameDt))
+                }
                 if !d.homeBetLabel.isEmpty {
                     Text(d.homeBetLabel)
                         .font(.caption2)
@@ -182,9 +210,9 @@ struct CardOddSingle: View {
 
 #Preview("CardOddSingle") {
     VStack(spacing: 12) {
-        CardOddSingle(odd: Mock.odds, betType: "ML")
-        CardOddSingle(odd: Mock.odds, betType: "SPR")
-        CardOddSingle(odd: Mock.odds, betType: "O/U")
+        CardOddSingle(odd: Mock.odds, betType: "ML") { _ in }
+        CardOddSingle(odd: Mock.odds, betType: "SPR") { _ in }
+        CardOddSingle(odd: Mock.odds, betType: "O/U") { _ in }
     }
     .padding()
     .environmentObject(AppTheme())

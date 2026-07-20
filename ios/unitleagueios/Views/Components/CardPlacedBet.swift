@@ -22,6 +22,34 @@ func txnWagerLabel(_ units: Double) -> String {
     units == 0.5 ? "½" : String(format: "%.4g", units)
 }
 
+func betLabel(for bet: SelectedBet) -> String {
+    let teamSide = bet.team ?? (bet.side == "Away" ? bet.awayAbbr : (bet.side == "Home" ? bet.homeAbbr : bet.side))
+    switch bet.type {
+    case "SPR":
+        if let p = bet.points {
+            let s = p == p.rounded()
+                ? (p >= 0 ? "+\(Int(p))" : "\(Int(p))")
+                : String(format: p >= 0 ? "+%.1f" : "%.1f", p)
+            return "\(teamSide) \(s)"
+        }
+        return "\(teamSide) SPR"
+    case "O/U":
+        if let p = bet.points {
+            let s = p == p.rounded() ? "\(Int(p))" : String(format: "%.1f", p)
+            return "\(teamSide) \(s)"
+        }
+        return "\(teamSide) O/U"
+    case "OVER", "UNDER":
+        if let p = bet.points {
+            let s = p == p.rounded() ? "\(Int(p))" : String(format: "%.1f", p)
+            return "\(bet.type) \(s)"
+        }
+        return bet.type
+    default:
+        return bet.type.isEmpty ? teamSide : "\(teamSide) \(bet.type)"
+    }
+}
+
 // MARK: - CardPlacedBet
 
 struct CardPlacedBet: View {

@@ -227,19 +227,19 @@ struct TabBetsView: View {
                                                     CardGameOdds(odd: odd) { bet in selectedBet = bet }
                                                 }
                                             } else {
-                                                NavigationLink {
-                                                    ViewGameDetail(
-                                                        gameId: odd.gameId,
-                                                        home: odd.homeAbbr,
-                                                        away: odd.awayAbbr,
-                                                        homeTeamId: odd.homeTeamId,
-                                                        awayTeamId: odd.awayTeamId,
-                                                        leagueId: odd.leagueId
-                                                    )
-                                                } label: {
-                                                    CardOddSingle(odd: odd, betType: selectedBetType)
+                                                ZStack {
+                                                    NavigationLink {
+                                                        ViewGameDetail(
+                                                            gameId: odd.gameId,
+                                                            home: odd.homeAbbr,
+                                                            away: odd.awayAbbr,
+                                                            homeTeamId: odd.homeTeamId,
+                                                            awayTeamId: odd.awayTeamId,
+                                                            leagueId: odd.leagueId
+                                                        )
+                                                    } label: { Color.clear }
+                                                    CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
                                                 }
-                                                .buttonStyle(.plain)
                                             }
                                         }
                                     }

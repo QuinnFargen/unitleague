@@ -237,6 +237,7 @@ class BettorProfile(BaseModel):
     profile_name: Optional[str] = None
     symbol: Optional[str] = None
     color: Optional[str] = None
+    apple_email: Optional[str] = None
 
 class BettorSignin(BaseModel):
     bettor_id: Optional[int] = None
@@ -269,6 +270,12 @@ class SyndicateStart(BaseModel):
 
 class SyndicateUpdate(BaseModel):
     name: Optional[str] = None
+    symbol: Optional[str] = None
+    color: Optional[str] = None
+    config: Optional[dict] = None
+
+class RunnerProfile(BaseModel):
+    profile_name: Optional[str] = None
     symbol: Optional[str] = None
     color: Optional[str] = None
 
@@ -532,6 +539,9 @@ def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
     if not updates:
         raise HTTPException(status_code=400, detail="No fields provided to update")
 
+    if "config" in updates:
+        updates["config"] = json.dumps(updates["config"])
+
     set_clause = ", ".join(f"{k} = :{k}" for k in updates)
     updates["syndicate_id"] = syndicate_id
 
@@ -541,6 +551,23 @@ def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
         row = conn.execute(text(q), updates).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Syndicate not found")
+        return dict(row._mapping)
+
+@app.patch("/odd/runner/{runner_id}")
+def set_runner_profile(runner_id: int, profile: RunnerProfile):
+    updates = {k: v for k, v in profile.model_dump().items() if v is not None}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields provided to update")
+
+    set_clause = ", ".join(f"{k} = :{k}" for k in updates)
+    updates["runner_id"] = runner_id
+
+    q = f"UPDATE odd.runner SET {set_clause} WHERE runner_id = :runner_id RETURNING *"
+
+    with engine.begin() as conn:
+        row = conn.execute(text(q), updates).fetchone()
+        if row is None:
+            raise HTTPException(status_code=404, detail="Runner not found")
         return dict(row._mapping)
 
 

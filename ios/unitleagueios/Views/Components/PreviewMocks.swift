@@ -15,7 +15,8 @@ extension Syndicate {
         symbol: String? = nil,
         color: String? = nil,
         startUnits: Int? = nil,
-        isStarted: Bool = false
+        isStarted: Bool = false,
+        config: SyndicateConfig? = nil
     ) {
         self.syndicateId = syndicateId
         self.name = name
@@ -28,6 +29,7 @@ extension Syndicate {
         self.color = color
         self.startUnits = startUnits
         self.isStarted = isStarted
+        self.config = config
     }
 }
 

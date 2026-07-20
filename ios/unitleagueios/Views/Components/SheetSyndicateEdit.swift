@@ -12,6 +12,7 @@ struct SheetSyndicateEdit: View {
     @State private var isEditingName = false
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var showingSymbolPicker = false
 
     init(syndicate: Binding<Syndicate>) {
         _syndicate = syndicate
@@ -27,10 +28,24 @@ struct SheetSyndicateEdit: View {
 
                 ScrollView {
                     VStack(spacing: 32) {
-                        Image(systemName: selectedSymbol)
-                            .font(.system(size: 72))
-                            .foregroundStyle(selectedColor.color)
-                            .padding(.top, 32)
+                        Button {
+                            showingSymbolPicker = true
+                        } label: {
+                            ZStack(alignment: .bottomTrailing) {
+                                Image(systemName: selectedSymbol)
+                                    .font(.system(size: 72))
+                                    .foregroundStyle(selectedColor.color)
+                                    .frame(width: 108, height: 108)
+
+                                Image(systemName: "pencil.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(selectedColor.color)
+                                    .background(Circle().fill(theme.appBackground(colorScheme)))
+                                    .clipShape(Circle())
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 32)
 
                         if isEditingName {
                             HStack(spacing: 12) {
@@ -69,36 +84,6 @@ struct SheetSyndicateEdit: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .padding(.top, 4)
-                        }
-
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Syndicate Symbol")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 32)
-
-                            HStack(spacing: 14) {
-                                ForEach(SyndicateOption.symbols, id: \.self) { symbol in
-                                    Button {
-                                        selectedSymbol = symbol
-                                    } label: {
-                                        Image(systemName: symbol)
-                                            .font(.title2)
-                                            .foregroundStyle(selectedSymbol == symbol ? theme.primaryText(colorScheme) : .secondary)
-                                            .frame(width: 52, height: 52)
-                                            .background(selectedSymbol == symbol ? theme.cardBackgroundProminent(colorScheme) : Color.clear)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(
-                                                        selectedSymbol == symbol ? theme.primaryText(colorScheme).opacity(0.4) : Color.clear,
-                                                        lineWidth: 1.5
-                                                    )
-                                            )
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 20)
                         }
 
                         VStack(alignment: .leading, spacing: 10) {
@@ -165,6 +150,14 @@ struct SheetSyndicateEdit: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
+            }
+            .sheet(isPresented: $showingSymbolPicker) {
+                SheetSymbolPicker(
+                    selectedSymbol: $selectedSymbol,
+                    symbols: SyndicateOption.symbols,
+                    accentColor: selectedColor.color,
+                    title: "Syndicate Symbol"
+                )
             }
         }
     }

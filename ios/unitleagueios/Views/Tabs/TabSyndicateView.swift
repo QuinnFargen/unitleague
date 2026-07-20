@@ -124,7 +124,31 @@ enum SyndicateOption {
         "bitcoinsign.bank.building.fill",
         "brain.filled.head.profile",
         "puzzlepiece.fill",
-        "lock.fill"
+        "lock.fill",
+        "person.2.fill",
+        "building.2.fill",
+        "building.columns.fill",
+        "banknote.fill",
+        "chart.line.uptrend.xyaxis",
+        "chart.bar.fill",
+        "briefcase.fill",
+        "globe",
+        "network",
+        "shield.lefthalf.filled",
+        "flag.fill",
+        "star.fill",
+        "crown.fill",
+        "trophy.fill",
+        "dollarsign.circle.fill",
+        "sportscourt.fill",
+        "gearshape.fill",
+        "bolt.fill",
+        "flame.fill",
+        "target",
+        "checkmark.seal.fill",
+        "key.fill",
+        "globe.americas.fill",
+        "flame.circle.fill"
     ]
 }
 

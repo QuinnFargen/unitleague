@@ -23,6 +23,16 @@ class EnhancementService {
         return try JSONDecoder().decode([Enhanced].self, from: data)
     }
 
+    func fetchEnhancements(type: String? = nil, active: Bool = true) async throws -> [EnhancementDef] {
+        var components = URLComponents(string: "\(APIClient.baseURL)/odd/enhancement")!
+        var queryItems: [URLQueryItem] = [URLQueryItem(name: "active", value: "\(active)")]
+        if let type { queryItems.append(URLQueryItem(name: "enhancement_type", value: type)) }
+        components.queryItems = queryItems
+        guard let url = components.url else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([EnhancementDef].self, from: data)
+    }
+
     func chooseEnhancement(bettorId: Int, syndicateId: Int, enhancementId: Int, teamId: Int, level: Int, optionHash: String) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/enhanced") else { throw URLError(.badURL) }
         var request = URLRequest(url: url)

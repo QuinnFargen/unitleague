@@ -55,7 +55,7 @@ class SyndicateService {
         return try JSONDecoder().decode(StartResponse.self, from: data).syndicate
     }
 
-    func updateSyndicate(syndicateId: Int, name: String, symbol: String? = nil, color: String? = nil) async throws -> Syndicate {
+    func updateSyndicate(syndicateId: Int, name: String? = nil, symbol: String? = nil, color: String? = nil, config: SyndicateConfig? = nil) async throws -> Syndicate {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/\(syndicateId)") else {
             throw URLError(.badURL)
         }
@@ -63,9 +63,14 @@ class SyndicateService {
         request.httpMethod = "PATCH"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        var body: [String: Any] = ["name": name]
+        var body: [String: Any] = [:]
+        if let name = name { body["name"] = name }
         if let sym = symbol { body["symbol"] = sym }
         if let col = color  { body["color"] = col }
+        if let config = config {
+            let configData = try JSONEncoder().encode(config)
+            body["config"] = try JSONSerialization.jsonObject(with: configData)
+        }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, _) = try await URLSession.shared.data(for: request)

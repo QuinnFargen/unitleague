@@ -32,7 +32,7 @@ class BettorService {
         }
     }
 
-    func updateProfile(bettorId: Int, profileName: String?, symbol: String?, color: String?) async throws {
+    func updateProfile(bettorId: Int, profileName: String?, symbol: String?, color: String?, appleEmail: String? = nil) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/\(bettorId)/profile") else {
             throw URLError(.badURL)
         }
@@ -44,6 +44,7 @@ class BettorService {
         if let name = profileName { body["profile_name"] = name }
         if let sym = symbol       { body["symbol"] = sym }
         if let col = color        { body["color"] = col }
+        if let email = appleEmail { body["apple_email"] = email }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (_, response) = try await URLSession.shared.data(for: request)

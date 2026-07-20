@@ -16,11 +16,18 @@ struct ViewSyndicate: View {
     @State private var fetchError: String?
     @State private var showingEdit = false
     @State private var showingStartConfirm = false
+    @State private var showingRules = false
+    @State private var showingRunnerEdit = false
     @State private var isStarting = false
     @State private var startError: String?
 
     private var currentRunner: Runner? { runners.first(where: { $0.bettorId == bettorId }) }
     private var isAdmin: Bool { currentRunner?.role == "admin" }
+
+    private var currentRunnerBinding: Binding<Runner>? {
+        guard let idx = runners.firstIndex(where: { $0.bettorId == bettorId }) else { return nil }
+        return $runners[idx]
+    }
 
     private var sortedRunners: [Runner] {
         runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
@@ -101,29 +108,63 @@ struct ViewSyndicate: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                let isSelected = selectedSyndicateId == syndicate.syndicateId
-                Button {
-                    if isSelected {
-                        selectedSyndicateId = 0
-                        leagueSymbol = "person.circle.fill"
-                        leagueColorName = AccentOption.allCases[0].rawValue
-                        leagueRank = 0
-                    } else {
-                        selectedSyndicateId = syndicate.syndicateId
-                        leagueSymbol = syndicate.symbol ?? "person.3.fill"
-                        leagueColorName = syndicate.color ?? AccentOption.allCases[0].rawValue
-                        leagueRank = rankInSyndicate()
+                HStack(spacing: 8) {
+                    Button {
+                        showingRules = true
+                    } label: {
+                        Text("Rules")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(theme.cardBackgroundProminent(colorScheme))
+                            .clipShape(Capsule())
                     }
-                } label: {
-                    Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .font(.title3)
-                        .foregroundStyle(isSelected ? theme.accent : .secondary)
+
+                    Button {
+                        showingRunnerEdit = true
+                    } label: {
+                        Text("Runner")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(theme.cardBackgroundProminent(colorScheme))
+                            .clipShape(Capsule())
+                    }
+
+                    let isSelected = selectedSyndicateId == syndicate.syndicateId
+                    Button {
+                        if isSelected {
+                            selectedSyndicateId = 0
+                            leagueSymbol = "person.circle.fill"
+                            leagueColorName = AccentOption.allCases[0].rawValue
+                            leagueRank = 0
+                        } else {
+                            selectedSyndicateId = syndicate.syndicateId
+                            leagueSymbol = syndicate.symbol ?? "person.3.fill"
+                            leagueColorName = syndicate.color ?? AccentOption.allCases[0].rawValue
+                            leagueRank = rankInSyndicate()
+                        }
+                    } label: {
+                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                            .font(.title3)
+                            .foregroundStyle(isSelected ? theme.accent : .secondary)
+                    }
                 }
             }
         }
         .task { await load() }
         .sheet(isPresented: $showingEdit) {
             SheetSyndicateEdit(syndicate: $syndicate)
+        }
+        .sheet(isPresented: $showingRules) {
+            SheetSyndicateRules(syndicate: $syndicate, isAdmin: isAdmin)
+        }
+        .sheet(isPresented: $showingRunnerEdit) {
+            if let binding = currentRunnerBinding {
+                SheetEditProfile(runner: binding)
+            }
         }
         .confirmationDialog(
             "Start the league?",

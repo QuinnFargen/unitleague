@@ -54,3 +54,22 @@ struct Enhanced: Codable, Identifiable {
         case level
     }
 }
+
+struct EnhancementDef: Codable, Identifiable {
+    var id: Int { enhancementId }
+    let enhancementId: Int
+    let enhancementType: String
+    let name: String
+    let description: String?
+    let symbol: String?
+    let betType: String?
+    let active: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case enhancementId = "enhancement_id"
+        case enhancementType = "enhancement_type"
+        case name, description, symbol
+        case betType = "bet_type"
+        case active
+    }
+}

@@ -11,6 +11,7 @@ struct ViewSyndicate: View {
 
     @State var syndicate: Syndicate
     @State private var runners: [Runner] = []
+    @State private var activeBets: [Txn] = []
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingEdit = false
@@ -52,28 +53,51 @@ struct ViewSyndicate: View {
                             .foregroundStyle(.secondary)
                             .padding(.top, 20)
                     } else if !sortedRunners.isEmpty {
-                        VStack(spacing: 0) {
-                            ForEach(Array(sortedRunners.enumerated()), id: \.element.id) { index, runner in
-                                RunnerRow(
-                                    rank: index + 1,
-                                    runner: runner,
-                                    isCurrentUser: runner.bettorId == bettorId,
-                                    ordinal: ordinal
-                                )
-                                if index < sortedRunners.count - 1 {
-                                    Divider().padding(.horizontal, 16)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Standing")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+
+                            VStack(spacing: 0) {
+                                ForEach(Array(sortedRunners.enumerated()), id: \.element.id) { index, runner in
+                                    RunnerRow(
+                                        rank: index + 1,
+                                        runner: runner,
+                                        isCurrentUser: runner.bettorId == bettorId,
+                                        ordinal: ordinal
+                                    )
+                                    if index < sortedRunners.count - 1 {
+                                        Divider().padding(.horizontal, 16)
+                                    }
+                                }
+                            }
+                            .background(theme.cardBackground(colorScheme))
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .padding(.horizontal, 16)
+                    }
+
+                    if !activeBets.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Bets")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+
+                            VStack(spacing: 8) {
+                                ForEach(activeBets) { txn in
+                                    CardBetSlim(txn: txn, runner: runners.first(where: { $0.bettorId == txn.bettorId }))
                                 }
                             }
                         }
-                        .background(theme.cardBackground(colorScheme))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
                         .padding(.horizontal, 16)
                     }
                 }
                 .padding(.bottom, 32)
             }
         }
-        .navigationTitle(syndicate.name)
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -219,7 +243,10 @@ struct ViewSyndicate: View {
         isLoading = true
         fetchError = nil
         do {
-            runners = try await RunnerService().fetchRunner(syndicateId: syndicate.syndicateId)
+            async let runnersTask = RunnerService().fetchRunner(syndicateId: syndicate.syndicateId)
+            async let betsTask = TxnService().fetchActiveBets(syndicateId: syndicate.syndicateId)
+            runners = try await runnersTask
+            activeBets = (try? await betsTask) ?? []
             if selectedSyndicateId == syndicate.syndicateId {
                 leagueRank = rankInSyndicate()
             }
@@ -240,6 +267,16 @@ private struct RunnerRow: View {
     let isCurrentUser: Bool
     let ordinal: (Int) -> String
 
+    private func badge(_ text: String, prominent: Bool) -> some View {
+        Text(text)
+            .font(.caption2.weight(.semibold))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .foregroundStyle(prominent ? theme.accent : .secondary)
+            .background(prominent ? theme.accent.opacity(0.15) : theme.cardBackgroundProminent(colorScheme))
+            .clipShape(Capsule())
+    }
+
     var body: some View {
         HStack(spacing: 14) {
             Text(ordinal(rank))
@@ -256,17 +293,12 @@ private struct RunnerRow: View {
                     .font(.body).fontWeight(isCurrentUser ? .semibold : .regular)
                     .foregroundStyle(theme.primaryText(colorScheme))
 
-                if runner.role == "admin" {
-                    Text("admin")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(theme.accent)
+                if runner.role == "admin" || isCurrentUser {
+                    HStack(spacing: 4) {
+                        if runner.role == "admin" { badge("admin", prominent: true) }
+                        if isCurrentUser { badge("you", prominent: runner.role != "admin") }
+                    }
                 }
-            }
-
-            if isCurrentUser {
-                Text("(you)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
             Spacer()

@@ -388,6 +388,23 @@ def join_syndicate(code: str, body: RunnerCreate):
 
     return dict(runner_row._mapping)
 
+@app.get("/odd/enhancement")
+def get_enhancement(enhancement_type: str = Query(None), active: bool = Query(True)):
+    q = "SELECT * FROM odd.enhancement WHERE 1=1"
+    query_params = {}
+
+    if active is not None:
+        q += " AND active = :active"
+        query_params["active"] = active
+
+    if enhancement_type:
+        q += " AND enhancement_type = :enhancement_type"
+        query_params["enhancement_type"] = enhancement_type
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @app.get("/odd/enhanced")
 def get_enhanced(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
     q = "SELECT * FROM odd.v_enhanced WHERE 1=1"

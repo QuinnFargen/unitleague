@@ -39,34 +39,6 @@ struct CardBet: View {
         return dateOutputFmt.string(from: d)
     }
 
-    private var betLabel: String {
-        let teamSide = bet.team ?? (bet.side == "Away" ? bet.awayAbbr : (bet.side == "Home" ? bet.homeAbbr : bet.side))
-        switch bet.type {
-        case "SPR":
-            if let p = bet.points {
-                let s = p == p.rounded()
-                    ? (p >= 0 ? "+\(Int(p))" : "\(Int(p))")
-                    : String(format: p >= 0 ? "+%.1f" : "%.1f", p)
-                return "\(teamSide) \(s)"
-            }
-            return "\(teamSide) SPR"
-        case "O/U":
-            if let p = bet.points {
-                let s = p == p.rounded() ? "\(Int(p))" : String(format: "%.1f", p)
-                return "\(teamSide) \(s)"
-            }
-            return "\(teamSide) O/U"
-        case "OVER", "UNDER":
-            if let p = bet.points {
-                let s = p == p.rounded() ? "\(Int(p))" : String(format: "%.1f", p)
-                return "\(bet.type) \(s)"
-            }
-            return bet.type
-        default:
-            return bet.type.isEmpty ? teamSide : "\(teamSide) \(bet.type)"
-        }
-    }
-
     private func teamCapsule(_ abbr: String) -> some View {
         Text(abbr)
             .padding(.horizontal, 8)
@@ -119,7 +91,7 @@ struct CardBet: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
-                Text(betLabel)
+                Text(betLabel(for: bet))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
                 HStack(alignment: .firstTextBaseline, spacing: 2) {

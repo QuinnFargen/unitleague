@@ -14,6 +14,7 @@ struct TabProfileView: View {
     @AppStorage("appleEmail")          private var appleEmail: String      = ""
     @State private var authError: String?
     @State private var showingEditProfile = false
+    @State private var showingEducation = false
 
     @State private var completedRecords: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
@@ -51,6 +52,9 @@ struct TabProfileView: View {
             .tabToolbar()
             .sheet(isPresented: $showingEditProfile) {
                 SheetEditProfile()
+            }
+            .sheet(isPresented: $showingEducation) {
+                SheetEducation()
             }
             .onAppear {
                 if !appleUserName.isEmpty && !profileSaved {
@@ -175,6 +179,31 @@ struct TabProfileView: View {
                 .padding()
                 .background(theme.cardBackground(colorScheme))
                 .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Components")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(theme.primaryText(colorScheme))
+
+                    Button {
+                        showingEducation = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "graduationcap.fill")
+                                .foregroundStyle(theme.accent)
+                            Text("Education")
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding()
+                        .background(theme.cardBackground(colorScheme))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
 
                 VStack(alignment: .leading, spacing: 10) {
                     HStack {

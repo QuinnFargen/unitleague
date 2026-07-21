@@ -224,3 +224,9 @@ input.csv
 /db/seed/src.the_odds_api_OLD.csv
 dbt/.env.neon
 /dbt/logs
+
+
+# Xcode per-user state
+xcuserdata/
+**/xcuserdata/
+*.xcuserstate

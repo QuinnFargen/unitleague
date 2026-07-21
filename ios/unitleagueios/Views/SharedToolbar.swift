@@ -145,7 +145,10 @@ struct TabToolbar: ViewModifier {
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int    = 0
     @AppStorage("leagueRank")          private var leagueRank: Int             = 0
     @State private var showingSyndicateSelector = false
-    @State private var showingBookmarks = false
+    @State private var showingBalances = false
+    @State private var currentRunner: Runner?
+
+    private let runnerService = RunnerService()
 
     private func rankLabel(_ rank: Int) -> String {
         switch rank {
@@ -177,12 +180,16 @@ struct TabToolbar: ViewModifier {
         .fixedSize()
     }
 
+    private var displayedBalance: Int {
+        selectedSyndicateId == 0 ? userUnits : Int((currentRunner?.balance ?? 0).rounded())
+    }
+
     private var profileTrailingItem: some View {
-        Button { showingBookmarks = true } label: {
+        Button { showingBalances = true } label: {
             HStack(spacing: 10) {
                 HStack(spacing: 3) {
                     Image(systemName: "nairasign.circle.fill")
-                    Text("\(userUnits)").fontWeight(.semibold)
+                    Text("\(displayedBalance)").fontWeight(.semibold)
                 }
                 .font(.subheadline)
                 .foregroundStyle(theme.primaryText(colorScheme))
@@ -227,9 +234,15 @@ struct TabToolbar: ViewModifier {
                     leagueRank: $leagueRank
                 )
             }
-            .sheet(isPresented: $showingBookmarks) {
-                SheetBookmarks()
+            .sheet(isPresented: $showingBalances) {
+                SheetSyndicateBalances(bettorId: bettorId)
             }
+            .task(id: "\(bettorId)-\(selectedSyndicateId)") { await loadRunner() }
+    }
+
+    private func loadRunner() async {
+        guard bettorId != 0, selectedSyndicateId != 0 else { currentRunner = nil; return }
+        currentRunner = (try? await runnerService.fetchRunner(bettorId: bettorId, syndicateId: selectedSyndicateId))?.first
     }
 }
 

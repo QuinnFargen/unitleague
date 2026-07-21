@@ -15,11 +15,13 @@ struct PlacedBet: Codable, Identifiable {
     let bettorId: Int
     let syndicateId: Int
     let parlayGroupId: UUID? // nil = straight bet; shared UUID identifies parlay legs
+    let homeTeamId: Int?
+    let awayTeamId: Int?
 
     init(id: UUID = UUID(), betHash: String, type: String, side: String, price: Double,
          points: Double?, units: Double, awayAbbr: String, homeAbbr: String,
          gameTime: String?, gameDate: String?, bettorId: Int, syndicateId: Int,
-         parlayGroupId: UUID? = nil) {
+         parlayGroupId: UUID? = nil, homeTeamId: Int? = nil, awayTeamId: Int? = nil) {
         self.id            = id
         self.betHash       = betHash
         self.type          = type
@@ -34,6 +36,8 @@ struct PlacedBet: Codable, Identifiable {
         self.bettorId      = bettorId
         self.syndicateId   = syndicateId
         self.parlayGroupId = parlayGroupId
+        self.homeTeamId    = homeTeamId
+        self.awayTeamId    = awayTeamId
     }
 
     var displayLabel: String {
@@ -62,7 +66,9 @@ extension PlacedBet {
             gameDate:      selected.gameDate,
             bettorId:      bettorId,
             syndicateId:   syndicateId,
-            parlayGroupId: parlayGroupId
+            parlayGroupId: parlayGroupId,
+            homeTeamId:    selected.homeTeamId,
+            awayTeamId:    selected.awayTeamId
         )
     }
 }

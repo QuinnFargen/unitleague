@@ -13,7 +13,6 @@ struct SheetConfirmParlay: View {
     @EnvironmentObject private var betStore: BetStore
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("unitBalance") private var unitBalance: Int = 100
 
     let currentBet: SelectedBet?
     let bettorId: Int
@@ -28,6 +27,7 @@ struct SheetConfirmParlay: View {
 
     @State private var runner: Runner?
     @State private var syndicate: Syndicate?
+    @State private var enhancements: [Enhanced] = []
     @State private var localSyndicateId: Int = 0
     @State private var showingSyndicateSelector = false
     @State private var selectorSymbol: String = "house.fill"
@@ -37,16 +37,38 @@ struct SheetConfirmParlay: View {
     private let txnService = TxnService()
     private let runnerService = RunnerService()
     private let syndicateService = SyndicateService()
+    private let enhancementService = EnhancementService()
 
     private var selectedLegs: [PlacedBet] {
         allLegs.filter { selectedIds.contains($0.id) }
     }
 
-    private var combinedOdds: Double {
-        selectedLegs.isEmpty ? 1.0 : selectedLegs.map(\.price).reduce(1.0, *)
+    private func teamId(for leg: PlacedBet) -> Int? {
+        leg.side == "Away" ? leg.awayTeamId : (leg.side == "Home" ? leg.homeTeamId : nil)
     }
 
-    private var potentialReturn: Double { wagerUnits * combinedOdds }
+    private func clvMultiplier(for leg: PlacedBet) -> Double {
+        let clv = enhancements.first { $0.enhancementType == "clv" && $0.name == leg.type }
+        return Enhanced.clvMultiplier(level: clv?.level)
+    }
+
+    private var totalTeamBonus: Int {
+        var seen = Set<Int>()
+        var total = 0
+        for leg in selectedLegs {
+            guard let tid = teamId(for: leg), seen.insert(tid).inserted else { continue }
+            total += enhancements.first { $0.enhancementType == "team" && $0.teamId == tid }?.level ?? 0
+        }
+        return total
+    }
+
+    private var combinedOdds: Double {
+        selectedLegs.isEmpty ? 1.0 : selectedLegs.map { $0.price * clvMultiplier(for: $0) }.reduce(1.0, *)
+    }
+
+    private var totalRiskedUnits: Double { wagerUnits + Double(totalTeamBonus) }
+
+    private var potentialReturn: Double { totalRiskedUnits * combinedOdds }
 
     private var impliedPct: String {
         guard combinedOdds > 0 else { return "—" }
@@ -76,7 +98,8 @@ struct SheetConfirmParlay: View {
                                     else          { selectedIds.insert(leg.id) }
                                 } label: {
                                     HStack(spacing: 12) {
-                                        CardBet(bet: SelectedBet(placedBet: leg))
+                                        let legMultiplier = clvMultiplier(for: leg)
+                                        CardBet(bet: SelectedBet(placedBet: leg), priceMultiplier: legMultiplier != 1.0 ? legMultiplier : nil)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: 14)
                                                     .strokeBorder(
@@ -94,30 +117,21 @@ struct SheetConfirmParlay: View {
                             }
                         }
 
-                        // Syndicate + Runner identity
-                        HStack(spacing: 0) {
-                            Button {
-                                showingSyndicateSelector = true
-                            } label: {
-                                HStack(spacing: 8) {
-                                    Image(systemName: syndicate?.symbol ?? "house.fill")
-                                        .font(.body)
-                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                    Text(syndicate?.name ?? "Syndicate")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(theme.primaryText(colorScheme))
-                                        .lineLimit(1)
-                                    Image(systemName: "chevron.up.chevron.down")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                            Divider().frame(height: 24)
-
+                        // Syndicate + Runner identity (shared selector — one tap updates both)
+                        Button {
+                            showingSyndicateSelector = true
+                        } label: {
                             HStack(spacing: 8) {
+                                Image(systemName: syndicate?.symbol ?? "house.fill")
+                                    .font(.body)
+                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                Text(syndicate?.name ?? "Syndicate")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                    .lineLimit(1)
+                                Text("-")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
                                 Image(systemName: runner?.symbol ?? "person.fill")
                                     .font(.body)
                                     .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
@@ -125,9 +139,13 @@ struct SheetConfirmParlay: View {
                                     .font(.caption.weight(.semibold))
                                     .foregroundStyle(theme.primaryText(colorScheme))
                                     .lineLimit(1)
+                                Spacer()
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
                         }
+                        .buttonStyle(.plain)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .background(theme.cardBackground(colorScheme))
@@ -139,9 +157,64 @@ struct SheetConfirmParlay: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("\(unitBalance) units")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(theme.primaryText(colorScheme))
+                            HStack(spacing: 3) {
+                                Text(wagerLabel(runner?.balance ?? 0))
+                                Text("units")
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(theme.cardBackground(colorScheme))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+
+                        // Wager stepper
+                        HStack(spacing: 0) {
+                            Button {
+                                wagerUnits = max(0.5, wagerUnits - 0.5)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(wagerUnits <= 0.5 ? theme.loss.opacity(0.3) : theme.loss)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(wagerUnits <= 0.5)
+
+                            Spacer()
+
+                            VStack(spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text(wagerLabel(wagerUnits))
+                                        .font(.title2.weight(.bold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                    if totalTeamBonus > 0 {
+                                        HStack(spacing: 2) {
+                                            Text("+\(totalTeamBonus)")
+                                            Image(systemName: "nairasign.circle.fill")
+                                        }
+                                        .font(.caption.weight(.bold))
+                                        .foregroundStyle(theme.win)
+                                    }
+                                }
+                                HStack(spacing: 3) {
+                                    Text("Units")
+                                    Image(systemName: "nairasign.circle.fill")
+                                }
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            Button {
+                                wagerUnits += 0.5
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(theme.win)
+                            }
+                            .buttonStyle(.plain)
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
@@ -152,7 +225,7 @@ struct SheetConfirmParlay: View {
                         HStack(spacing: 0) {
                             summaryCell("Risked") {
                                 HStack(spacing: 3) {
-                                    Text(wagerLabel(wagerUnits))
+                                    Text(wagerLabel(totalRiskedUnits))
                                     Image(systemName: "nairasign.circle.fill")
                                 }
                                 .font(.subheadline.weight(.semibold))
@@ -184,48 +257,6 @@ struct SheetConfirmParlay: View {
                             }
                         }
                         .padding(.vertical, 14)
-                        .background(theme.cardBackground(colorScheme))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-
-                        // Wager stepper
-                        HStack(spacing: 0) {
-                            Button {
-                                wagerUnits = max(0.5, wagerUnits - 0.5)
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(wagerUnits <= 0.5 ? theme.loss.opacity(0.3) : theme.loss)
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(wagerUnits <= 0.5)
-
-                            Spacer()
-
-                            VStack(spacing: 2) {
-                                Text(wagerLabel(wagerUnits))
-                                    .font(.title2.weight(.bold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
-                                HStack(spacing: 3) {
-                                    Text("Units")
-                                    Image(systemName: "nairasign.circle.fill")
-                                }
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                            }
-
-                            Spacer()
-
-                            Button {
-                                wagerUnits += 0.5
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(theme.win)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
                         .background(theme.cardBackground(colorScheme))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
 
@@ -326,9 +357,11 @@ struct SheetConfirmParlay: View {
         let sid = localSyndicateId
         async let runnerTask    = try? runnerService.fetchRunner(bettorId: bettorId, syndicateId: sid)
         async let syndicateTask = try? syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil)
-        let (runners, syndicates) = await (runnerTask, syndicateTask)
-        runner    = runners?.first
-        syndicate = syndicates?.first
+        async let enhancedTask  = try? enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: sid)
+        let (runners, syndicates, enhanced) = await (runnerTask, syndicateTask, enhancedTask)
+        runner       = runners?.first
+        syndicate    = syndicates?.first
+        enhancements = enhanced ?? []
     }
 
     @ViewBuilder

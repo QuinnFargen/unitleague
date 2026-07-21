@@ -55,6 +55,13 @@ struct Enhanced: Codable, Identifiable {
     }
 }
 
+extension Enhanced {
+    static func clvMultiplier(level: Int?) -> Double {
+        guard let level, level > 0 else { return 1.0 }
+        return Double(level) * 0.1 + 1.0
+    }
+}
+
 struct EnhancementDef: Codable, Identifiable {
     var id: Int { enhancementId }
     let enhancementId: Int

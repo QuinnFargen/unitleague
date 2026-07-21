@@ -156,7 +156,8 @@ struct CardGameOdds: View {
                         guard let p = odd.mlAwayPrice, let h = odd.mlAwayBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "ML", side: "Away", price: p, points: nil,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(odd.sprAwayPrice,
                                  subtitle: sprAwayLost ? "" : (odd.sprAwayPoints.map(formatPoints) ?? ""),
@@ -165,7 +166,8 @@ struct CardGameOdds: View {
                         guard let p = odd.sprAwayPrice, let h = odd.sprAwayBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Away", price: p, points: odd.sprAwayPoints,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(
                         awayIsFav ? odd.underPrice : odd.overPrice,
@@ -180,7 +182,8 @@ struct CardGameOdds: View {
                         guard let p = price, let h = hash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Under" : "Over",
                                                   price: p, points: pts, awayAbbr: odd.awayAbbr,
-                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                 }
 
@@ -196,7 +199,8 @@ struct CardGameOdds: View {
                         guard let p = odd.mlHomePrice, let h = odd.mlHomeBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "ML", side: "Home", price: p, points: nil,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(odd.sprHomePrice,
                                  subtitle: sprHomeLost ? "" : (odd.sprHomePoints.map(formatPoints) ?? ""),
@@ -205,7 +209,8 @@ struct CardGameOdds: View {
                         guard let p = odd.sprHomePrice, let h = odd.sprHomeBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Home", price: p, points: odd.sprHomePoints,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(
                         awayIsFav ? odd.overPrice : odd.underPrice,
@@ -220,7 +225,8 @@ struct CardGameOdds: View {
                         guard let p = price, let h = hash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Over" : "Under",
                                                   price: p, points: pts, awayAbbr: odd.awayAbbr,
-                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                 }
             }

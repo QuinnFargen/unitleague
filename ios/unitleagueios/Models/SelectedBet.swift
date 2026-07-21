@@ -13,6 +13,8 @@ struct SelectedBet: Identifiable {
     let gameDate: String?
     var team: String? = nil  // team abbr from Txn (e.g. "BAL"); preferred over side-logic
     var unit: Double? = nil  // when set, CardBet shows unit count after price
+    var homeTeamId: Int? = nil
+    var awayTeamId: Int? = nil
 }
 
 extension SelectedBet {
@@ -26,7 +28,9 @@ extension SelectedBet {
             awayAbbr: placedBet.awayAbbr,
             homeAbbr: placedBet.homeAbbr,
             gameTime: placedBet.gameTime,
-            gameDate: placedBet.gameDate
+            gameDate: placedBet.gameDate,
+            homeTeamId: placedBet.homeTeamId,
+            awayTeamId: placedBet.awayTeamId
         )
     }
 }

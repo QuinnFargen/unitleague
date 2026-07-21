@@ -13,7 +13,6 @@ struct SheetConfirmBet: View {
     @EnvironmentObject private var betStore: BetStore
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-    @AppStorage("unitBalance") private var unitBalance: Int = 100
 
     let bet: SelectedBet
     let bettorId: Int
@@ -22,6 +21,7 @@ struct SheetConfirmBet: View {
     @State private var wagerUnits: Double = 1.0
     @State private var runner: Runner?
     @State private var syndicate: Syndicate?
+    @State private var enhancements: [Enhanced] = []
     @State private var showingParlay = false
     @State private var localSyndicateId: Int = 0
     @State private var showingSyndicateSelector = false
@@ -31,12 +31,29 @@ struct SheetConfirmBet: View {
 
     private let runnerService = RunnerService()
     private let syndicateService = SyndicateService()
+    private let enhancementService = EnhancementService()
     private let txnService = TxnService()
 
-    private var potentialReturn: Double { wagerUnits * bet.price }
+    private var relevantTeamId: Int? {
+        guard bet.type == "ML" || bet.type == "SPR", let team = bet.team else { return nil }
+        if team == bet.homeAbbr { return bet.homeTeamId }
+        if team == bet.awayAbbr { return bet.awayTeamId }
+        return nil
+    }
+    private var teamBonus: Int {
+        guard let teamId = relevantTeamId else { return 0 }
+        return enhancements.first { $0.enhancementType == "team" && $0.teamId == teamId }?.level ?? 0
+    }
+    private var priceMultiplier: Double {
+        let clv = enhancements.first { $0.enhancementType == "clv" && $0.name == bet.type }
+        return Enhanced.clvMultiplier(level: clv?.level)
+    }
+    private var effectivePrice: Double { bet.price * priceMultiplier }
+    private var totalRiskedUnits: Double { wagerUnits + Double(teamBonus) }
+    private var potentialReturn: Double { totalRiskedUnits * effectivePrice }
     private var impliedPct: String {
-        guard bet.price > 0 else { return "—" }
-        return "\(Int((1.0 / bet.price * 100.0).rounded()))%"
+        guard effectivePrice > 0 else { return "—" }
+        return "\(Int((1.0 / effectivePrice * 100.0).rounded()))%"
     }
 
     private func wagerLabel(_ units: Double) -> String {
@@ -51,32 +68,23 @@ struct SheetConfirmBet: View {
                 ScrollView {
                     VStack(spacing: 16) {
 
-                        CardBet(bet: bet)
+                        CardBet(bet: bet, priceMultiplier: priceMultiplier != 1.0 ? priceMultiplier : nil)
 
-                        // Syndicate + Runner identity
-                        HStack(spacing: 0) {
-                            Button {
-                                showingSyndicateSelector = true
-                            } label: {
-                                HStack(spacing: 8) {
-                                    Image(systemName: syndicate?.symbol ?? "house.fill")
-                                        .font(.body)
-                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                    Text(syndicate?.name ?? "Syndicate")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(theme.primaryText(colorScheme))
-                                        .lineLimit(1)
-                                    Image(systemName: "chevron.up.chevron.down")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                            Divider().frame(height: 24)
-
+                        // Syndicate + Runner identity (shared selector — one tap updates both)
+                        Button {
+                            showingSyndicateSelector = true
+                        } label: {
                             HStack(spacing: 8) {
+                                Image(systemName: syndicate?.symbol ?? "house.fill")
+                                    .font(.body)
+                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                Text(syndicate?.name ?? "Syndicate")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                    .lineLimit(1)
+                                Text("-")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
                                 Image(systemName: runner?.symbol ?? "person.fill")
                                     .font(.body)
                                     .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
@@ -84,9 +92,13 @@ struct SheetConfirmBet: View {
                                     .font(.caption.weight(.semibold))
                                     .foregroundStyle(theme.primaryText(colorScheme))
                                     .lineLimit(1)
+                                Spacer()
+                                Image(systemName: "chevron.up.chevron.down")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
                         }
+                        .buttonStyle(.plain)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .background(theme.cardBackground(colorScheme))
@@ -98,9 +110,12 @@ struct SheetConfirmBet: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("\(unitBalance) units")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(theme.primaryText(colorScheme))
+                            HStack(spacing: 3) {
+                                Text(wagerLabel(runner?.balance ?? 0))
+                                Text("units")
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
@@ -122,9 +137,19 @@ struct SheetConfirmBet: View {
                             Spacer()
 
                             VStack(spacing: 2) {
-                                Text(wagerLabel(wagerUnits))
-                                    .font(.title2.weight(.bold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                HStack(spacing: 6) {
+                                    Text(wagerLabel(wagerUnits))
+                                        .font(.title2.weight(.bold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                    if teamBonus > 0 {
+                                        HStack(spacing: 2) {
+                                            Text("+\(teamBonus)")
+                                            Image(systemName: "nairasign.circle.fill")
+                                        }
+                                        .font(.caption.weight(.bold))
+                                        .foregroundStyle(theme.win)
+                                    }
+                                }
                                 HStack(spacing: 3) {
                                     Text("Units")
                                     Image(systemName: "nairasign.circle.fill")
@@ -153,7 +178,7 @@ struct SheetConfirmBet: View {
                         HStack(spacing: 0) {
                             summaryCell("Risked") {
                                 HStack(spacing: 3) {
-                                    Text(wagerLabel(wagerUnits))
+                                    Text(wagerLabel(totalRiskedUnits))
                                     Image(systemName: "nairasign.circle.fill")
                                 }
                                 .font(.subheadline.weight(.semibold))
@@ -162,7 +187,7 @@ struct SheetConfirmBet: View {
                             Divider().frame(height: 36)
                             summaryCell("Price") {
                                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                                    Text(String(format: "%.2f", bet.price))
+                                    Text(String(format: "%.2f", effectivePrice))
                                     Text("x").font(.caption.weight(.semibold))
                                 }
                                 .font(.subheadline.weight(.semibold))
@@ -272,9 +297,11 @@ struct SheetConfirmBet: View {
         let sid = localSyndicateId
         async let runnerTask    = try? runnerService.fetchRunner(bettorId: bettorId, syndicateId: sid)
         async let syndicateTask = try? syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil)
-        let (runners, syndicates) = await (runnerTask, syndicateTask)
-        runner    = runners?.first
-        syndicate = syndicates?.first
+        async let enhancedTask  = try? enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: sid)
+        let (runners, syndicates, enhanced) = await (runnerTask, syndicateTask, enhancedTask)
+        runner       = runners?.first
+        syndicate    = syndicates?.first
+        enhancements = enhanced ?? []
     }
 
     @ViewBuilder

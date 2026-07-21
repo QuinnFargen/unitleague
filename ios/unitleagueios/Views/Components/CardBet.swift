@@ -5,6 +5,7 @@ struct CardBet: View {
     @Environment(\.colorScheme) private var colorScheme
     let bet: SelectedBet
     var won: Bool? = nil
+    var priceMultiplier: Double? = nil
 
     private let timeInputFmt: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -117,6 +118,14 @@ struct CardBet: View {
                                 .foregroundStyle(theme.win)
                         }
                     }
+                }
+                if let priceMultiplier {
+                    HStack(alignment: .firstTextBaseline, spacing: 2) {
+                        Text(String(format: "%.2fx", priceMultiplier))
+                        Text("Pricex")
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(theme.accent)
                 }
             }
         }

@@ -159,7 +159,8 @@ struct CardOddSingle: View {
                     guard let p = d.awayPrice, let h = d.awayBetHash else { return }
                     onBetSelected(SelectedBet(betHash: h, type: betType, side: d.awaySide, price: p, points: d.awayPoints,
                                               awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                              gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                              gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                              homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                 }
                 if !d.awayBetLabel.isEmpty {
                     Text(d.awayBetLabel)
@@ -196,7 +197,8 @@ struct CardOddSingle: View {
                     guard let p = d.homePrice, let h = d.homeBetHash else { return }
                     onBetSelected(SelectedBet(betHash: h, type: betType, side: d.homeSide, price: p, points: d.homePoints,
                                               awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                              gameTime: odd.gameTime, gameDate: odd.gameDt))
+                                              gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                              homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                 }
                 if !d.homeBetLabel.isEmpty {
                     Text(d.homeBetLabel)

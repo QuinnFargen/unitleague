@@ -90,24 +90,30 @@ class SyndicateService {
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, response) = try await URLSession.shared.data(for: request)
-        if let http = response as? HTTPURLResponse, http.statusCode == 409 {
-            throw SyndicateError.alreadyMember
-        }
-        if let http = response as? HTTPURLResponse, http.statusCode == 404 {
-            throw SyndicateError.notFound
+        if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+            let detail = (try? JSONDecoder().decode([String: String].self, from: data))?["detail"]
+            throw SyndicateError.message(detail ?? "Unable to join syndicate.")
         }
         return try JSONDecoder().decode(Runner.self, from: data)
+    }
+
+    func fetchPublicSyndicates(bettorId: Int, leagueId: Int? = nil) async throws -> [Syndicate] {
+        var components = URLComponents(string: "\(APIClient.baseURL)/mart/syndicate/public")!
+        var queryItems: [URLQueryItem] = [URLQueryItem(name: "bettor_id", value: "\(bettorId)")]
+        if let leagueId { queryItems.append(URLQueryItem(name: "league_id", value: "\(leagueId)")) }
+        components.queryItems = queryItems
+        guard let url = components.url else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([Syndicate].self, from: data)
     }
 }
 
 enum SyndicateError: LocalizedError {
-    case alreadyMember
-    case notFound
+    case message(String)
 
     var errorDescription: String? {
         switch self {
-        case .alreadyMember: return "You're already a member of this syndicate."
-        case .notFound:      return "Syndicate not found. Check the code and try again."
+        case .message(let text): return text
         }
     }
 }

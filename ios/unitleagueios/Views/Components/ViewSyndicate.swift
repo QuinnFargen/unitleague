@@ -10,6 +10,7 @@ struct ViewSyndicate: View {
     @AppStorage("leagueRank")          private var leagueRank: Int = 0
 
     @State var syndicate: Syndicate
+    let onJoined: (() -> Void)? = nil
     @State private var runners: [Runner] = []
     @State private var activeBets: [Txn] = []
     @State private var isLoading = false
@@ -20,9 +21,12 @@ struct ViewSyndicate: View {
     @State private var showingRunnerEdit = false
     @State private var isStarting = false
     @State private var startError: String?
+    @State private var isJoiningPublic = false
+    @State private var joinPublicError: String?
 
     private var currentRunner: Runner? { runners.first(where: { $0.bettorId == bettorId }) }
     private var isAdmin: Bool { currentRunner?.role == "admin" }
+    private var canJoinPublic: Bool { currentRunner == nil && syndicate.isPublic && !syndicate.isStarted }
 
     private var currentRunnerBinding: Binding<Runner>? {
         guard let idx = runners.firstIndex(where: { $0.bettorId == bettorId }) else { return nil }
@@ -121,35 +125,37 @@ struct ViewSyndicate: View {
                             .clipShape(Capsule())
                     }
 
-                    Button {
-                        showingRunnerEdit = true
-                    } label: {
-                        Text("Runner")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(theme.cardBackgroundProminent(colorScheme))
-                            .clipShape(Capsule())
-                    }
-
-                    let isSelected = selectedSyndicateId == syndicate.syndicateId
-                    Button {
-                        if isSelected {
-                            selectedSyndicateId = 0
-                            leagueSymbol = "person.circle.fill"
-                            leagueColorName = AccentOption.allCases[0].rawValue
-                            leagueRank = 0
-                        } else {
-                            selectedSyndicateId = syndicate.syndicateId
-                            leagueSymbol = syndicate.symbol ?? "person.3.fill"
-                            leagueColorName = syndicate.color ?? AccentOption.allCases[0].rawValue
-                            leagueRank = rankInSyndicate()
+                    if currentRunner != nil {
+                        Button {
+                            showingRunnerEdit = true
+                        } label: {
+                            Text("Runner")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(theme.cardBackgroundProminent(colorScheme))
+                                .clipShape(Capsule())
                         }
-                    } label: {
-                        Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                            .font(.title3)
-                            .foregroundStyle(isSelected ? theme.accent : .secondary)
+
+                        let isSelected = selectedSyndicateId == syndicate.syndicateId
+                        Button {
+                            if isSelected {
+                                selectedSyndicateId = 0
+                                leagueSymbol = "person.circle.fill"
+                                leagueColorName = AccentOption.allCases[0].rawValue
+                                leagueRank = 0
+                            } else {
+                                selectedSyndicateId = syndicate.syndicateId
+                                leagueSymbol = syndicate.symbol ?? "person.3.fill"
+                                leagueColorName = syndicate.color ?? AccentOption.allCases[0].rawValue
+                                leagueRank = rankInSyndicate()
+                            }
+                        } label: {
+                            Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                                .font(.title3)
+                                .foregroundStyle(isSelected ? theme.accent : .secondary)
+                        }
                     }
                 }
             }
@@ -190,6 +196,26 @@ struct ViewSyndicate: View {
             startError = error.localizedDescription
         }
         isStarting = false
+    }
+
+    private func joinLeague() async {
+        guard let code = syndicate.code else {
+            joinPublicError = "Missing syndicate code."
+            return
+        }
+        isJoiningPublic = true
+        joinPublicError = nil
+        do {
+            _ = try await SyndicateService().joinSyndicate(bettorId: bettorId, code: code)
+            if let onJoined {
+                onJoined()
+            } else {
+                await load()
+            }
+        } catch {
+            joinPublicError = error.localizedDescription
+        }
+        isJoiningPublic = false
     }
 
     private var syndicateBanner: some View {
@@ -263,6 +289,31 @@ struct ViewSyndicate: View {
                     .clipShape(Capsule())
                 }
                 .disabled(isStarting)
+            }
+
+            if canJoinPublic {
+                if let err = joinPublicError {
+                    Text(err)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+                Button {
+                    Task { await joinLeague() }
+                } label: {
+                    HStack(spacing: 6) {
+                        if isJoiningPublic {
+                            ProgressView().scaleEffect(0.7)
+                        }
+                        Text("Join this league")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.accent)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .background(theme.accent.opacity(0.12))
+                    .clipShape(Capsule())
+                }
+                .disabled(isJoiningPublic)
             }
         }
         .padding()

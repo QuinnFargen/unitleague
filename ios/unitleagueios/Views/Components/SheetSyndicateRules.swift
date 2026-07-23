@@ -47,13 +47,9 @@ struct SheetSyndicateRules: View {
                             if isLoading && leagues.isEmpty {
                                 ProgressView().frame(maxWidth: .infinity)
                             } else {
-                                VStack(spacing: 8) {
+                                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8) {
                                     ForEach(leagues) { league in
-                                        checklistRow(
-                                            title: league.name,
-                                            subtitle: league.abbr,
-                                            isSelected: selectedLeagueIds.contains(league.id)
-                                        ) {
+                                        toggleChip(title: league.abbr, isOn: selectedLeagueIds.contains(league.id)) {
                                             if selectedLeagueIds.contains(league.id) {
                                                 selectedLeagueIds.remove(league.id)
                                             } else {
@@ -65,6 +61,13 @@ struct SheetSyndicateRules: View {
                                 Text("No leagues selected allows every league.")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        section(title: "Wager Minimums") {
+                            VStack(spacing: 10) {
+                                numberRow(title: "Min Units Wagered", value: $minUnitsWagered, range: 0...50, zeroLabel: "No minimum")
+                                numberRow(title: "Min # of Wagers", value: $minWagers, range: 0...50, zeroLabel: "No minimum")
                             }
                         }
 
@@ -112,13 +115,6 @@ struct SheetSyndicateRules: View {
                                         }
                                     }
                                 }
-                            }
-                        }
-
-                        section(title: "Wager Minimums") {
-                            VStack(spacing: 10) {
-                                numberRow(title: "Min Units Wagered", value: $minUnitsWagered, range: 0...50, zeroLabel: "No minimum")
-                                numberRow(title: "Min # of Wagers", value: $minWagers, range: 0...50, zeroLabel: "No minimum")
                             }
                         }
 

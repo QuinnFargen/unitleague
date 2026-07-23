@@ -34,19 +34,23 @@ struct SheetConfirmBet: View {
     private let enhancementService = EnhancementService()
     private let txnService = TxnService()
 
-    private var relevantTeamId: Int? {
-        guard bet.type == "ML" || bet.type == "SPR" else { return nil }
-        if let team = bet.team {
-            if team == bet.homeAbbr { return bet.homeTeamId }
-            if team == bet.awayAbbr { return bet.awayTeamId }
+    private var relevantTeamIds: [Int] {
+        if bet.type == "O/U" {
+            return [bet.awayTeamId, bet.homeTeamId].compactMap { $0 }
         }
-        if bet.side == "Away" { return bet.awayTeamId }
-        if bet.side == "Home" { return bet.homeTeamId }
-        return nil
+        guard bet.type == "ML" || bet.type == "SPR" else { return [] }
+        if let team = bet.team {
+            if team == bet.homeAbbr { return [bet.homeTeamId].compactMap { $0 } }
+            if team == bet.awayAbbr { return [bet.awayTeamId].compactMap { $0 } }
+        }
+        if bet.side == "Away" { return [bet.awayTeamId].compactMap { $0 } }
+        if bet.side == "Home" { return [bet.homeTeamId].compactMap { $0 } }
+        return []
     }
     private var teamBonus: Int {
-        guard let teamId = relevantTeamId else { return 0 }
-        return enhancements.first { $0.enhancementType == "team" && $0.teamId == teamId }?.level ?? 0
+        relevantTeamIds.reduce(0) { total, teamId in
+            total + (enhancements.first { $0.enhancementType == "team" && $0.teamId == teamId }?.level ?? 0)
+        }
     }
     private var priceMultiplier: Double {
         let clv = enhancements.first { $0.enhancementType == "clv" && $0.name == bet.type }
@@ -78,28 +82,33 @@ struct SheetConfirmBet: View {
                         Button {
                             showingSyndicateSelector = true
                         } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: syndicate?.symbol ?? "house.fill")
-                                    .font(.body)
-                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                Text(syndicate?.name ?? "Syndicate")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
-                                    .lineLimit(1)
-                                Text("-")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                                Image(systemName: runner?.symbol ?? "person.fill")
-                                    .font(.body)
-                                    .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
-                                Text(runner?.profileName ?? "Runner")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
-                                    .lineLimit(1)
-                                Spacer()
-                                Image(systemName: "chevron.up.chevron.down")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                            ZStack {
+                                HStack(spacing: 8) {
+                                    Image(systemName: syndicate?.symbol ?? "house.fill")
+                                        .font(.body)
+                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                    Text(syndicate?.name ?? "Syndicate")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                        .lineLimit(1)
+                                    Text("-")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                    Image(systemName: runner?.symbol ?? "person.fill")
+                                        .font(.body)
+                                        .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
+                                    Text(runner?.profileName ?? "Runner")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                        .lineLimit(1)
+                                }
+
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                         .buttonStyle(.plain)
@@ -116,7 +125,7 @@ struct SheetConfirmBet: View {
                             Spacer()
                             HStack(spacing: 3) {
                                 Text(wagerLabel(runner?.balance ?? 0))
-                                Text("units")
+                                Image(systemName: "nairasign.circle.fill")
                             }
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(theme.primaryText(colorScheme))
@@ -146,12 +155,9 @@ struct SheetConfirmBet: View {
                                         .font(.title2.weight(.bold))
                                         .foregroundStyle(theme.primaryText(colorScheme))
                                     if teamBonus > 0 {
-                                        HStack(spacing: 2) {
-                                            Text("+\(teamBonus)")
-                                            Image(systemName: "nairasign.circle.fill")
-                                        }
-                                        .font(.title2.weight(.bold))
-                                        .foregroundStyle(theme.win)
+                                        Text("+ \(teamBonus)")
+                                            .font(.title2.weight(.bold))
+                                            .foregroundStyle(theme.win)
                                     }
                                 }
                                 HStack(spacing: 3) {

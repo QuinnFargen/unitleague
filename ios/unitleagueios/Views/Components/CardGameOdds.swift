@@ -6,6 +6,8 @@ struct CardGameOdds: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let odd: Odds
+    var teamLevels: [Int: Int] = [:]
+    var showJuiceCapsule: Bool = false
     let onBetSelected: (SelectedBet) -> Void
 
     private let colW: CGFloat = 58
@@ -73,6 +75,35 @@ struct CardGameOdds: View {
             .frame(width: scoreW)
             .background(theme.chipUnselected(colorScheme))
             .clipShape(Capsule())
+    }
+
+    @ViewBuilder
+    private func teamAbbrCapsule(_ abbr: String, teamId: Int) -> some View {
+        let level = teamLevels[teamId]
+        let highlighted = showJuiceCapsule && level != nil
+
+        NavigationLink {
+            ViewSchedLoader(teamId: teamId, leagueId: odd.leagueId)
+        } label: {
+            HStack(spacing: 4) {
+                Text(abbr)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(highlighted ? theme.accent : theme.primaryText(colorScheme))
+                if showJuiceCapsule, let level {
+                    Text("\(level)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "nairasign.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(theme.accent)
+                }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 4)
+            .background(theme.cardBackground(colorScheme))
+            .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder
@@ -146,9 +177,7 @@ struct CardGameOdds: View {
 
                 // Away row
                 HStack(spacing: 4) {
-                    Text(odd.awayAbbr)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.primaryText(colorScheme))
+                    teamAbbrCapsule(odd.awayAbbr, teamId: odd.awayTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     if let s = scores { scoreCapsule(s.away) } else { Spacer().frame(width: scoreW) }
                     priceCapsule(odd.mlAwayPrice, subtitle: impliedPct(odd.mlAwayPrice),
@@ -189,10 +218,13 @@ struct CardGameOdds: View {
 
                 // Home row
                 HStack(spacing: 4) {
-                    Text("@ " + odd.homeAbbr)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.primaryText(colorScheme))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack(spacing: 4) {
+                        Text("@")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                        teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     if let s = scores { scoreCapsule(s.home) } else { Spacer().frame(width: scoreW) }
                     priceCapsule(odd.mlHomePrice, subtitle: impliedPct(odd.mlHomePrice),
                                  betHash: odd.mlHomeBetHash, won: odd.mlHomeWon) {

@@ -13,6 +13,7 @@ struct SheetSyndicateSelector: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("profileSymbol") private var profileSymbol: String = ProfileOption.symbols[0]
 
     let bettorId: Int
     @Binding var selectedSyndicateId: Int
@@ -41,15 +42,15 @@ struct SheetSyndicateSelector: View {
                     List {
                         Button {
                             selectedSyndicateId = 0
-                            leagueSymbol = "person.circle.fill"
-                            leagueColorName = AccentOption.allCases[0].rawValue
+                            leagueSymbol = profileSymbol
+                            leagueColorName = theme.accentOption.rawValue
                             leagueRank = 0
                             dismiss()
                         } label: {
                             HStack(spacing: 14) {
-                                Image(systemName: "person.circle.fill")
+                                Image(systemName: profileSymbol)
                                     .font(.title2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(theme.accent)
                                     .frame(width: 40, height: 40)
 
                                 Text("Solo Syndicate")

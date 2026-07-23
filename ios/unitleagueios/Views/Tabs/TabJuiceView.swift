@@ -384,7 +384,6 @@ private struct CLVLevelLine: View {
     let items: [Enhanced]
 
     private static let order = ["ML", "SPR", "O/U"]
-    private static let pivot = 1.5
 
     private func level(for name: String) -> Int? {
         items.first { $0.name == name }?.level
@@ -399,19 +398,13 @@ private struct CLVLevelLine: View {
         String(format: "%.1fx", multiplier)
     }
 
-    private func capsuleColor(_ multiplier: Double) -> Color {
-        let distance = min(abs(multiplier - Self.pivot) * 1.7, 0.85)
-        let base = multiplier < Self.pivot ? theme.loss : theme.win
-        return base.opacity(0.15 + distance)
-    }
-
     var body: some View {
         HStack(spacing: 10) {
             ForEach(Self.order, id: \.self) { name in
                 let mult = multiplier(level(for: name))
-                VStack(spacing: 2) {
+                HStack(spacing: 4) {
                     Text(name)
-                        .font(.caption2.weight(.semibold))
+                        .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Text(multiplierLabel(mult))
                         .font(.subheadline.weight(.bold))
@@ -419,7 +412,7 @@ private struct CLVLevelLine: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .background(capsuleColor(mult))
+                .background(theme.cardBackground(colorScheme))
                 .clipShape(Capsule())
             }
         }

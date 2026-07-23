@@ -17,7 +17,7 @@ struct TabBetsView: View {
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedBet: SelectedBet?
-    @State private var juiceTeamIds: Set<Int> = []
+    @State private var juiceTeamLevels: [Int: Int] = [:]
 
     private let oddsService = OddsService()
     private let teamService = TeamService()
@@ -56,7 +56,7 @@ struct TabBetsView: View {
         default:    byType = odds // "ALL" and "Juice"
         }
         let scoped = selectedBetType == "Juice"
-            ? byType.filter { juiceTeamIds.contains($0.homeTeamId) || juiceTeamIds.contains($0.awayTeamId) }
+            ? byType.filter { juiceTeamLevels[$0.homeTeamId] != nil || juiceTeamLevels[$0.awayTeamId] != nil }
             : byType
         guard let teamId = selectedTeamId else { return scoped }
         return scoped.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
@@ -197,7 +197,11 @@ struct TabBetsView: View {
                                                             leagueId: odd.leagueId
                                                         )
                                                     } label: { Color.clear }
-                                                    CardGameOdds(odd: odd) { bet in selectedBet = bet }
+                                                    CardGameOdds(
+                                                        odd: odd,
+                                                        teamLevels: juiceTeamLevels,
+                                                        showJuiceCapsule: selectedBetType == "Juice"
+                                                    ) { bet in selectedBet = bet }
                                                 }
                                             } else {
                                                 ZStack {
@@ -286,9 +290,12 @@ struct TabBetsView: View {
     }
 
     private func loadJuiceTeams() async {
-        guard bettorId != 0 else { juiceTeamIds = []; return }
+        guard bettorId != 0 else { juiceTeamLevels = [:]; return }
         let enhanced = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: selectedSyndicateId)) ?? []
-        juiceTeamIds = Set(enhanced.filter { $0.enhancementType == "team" }.map(\.teamId))
+        juiceTeamLevels = Dictionary(
+            enhanced.filter { $0.enhancementType == "team" }.map { ($0.teamId, $0.level) },
+            uniquingKeysWith: { first, _ in first }
+        )
     }
 }
 

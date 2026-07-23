@@ -10,7 +10,7 @@ struct ViewSyndicate: View {
     @AppStorage("leagueRank")          private var leagueRank: Int = 0
 
     @State var syndicate: Syndicate
-    let onJoined: (() -> Void)? = nil
+    var onJoined: (() -> Void)? = nil
     @State private var runners: [Runner] = []
     @State private var activeBets: [Txn] = []
     @State private var isLoading = false

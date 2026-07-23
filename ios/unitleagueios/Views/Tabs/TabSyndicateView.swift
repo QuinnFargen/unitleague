@@ -5,6 +5,7 @@ struct TabSyndicateView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId")            private var bettorId: Int = 0
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
+    @AppStorage("profileSymbol")       private var profileSymbol: String = ProfileOption.symbols[0]
 
     @State private var syndicates: [Syndicate] = []
     @State private var isLoading = false
@@ -13,6 +14,17 @@ struct TabSyndicateView: View {
     @State private var showingCreate = false
 
     private let service = SyndicateService()
+
+    private var soloSyndicate: Syndicate {
+        Syndicate(
+            syndicateId: 0,
+            name: "Solo",
+            isPublic: false,
+            createdByBettorId: bettorId,
+            symbol: profileSymbol,
+            color: theme.accentOption.rawValue
+        )
+    }
 
     var body: some View {
         NavigationStack {
@@ -30,21 +42,29 @@ struct TabSyndicateView: View {
                             }
                         }
 
-                        if isLoading {
-                            ProgressView().frame(maxWidth: .infinity).padding(.top, 40)
-                        } else if let error = fetchError {
-                            Text(error)
-                                .font(.caption)
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Syndicates")
+                                .font(.headline)
                                 .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 40)
-                        } else if !syndicates.isEmpty {
-                            VStack(alignment: .leading, spacing: 12) {
-                                Text("Syndicates")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
+                            NavigationLink(destination: ViewSyndicate(syndicate: soloSyndicate)) {
+                                CardSyndicate(
+                                    syndicate: soloSyndicate,
+                                    isSelected: selectedSyndicateId == 0
+                                )
+                            }
+                            .buttonStyle(.plain)
+
+                            if isLoading {
+                                ProgressView().frame(maxWidth: .infinity).padding(.top, 20)
+                            } else if let error = fetchError {
+                                Text(error)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.top, 20)
+                            } else if !syndicates.isEmpty {
                                 ForEach(syndicates) { syndicate in
                                     NavigationLink(destination: ViewSyndicate(syndicate: syndicate)) {
                                         CardSyndicate(
@@ -54,13 +74,13 @@ struct TabSyndicateView: View {
                                     }
                                     .buttonStyle(.plain)
                                 }
+                            } else {
+                                Text("You're not in any syndicates yet.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.top, 20)
                             }
-                        } else {
-                            Text("You're not in any syndicates yet.")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity)
-                                .padding(.top, 40)
                         }
                     }
                     .padding(.horizontal, 32)

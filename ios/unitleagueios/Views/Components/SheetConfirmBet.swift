@@ -35,9 +35,13 @@ struct SheetConfirmBet: View {
     private let txnService = TxnService()
 
     private var relevantTeamId: Int? {
-        guard bet.type == "ML" || bet.type == "SPR", let team = bet.team else { return nil }
-        if team == bet.homeAbbr { return bet.homeTeamId }
-        if team == bet.awayAbbr { return bet.awayTeamId }
+        guard bet.type == "ML" || bet.type == "SPR" else { return nil }
+        if let team = bet.team {
+            if team == bet.homeAbbr { return bet.homeTeamId }
+            if team == bet.awayAbbr { return bet.awayTeamId }
+        }
+        if bet.side == "Away" { return bet.awayTeamId }
+        if bet.side == "Home" { return bet.homeTeamId }
         return nil
     }
     private var teamBonus: Int {
@@ -146,7 +150,7 @@ struct SheetConfirmBet: View {
                                             Text("+\(teamBonus)")
                                             Image(systemName: "nairasign.circle.fill")
                                         }
-                                        .font(.caption.weight(.bold))
+                                        .font(.title2.weight(.bold))
                                         .foregroundStyle(theme.win)
                                     }
                                 }

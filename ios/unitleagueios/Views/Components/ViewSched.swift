@@ -155,10 +155,39 @@ struct ViewSched: View {
     }
 }
 
-// MARK: - SchedCard
+// MARK: - ViewSchedLoader
 
+/// Resolves a team/league by id then pushes into `ViewSched`. Used where only
+/// ids are on hand (e.g. from `Odds`/`Enhanced`) and no full `Team`/`League`
+/// has been fetched yet.
+struct ViewSchedLoader: View {
+    let teamId: Int
+    let leagueId: Int
 
+    @State private var team: Team?
+    @State private var league: League?
 
+    private let teamService = TeamService()
+    private let leagueService = LeagueService()
+
+    var body: some View {
+        Group {
+            if let team, let league {
+                ViewSched(team: team, league: league)
+            } else {
+                ProgressView().task { await load() }
+            }
+        }
+    }
+
+    private func load() async {
+        async let teamsTask = try? teamService.fetchTeams(leagueId: leagueId)
+        async let leaguesTask = try? leagueService.fetchLeagues()
+        let (teams, leagues) = await (teamsTask, leaguesTask)
+        team = teams?.first { $0.id == teamId }
+        league = leagues?.first { $0.id == leagueId }
+    }
+}
 
 
 #Preview("ViewSched") {

@@ -193,7 +193,7 @@ struct SheetConfirmParlay: View {
                                             Text("+\(totalTeamBonus)")
                                             Image(systemName: "nairasign.circle.fill")
                                         }
-                                        .font(.caption.weight(.bold))
+                                        .font(.title2.weight(.bold))
                                         .foregroundStyle(theme.win)
                                     }
                                 }

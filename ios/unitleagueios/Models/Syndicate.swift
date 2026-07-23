@@ -65,3 +65,35 @@ struct Syndicate: Codable, Identifiable {
         config = try c.decodeIfPresent(SyndicateConfig.self, forKey: .config)
     }
 }
+
+// MARK: - Memberwise init (custom Decodable above suppresses the synthesized one)
+
+extension Syndicate {
+    init(
+        syndicateId: Int,
+        name: String,
+        description: String? = nil,
+        isPublic: Bool = true,
+        maxRunner: Int? = nil,
+        createdByBettorId: Int = 1,
+        code: String? = nil,
+        symbol: String? = nil,
+        color: String? = nil,
+        startUnits: Int? = nil,
+        isStarted: Bool = false,
+        config: SyndicateConfig? = nil
+    ) {
+        self.syndicateId = syndicateId
+        self.name = name
+        self.description = description
+        self.isPublic = isPublic
+        self.maxRunner = maxRunner
+        self.createdByBettorId = createdByBettorId
+        self.code = code
+        self.symbol = symbol
+        self.color = color
+        self.startUnits = startUnits
+        self.isStarted = isStarted
+        self.config = config
+    }
+}

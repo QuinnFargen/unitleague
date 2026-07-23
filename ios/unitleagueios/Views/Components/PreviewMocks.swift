@@ -1,38 +1,6 @@
 #if DEBUG
 import SwiftUI
 
-// MARK: - Syndicate debug init (no memberwise init due to custom Decodable)
-
-extension Syndicate {
-    init(
-        syndicateId: Int,
-        name: String,
-        description: String? = nil,
-        isPublic: Bool = true,
-        maxRunner: Int? = nil,
-        createdByBettorId: Int = 1,
-        code: String? = nil,
-        symbol: String? = nil,
-        color: String? = nil,
-        startUnits: Int? = nil,
-        isStarted: Bool = false,
-        config: SyndicateConfig? = nil
-    ) {
-        self.syndicateId = syndicateId
-        self.name = name
-        self.description = description
-        self.isPublic = isPublic
-        self.maxRunner = maxRunner
-        self.createdByBettorId = createdByBettorId
-        self.code = code
-        self.symbol = symbol
-        self.color = color
-        self.startUnits = startUnits
-        self.isStarted = isStarted
-        self.config = config
-    }
-}
-
 // MARK: - Mock data
 
 enum Mock {

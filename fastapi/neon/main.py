@@ -180,6 +180,51 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@app.get("/mart/syndicate/public")
+def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(None)):
+    q = """
+        WITH runner_counts AS (
+            SELECT syndicate_id, COUNT(*) FILTER (WHERE active = true) AS active_runner_count
+            FROM odd.runner
+            GROUP BY syndicate_id
+        )
+        SELECT s.syndicate_id, s.name, s.description, s.code, s.is_public, s.max_runner,
+               s.created_by_bettor_id, s.symbol, s.color, s.start_units, s.config, s.is_started,
+               COALESCE(rc.active_runner_count, 0) AS active_runner_count
+        FROM odd.syndicate s
+        LEFT JOIN runner_counts rc ON rc.syndicate_id = s.syndicate_id
+        WHERE s.is_public = true AND s.is_started = false
+          AND (s.max_runner IS NULL OR COALESCE(rc.active_runner_count, 0) < s.max_runner)
+    """
+    query_params = {}
+
+    if bettor_id:
+        q += """
+            AND NOT EXISTS (
+                SELECT 1 FROM odd.runner mr
+                WHERE mr.syndicate_id = s.syndicate_id AND mr.bettor_id = :bettor_id AND mr.active = true
+            )
+        """
+        query_params["bettor_id"] = bettor_id
+
+    if league_id:
+        q += """
+            AND (
+                s.config IS NULL
+                OR (s.config::jsonb -> 'league_ids') IS NULL
+                OR (s.config::jsonb -> 'league_ids') = 'null'::jsonb
+                OR (s.config::jsonb -> 'league_ids') = '[]'::jsonb
+                OR (s.config::jsonb -> 'league_ids') @> to_jsonb(:league_id::int)
+            )
+        """
+        query_params["league_id"] = league_id
+
+    q += " ORDER BY s.syndicate_id"
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @app.get("/mart/enhance_options")
 def get_enhance_options(syndicate_id: int = Query(None),
                         bettor_id: int = Query(None)):

@@ -29,11 +29,17 @@ struct ViewSched: View {
     private let schedService = SchedService()
     private let enhancementService = EnhancementService()
 
+    init(team: Team, league: League) {
+        self.team = team
+        self.league = league
+        let currentYear = Calendar.current.component(.year, from: .now)
+        _selectedYear = State(initialValue: league.yrData ?? currentYear)
+    }
+
     private var years: [Int] {
         let currentYear = Calendar.current.component(.year, from: .now)
-        let start = max(league.yrOrig, 2020)
-        let end = currentYear + 1
-        return Array(start ... end).reversed()
+        let end = max(league.yrData ?? currentYear, 2020)
+        return Array(2020 ... end).reversed()
     }
 
     var body: some View {

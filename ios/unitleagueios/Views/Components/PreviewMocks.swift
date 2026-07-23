@@ -172,6 +172,39 @@ enum Mock {
         return try! JSONDecoder().decode(Odds.self, from: Data(json.utf8))
     }()
 
+    static let oddsCompleted: Odds = {
+        let json = """
+        {
+          "game_id": 100, "league_id": 1,
+          "game_concat": "BOS_LAL_2026-06-08",
+          "game_dt": "2026-06-08",
+          "game_ts": "2026-06-08T23:30:00+00:00",
+          "home_abbr": "LAL", "away_abbr": "BOS",
+          "home_team_id": 1, "away_team_id": 2,
+          "winner": "BOS", "margin": 8, "total": 216,
+          "has_active_bets": false,
+          "ml_home_bet_hash": "mlh100", "ml_home_bookmaker": "DraftKings",
+          "ml_home_price": 1.74, "ml_home_won": false, "ml_home_bet_concat": "LAL_ML",
+          "ml_away_bet_hash": "mla100", "ml_away_bookmaker": "FanDuel",
+          "ml_away_price": 2.10, "ml_away_won": true, "ml_away_bet_concat": "BOS_ML",
+          "spr_home_bet_hash": "sprh100", "spr_home_bookmaker": "DraftKings",
+          "spr_home_price": 1.91, "spr_home_points": -5.5, "spr_home_won": false,
+          "spr_home_bet_concat": "LAL_SPR",
+          "spr_away_bet_hash": "spra100", "spr_away_bookmaker": "FanDuel",
+          "spr_away_price": 1.91, "spr_away_points": 5.5, "spr_away_won": true,
+          "spr_away_bet_concat": "BOS_SPR",
+          "over_bet_hash": "ov100", "over_bookmaker": "BetMGM",
+          "over_price": 1.91, "over_points": 224.5, "over_won": false,
+          "over_bet_concat": "OVER_224.5",
+          "under_bet_hash": "un100", "under_bookmaker": "Caesars",
+          "under_price": 1.91, "under_points": 224.5, "under_won": true,
+          "under_bet_concat": "UNDER_224.5",
+          "last_updated_ts": "2026-06-08T22:00:00+00:00"
+        }
+        """
+        return try! JSONDecoder().decode(Odds.self, from: Data(json.utf8))
+    }()
+
     // MARK: OddMany
 
     static var oddMany: [OddMany] = {

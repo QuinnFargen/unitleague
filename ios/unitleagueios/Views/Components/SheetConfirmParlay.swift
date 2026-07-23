@@ -43,8 +43,13 @@ struct SheetConfirmParlay: View {
         allLegs.filter { selectedIds.contains($0.id) }
     }
 
-    private func teamId(for leg: PlacedBet) -> Int? {
-        leg.side == "Away" ? leg.awayTeamId : (leg.side == "Home" ? leg.homeTeamId : nil)
+    private func teamIds(for leg: PlacedBet) -> [Int] {
+        if leg.type == "O/U" {
+            return [leg.awayTeamId, leg.homeTeamId].compactMap { $0 }
+        }
+        return leg.side == "Away" ? [leg.awayTeamId].compactMap { $0 }
+             : leg.side == "Home" ? [leg.homeTeamId].compactMap { $0 }
+             : []
     }
 
     private func clvMultiplier(for leg: PlacedBet) -> Double {
@@ -56,8 +61,9 @@ struct SheetConfirmParlay: View {
         var seen = Set<Int>()
         var total = 0
         for leg in selectedLegs {
-            guard let tid = teamId(for: leg), seen.insert(tid).inserted else { continue }
-            total += enhancements.first { $0.enhancementType == "team" && $0.teamId == tid }?.level ?? 0
+            for tid in teamIds(for: leg) where seen.insert(tid).inserted {
+                total += enhancements.first { $0.enhancementType == "team" && $0.teamId == tid }?.level ?? 0
+            }
         }
         return total
     }
@@ -121,28 +127,33 @@ struct SheetConfirmParlay: View {
                         Button {
                             showingSyndicateSelector = true
                         } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: syndicate?.symbol ?? "house.fill")
-                                    .font(.body)
-                                    .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                Text(syndicate?.name ?? "Syndicate")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
-                                    .lineLimit(1)
-                                Text("-")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-                                Image(systemName: runner?.symbol ?? "person.fill")
-                                    .font(.body)
-                                    .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
-                                Text(runner?.profileName ?? "Runner")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(theme.primaryText(colorScheme))
-                                    .lineLimit(1)
-                                Spacer()
-                                Image(systemName: "chevron.up.chevron.down")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                            ZStack {
+                                HStack(spacing: 8) {
+                                    Image(systemName: syndicate?.symbol ?? "house.fill")
+                                        .font(.body)
+                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                    Text(syndicate?.name ?? "Syndicate")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                        .lineLimit(1)
+                                    Text("-")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                    Image(systemName: runner?.symbol ?? "person.fill")
+                                        .font(.body)
+                                        .foregroundStyle(ProfileOption.color(for: runner?.color ?? ""))
+                                    Text(runner?.profileName ?? "Runner")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+                                        .lineLimit(1)
+                                }
+
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                         .buttonStyle(.plain)
@@ -159,7 +170,7 @@ struct SheetConfirmParlay: View {
                             Spacer()
                             HStack(spacing: 3) {
                                 Text(wagerLabel(runner?.balance ?? 0))
-                                Text("units")
+                                Image(systemName: "nairasign.circle.fill")
                             }
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(theme.primaryText(colorScheme))
@@ -189,12 +200,9 @@ struct SheetConfirmParlay: View {
                                         .font(.title2.weight(.bold))
                                         .foregroundStyle(theme.primaryText(colorScheme))
                                     if totalTeamBonus > 0 {
-                                        HStack(spacing: 2) {
-                                            Text("+\(totalTeamBonus)")
-                                            Image(systemName: "nairasign.circle.fill")
-                                        }
-                                        .font(.title2.weight(.bold))
-                                        .foregroundStyle(theme.win)
+                                        Text("+ \(totalTeamBonus)")
+                                            .font(.title2.weight(.bold))
+                                            .foregroundStyle(theme.win)
                                     }
                                 }
                                 HStack(spacing: 3) {

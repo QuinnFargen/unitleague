@@ -18,7 +18,7 @@ struct TabSyndicateView: View {
     private var soloSyndicate: Syndicate {
         Syndicate(
             syndicateId: 0,
-            name: "Solo",
+            name: "Solo Loser",
             isPublic: false,
             createdByBettorId: bettorId,
             symbol: profileSymbol,

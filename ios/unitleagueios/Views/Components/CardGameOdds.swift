@@ -98,6 +98,7 @@ struct CardGameOdds: View {
                         .foregroundStyle(theme.accent)
                 }
             }
+            .lineLimit(1)
             .padding(.horizontal, 10)
             .padding(.vertical, 4)
             .background(theme.cardBackground(colorScheme))
@@ -150,6 +151,7 @@ struct CardGameOdds: View {
         let homeOUWon = awayIsFav ? odd.overWon : odd.underWon
         let sprAwayLost = odd.sprAwayWon == false
         let sprHomeLost = odd.sprHomeWon == false
+        let scores = scores
 
         HStack(alignment: .center, spacing: 10) {
             Image(systemName: odd.sportIcon)
@@ -158,7 +160,7 @@ struct CardGameOdds: View {
                 .frame(width: 34)
 
             VStack(alignment: .leading, spacing: 6) {
-                // Header row: time | spacer | score placeholder | ML | SPR | O/U
+                // Header row: time | spacer | score placeholder (if game complete) | ML | SPR | O/U
                 HStack(spacing: 4) {
                     if let time = formattedTime {
                         Text(time)
@@ -166,7 +168,7 @@ struct CardGameOdds: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    Spacer().frame(width: scoreW)
+                    if scores != nil { Spacer().frame(width: scoreW) }
                     ForEach(["ML", "SPR", "O/U"], id: \.self) { h in
                         Text(h)
                             .font(.caption.weight(.semibold))
@@ -179,7 +181,7 @@ struct CardGameOdds: View {
                 HStack(spacing: 4) {
                     teamAbbrCapsule(odd.awayAbbr, teamId: odd.awayTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    if let s = scores { scoreCapsule(s.away) } else { Spacer().frame(width: scoreW) }
+                    if let s = scores { scoreCapsule(s.away) }
                     priceCapsule(odd.mlAwayPrice, subtitle: impliedPct(odd.mlAwayPrice),
                                  betHash: odd.mlAwayBetHash, won: odd.mlAwayWon) {
                         guard let p = odd.mlAwayPrice, let h = odd.mlAwayBetHash else { return }
@@ -225,7 +227,7 @@ struct CardGameOdds: View {
                         teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    if let s = scores { scoreCapsule(s.home) } else { Spacer().frame(width: scoreW) }
+                    if let s = scores { scoreCapsule(s.home) }
                     priceCapsule(odd.mlHomePrice, subtitle: impliedPct(odd.mlHomePrice),
                                  betHash: odd.mlHomeBetHash, won: odd.mlHomeWon) {
                         guard let p = odd.mlHomePrice, let h = odd.mlHomeBetHash else { return }
@@ -271,6 +273,22 @@ struct CardGameOdds: View {
 
 #Preview("GameOddsCard – upcoming") {
     CardGameOdds(odd: Mock.odds) { _ in }
+        .padding()
+        .environmentObject(AppTheme())
+}
+
+#Preview("GameOddsCard – completed") {
+    CardGameOdds(odd: Mock.oddsCompleted) { _ in }
+        .padding()
+        .environmentObject(AppTheme())
+}
+
+#Preview("GameOddsCard – enhanced teams") {
+    CardGameOdds(
+        odd: Mock.odds,
+        teamLevels: [Mock.odds.awayTeamId: 2, Mock.odds.homeTeamId: 1],
+        showJuiceCapsule: true
+    ) { _ in }
         .padding()
         .environmentObject(AppTheme())
 }

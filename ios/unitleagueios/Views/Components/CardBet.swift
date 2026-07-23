@@ -120,12 +120,9 @@ struct CardBet: View {
                     }
                 }
                 if let priceMultiplier {
-                    HStack(alignment: .firstTextBaseline, spacing: 2) {
-                        Text(String(format: "%.2fx", priceMultiplier))
-                        Text("Pricex")
-                    }
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(theme.accent)
+                    Text(String(format: "%.2fx", priceMultiplier))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(theme.accent)
                 }
             }
         }

@@ -53,7 +53,7 @@ struct SheetSyndicateSelector: View {
                                     .foregroundStyle(theme.accent)
                                     .frame(width: 40, height: 40)
 
-                                Text("Solo Syndicate")
+                                Text("Solo Loser")
                                     .foregroundStyle(theme.primaryText(colorScheme))
 
                                 Spacer()

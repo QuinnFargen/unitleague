@@ -27,6 +27,40 @@ struct FilterChip: View {
     }
 }
 
+// MARK: - SyndicateHeaderRow
+
+struct SyndicateHeaderRow: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let syndicate: Syndicate?
+    let syndicateId: Int
+    let runner: Runner?
+    let bettorId: Int
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: syndicate?.symbol ?? "house.fill")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+            Text(syndicate?.name ?? "Syndicate \(syndicateId)")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            if let runner {
+                Text("-")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Image(systemName: runner.symbol ?? "person.fill")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Text(runner.profileName ?? "Runner \(bettorId)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 4)
+    }
+}
+
 // MARK: - DateNavigationHeader
 
 struct DateNavigationHeader: View {

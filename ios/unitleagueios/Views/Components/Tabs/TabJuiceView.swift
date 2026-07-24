@@ -5,11 +5,7 @@ struct TabJuiceView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId") private var bettorId: Int = 0
 
-    @State private var txnRecords: [Txn] = []
-    @State private var syndicates: [Int: Syndicate] = [:]
     @State private var myRunners: [Int: Runner] = [:]
-    @State private var isLoading = false
-    @State private var segment: BetSegment = .slips
 
     // Juice state
     @State private var juiceSyndicates: [Syndicate] = []
@@ -17,30 +13,9 @@ struct TabJuiceView: View {
     @State private var isLoadingJuice = false
     @State private var showAddJuice = false
 
-    private let txnService = TxnService()
     private let syndicateService = SyndicateService()
     private let enhancementService = EnhancementService()
     private let runnerService = RunnerService()
-
-    private enum BetSegment: String, CaseIterable {
-        case slips = "Slips"
-        case juice = "Juice"
-    }
-
-    private var activeBets: [Txn] {
-        txnRecords.filter { $0.canceled != true }
-    }
-
-    private var syndicateGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
-        let bySyndicate = Dictionary(grouping: activeBets, by: \.syndicateId)
-        return bySyndicate.keys.sorted().map { sid in
-            let group = bySyndicate[sid] ?? []
-            let singles = group.filter { $0.parlayId == nil }
-            let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
-            let parlays = parlayMap.values.map { $0 }
-            return (syndicateId: sid, singles: singles, parlays: parlays)
-        }
-    }
 
     private var juiceGroups: [(syndicateId: Int, team: [Enhanced], edge: [Enhanced], clv: [Enhanced], others: [Enhanced])] {
         let mine = syndicateEnhanced.filter { $0.bettorId == bettorId }
@@ -63,90 +38,20 @@ struct TabJuiceView: View {
             ZStack {
                 theme.appBackground(colorScheme).ignoresSafeArea()
 
-                if isLoading {
-                    ProgressView()
-                } else {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            Picker("", selection: $segment) {
-                                ForEach(BetSegment.allCases, id: \.self) { seg in
-                                    Text(seg.rawValue).tag(seg)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .padding(.horizontal, 16)
-
-                            if segment == .juice {
-                                juiceContent
-                            } else {
-                                betContent
-                            }
-                        }
+                ScrollView {
+                    juiceContent
                         .padding(.top, 16)
                         .padding(.bottom, 32)
-                    }
-                    .refreshable {
-                        if segment == .juice {
-                            await fetchJuiceData()
-                        } else {
-                            await fetchData()
-                        }
-                    }
+                }
+                .refreshable {
+                    await fetchJuiceData()
                 }
             }
             .tabToolbar()
-            .task { await fetchData() }
             .task { await loadJuiceSyndicates() }
             .task { await loadRunners() }
             .sheet(isPresented: $showAddJuice, onDismiss: { Task { await fetchJuiceData() } }) {
                 SheetAddJuice(bettorId: bettorId, syndicates: juiceSyndicates)
-            }
-        }
-    }
-
-    // MARK: - Bet content (Slips)
-
-    private var betContent: some View {
-        Group {
-            if activeBets.isEmpty {
-                Text("No active bets")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 40)
-            } else {
-                VStack(alignment: .leading, spacing: 20) {
-                    HStack {
-                        Text("Active Bets")
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                        Spacer()
-                        Text("\(activeBets.count)")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.horizontal, 16)
-
-                    ForEach(syndicateGroups, id: \.syndicateId) { group in
-                        VStack(alignment: .leading, spacing: 10) {
-                            syndicateHeader(syndicate: syndicates[group.syndicateId], syndicateId: group.syndicateId)
-
-                            ForEach(group.singles) { txn in
-                                CardPlacedBet(
-                                    txn: txn,
-                                    onCancel: { cancelBet(txn) }
-                                )
-                            }
-
-                            ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                CardPlacedParlay(
-                                    legs: legs,
-                                    onCancel: { cancelParlay(legs) }
-                                )
-                            }
-                        }
-                        .padding(.horizontal, 16)
-                    }
-                }
             }
         }
     }
@@ -188,7 +93,7 @@ struct TabJuiceView: View {
                     ForEach(juiceGroups, id: \.syndicateId) { group in
                         VStack(alignment: .leading, spacing: 10) {
                             let syndicate = juiceSyndicates.first { $0.syndicateId == group.syndicateId }
-                            syndicateHeader(syndicate: syndicate, syndicateId: group.syndicateId)
+                            SyndicateHeaderRow(syndicate: syndicate, syndicateId: group.syndicateId, runner: myRunners[group.syndicateId], bettorId: bettorId)
 
                             if !group.team.isEmpty {
                                 let teamsByLeague = Dictionary(grouping: group.team, by: { $0.leagueId ?? 0 })
@@ -264,61 +169,7 @@ struct TabJuiceView: View {
         }
     }
 
-    // MARK: - Shared header
-
-    @ViewBuilder
-    private func syndicateHeader(syndicate: Syndicate?, syndicateId: Int) -> some View {
-        HStack(spacing: 6) {
-            Image(systemName: syndicate?.symbol ?? "house.fill")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-            Text(syndicate?.name ?? "Syndicate \(syndicateId)")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-            if let runner = myRunners[syndicateId] {
-                Text("-")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                Image(systemName: runner.symbol ?? "person.fill")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                Text(runner.profileName ?? "Runner \(bettorId)")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.horizontal, 4)
-    }
-
     // MARK: - Actions
-
-    private func cancelBet(_ txn: Txn) {
-        Task {
-            try? await txnService.cancelTxn(txnId: txn.txnId)
-            txnRecords.removeAll { $0.txnId == txn.txnId }
-        }
-    }
-
-    private func cancelParlay(_ legs: [Txn]) {
-        guard let txnId = legs.first?.txnId, let parlayId = legs.first?.parlayId else { return }
-        Task {
-            try? await txnService.cancelTxn(txnId: txnId)
-            txnRecords.removeAll { $0.parlayId == parlayId }
-        }
-    }
-
-    private func fetchData() async {
-        guard bettorId != 0 else { return }
-        isLoading = txnRecords.isEmpty
-        defer { isLoading = false }
-        txnRecords = (try? await txnService.fetchActiveBets(bettorId: bettorId)) ?? []
-        let ids = Set(txnRecords.map(\.syndicateId))
-        for sid in ids where syndicates[sid] == nil {
-            if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
-                syndicates[sid] = result.first
-            }
-        }
-    }
 
     private func loadRunners() async {
         guard bettorId != 0 else { return }

@@ -11,17 +11,34 @@ struct TabBetsView: View {
     @State private var selectedLeagueId: Int? = nil
     @State private var selectedTeamId: Int? = nil
     @State private var selectedBetType: String = "ALL"
+    @State private var cycleLabel: String = "ML"
     @State private var odds: [Odds] = []
     @State private var allOdds: [Odds] = []
+    @State private var games: [Game] = []
+    @State private var allGames: [Game] = []
     @State private var teams: [Team] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedBet: SelectedBet?
     @State private var juiceTeamLevels: [Int: Int] = [:]
 
+    @State private var txnRecords: [Txn] = []
+    @State private var syndicates: [Int: Syndicate] = [:]
+    @State private var myRunners: [Int: Runner] = [:]
+    @State private var isLoadingActive = false
+    @State private var completedRecords: [Txn] = []
+    @State private var historySyndicates: [Int: Syndicate] = [:]
+    @State private var isLoadingHistory = false
+
+    private let cycleOrder = ["ML", "SPR", "O/U"]
+
     private let oddsService = OddsService()
     private let teamService = TeamService()
     private let enhancementService = EnhancementService()
+    private let gameService = GameService()
+    private let txnService = TxnService()
+    private let syndicateService = SyndicateService()
+    private let runnerService = RunnerService()
 
     private let leagues: [(label: String, id: Int)] = [
         ("NBA", 1), ("NFL", 2), ("NHL", 3),
@@ -36,8 +53,9 @@ struct TabBetsView: View {
     }()
 
     private var dateKey: String { dateFormatter.string(from: selectedDate) }
-    private var fetchKey: String { "\(dateKey)-\(selectedLeagueId ?? 0)-\(selectedBetType)" }
+    private var fetchKey: String { "\(dateKey)-\(selectedLeagueId ?? 0)" }
     private var leaguesWithOdds: Set<Int> { Set(allOdds.map(\.leagueId)) }
+    private var leaguesWithGames: Set<Int> { Set(allGames.map(\.leagueId)) }
 
     private var filteredTeams: [Team] {
         let gameTeamIds = Set(odds.flatMap { [$0.homeTeamId, $0.awayTeamId] })
@@ -45,7 +63,11 @@ struct TabBetsView: View {
     }
 
     private var availabilityTint: (Int) -> Color? {
-        { id in leaguesWithOdds.contains(id) ? theme.win : theme.loss }
+        { id in
+            selectedBetType == "Calendar"
+                ? (leaguesWithGames.contains(id) ? theme.win : theme.loss)
+                : (leaguesWithOdds.contains(id) ? theme.win : theme.loss)
+        }
     }
 
     private var filteredOdds: [Odds] {
@@ -60,6 +82,41 @@ struct TabBetsView: View {
             : byType
         guard let teamId = selectedTeamId else { return scoped }
         return scoped.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+    }
+
+    private var displayedGames: [Game] {
+        guard let teamId = selectedTeamId else { return games }
+        return games.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+    }
+
+    private var activeBetsForDate: [Txn] {
+        txnRecords.filter { $0.canceled != true && $0.gameDate == dateKey }
+    }
+
+    private var syndicateGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
+        let bySyndicate = Dictionary(grouping: activeBetsForDate, by: \.syndicateId)
+        return bySyndicate.keys.sorted().map { sid in
+            let group = bySyndicate[sid] ?? []
+            let singles = group.filter { $0.parlayId == nil }
+            let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
+            let parlays = parlayMap.values.map { $0 }
+            return (syndicateId: sid, singles: singles, parlays: parlays)
+        }
+    }
+
+    private var historyForDate: [Txn] {
+        completedRecords.filter { $0.gameDate == dateKey }
+    }
+
+    private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
+        let bySyndicate = Dictionary(grouping: historyForDate, by: \.syndicateId)
+        return bySyndicate.keys.sorted().map { sid in
+            let group = bySyndicate[sid] ?? []
+            let singles = group.filter { $0.parlayId == nil }
+            let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
+            let parlays = parlayMap.values.map { $0 }
+            return (syndicateId: sid, singles: singles, parlays: parlays)
+        }
     }
 
     var body: some View {
@@ -107,16 +164,32 @@ struct TabBetsView: View {
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
-                    // Bet type filter + bookmark
+                    // Capsule row: Calendar, ALL, ML/SPR/O-U cycle, Juice, Bookmarks, Active, History
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            ForEach(["ALL", "ML", "SPR", "O/U"], id: \.self) { betType in
-                                FilterChip(
-                                    label: betType,
-                                    isSelected: selectedBetType == betType
-                                ) {
-                                    selectedBetType = betType
+                            Button {
+                                selectedBetType = "Calendar"
+                            } label: {
+                                Image(systemName: "calendar")
+                                    .font(.subheadline.weight(selectedBetType == "Calendar" ? .semibold : .regular))
+                                    .foregroundStyle(selectedBetType == "Calendar" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 6)
+                                    .background(selectedBetType == "Calendar" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
+                                    .clipShape(Capsule())
+                            }
+
+                            FilterChip(label: "ALL", isSelected: selectedBetType == "ALL") {
+                                selectedBetType = "ALL"
+                                cycleLabel = "ML"
+                            }
+
+                            FilterChip(label: cycleLabel, isSelected: selectedBetType == cycleLabel) {
+                                if selectedBetType == cycleLabel {
+                                    let idx = cycleOrder.firstIndex(of: cycleLabel) ?? 0
+                                    cycleLabel = cycleOrder[(idx + 1) % cycleOrder.count]
                                 }
+                                selectedBetType = cycleLabel
                             }
 
                             Button {
@@ -148,6 +221,30 @@ struct TabBetsView: View {
                                 .background(betStore.bookmarks.isEmpty ? theme.chipUnselected(colorScheme) : theme.accent.opacity(0.15))
                                 .clipShape(Capsule())
                             }
+
+                            Button {
+                                selectedBetType = "Active"
+                            } label: {
+                                Image(systemName: "receipt.fill")
+                                    .font(.subheadline.weight(selectedBetType == "Active" ? .semibold : .regular))
+                                    .foregroundStyle(selectedBetType == "Active" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 6)
+                                    .background(selectedBetType == "Active" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
+                                    .clipShape(Capsule())
+                            }
+
+                            Button {
+                                selectedBetType = "History"
+                            } label: {
+                                Image(systemName: "bitcoinsign.bank.building.fill")
+                                    .font(.subheadline.weight(selectedBetType == "History" ? .semibold : .regular))
+                                    .foregroundStyle(selectedBetType == "History" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 6)
+                                    .background(selectedBetType == "History" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
+                                    .clipShape(Capsule())
+                            }
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 8)
@@ -157,72 +254,34 @@ struct TabBetsView: View {
 
                     // Content
                     Group {
-                        if isLoading {
-                            Spacer()
-                            ProgressView()
-                            Spacer()
-                        } else if let error = errorMessage {
-                            Spacer()
-                            VStack(spacing: 12) {
-                                Image(systemName: "exclamationmark.triangle")
-                                    .font(.largeTitle)
-                                    .foregroundStyle(theme.error)
-                                Text(error)
-                                    .foregroundStyle(.secondary)
-                                    .multilineTextAlignment(.center)
-                                Button("Retry") { Task { await fetchContent() } }
-                                    .buttonStyle(.bordered)
-                            }
-                            .padding()
-                            Spacer()
-                        } else {
-                            if filteredOdds.isEmpty {
+                        switch selectedBetType {
+                        case "Active":
+                            activeBetsContent
+                        case "History":
+                            historyContent
+                        default:
+                            if isLoading {
                                 Spacer()
-                                Text("No odds available")
-                                    .foregroundStyle(.secondary)
+                                ProgressView()
                                 Spacer()
-                            } else {
-                                ScrollView {
-                                    LazyVStack(spacing: 12) {
-                                        ForEach(filteredOdds) { odd in
-                                            if selectedBetType == "ALL" || selectedBetType == "Juice" {
-                                                ZStack {
-                                                    NavigationLink {
-                                                        ViewGameDetail(
-                                                            gameId: odd.gameId,
-                                                            home: odd.homeAbbr,
-                                                            away: odd.awayAbbr,
-                                                            homeTeamId: odd.homeTeamId,
-                                                            awayTeamId: odd.awayTeamId,
-                                                            leagueId: odd.leagueId
-                                                        )
-                                                    } label: { Color.clear }
-                                                    CardGameOdds(
-                                                        odd: odd,
-                                                        teamLevels: juiceTeamLevels,
-                                                        showJuiceCapsule: selectedBetType == "Juice"
-                                                    ) { bet in selectedBet = bet }
-                                                }
-                                            } else {
-                                                ZStack {
-                                                    NavigationLink {
-                                                        ViewGameDetail(
-                                                            gameId: odd.gameId,
-                                                            home: odd.homeAbbr,
-                                                            away: odd.awayAbbr,
-                                                            homeTeamId: odd.homeTeamId,
-                                                            awayTeamId: odd.awayTeamId,
-                                                            leagueId: odd.leagueId
-                                                        )
-                                                    } label: { Color.clear }
-                                                    CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                    .padding(.top, 12)
+                            } else if let error = errorMessage {
+                                Spacer()
+                                VStack(spacing: 12) {
+                                    Image(systemName: "exclamationmark.triangle")
+                                        .font(.largeTitle)
+                                        .foregroundStyle(theme.error)
+                                    Text(error)
+                                        .foregroundStyle(.secondary)
+                                        .multilineTextAlignment(.center)
+                                    Button("Retry") { Task { await fetchContent() } }
+                                        .buttonStyle(.bordered)
                                 }
+                                .padding()
+                                Spacer()
+                            } else if selectedBetType == "Calendar" {
+                                calendarContent
+                            } else {
+                                oddsContent
                             }
                         }
                     }
@@ -253,6 +312,9 @@ struct TabBetsView: View {
         .task(id: fetchKey) { await fetchContent() }
         .task(id: dateKey) { await fetchAllContent() }
         .task(id: selectedSyndicateId) { await loadJuiceTeams() }
+        .task(id: bettorId) { await fetchActiveBetsData() }
+        .task(id: bettorId) { await loadRunners() }
+        .task(id: bettorId) { await loadHistoryData() }
         .onChange(of: selectedLeagueId) { _, leagueId in
             Task {
                 if let id = leagueId {
@@ -265,12 +327,219 @@ struct TabBetsView: View {
         }
     }
 
+    // MARK: - Odds content (ALL/ML/SPR/O-U/Juice)
+
+    private var oddsContent: some View {
+        Group {
+            if filteredOdds.isEmpty {
+                Spacer()
+                Text("No odds available")
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(filteredOdds) { odd in
+                            if selectedBetType == "ALL" || selectedBetType == "Juice" {
+                                ZStack {
+                                    NavigationLink {
+                                        ViewGameDetail(
+                                            gameId: odd.gameId,
+                                            home: odd.homeAbbr,
+                                            away: odd.awayAbbr,
+                                            homeTeamId: odd.homeTeamId,
+                                            awayTeamId: odd.awayTeamId,
+                                            leagueId: odd.leagueId
+                                        )
+                                    } label: { Color.clear }
+                                    CardGameOdds(
+                                        odd: odd,
+                                        teamLevels: juiceTeamLevels,
+                                        showJuiceCapsule: selectedBetType == "Juice"
+                                    ) { bet in selectedBet = bet }
+                                }
+                            } else {
+                                ZStack {
+                                    NavigationLink {
+                                        ViewGameDetail(
+                                            gameId: odd.gameId,
+                                            home: odd.homeAbbr,
+                                            away: odd.awayAbbr,
+                                            homeTeamId: odd.homeTeamId,
+                                            awayTeamId: odd.awayTeamId,
+                                            leagueId: odd.leagueId
+                                        )
+                                    } label: { Color.clear }
+                                    CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                }
+            }
+        }
+    }
+
+    // MARK: - Calendar content
+
+    private var calendarContent: some View {
+        Group {
+            if displayedGames.isEmpty {
+                Spacer()
+                Text("No games scheduled")
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(displayedGames) { game in
+                            NavigationLink {
+                                ViewGameDetail(
+                                    gameId: game.id,
+                                    home: game.home,
+                                    away: game.away,
+                                    homeTeamId: game.homeTeamId,
+                                    awayTeamId: game.awayTeamId,
+                                    leagueId: game.leagueId
+                                )
+                            } label: {
+                                CardGame(game: game)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                }
+            }
+        }
+    }
+
+    // MARK: - Active bets content
+
+    private var activeBetsContent: some View {
+        Group {
+            if isLoadingActive {
+                Spacer()
+                ProgressView()
+                Spacer()
+            } else if activeBetsForDate.isEmpty {
+                Spacer()
+                Text("No active bets")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack {
+                            Text("Active Bets")
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Text("\(activeBetsForDate.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+
+                        ForEach(syndicateGroups, id: \.syndicateId) { group in
+                            VStack(alignment: .leading, spacing: 10) {
+                                SyndicateHeaderRow(
+                                    syndicate: syndicates[group.syndicateId],
+                                    syndicateId: group.syndicateId,
+                                    runner: myRunners[group.syndicateId],
+                                    bettorId: bettorId
+                                )
+
+                                ForEach(group.singles) { txn in
+                                    CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) })
+                                }
+
+                                ForEach(group.parlays, id: \.first?.parlayId) { legs in
+                                    CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) })
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                    }
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
+                }
+            }
+        }
+    }
+
+    // MARK: - History content
+
+    private var historyContent: some View {
+        Group {
+            if isLoadingHistory {
+                Spacer()
+                ProgressView()
+                Spacer()
+            } else if historyForDate.isEmpty {
+                Spacer()
+                Text("No bet history")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack {
+                            Text("Bet History")
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Text("\(historyForDate.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+
+                        ForEach(historyGroups, id: \.syndicateId) { group in
+                            VStack(alignment: .leading, spacing: 10) {
+                                let syndicate = historySyndicates[group.syndicateId]
+                                HStack(spacing: 6) {
+                                    Image(systemName: syndicate?.symbol ?? "house.fill")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
+                                    Text(syndicate?.name ?? "Syndicate \(group.syndicateId)")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(.secondary)
+                                }
+
+                                ForEach(group.singles) { txn in
+                                    CardPlacedBet(txn: txn, onCancel: nil)
+                                }
+
+                                ForEach(group.parlays, id: \.first?.parlayId) { legs in
+                                    CardPlacedParlay(legs: legs, onCancel: nil)
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                    }
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
+                }
+            }
+        }
+    }
+
     private func fetchContent() async {
         isLoading = true
         errorMessage = nil
+        games = []
         odds = []
         do {
-            odds = try await oddsService.fetchOddBest(gameDt: dateKey, leagueId: selectedLeagueId)
+            async let fetchedGames = gameService.fetchGames(date: selectedDate, leagueId: selectedLeagueId)
+            async let fetchedOdds = oddsService.fetchOddBest(gameDt: dateKey, leagueId: selectedLeagueId)
+            games = try await fetchedGames
+            odds = try await fetchedOdds
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -278,7 +547,10 @@ struct TabBetsView: View {
     }
 
     private func fetchAllContent() async {
-        allOdds = (try? await oddsService.fetchOddBest(gameDt: dateKey, leagueId: nil)) ?? []
+        async let fetchedGames = gameService.fetchGames(date: selectedDate, leagueId: nil)
+        async let fetchedOdds = oddsService.fetchOddBest(gameDt: dateKey, leagueId: nil)
+        allGames = (try? await fetchedGames) ?? []
+        allOdds = (try? await fetchedOdds) ?? []
     }
 
     private func fetchTeams(leagueId: Int) async {
@@ -296,6 +568,57 @@ struct TabBetsView: View {
             enhanced.filter { $0.enhancementType == "team" }.map { ($0.teamId, $0.level) },
             uniquingKeysWith: { first, _ in first }
         )
+    }
+
+    private func fetchActiveBetsData() async {
+        guard bettorId != 0 else { return }
+        isLoadingActive = txnRecords.isEmpty
+        defer { isLoadingActive = false }
+        txnRecords = (try? await txnService.fetchActiveBets(bettorId: bettorId)) ?? []
+        let ids = Set(txnRecords.map(\.syndicateId))
+        for sid in ids where syndicates[sid] == nil {
+            if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
+                syndicates[sid] = result.first
+            }
+        }
+    }
+
+    private func loadRunners() async {
+        guard bettorId != 0 else { return }
+        let fetched = (try? await runnerService.fetchRunner(bettorId: bettorId)) ?? []
+        var map: [Int: Runner] = [:]
+        for runner in fetched where runner.bettorId == bettorId {
+            map[runner.syndicateId] = runner
+        }
+        myRunners = map
+    }
+
+    private func cancelBet(_ txn: Txn) {
+        Task {
+            try? await txnService.cancelTxn(txnId: txn.txnId)
+            txnRecords.removeAll { $0.txnId == txn.txnId }
+        }
+    }
+
+    private func cancelParlay(_ legs: [Txn]) {
+        guard let txnId = legs.first?.txnId, let parlayId = legs.first?.parlayId else { return }
+        Task {
+            try? await txnService.cancelTxn(txnId: txnId)
+            txnRecords.removeAll { $0.parlayId == parlayId }
+        }
+    }
+
+    private func loadHistoryData() async {
+        guard bettorId != 0 else { return }
+        isLoadingHistory = completedRecords.isEmpty
+        defer { isLoadingHistory = false }
+        completedRecords = (try? await txnService.fetchCompletedBets(bettorId: bettorId)) ?? []
+        let ids = Set(completedRecords.map(\.syndicateId))
+        for sid in ids where historySyndicates[sid] == nil {
+            if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
+                historySyndicates[sid] = result.first
+            }
+        }
     }
 }
 

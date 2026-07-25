@@ -244,8 +244,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 **Used in:**
 - `ViewGameDetail` (sheet on bet tap)
-- `SheetBookmarks` (sheet on bookmarked bet tap)
-- `TabBetsView`
+- `TabBetsView` (bet tap, including bookmarked-bet tap)
 
 **Sub-components:** `CardBet`, `SheetSyndicateSelector`, `SheetConfirmParlay`
 
@@ -263,7 +262,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 **Used in:**
 - `SheetConfirmBet` (Add to Parlay action)
-- `SheetBookmarks` (Parlay toolbar button and bookmarked parlay tap)
+- `TabBetsView` (bookmarked parlay tap)
 
 **Sub-components:** `CardBet`, `SheetSyndicateSelector`
 
@@ -271,21 +270,20 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ---
 
-## SheetBookmarks
+## CardBookmarkSingle / CardBookmarkParlay
 
-**Purpose:** Bookmarks list modal — straight bets and parlay groups saved locally, with remove and place actions.
+**Purpose:** Bookmarked bets shown inline in `TabBetsView`'s "Bookmarks" capsule — straight bets (`CardBookmarkSingle`, wraps `CardBet`) and parlay groups (`CardBookmarkParlay`, header + per-leg `CardBet`). Tap opens the confirm sheet; long-press opens a confirmationDialog to remove the bookmark.
 
 **Models:** `PlacedBet`
 
 **Data source:** `BetStore` (local `UserDefaults`-backed). No network calls.
 
 **Used in:**
-- `SharedToolbar` (bookmarks button)
-- `TabBetsView` (bookmarks button)
+- `TabBetsView` (Bookmarks capsule content)
 
-**Sub-components:** `SheetConfirmBet`, `SheetConfirmParlay`
+**Sub-components:** `CardBet`
 
-**Environment:** `AppTheme`, `BetStore`, `@AppStorage("bettorId")`, `@AppStorage("selectedSyndicateId")`
+**Environment:** `AppTheme`
 
 ---
 

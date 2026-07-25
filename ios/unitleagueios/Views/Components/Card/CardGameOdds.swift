@@ -154,10 +154,22 @@ struct CardGameOdds: View {
         let scores = scores
 
         HStack(alignment: .center, spacing: 10) {
-            Image(systemName: odd.sportIcon)
-                .font(.title)
-                .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 34)
+            NavigationLink {
+                ViewGameDetail(
+                    gameId: odd.gameId,
+                    home: odd.homeAbbr,
+                    away: odd.awayAbbr,
+                    homeTeamId: odd.homeTeamId,
+                    awayTeamId: odd.awayTeamId,
+                    leagueId: odd.leagueId
+                )
+            } label: {
+                Image(systemName: odd.sportIcon)
+                    .font(.title)
+                    .foregroundStyle(theme.primaryText(colorScheme))
+                    .frame(width: 34)
+            }
+            .buttonStyle(.plain)
 
             VStack(alignment: .leading, spacing: 6) {
                 // Header row: time | spacer | score placeholder (if game complete) | ML | SPR | O/U

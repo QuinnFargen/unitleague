@@ -9,7 +9,7 @@ struct TabJuiceView: View {
 
     // Juice state
     @State private var juiceSyndicates: [Syndicate] = []
-    @State private var syndicateEnhanced: [Enhanced] = []
+    @State private var syndicateEnhanced: [Enhanced] = JuiceCache.load()
     @State private var isLoadingJuice = false
     @State private var showAddJuice = false
 
@@ -189,7 +189,7 @@ struct TabJuiceView: View {
 
     private func fetchJuiceData() async {
         guard bettorId != 0, !juiceSyndicates.isEmpty else { return }
-        isLoadingJuice = true
+        isLoadingJuice = syndicateEnhanced.isEmpty
         defer { isLoadingJuice = false }
         var combined: [Enhanced] = []
         for syn in juiceSyndicates {
@@ -198,6 +198,7 @@ struct TabJuiceView: View {
             }
         }
         syndicateEnhanced = combined
+        JuiceCache.save(combined)
     }
 }
 
@@ -267,6 +268,22 @@ private struct CLVLevelLine: View {
                 .clipShape(Capsule())
             }
         }
+    }
+}
+
+private enum JuiceCache {
+    private static let key = "cachedSyndicateEnhanced"
+
+    static func load() -> [Enhanced] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let saved = try? JSONDecoder().decode([Enhanced].self, from: data)
+        else { return [] }
+        return saved
+    }
+
+    static func save(_ items: [Enhanced]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
     }
 }
 

@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS odd.txn (
   parlay_id    bigint,
   unit         float,
   price        float,
+  unit_enhanced  float,
+  price_enhanced float,
   game_dt      date,
   txn_type_id  smallint not null default 1,
   description  varchar(500),

@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS odd.enhanced (
     insert_ts        timestamp NOT NULL DEFAULT now(),
 
     CONSTRAINT chk_level_positive CHECK (level >= 1),
-    CONSTRAINT uq_enhanced UNIQUE (bettor_id, syndicate_id, enhancement_id, team_id, week_id)
+    CONSTRAINT uq_enhanced UNIQUE (bettor_id, syndicate_id, enhancement_id, team_id, level)
 );

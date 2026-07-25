@@ -34,6 +34,9 @@ struct SheetConfirmParlay: View {
     @State private var selectorColorName: String = ""
     @State private var selectorRank: Int = 0
 
+    @AppStorage("profileSymbol") private var profileSymbol: String = ProfileOption.symbols[0]
+    @AppStorage("customUserName") private var customUserName: String = ""
+
     private let txnService = TxnService()
     private let runnerService = RunnerService()
     private let syndicateService = SyndicateService()
@@ -363,6 +366,20 @@ struct SheetConfirmParlay: View {
 
     private func fetchIdentity() async {
         let sid = localSyndicateId
+        if sid == 0 {
+            syndicate = Syndicate(
+                syndicateId: 0, name: "Solo Loser", isPublic: false,
+                createdByBettorId: bettorId, symbol: profileSymbol, color: theme.accentOption.rawValue
+            )
+            runner = Runner(
+                runnerId: 0, bettorId: bettorId, syndicateId: 0, role: "solo",
+                active: true, balance: nil,
+                profileName: customUserName.isEmpty ? nil : customUserName,
+                symbol: profileSymbol, color: theme.accentOption.rawValue
+            )
+            enhancements = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: sid)) ?? []
+            return
+        }
         async let runnerTask    = try? runnerService.fetchRunner(bettorId: bettorId, syndicateId: sid)
         async let syndicateTask = try? syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil)
         async let enhancedTask  = try? enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: sid)

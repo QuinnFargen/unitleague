@@ -59,15 +59,16 @@ struct CardPlacedBet: View {
     @State private var showCancelConfirm = false
 
     var body: some View {
-        Button {
-            if onCancel != nil { showCancelConfirm = true }
-        } label: {
-            CardBet(bet: selectedBet(from: txn), won: txn.won)
-        }
-        .buttonStyle(.plain)
-        .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
-            Button("Cancel Bet", role: .destructive) { onCancel?() }
-        }
+        CardBet(bet: selectedBet(from: txn), won: txn.won)
+            .onLongPressGesture {
+                if onCancel != nil { showCancelConfirm = true }
+            }
+            .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
+                Button("Cancel Bet", role: .destructive) { onCancel?() }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This will cancel your placed bet and cannot be undone.")
+            }
     }
 }
 

@@ -14,6 +14,7 @@ struct SheetSyndicateSelector: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @AppStorage("profileSymbol") private var profileSymbol: String = ProfileOption.symbols[0]
+    @AppStorage("customUserName") private var customUserName: String = ""
 
     let bettorId: Int
     @Binding var selectedSyndicateId: Int
@@ -53,8 +54,19 @@ struct SheetSyndicateSelector: View {
                                     .foregroundStyle(theme.accent)
                                     .frame(width: 40, height: 40)
 
-                                Text("Solo Loser")
-                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Solo Loser")
+                                        .foregroundStyle(theme.primaryText(colorScheme))
+
+                                    if !customUserName.isEmpty {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: profileSymbol)
+                                            Text(customUserName)
+                                        }
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                    }
+                                }
 
                                 Spacer()
 

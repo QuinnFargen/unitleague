@@ -7,11 +7,11 @@ struct TabBetsView: View {
     @AppStorage("bettorId")            private var bettorId: Int            = 0
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int  = 0
     @State private var selectedDate: Date = .now
-    @State private var showingBookmarks = false
     @State private var selectedLeagueId: Int? = nil
     @State private var selectedTeamId: Int? = nil
     @State private var selectedBetType: String = "ALL"
     @State private var cycleLabel: String = "ML"
+    @State private var selectedBookmarkParlayLegs: [PlacedBet]?
     @State private var odds: [Odds] = []
     @State private var allOdds: [Odds] = []
     @State private var games: [Game] = []
@@ -31,6 +31,14 @@ struct TabBetsView: View {
     @State private var isLoadingHistory = false
 
     private let cycleOrder = ["ML", "SPR", "O/U"]
+
+    private func cycleIcon(for label: String) -> String {
+        switch label {
+        case "SPR": return "arrow.left.and.line.vertical.and.arrow.right"
+        case "O/U": return "arrow.up.and.line.horizontal.and.arrow.down"
+        default:    return "lines.measurement.vertical" // ML
+        }
+    }
 
     private let oddsService = OddsService()
     private let teamService = TeamService()
@@ -119,6 +127,15 @@ struct TabBetsView: View {
         }
     }
 
+    private var bookmarkSingles: [PlacedBet] {
+        betStore.bookmarks.filter { $0.parlayGroupId == nil }
+    }
+
+    private var bookmarkParlayGroups: [(id: UUID, legs: [PlacedBet])] {
+        let grouped = Dictionary(grouping: betStore.bookmarks.filter { $0.parlayGroupId != nil }) { $0.parlayGroupId! }
+        return grouped.map { (id: $0.key, legs: $0.value) }.sorted { $0.id.uuidString < $1.id.uuidString }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -167,24 +184,16 @@ struct TabBetsView: View {
                     // Capsule row: Calendar, ALL, ML/SPR/O-U cycle, Juice, Bookmarks, Active, History
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            Button {
+                            RowCapsuleButton(systemName: "calendar", isSelected: selectedBetType == "Calendar") {
                                 selectedBetType = "Calendar"
-                            } label: {
-                                Image(systemName: "calendar")
-                                    .font(.subheadline.weight(selectedBetType == "Calendar" ? .semibold : .regular))
-                                    .foregroundStyle(selectedBetType == "Calendar" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(selectedBetType == "Calendar" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
-                                    .clipShape(Capsule())
                             }
 
-                            FilterChip(label: "ALL", isSelected: selectedBetType == "ALL") {
+                            RowCapsuleButton(systemName: "square.grid.3x2", isSelected: selectedBetType == "ALL") {
                                 selectedBetType = "ALL"
                                 cycleLabel = "ML"
                             }
 
-                            FilterChip(label: cycleLabel, isSelected: selectedBetType == cycleLabel) {
+                            RowCapsuleButton(systemName: cycleIcon(for: cycleLabel), isSelected: selectedBetType == cycleLabel) {
                                 if selectedBetType == cycleLabel {
                                     let idx = cycleOrder.firstIndex(of: cycleLabel) ?? 0
                                     cycleLabel = cycleOrder[(idx + 1) % cycleOrder.count]
@@ -192,58 +201,25 @@ struct TabBetsView: View {
                                 selectedBetType = cycleLabel
                             }
 
-                            Button {
+                            RowCapsuleButton(systemName: "syringe.fill", isSelected: selectedBetType == "Juice") {
                                 selectedBetType = (selectedBetType == "Juice") ? "ALL" : "Juice"
-                            } label: {
-                                Image(systemName: "syringe.fill")
-                                    .font(.subheadline.weight(selectedBetType == "Juice" ? .semibold : .regular))
-                                    .foregroundStyle(selectedBetType == "Juice" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(selectedBetType == "Juice" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
-                                    .clipShape(Capsule())
                             }
 
-                            Button {
-                                showingBookmarks = true
-                            } label: {
-                                HStack(spacing: 5) {
-                                    Image(systemName: "bookmark.fill")
-                                    if !betStore.bookmarks.isEmpty {
-                                        Text("\(betStore.bookmarks.count)")
-                                            .font(.caption2.weight(.bold))
-                                    }
-                                }
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(betStore.bookmarks.isEmpty ? theme.primaryText(colorScheme) : theme.accent)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 6)
-                                .background(betStore.bookmarks.isEmpty ? theme.chipUnselected(colorScheme) : theme.accent.opacity(0.15))
-                                .clipShape(Capsule())
+                            RowCapsuleButton(
+                                systemName: betStore.bookmarks.isEmpty ? "bookmark" : "bookmark.fill",
+                                isSelected: selectedBetType == "Bookmarks"
+                            ) {
+                                selectedBetType = "Bookmarks"
                             }
 
-                            Button {
+                            RowCapsuleButton(systemName: "receipt.fill", isSelected: selectedBetType == "Active") {
                                 selectedBetType = "Active"
-                            } label: {
-                                Image(systemName: "receipt.fill")
-                                    .font(.subheadline.weight(selectedBetType == "Active" ? .semibold : .regular))
-                                    .foregroundStyle(selectedBetType == "Active" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(selectedBetType == "Active" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
-                                    .clipShape(Capsule())
+                                Task { await fetchActiveBetsData() }
                             }
 
-                            Button {
+                            RowCapsuleButton(systemName: "bitcoinsign.bank.building.fill", isSelected: selectedBetType == "History") {
                                 selectedBetType = "History"
-                            } label: {
-                                Image(systemName: "bitcoinsign.bank.building.fill")
-                                    .font(.subheadline.weight(selectedBetType == "History" ? .semibold : .regular))
-                                    .foregroundStyle(selectedBetType == "History" ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 6)
-                                    .background(selectedBetType == "History" ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
-                                    .clipShape(Capsule())
+                                Task { await loadHistoryData() }
                             }
                         }
                         .padding(.horizontal)
@@ -259,6 +235,8 @@ struct TabBetsView: View {
                             activeBetsContent
                         case "History":
                             historyContent
+                        case "Bookmarks":
+                            bookmarksContent
                         default:
                             if isLoading {
                                 Spacer()
@@ -287,11 +265,16 @@ struct TabBetsView: View {
                     }
                 }
                 .animation(.easeInOut(duration: 0.2), value: teams.isEmpty)
-                .sheet(isPresented: $showingBookmarks) {
-                    SheetBookmarks()
-                }
                 .sheet(item: $selectedBet) { bet in
                     SheetConfirmBet(bet: bet, bettorId: bettorId, syndicateId: selectedSyndicateId)
+                }
+                .sheet(isPresented: Binding(
+                    get: { selectedBookmarkParlayLegs != nil },
+                    set: { if !$0 { selectedBookmarkParlayLegs = nil } }
+                )) {
+                    if let legs = selectedBookmarkParlayLegs {
+                        SheetConfirmParlay(currentBet: nil, bettorId: bettorId, syndicateId: selectedSyndicateId, savedLegs: legs)
+                    }
                 }
                 .gesture(
                     DragGesture(minimumDistance: 40, coordinateSpace: .local)
@@ -472,6 +455,42 @@ struct TabBetsView: View {
         }
     }
 
+    // MARK: - Bookmarks content
+
+    private var bookmarksContent: some View {
+        Group {
+            if bookmarkSingles.isEmpty && bookmarkParlayGroups.isEmpty {
+                Spacer()
+                Text("No bookmarks")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer()
+            } else {
+                ScrollView {
+                    LazyVStack(spacing: 12) {
+                        ForEach(bookmarkSingles) { bookmark in
+                            CardBookmarkSingle(
+                                bookmark: bookmark,
+                                onTap: { selectedBet = SelectedBet(placedBet: bookmark) },
+                                onRemove: { betStore.removeBookmark(bookmark) }
+                            )
+                        }
+                        ForEach(bookmarkParlayGroups, id: \.id) { group in
+                            CardBookmarkParlay(
+                                legs: group.legs,
+                                onTap: { selectedBookmarkParlayLegs = group.legs },
+                                onRemove: { betStore.removeBookmarkParlay(groupId: group.id) }
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 12)
+                    .padding(.bottom, 24)
+                }
+            }
+        }
+    }
+
     // MARK: - History content
 
     private var historyContent: some View {
@@ -618,6 +637,26 @@ struct TabBetsView: View {
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
                 historySyndicates[sid] = result.first
             }
+        }
+    }
+}
+
+private struct RowCapsuleButton: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let systemName: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? theme.accent : theme.primaryText(colorScheme))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(isSelected ? theme.accent.opacity(0.15) : theme.chipUnselected(colorScheme))
+                .clipShape(Capsule())
         }
     }
 }

@@ -29,25 +29,30 @@ def create_parlay(parlay: ParlayCreate):
 
     with engine.begin() as conn:
         parlay_row = conn.execute(text("""
-            INSERT INTO odd.parlay (price_mult)
-            VALUES (:price_mult)
+            INSERT INTO odd.parlay (price_mult, unit_enhanced)
+            VALUES (:price_mult, :unit_enhanced)
             RETURNING *
-        """), {"price_mult": price_mult}).fetchone()
+        """), {"price_mult": price_mult, "unit_enhanced": parlay.unit_enhanced}).fetchone()
 
         parlay_id = parlay_row._mapping["parlay_id"]
 
         leg_rows = []
         for leg in parlay.legs:
             leg_row = conn.execute(text("""
-                INSERT INTO odd.leg (parlay_id, bet_hash, price)
-                VALUES (:parlay_id, :bet_hash, :price)
+                INSERT INTO odd.leg (parlay_id, bet_hash, price, price_enhanced)
+                VALUES (:parlay_id, :bet_hash, :price, :price_enhanced)
                 RETURNING *
-            """), {"parlay_id": parlay_id, "bet_hash": leg.bet_hash, "price": leg.price}).fetchone()
+            """), {
+                "parlay_id": parlay_id,
+                "bet_hash": leg.bet_hash,
+                "price": leg.price,
+                "price_enhanced": leg.price_enhanced,
+            }).fetchone()
             leg_rows.append(dict(leg_row._mapping))
 
         txn_row = conn.execute(text("""
-            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, unit_enhanced, price_enhanced, game_dt, txn_type_id)
-            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price, :unit_enhanced, :price_enhanced, :game_dt, 2)
+            INSERT INTO odd.txn (bettor_id, syndicate_id, parlay_id, unit, price, unit_enhanced, game_dt, txn_type_id)
+            VALUES (:bettor_id, :syndicate_id, :parlay_id, :unit, :price, :unit_enhanced, :game_dt, 2)
             RETURNING *
         """), {
             "bettor_id": parlay.bettor_id,
@@ -56,7 +61,6 @@ def create_parlay(parlay: ParlayCreate):
             "unit": parlay.unit,
             "price": price_mult,
             "unit_enhanced": parlay.unit_enhanced,
-            "price_enhanced": parlay.price_enhanced,
             "game_dt": parlay.game_dt,
         }).fetchone()
 

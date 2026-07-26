@@ -273,10 +273,14 @@ struct SheetConfirmParlay: View {
 
                         // Submit Parlay
                         Button {
-                            let legs = selectedLegs.map { (betHash: $0.betHash, price: $0.price) }
+                            let legs = selectedLegs.map { leg -> (betHash: String, price: Double, priceEnhanced: Double?) in
+                                let mult = clvMultiplier(for: leg)
+                                return (betHash: leg.betHash, price: leg.price, priceEnhanced: mult != 1.0 ? leg.price * mult : nil)
+                            }
                             let b = bettorId, s = localSyndicateId, u = wagerUnits
                             let gameDt = selectedLegs.compactMap(\.gameDate).sorted().first
-                            Task { try? await txnService.submitParlay(bettorId: b, syndicateId: s, unit: u, legs: legs, gameDt: gameDt) }
+                            let ue = totalTeamBonus > 0 ? totalRiskedUnits : nil
+                            Task { try? await txnService.submitParlay(bettorId: b, syndicateId: s, unit: u, legs: legs, gameDt: gameDt, unitEnhanced: ue) }
                             betStore.clearBookmarks()
                             dismiss()
                             onSubmit?()

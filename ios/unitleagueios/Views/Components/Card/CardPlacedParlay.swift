@@ -13,7 +13,9 @@ struct CardPlacedParlay: View {
     }
 
     private var won: Bool? {
-        legs.first?.won
+        if legs.contains(where: { $0.won == false }) { return false }
+        if legs.contains(where: { $0.won == nil })    { return nil }
+        return true
     }
 
     private func legBet(_ leg: Txn) -> SelectedBet {

@@ -229,7 +229,9 @@ struct SheetConfirmBet: View {
                         // Submit
                         Button {
                             let b = bettorId, s = localSyndicateId, h = bet.betHash, u = wagerUnits, p = bet.price, d = bet.gameDate
-                            Task { try? await txnService.submitBet(bettorId: b, syndicateId: s, betHash: h, unit: u, price: p, gameDt: d) }
+                            let pe = priceMultiplier != 1.0 ? effectivePrice : nil
+                            let ue = teamBonus > 0 ? totalRiskedUnits : nil
+                            Task { try? await txnService.submitBet(bettorId: b, syndicateId: s, betHash: h, unit: u, price: p, gameDt: d, priceEnhanced: pe, unitEnhanced: ue) }
                             dismiss()
                         } label: {
                             HStack(spacing: 6) {

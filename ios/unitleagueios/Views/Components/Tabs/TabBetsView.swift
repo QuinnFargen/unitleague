@@ -27,6 +27,7 @@ struct TabBetsView: View {
     @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoadingActive = false
     @State private var completedRecords: [Txn] = []
+    @State private var historyLegs: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
     @State private var isLoadingHistory = false
 
@@ -121,7 +122,8 @@ struct TabBetsView: View {
         return bySyndicate.keys.sorted().map { sid in
             let group = bySyndicate[sid] ?? []
             let singles = group.filter { $0.parlayId == nil }
-            let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
+            let parlayIds = Set(group.filter { $0.parlayId != nil }.map { $0.parlayId! })
+            let parlayMap = Dictionary(grouping: historyLegs.filter { $0.parlayId.map(parlayIds.contains) ?? false }, by: { $0.parlayId! })
             let parlays = parlayMap.values.map { $0 }
             return (syndicateId: sid, singles: singles, parlays: parlays)
         }
@@ -632,6 +634,7 @@ struct TabBetsView: View {
         isLoadingHistory = completedRecords.isEmpty
         defer { isLoadingHistory = false }
         completedRecords = (try? await txnService.fetchCompletedBets(bettorId: bettorId)) ?? []
+        historyLegs = (try? await txnService.fetchTxnBets(bettorId: bettorId)) ?? []
         let ids = Set(completedRecords.map(\.syndicateId))
         for sid in ids where historySyndicates[sid] == nil {
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {

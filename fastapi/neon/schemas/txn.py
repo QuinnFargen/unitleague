@@ -15,6 +15,7 @@ class TxnCreate(BaseModel):
 class ParlayLeg(BaseModel):
     bet_hash: str
     price: float
+    price_enhanced: Optional[float] = None
 
 class ParlayCreate(BaseModel):
     bettor_id: int
@@ -23,4 +24,3 @@ class ParlayCreate(BaseModel):
     legs: List[ParlayLeg]
     game_dt: Optional[str] = None
     unit_enhanced: Optional[float] = None
-    price_enhanced: Optional[float] = None

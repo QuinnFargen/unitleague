@@ -1,10 +1,44 @@
-enhancement_id,enhancement_type,name,description,symbol,bet_type,config,active
-1,clv,ML,Closing line value for moneyline bets,,h2h,{},true
-2,clv,SPR,Closing line value for spread bets,,spread,{},true
-3,clv,O/U,Closing line value for over/under totals,,total,{},true
-4,team,Color,Team primary color,,,{},true
-5,team,Region,Team geographic region,,,{},true
-6,team,Mascot,Team mascot animal or nickname,,,{},true
-7,team,Conference,Team conference affiliation,,,{},true
-8,edge,Large Stake,Triggered when 3 or more units are wagered on a single bet,batteryblock.stack.fill,,"{""min_units"": 3}",true
-9,edge,Consensus Color,Triggered when all bets on a slate share the same color,paint.bucket.classic,,"{""require_same_color"": true}",true
+enhancement_id,enhancement_type,edge_type,name,description,symbol,bet_type,rarity,cost,effect,value,config,active
+1,clv,clv,ML,Closing line value for moneyline bets,,h2h,,,,,{},true
+2,clv,clv,SPR,Closing line value for spread bets,,spread,,,,,{},true
+3,clv,clv,O/U,Closing line value for over/under totals,,total,,,,,{},true
+4,team,team,Color,Team primary color,,,,,,,{},true
+5,team,team,Region,Team geographic region,,,,,,,{},true
+6,team,team,Mascot,Team mascot animal or nickname,,,,,,,{},true
+7,team,team,Conference,Team conference affiliation,,,,,,,{},true
+8,edge,risk,Large Stake,Triggered when 3 or more units are wagered on a single bet,batteryblock.stack.fill,,,,,,"{""min_units"": 3}",true
+9,edge,trigger,Consensus Color,Triggered when all bets on a slate share the same color,paint.bucket.classic,,,,,,"{""require_same_color"": true}",true
+10,edge,price,Line Shopper,Adds +0.10 decimal odds to every bet,tag.fill,,nickel,2,odds_add,0.1,"{""scope"": ""per_bet""}",true
+11,edge,price,Off the Board,Adds +0.15 odds to your first bet each round,flag.fill,,nickel,2,odds_add,0.15,"{""scope"": ""first_bet""}",true
+12,edge,price,Steam Chaser,Favorites (odds under 2.00) get +0.30 odds,bolt.fill,,dime,3,odds_add,0.3,"{""max_odds"": 2.0, ""scope"": ""per_bet""}",true
+13,edge,price,Longshot Larry,Underdogs (odds 2.00+) get +0.75 odds,arrow.up.right,,dime,3,odds_add,0.75,"{""min_odds"": 2.0, ""scope"": ""per_bet""}",true
+14,edge,price,Ladder,+0.05 odds per win this round; resets each round,stairs,,dime,3,odds_add,0.05,"{""scope"": ""per_bet"", ""scaling"": {""per"": ""win"", ""reset"": ""round""}}",true
+15,edge,price,The Buyback,Winning bets settle at x1.25 odds,multiply.circle.fill,,dollar,1,odds_mult,1.25,"{""condition"": ""on_win""}",true
+16,edge,unit,Ticket Stub,+3 stake on every bet at no cost to balance,ticket.fill,,nickel,2,stake_add,3,"{""scope"": ""per_bet"", ""free"": true}",true
+17,edge,balance,The Grinder,+2 flat units of profit on each winning bet,tortoise.fill,,nickel,2,units_add,2,"{""condition"": ""on_win""}",true
+18,edge,unit,Overweight,Your largest bet each round gets +10 stake,scalemass.fill,,dime,3,stake_add,10,"{""scope"": ""largest_bet""}",true
+19,edge,unit,House Money,"While balance is at or above the threshold, +8 stake to all bets",building.columns.fill,,dime,3,stake_add,8,"{""scope"": ""per_bet"", ""condition"": ""balance_gte"", ""threshold"": 100}",true
+20,edge,risk,Whale,x1.5 payout on any single bet staking 50+ units,fish.fill,,dollar,1,payout_mult,1.5,"{""min_stake"": 50, ""scope"": ""per_bet""}",true
+21,edge,clv,The Closer,Beat the closing line on a bet to gain 1 CLV card,flag.checkered,,dollar,1,grant_clv,1,"{""condition"": ""beat_closing_line""}",true
+22,edge,clv,Sharp Money,Every winning underdog grants a CLV card,eyeglasses,,dime,3,grant_clv,1,"{""condition"": ""win_underdog"", ""min_odds"": 2.0}",true
+23,edge,clv,Tout,Your first CLV card each round is duplicated,megaphone.fill,,dime,3,clv_duplicate,1,"{""scope"": ""first_clv_per_round""}",true
+24,edge,clv,Market Maker,"End of round, gain 1 CLV card per 3 bets placed",chart.bar.fill,,dollar,1,grant_clv,1,"{""per_bets"": 3, ""scope"": ""round_end""}",true
+25,edge,team,Hometown Hero,Pin one team; its bets get +0.20 odds,house.fill,,nickel,2,odds_add,0.2,"{""scope"": ""per_bet"", ""condition"": ""pinned_team""}",true
+26,edge,team,Bandwagon,+0.10 odds per different team you have won with this round,person.3.fill,,dime,3,odds_add,0.1,"{""scope"": ""per_bet"", ""scaling"": {""per"": ""distinct_team_win"", ""reset"": ""round""}}",true
+27,edge,trigger,Rivalry Week,Division or rivalry matchups pay x1.3,flag.2.crossed.fill,,dime,3,payout_mult,1.3,"{""condition"": ""rivalry""}",true
+28,edge,team,Franchise Player,Pin one team; each win with them permanently adds +0.05 odds to that team,star.circle.fill,,dollar,1,odds_add,0.05,"{""permanent"": true, ""condition"": ""pinned_team"", ""scaling"": {""per"": ""win"", ""reset"": ""never""}}",true
+29,edge,balance,Push Protection,Pushes and voids grant +5 units instead of a flat refund,shield.lefthalf.filled,,nickel,2,units_add,5,"{""condition"": ""push""}",true
+30,edge,balance,Rake Back,Gain 2 units every time you place a bet,arrow.uturn.backward.circle.fill,,dime,3,units_add,2,"{""scope"": ""on_bet_place""}",true
+31,edge,balance,Vig Cutter,Losing bets refund 20% of stake to balance,percent,,dime,3,refund_pct,0.2,"{""condition"": ""on_loss""}",true
+32,edge,balance,Bankroll Baron,+15 units to balance at end of round,crown.fill,,dime,3,units_add,15,"{""scope"": ""round_end""}",true
+33,edge,balance,Compounder,"End of round, +1 unit per 10 units in balance (interest, cap 25)",dollarsign.arrow.circlepath,,dollar,1,interest,1,"{""per_units"": 10, ""cap"": 25, ""scope"": ""round_end""}",true
+34,edge,trigger,Hot Hand,+0.10 odds per consecutive win; resets on a loss,flame.fill,,dime,3,odds_add,0.1,"{""scope"": ""per_bet"", ""scaling"": {""per"": ""consecutive_win"", ""reset"": ""on_loss""}}",true
+35,edge,trigger,Buzzer Beater,The last bet you place each round settles at x2 odds,stopwatch.fill,,dime,3,odds_mult,2.0,"{""scope"": ""last_bet""}",true
+36,edge,price,Parlay Prophet,Each leg in a parlay adds +0.20 to the combined odds,link,,dollar,1,odds_add,0.2,"{""scope"": ""per_parlay_leg"", ""condition"": ""parlay""}",true
+37,edge,risk,Hedge Lord,Bet both sides of a game to give both sides +0.40 odds,arrow.left.arrow.right,,dollar,1,odds_add,0.4,"{""condition"": ""both_sides""}",true
+38,edge,risk,Lock of the Day,"Name one bet your Lock: x2 odds, but lose 15 units if it loses",lock.fill,,dime,3,odds_mult,2.0,"{""scope"": ""designated_bet"", ""penalty"": {""units"": -15, ""on"": ""loss""}}",true
+39,edge,risk,Tilt,"+0.15 permanent odds on every loss, but lose 5 units per loss",exclamationmark.triangle.fill,,dollar,1,odds_add,0.15,"{""permanent"": true, ""scaling"": {""per"": ""loss"", ""reset"": ""never""}, ""penalty"": {""units"": -5, ""on"": ""loss""}}",true
+40,edge,risk,Bad Beat Kid,"When a winning bet flips to a loss, gain 50 units",heart.slash.fill,,whale,5,units_add,50,"{""condition"": ""blown_lead""}",true
+41,edge,trigger,Wiseguy,Copies the effect of the Edge to its left,doc.on.doc.fill,,whale,5,copy_left,,{},true
+42,edge,trigger,The Regular,Retriggers every bet once; all Edge effects apply twice,repeat.circle.fill,,whale,5,retrigger,1,{},true
+43,edge,risk,Degenerate,"x3 odds on all bets, but you cannot skip a round and must stake at least 50% of balance each round",die.face.6,,whale,5,odds_mult,3.0,"{""scope"": ""per_bet"", ""constraint"": {""no_skip"": true, ""min_stake_pct"": 0.5}}",true

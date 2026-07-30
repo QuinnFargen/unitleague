@@ -7,9 +7,14 @@ struct EnhanceOption: Codable, Identifiable {
     let syndicateId: Int
     let enhancementId: Int
     let enhancementType: String
+    let edgeType: String
     let name: String
     let description: String
     let betType: String?
+    let rarity: String?
+    let cost: Int?
+    let effect: String?
+    let value: Double?
     let leagueId: Int
     let symbol: String?
     let availableAttrValue: String?
@@ -21,8 +26,13 @@ struct EnhanceOption: Codable, Identifiable {
         case syndicateId   = "syndicate_id"
         case enhancementId = "enhancement_id"
         case enhancementType = "enhancement_type"
+        case edgeType      = "edge_type"
         case name, description
         case betType       = "bet_type"
+        case rarity
+        case cost
+        case effect
+        case value
         case leagueId      = "league_id"
         case symbol
         case availableAttrValue = "available_attr_value"
@@ -37,6 +47,7 @@ struct Enhanced: Codable, Identifiable {
     let runnerId: Int?
     let teamId: Int
     let enhancementType: String
+    let edgeType: String
     let name: String
     let symbol: String?
     let leagueId: Int?
@@ -48,6 +59,7 @@ struct Enhanced: Codable, Identifiable {
         case runnerId      = "runner_id"
         case teamId        = "team_id"
         case enhancementType = "enhancement_type"
+        case edgeType      = "edge_type"
         case name
         case symbol
         case leagueId      = "league_id"
@@ -66,17 +78,34 @@ struct EnhancementDef: Codable, Identifiable {
     var id: Int { enhancementId }
     let enhancementId: Int
     let enhancementType: String
+    let edgeType: String
     let name: String
     let description: String?
     let symbol: String?
     let betType: String?
+    let rarity: String?
+    let cost: Int?
+    let effect: String?
+    let value: Double?
     let active: Bool
 
     enum CodingKeys: String, CodingKey {
         case enhancementId = "enhancement_id"
         case enhancementType = "enhancement_type"
+        case edgeType = "edge_type"
         case name, description, symbol
         case betType = "bet_type"
+        case rarity
+        case cost
+        case effect
+        case value
         case active
+    }
+}
+
+extension EnhancementDef {
+    func effectiveCost(multiplier: Int?) -> Int? {
+        guard let cost else { return nil }
+        return cost * max(multiplier ?? 1, 1)
     }
 }

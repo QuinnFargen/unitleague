@@ -369,34 +369,37 @@ enum Mock {
 
     static let enhanceOptionCLV = EnhanceOption(
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 10,
-        enhancementType: "clv", name: "Closing Line Value",
+        enhancementType: "clv", edgeType: "clv", name: "Closing Line Value",
         description: "Boosts payout when you beat the closing line.",
-        betType: "h2h", leagueId: 1, symbol: "chart.line.uptrend.xyaxis", availableAttrValue: nil,
+        betType: "h2h", rarity: nil, cost: nil, effect: nil, value: nil,
+        leagueId: 1, symbol: "chart.line.uptrend.xyaxis", availableAttrValue: nil,
         optionHash: "mockhash_clv"
     )
     static let enhanceOptionTeam = EnhanceOption(
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 76,
-        enhancementType: "team", name: "Color",
+        enhancementType: "team", edgeType: "team", name: "Color",
         description: "Team primary color",
-        betType: nil, leagueId: 1, symbol: nil, availableAttrValue: "Blue",
+        betType: nil, rarity: nil, cost: nil, effect: nil, value: nil,
+        leagueId: 1, symbol: nil, availableAttrValue: "Blue",
         optionHash: "mockhash_team"
     )
     static let enhanceOptionEdge = EnhanceOption(
         runnerId: 5, bettorId: 42, syndicateId: 1, enhancementId: 20,
-        enhancementType: "edge", name: "Underdog Edge",
+        enhancementType: "edge", edgeType: "risk", name: "Underdog Edge",
         description: "Boosts payout on underdog wins.",
-        betType: nil, leagueId: 1, symbol: "bolt.fill", availableAttrValue: nil,
+        betType: nil, rarity: "dollar", cost: 1, effect: "payout_mult", value: 1.5,
+        leagueId: 1, symbol: "bolt.fill", availableAttrValue: nil,
         optionHash: "mockhash_edge"
     )
     static var enhanceOptions: [EnhanceOption] { [enhanceOptionCLV, enhanceOptionTeam, enhanceOptionEdge] }
 
     static let enhancedTeam = Enhanced(
         bettorId: 42, syndicateId: 1, runnerId: 5,
-        teamId: 1, enhancementType: "team", name: "LAL", symbol: nil, leagueId: 1, level: 1
+        teamId: 1, enhancementType: "team", edgeType: "team", name: "LAL", symbol: nil, leagueId: 1, level: 1
     )
     static let enhancedCLV = Enhanced(
         bettorId: 42, syndicateId: 1, runnerId: 5,
-        teamId: 0, enhancementType: "clv", name: "ML", symbol: nil, leagueId: nil, level: 1
+        teamId: 0, enhancementType: "clv", edgeType: "clv", name: "ML", symbol: nil, leagueId: nil, level: 1
     )
     static var enhanced: [Enhanced] { [enhancedTeam, enhancedCLV] }
 

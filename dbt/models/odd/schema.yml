@@ -131,6 +131,9 @@ models:
       - name: enhancement_type
         description: "clv | team | edge"
         tests: [not_null]
+      - name: edge_type
+        description: "price | unit | clv | team | balance | trigger | risk"
+        tests: [not_null]
       - name: name
         description: "Team abbreviation for team-type enhancements, else the odd.enhancement name (e.g. ML/SPR/O/U for clv)"
         tests: [not_null]
@@ -161,14 +164,24 @@ models:
         tests: [not_null]
       - name: enhancement_type
         description: "'clv', 'edge', or 'team'"
+      - name: edge_type
+        description: "'price', 'unit', 'clv', 'team', 'balance', 'trigger', or 'risk'"
       - name: name
         description: "Display name of the enhancement"
       - name: description
         description: "Description of what the enhancement does"
       - name: bet_type
         description: "For clv enhancements: 'h2h', 'spread', or 'total'. NULL for edge/team."
+      - name: rarity
+        description: "'dollar', 'nickel', 'dime', or 'whale'. Edge-only, NULL for clv/team."
+      - name: cost
+        description: "Base cost tier: 1 (dollar), 2 (nickel), 3 (dime), or 5 (whale). Syndicate admins may apply a 2x/3x/4x multiplier on top. NULL for clv/team."
+      - name: effect
+        description: "The mechanic this edge applies, e.g. odds_add, odds_mult, stake_add, units_add, payout_mult, grant_clv, clv_duplicate, interest, refund_pct, retrigger, copy_left"
+      - name: value
+        description: "Magnitude of `effect`"
       - name: config
-        description: "JSON config with price_mult and unit_mult factors"
+        description: "Bespoke per-edge parameters not shared across enough rows to deserve a column: scope, condition, scaling, penalty, constraint, min_odds, max_odds, threshold, min_units, require_same_color, etc."
       - name: week_id
         description: "Current week_id from ball.week"
       - name: league_id

@@ -50,13 +50,21 @@ seeds:
         tests: [not_null]
 
   - name: enhancement
-    description: "Enhancement definitions with config jsonb holding price_mult and unit_mult."
+    description: >
+      Enhancement definitions. Universal, queryable dimensions (edge_type, rarity, cost,
+      effect, value) are dedicated columns; bespoke per-edge parameters (scope,
+      condition, scaling, penalty, constraint, min_odds, max_odds, threshold, min_units,
+      require_same_color, etc.) live in config jsonb.
     config:
       schema: odd
       column_types:
+        cost: smallint
+        value: "decimal(6,2)"
         config: jsonb
     columns:
       - name: enhancement_id
         tests: [not_null, unique]
       - name: enhancement_type
+        tests: [not_null]
+      - name: edge_type
         tests: [not_null]

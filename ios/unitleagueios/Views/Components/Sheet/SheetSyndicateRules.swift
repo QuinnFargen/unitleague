@@ -14,6 +14,7 @@ struct SheetSyndicateRules: View {
     @State private var maxTeamLevel: Int
     @State private var minUnitsWagered: Int
     @State private var minWagers: Int
+    @State private var costMultiplier: Int
 
     @State private var leagues: [League] = []
     @State private var edges: [EnhancementDef] = []
@@ -34,6 +35,7 @@ struct SheetSyndicateRules: View {
         _maxTeamLevel = State(initialValue: config?.maxTeamLevel ?? 0)
         _minUnitsWagered = State(initialValue: config?.minUnitsWagered ?? 0)
         _minWagers = State(initialValue: config?.minWagers ?? 0)
+        _costMultiplier = State(initialValue: config?.costMultiplier ?? 1)
     }
 
     var body: some View {
@@ -83,6 +85,19 @@ struct SheetSyndicateRules: View {
                                     }
                                 }
                             }
+                        }
+
+                        section(title: "Enhancement Cost") {
+                            HStack(spacing: 8) {
+                                ForEach([1, 2, 3, 4], id: \.self) { mult in
+                                    toggleChip(title: "\(mult)x", isOn: costMultiplier == mult) {
+                                        costMultiplier = mult
+                                    }
+                                }
+                            }
+                            Text("Multiplies every enhancement's base cost (1, 2, 3, 5, 8).")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
                         }
 
                         section(title: "Max Levels") {
@@ -246,7 +261,8 @@ struct SheetSyndicateRules: View {
             maxClvLevel: maxClvLevel == 0 ? nil : maxClvLevel,
             maxTeamLevel: maxTeamLevel == 0 ? nil : maxTeamLevel,
             minUnitsWagered: minUnitsWagered == 0 ? nil : minUnitsWagered,
-            minWagers: minWagers == 0 ? nil : minWagers
+            minWagers: minWagers == 0 ? nil : minWagers,
+            costMultiplier: costMultiplier == 1 ? nil : costMultiplier
         )
         let id = syndicate.syndicateId
         Task {

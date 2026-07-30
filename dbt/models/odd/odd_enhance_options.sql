@@ -27,9 +27,10 @@ team_attr_values as (
 ),
 
 -- For team-type enhancements, randomly pick one available attribute value
--- from the syndicate's leagues. enhancement.config format: {"attribute": "region"}
--- league_id and the enhancement columns are carried through so the final
--- select doesn't need a second join back to the enhancement table.
+-- from the syndicate's leagues. The attribute is matched against en.name
+-- (e.g. "Region", "Conference", "Mascot", "Color"). league_id and the
+-- enhancement columns are carried through so the final select doesn't need
+-- a second join back to the enhancement table.
 team_picks as (
     select distinct on (r.runner_id, en.enhancement_id)
         r.runner_id,
@@ -38,9 +39,14 @@ team_picks as (
         sl.league_id,
         en.enhancement_id,
         en.enhancement_type,
+        en.edge_type,
         en.name,
         en.description,
         en.bet_type,
+        en.rarity,
+        en.cost,
+        en.effect,
+        en.value,
         en.config,
         en.symbol,
         tav.value as available_attr_value
@@ -66,9 +72,14 @@ non_team_picks as (
         sl.league_id,
         en.enhancement_id,
         en.enhancement_type,
+        en.edge_type,
         en.name,
         en.description,
         en.bet_type,
+        en.rarity,
+        en.cost,
+        en.effect,
+        en.value,
         en.config,
         en.symbol
     from {{ source('odd', 'runner') }} r
@@ -87,9 +98,14 @@ select
     league_id,
     enhancement_id,
     enhancement_type,
+    edge_type,
     name,
     description,
     bet_type,
+    rarity,
+    cost,
+    effect,
+    value,
     config,
     symbol,
     available_attr_value,
@@ -110,9 +126,14 @@ select
     league_id,
     enhancement_id,
     enhancement_type,
+    edge_type,
     name,
     description,
     bet_type,
+    rarity,
+    cost,
+    effect,
+    value,
     config,
     symbol,
     null::text as available_attr_value,

@@ -162,15 +162,15 @@ struct CardOddSingle: View {
                                               gameTime: odd.gameTime, gameDate: odd.gameDt,
                                               homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                 }
-                if !d.awayBetLabel.isEmpty {
-                    Text(d.awayBetLabel)
+                if !d.awayMLPct.isEmpty {
+                    Text(d.awayMLPct)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
             }
 
-            if !d.awayMLPct.isEmpty {
-                Text(d.awayMLPct)
+            if !d.awayBetLabel.isEmpty {
+                Text(d.awayBetLabel)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -186,8 +186,8 @@ struct CardOddSingle: View {
             }
             .frame(maxWidth: .infinity)
 
-            if !d.homeMLPct.isEmpty {
-                Text(d.homeMLPct)
+            if !d.homeBetLabel.isEmpty {
+                Text(d.homeBetLabel)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -200,8 +200,8 @@ struct CardOddSingle: View {
                                               gameTime: odd.gameTime, gameDate: odd.gameDt,
                                               homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                 }
-                if !d.homeBetLabel.isEmpty {
-                    Text(d.homeBetLabel)
+                if !d.homeMLPct.isEmpty {
+                    Text(d.homeMLPct)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

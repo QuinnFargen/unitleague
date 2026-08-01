@@ -61,6 +61,28 @@ struct TabBetsView: View {
         return f
     }()
 
+    private let timeInputFormatter: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withColonSeparatorInTimeZone]
+        return f
+    }()
+
+    private func parseGameTime(_ iso: String?) -> Date {
+        guard let iso, let date = timeInputFormatter.date(from: iso) else { return .distantFuture }
+        return date
+    }
+
+    private var oddsSectionTitle: String {
+        switch selectedBetType {
+        case "ALL":   return "The Slate"
+        case "ML":    return "Moneyline Bets"
+        case "SPR":   return "Spread Bets"
+        case "O/U":   return "Over/Under Bets"
+        case "Juice": return "Juiced Bets"
+        default:      return ""
+        }
+    }
+
     private var dateKey: String { dateFormatter.string(from: selectedDate) }
     private var fetchKey: String { "\(dateKey)-\(selectedLeagueId ?? 0)" }
     private var leaguesWithOdds: Set<Int> { Set(allOdds.map(\.leagueId)) }
@@ -89,13 +111,23 @@ struct TabBetsView: View {
         let scoped = selectedBetType == "Juice"
             ? byType.filter { juiceTeamLevels[$0.homeTeamId] != nil || juiceTeamLevels[$0.awayTeamId] != nil }
             : byType
-        guard let teamId = selectedTeamId else { return scoped }
-        return scoped.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+        let teamFiltered: [Odds]
+        if let teamId = selectedTeamId {
+            teamFiltered = scoped.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+        } else {
+            teamFiltered = scoped
+        }
+        return teamFiltered.sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
 
     private var displayedGames: [Game] {
-        guard let teamId = selectedTeamId else { return games }
-        return games.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+        let filtered: [Game]
+        if let teamId = selectedTeamId {
+            filtered = games.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
+        } else {
+            filtered = games
+        }
+        return filtered.sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
 
     private var activeBetsForDate: [Txn] {
@@ -107,8 +139,10 @@ struct TabBetsView: View {
         return bySyndicate.keys.sorted().map { sid in
             let group = bySyndicate[sid] ?? []
             let singles = group.filter { $0.parlayId == nil }
+                .sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
             let parlayMap = Dictionary(grouping: group.filter { $0.parlayId != nil }, by: { $0.parlayId! })
             let parlays = parlayMap.values.map { $0 }
+                .sorted { parseGameTime($0.first?.gameTime) < parseGameTime($1.first?.gameTime) }
             return (syndicateId: sid, singles: singles, parlays: parlays)
         }
     }
@@ -122,20 +156,24 @@ struct TabBetsView: View {
         return bySyndicate.keys.sorted().map { sid in
             let group = bySyndicate[sid] ?? []
             let singles = group.filter { $0.parlayId == nil }
+                .sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
             let parlayIds = Set(group.filter { $0.parlayId != nil }.map { $0.parlayId! })
             let parlayMap = Dictionary(grouping: historyLegs.filter { $0.parlayId.map(parlayIds.contains) ?? false }, by: { $0.parlayId! })
             let parlays = parlayMap.values.map { $0 }
+                .sorted { parseGameTime($0.first?.gameTime) < parseGameTime($1.first?.gameTime) }
             return (syndicateId: sid, singles: singles, parlays: parlays)
         }
     }
 
     private var bookmarkSingles: [PlacedBet] {
         betStore.bookmarks.filter { $0.parlayGroupId == nil }
+            .sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
 
     private var bookmarkParlayGroups: [(id: UUID, legs: [PlacedBet])] {
         let grouped = Dictionary(grouping: betStore.bookmarks.filter { $0.parlayGroupId != nil }) { $0.parlayGroupId! }
-        return grouped.map { (id: $0.key, legs: $0.value) }.sorted { $0.id.uuidString < $1.id.uuidString }
+        return grouped.map { (id: $0.key, legs: $0.value) }
+            .sorted { parseGameTime($0.legs.first?.gameTime) < parseGameTime($1.legs.first?.gameTime) }
     }
 
     var body: some View {
@@ -323,45 +361,59 @@ struct TabBetsView: View {
                 Spacer()
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(filteredOdds) { odd in
-                            if selectedBetType == "ALL" || selectedBetType == "Juice" {
-                                ZStack {
-                                    NavigationLink {
-                                        ViewGameDetail(
-                                            gameId: odd.gameId,
-                                            home: odd.homeAbbr,
-                                            away: odd.awayAbbr,
-                                            homeTeamId: odd.homeTeamId,
-                                            awayTeamId: odd.awayTeamId,
-                                            leagueId: odd.leagueId
-                                        )
-                                    } label: { Color.clear }
-                                    CardGameOdds(
-                                        odd: odd,
-                                        teamLevels: juiceTeamLevels,
-                                        showJuiceCapsule: selectedBetType == "Juice"
-                                    ) { bet in selectedBet = bet }
-                                }
-                            } else {
-                                ZStack {
-                                    NavigationLink {
-                                        ViewGameDetail(
-                                            gameId: odd.gameId,
-                                            home: odd.homeAbbr,
-                                            away: odd.awayAbbr,
-                                            homeTeamId: odd.homeTeamId,
-                                            awayTeamId: odd.awayTeamId,
-                                            leagueId: odd.leagueId
-                                        )
-                                    } label: { Color.clear }
-                                    CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack {
+                            Text(oddsSectionTitle)
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Text("\(filteredOdds.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 16)
+
+                        LazyVStack(spacing: 12) {
+                            ForEach(filteredOdds) { odd in
+                                if selectedBetType == "ALL" || selectedBetType == "Juice" {
+                                    ZStack {
+                                        NavigationLink {
+                                            ViewGameDetail(
+                                                gameId: odd.gameId,
+                                                home: odd.homeAbbr,
+                                                away: odd.awayAbbr,
+                                                homeTeamId: odd.homeTeamId,
+                                                awayTeamId: odd.awayTeamId,
+                                                leagueId: odd.leagueId
+                                            )
+                                        } label: { Color.clear }
+                                        CardGameOdds(
+                                            odd: odd,
+                                            teamLevels: juiceTeamLevels,
+                                            showJuiceCapsule: selectedBetType == "Juice"
+                                        ) { bet in selectedBet = bet }
+                                    }
+                                } else {
+                                    ZStack {
+                                        NavigationLink {
+                                            ViewGameDetail(
+                                                gameId: odd.gameId,
+                                                home: odd.homeAbbr,
+                                                away: odd.awayAbbr,
+                                                homeTeamId: odd.homeTeamId,
+                                                awayTeamId: odd.awayTeamId,
+                                                leagueId: odd.leagueId
+                                            )
+                                        } label: { Color.clear }
+                                        CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
+                                    }
                                 }
                             }
                         }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.horizontal)
                     .padding(.top, 12)
+                    .padding(.bottom, 24)
                 }
             }
         }
@@ -378,25 +430,39 @@ struct TabBetsView: View {
                 Spacer()
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(displayedGames) { game in
-                            NavigationLink {
-                                ViewGameDetail(
-                                    gameId: game.id,
-                                    home: game.home,
-                                    away: game.away,
-                                    homeTeamId: game.homeTeamId,
-                                    awayTeamId: game.awayTeamId,
-                                    leagueId: game.leagueId
-                                )
-                            } label: {
-                                CardGame(game: game)
-                            }
-                            .buttonStyle(.plain)
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack {
+                            Text("Schedule")
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Text("\(displayedGames.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
                         }
+                        .padding(.horizontal, 16)
+
+                        LazyVStack(spacing: 12) {
+                            ForEach(displayedGames) { game in
+                                NavigationLink {
+                                    ViewGameDetail(
+                                        gameId: game.id,
+                                        home: game.home,
+                                        away: game.away,
+                                        homeTeamId: game.homeTeamId,
+                                        awayTeamId: game.awayTeamId,
+                                        leagueId: game.leagueId
+                                    )
+                                } label: {
+                                    CardGame(game: game)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.horizontal)
                     .padding(.top, 12)
+                    .padding(.bottom, 24)
                 }
             }
         }
@@ -469,23 +535,36 @@ struct TabBetsView: View {
                 Spacer()
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(bookmarkSingles) { bookmark in
-                            CardBookmarkSingle(
-                                bookmark: bookmark,
-                                onTap: { selectedBet = SelectedBet(placedBet: bookmark) },
-                                onRemove: { betStore.removeBookmark(bookmark) }
-                            )
+                    VStack(alignment: .leading, spacing: 20) {
+                        HStack {
+                            Text("Bookmarked Bets")
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                            Spacer()
+                            Text("\(bookmarkSingles.count + bookmarkParlayGroups.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
                         }
-                        ForEach(bookmarkParlayGroups, id: \.id) { group in
-                            CardBookmarkParlay(
-                                legs: group.legs,
-                                onTap: { selectedBookmarkParlayLegs = group.legs },
-                                onRemove: { betStore.removeBookmarkParlay(groupId: group.id) }
-                            )
+                        .padding(.horizontal, 16)
+
+                        LazyVStack(spacing: 12) {
+                            ForEach(bookmarkSingles) { bookmark in
+                                CardBookmarkSingle(
+                                    bookmark: bookmark,
+                                    onTap: { selectedBet = SelectedBet(placedBet: bookmark) },
+                                    onRemove: { betStore.removeBookmark(bookmark) }
+                                )
+                            }
+                            ForEach(bookmarkParlayGroups, id: \.id) { group in
+                                CardBookmarkParlay(
+                                    legs: group.legs,
+                                    onTap: { selectedBookmarkParlayLegs = group.legs },
+                                    onRemove: { betStore.removeBookmarkParlay(groupId: group.id) }
+                                )
+                            }
                         }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.horizontal)
                     .padding(.top, 12)
                     .padding(.bottom, 24)
                 }

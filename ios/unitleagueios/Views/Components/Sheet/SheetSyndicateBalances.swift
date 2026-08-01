@@ -12,6 +12,7 @@ struct SheetSyndicateBalances: View {
     @Environment(\.dismiss) private var dismiss
 
     let bettorId: Int
+    var mockData: (syndicates: [Syndicate], runners: [Int: Runner], txns: [Txn])? = nil
 
     @State private var syndicates: [Syndicate] = []
     @State private var runners: [Int: Runner] = [:]
@@ -32,13 +33,6 @@ struct SheetSyndicateBalances: View {
 
     private func possibleReturn(_ syndicateId: Int) -> Double {
         txns(for: syndicateId).reduce(0) { $0 + $1.unit * $1.price }
-    }
-
-    private func expectedReturn(_ syndicateId: Int) -> Double {
-        txns(for: syndicateId).reduce(0) { total, txn in
-            guard txn.price > 0 else { return total }
-            return total + (1.0 / txn.price) * (txn.unit * txn.price)
-        }
     }
 
     var body: some View {
@@ -70,7 +64,15 @@ struct SheetSyndicateBalances: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .task { await load() }
+            .task {
+                if let mockData {
+                    syndicates = mockData.syndicates
+                    runners = mockData.runners
+                    activeTxns = mockData.txns
+                } else {
+                    await load()
+                }
+            }
         }
     }
 
@@ -93,12 +95,6 @@ struct SheetSyndicateBalances: View {
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                HStack(spacing: 3) {
-                    Text(String(format: "%.4g", runner?.balance ?? 0))
-                    Text("units")
-                }
-                .font(.subheadline.weight(.bold))
-                .foregroundStyle(theme.primaryText(colorScheme))
             }
             .font(.subheadline)
 
@@ -107,7 +103,7 @@ struct SheetSyndicateBalances: View {
                 Divider().frame(height: 30)
                 metric("Possible", possibleReturn(syndicate.syndicateId))
                 Divider().frame(height: 30)
-                metric("Expected", expectedReturn(syndicate.syndicateId))
+                metric("Balance", runner?.balance ?? 0)
             }
         }
         .padding(14)
@@ -146,7 +142,14 @@ struct SheetSyndicateBalances: View {
 
 #Preview("SheetSyndicateBalances") {
     Color.clear.sheet(isPresented: .constant(true)) {
-        SheetSyndicateBalances(bettorId: 42)
-            .environmentObject(AppTheme())
+        SheetSyndicateBalances(
+            bettorId: 42,
+            mockData: (
+                syndicates: Mock.syndicates,
+                runners: Dictionary(Mock.runners.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first }),
+                txns: [Mock.txnML, Mock.txnSPR, Mock.txnOU]
+            )
+        )
+        .environmentObject(AppTheme())
     }
 }

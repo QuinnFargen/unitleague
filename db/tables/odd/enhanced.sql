@@ -8,8 +8,13 @@ CREATE TABLE IF NOT EXISTS odd.enhanced (
     level            smallint NOT NULL DEFAULT 1,
     option_hash      varchar(32),
     active           boolean NOT NULL DEFAULT true,
+    start_dt         timestamp NOT NULL DEFAULT now(),
+    end_dt           timestamp NULL,
     insert_ts        timestamp NOT NULL DEFAULT now(),
 
-    CONSTRAINT chk_level_positive CHECK (level >= 1),
-    CONSTRAINT uq_enhanced UNIQUE (bettor_id, syndicate_id, enhancement_id, team_id, level)
+    CONSTRAINT chk_level_positive CHECK (level >= 1)
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_enhanced_active
+    ON odd.enhanced (bettor_id, syndicate_id, enhancement_id, team_id, level)
+    WHERE active = true;

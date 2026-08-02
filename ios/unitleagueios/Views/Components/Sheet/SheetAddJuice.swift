@@ -14,6 +14,9 @@ struct SheetAddJuice: View {
     @State private var isLoading = false
     @State private var isSubmitting = false
     @State private var confirmOption: EnhanceOption? = nil
+    @State private var edgeLimitOption: EnhanceOption? = nil
+    @State private var sellableEdges: [EnhancedRow] = []
+    @State private var showSellEdge = false
 
     private let enhancementService = EnhancementService()
     private let leagueService = LeagueService()
@@ -52,6 +55,12 @@ struct SheetAddJuice: View {
                 } message: {
                     if let opt = confirmOption {
                         Text(opt.description)
+                    }
+                }
+                .sheet(isPresented: $showSellEdge) {
+                    SheetSellEdge(edges: sellableEdges) { selected in
+                        guard let option = edgeLimitOption else { return }
+                        Task { await submit(option, teamId: 0, sellEnhancedId: selected.enhancedId) }
                     }
                 }
         }
@@ -194,18 +203,29 @@ struct SheetAddJuice: View {
         myRunners = map
     }
 
-    private func submit(_ option: EnhanceOption, teamId: Int) async {
+    private func submit(_ option: EnhanceOption, teamId: Int, sellEnhancedId: Int? = nil) async {
         isSubmitting = true
         defer { isSubmitting = false }
-        guard (try? await enhancementService.chooseEnhancement(
-            bettorId: bettorId,
-            syndicateId: option.syndicateId,
-            enhancementId: option.enhancementId,
-            teamId: teamId,
-            level: 1,
-            optionHash: option.optionHash
-        )) != nil else { return }
-        dismiss()
+        do {
+            try await enhancementService.chooseEnhancement(
+                bettorId: bettorId,
+                syndicateId: option.syndicateId,
+                runnerId: option.runnerId,
+                enhancementId: option.enhancementId,
+                teamId: teamId,
+                level: 1,
+                optionHash: option.optionHash,
+                sellEnhancedId: sellEnhancedId
+            )
+            dismiss()
+        } catch EnhancementError.limitReached {
+            edgeLimitOption = option
+            sellableEdges = (try? await enhancementService.fetchActiveEdges(runnerId: option.runnerId)) ?? []
+            showSellEdge = true
+        } catch {
+            // Non-409 failure (invalid option_hash, already-chosen 404, etc). Swallowed,
+            // matching the prior `try?` behavior.
+        }
     }
 }
 

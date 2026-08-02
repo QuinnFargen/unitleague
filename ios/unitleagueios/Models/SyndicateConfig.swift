@@ -10,6 +10,8 @@ struct SyndicateConfig: Codable, Equatable {
     var minWagers: Int?
     /// Multiplies every enhancement's base cost (1/2/3/5/8). Allowed values: 2, 3, 4. nil/1 means no multiplier.
     var costMultiplier: Int?
+    /// Max number of active Edge-type enhancements a runner may hold at once. nil means no limit.
+    var maxActiveEdges: Int?
 
     enum CodingKeys: String, CodingKey {
         case leagueIds = "league_ids"
@@ -20,6 +22,7 @@ struct SyndicateConfig: Codable, Equatable {
         case minUnitsWagered = "min_units_wagered"
         case minWagers = "min_wagers"
         case costMultiplier = "cost_multiplier"
+        case maxActiveEdges = "max_active_edges"
     }
 
     init(
@@ -30,7 +33,8 @@ struct SyndicateConfig: Codable, Equatable {
         maxTeamLevel: Int? = nil,
         minUnitsWagered: Int? = nil,
         minWagers: Int? = nil,
-        costMultiplier: Int? = nil
+        costMultiplier: Int? = nil,
+        maxActiveEdges: Int? = nil
     ) {
         self.leagueIds = leagueIds
         self.blockedEnhancementTypes = blockedEnhancementTypes
@@ -40,5 +44,6 @@ struct SyndicateConfig: Codable, Equatable {
         self.minUnitsWagered = minUnitsWagered
         self.minWagers = minWagers
         self.costMultiplier = costMultiplier
+        self.maxActiveEdges = maxActiveEdges
     }
 }

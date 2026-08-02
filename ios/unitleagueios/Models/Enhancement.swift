@@ -109,3 +109,34 @@ extension EnhancementDef {
         return cost * max(multiplier ?? 1, 1)
     }
 }
+
+/// One ungrouped row per active odd.enhanced entry for a runner (unlike `Enhanced`,
+/// which aggregates via odd.v_enhanced and has no `enhancedId`). Used to let a runner
+/// pick a specific held edge to sell when they're at their active-edge limit.
+struct EnhancedRow: Codable, Identifiable {
+    let enhancedId: Int
+    let runnerId: Int
+    let bettorId: Int
+    let syndicateId: Int
+    let enhancementId: Int
+    let teamId: Int
+    let level: Int
+    let enhancementType: String
+    let edgeType: String
+    let name: String
+    let symbol: String?
+    var id: Int { enhancedId }
+
+    enum CodingKeys: String, CodingKey {
+        case enhancedId = "enhanced_id"
+        case runnerId = "runner_id"
+        case bettorId = "bettor_id"
+        case syndicateId = "syndicate_id"
+        case enhancementId = "enhancement_id"
+        case teamId = "team_id"
+        case level
+        case enhancementType = "enhancement_type"
+        case edgeType = "edge_type"
+        case name, symbol
+    }
+}

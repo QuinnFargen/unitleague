@@ -23,6 +23,39 @@ struct EnhancementTypeBadge: View {
     }
 }
 
+struct EnhancementSymbolIcon: View {
+    let type: String
+    let symbol: String?
+
+    var tintColor: Color {
+        switch type {
+        case "clv":  return .green
+        case "team": return .yellow
+        case "edge": return .red
+        default:     return .secondary
+        }
+    }
+
+    var body: some View {
+        Image(systemName: symbol ?? "questionmark.circle")
+            .font(.system(size: 16, weight: .semibold))
+            .foregroundStyle(tintColor)
+            .frame(width: 36, height: 36)
+            .background(tintColor.opacity(0.15))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+func enhancementRarityColor(_ rarity: String?) -> Color {
+    switch rarity {
+    case "dollar": return .gray
+    case "nickel": return .green
+    case "dime":   return .purple
+    case "whale":  return .orange
+    default:       return .secondary
+    }
+}
+
 struct CardEnhancement: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -32,7 +65,7 @@ struct CardEnhancement: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            EnhancementTypeBadge(type: option.enhancementType)
+            EnhancementSymbolIcon(type: option.enhancementType, symbol: option.symbol)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(option.name)
@@ -59,6 +92,28 @@ struct CardEnhancement: View {
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
                                 .background(Color.secondary.opacity(0.12))
+                                .clipShape(Capsule())
+                        }
+                    }
+                    .padding(.top, 2)
+                }
+
+                if option.enhancementType == "edge" {
+                    HStack(spacing: 6) {
+                        Text(option.edgeType.capitalized)
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 3)
+                            .background(Color.secondary.opacity(0.12))
+                            .clipShape(Capsule())
+                        if let rarity = option.rarity {
+                            Text(rarity.capitalized)
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(enhancementRarityColor(rarity))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(enhancementRarityColor(rarity).opacity(0.15))
                                 .clipShape(Capsule())
                         }
                     }

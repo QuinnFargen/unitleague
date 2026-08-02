@@ -12,6 +12,7 @@ struct TabJuiceView: View {
     @State private var syndicateEnhanced: [Enhanced] = JuiceCache.load()
     @State private var isLoadingJuice = false
     @State private var showAddJuice = false
+    @State private var showAllEnhancements = false
 
     private let syndicateService = SyndicateService()
     private let enhancementService = EnhancementService()
@@ -53,6 +54,9 @@ struct TabJuiceView: View {
             .sheet(isPresented: $showAddJuice, onDismiss: { Task { await fetchJuiceData() } }) {
                 SheetAddJuice(bettorId: bettorId, syndicates: juiceSyndicates)
             }
+            .sheet(isPresented: $showAllEnhancements) {
+                SheetBrowseEnhancements()
+            }
         }
     }
 
@@ -69,17 +73,31 @@ struct TabJuiceView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
             } else {
-                Button {
-                    showAddJuice = true
-                } label: {
-                    Label("Add Juice", systemImage: "syringe.fill")
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(theme.accent.opacity(0.15))
-                        .foregroundStyle(theme.accent)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(theme.accent.opacity(0.35), lineWidth: 1))
+                HStack(spacing: 8) {
+                    Button {
+                        showAddJuice = true
+                    } label: {
+                        Label("Add Juice", systemImage: "syringe.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(theme.accent.opacity(0.15))
+                            .foregroundStyle(theme.accent)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(theme.accent.opacity(0.35), lineWidth: 1))
+                    }
+
+                    Button {
+                        showAllEnhancements = true
+                    } label: {
+                        Image(systemName: "rectangle.stack.fill")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.accent)
+                            .frame(width: 52, height: 52)
+                            .background(theme.accent.opacity(0.15))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(theme.accent.opacity(0.35), lineWidth: 1))
+                    }
                 }
                 .padding(.horizontal, 16)
 

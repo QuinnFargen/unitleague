@@ -15,6 +15,8 @@ struct SheetSyndicateRules: View {
     @State private var minUnitsWagered: Int
     @State private var minWagers: Int
     @State private var costMultiplier: Int
+    @State private var maxActiveEdges: Int
+    @State private var blockEdgesEnabled: Bool
 
     @State private var leagues: [League] = []
     @State private var edges: [EnhancementDef] = []
@@ -36,6 +38,8 @@ struct SheetSyndicateRules: View {
         _minUnitsWagered = State(initialValue: config?.minUnitsWagered ?? 0)
         _minWagers = State(initialValue: config?.minWagers ?? 0)
         _costMultiplier = State(initialValue: config?.costMultiplier ?? 1)
+        _maxActiveEdges = State(initialValue: config?.maxActiveEdges ?? 0)
+        _blockEdgesEnabled = State(initialValue: !(config?.blockedEnhancementIds ?? []).isEmpty)
     }
 
     var body: some View {
@@ -107,25 +111,44 @@ struct SheetSyndicateRules: View {
                             }
                         }
 
+                        section(title: "Max Active Edges Per Runner") {
+                            HStack(spacing: 8) {
+                                ForEach([0, 1, 3, 5], id: \.self) { max in
+                                    toggleChip(title: max == 0 ? "No Limit" : "\(max)", isOn: maxActiveEdges == max) {
+                                        maxActiveEdges = max
+                                    }
+                                }
+                            }
+                            Text("Caps how many active Edge-type enhancements a runner can hold at once.")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+
                         section(title: "Block Specific Edges") {
-                            if isLoading && edges.isEmpty {
-                                ProgressView().frame(maxWidth: .infinity)
-                            } else if edges.isEmpty {
-                                Text("No edge enhancements available.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                VStack(spacing: 8) {
-                                    ForEach(edges) { edge in
-                                        checklistRow(
-                                            title: edge.name,
-                                            subtitle: edge.description,
-                                            isSelected: blockedEdgeIds.contains(edge.enhancementId)
-                                        ) {
-                                            if blockedEdgeIds.contains(edge.enhancementId) {
-                                                blockedEdgeIds.remove(edge.enhancementId)
-                                            } else {
-                                                blockedEdgeIds.insert(edge.enhancementId)
+                            Toggle("Block Specific Edges", isOn: $blockEdgesEnabled)
+                                .tint(theme.accent)
+                                .disabled(!isAdmin)
+
+                            if blockEdgesEnabled {
+                                if isLoading && edges.isEmpty {
+                                    ProgressView().frame(maxWidth: .infinity)
+                                } else if edges.isEmpty {
+                                    Text("No edge enhancements available.")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    VStack(spacing: 8) {
+                                        ForEach(edges) { edge in
+                                            checklistRow(
+                                                title: edge.name,
+                                                subtitle: edge.description,
+                                                isSelected: blockedEdgeIds.contains(edge.enhancementId)
+                                            ) {
+                                                if blockedEdgeIds.contains(edge.enhancementId) {
+                                                    blockedEdgeIds.remove(edge.enhancementId)
+                                                } else {
+                                                    blockedEdgeIds.insert(edge.enhancementId)
+                                                }
                                             }
                                         }
                                     }
@@ -257,12 +280,13 @@ struct SheetSyndicateRules: View {
         let config = SyndicateConfig(
             leagueIds: selectedLeagueIds.isEmpty ? nil : Array(selectedLeagueIds).sorted(),
             blockedEnhancementTypes: blockedTypes.isEmpty ? nil : Array(blockedTypes).sorted(),
-            blockedEnhancementIds: blockedEdgeIds.isEmpty ? nil : Array(blockedEdgeIds).sorted(),
+            blockedEnhancementIds: blockEdgesEnabled && !blockedEdgeIds.isEmpty ? Array(blockedEdgeIds).sorted() : nil,
             maxClvLevel: maxClvLevel == 0 ? nil : maxClvLevel,
             maxTeamLevel: maxTeamLevel == 0 ? nil : maxTeamLevel,
             minUnitsWagered: minUnitsWagered == 0 ? nil : minUnitsWagered,
             minWagers: minWagers == 0 ? nil : minWagers,
-            costMultiplier: costMultiplier == 1 ? nil : costMultiplier
+            costMultiplier: costMultiplier == 1 ? nil : costMultiplier,
+            maxActiveEdges: maxActiveEdges == 0 ? nil : maxActiveEdges
         )
         let id = syndicate.syndicateId
         Task {

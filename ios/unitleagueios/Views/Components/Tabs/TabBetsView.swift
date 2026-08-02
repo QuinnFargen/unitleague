@@ -77,7 +77,7 @@ struct TabBetsView: View {
         case "ALL":   return "The Slate"
         case "ML":    return "Moneyline Bets"
         case "SPR":   return "Spread Bets"
-        case "O/U":   return "Over/Under Bets"
+        case "O/U":   return "Total Bets"
         case "Juice": return "Juiced Bets"
         default:      return ""
         }

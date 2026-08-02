@@ -1,11 +1,11 @@
 enhancement_id,enhancement_type,edge_type,name,description,symbol,bet_type,rarity,cost,effect,value,config,active
-1,clv,clv,ML,Closing line value for moneyline bets,target,h2h,,,,,{},true
-2,clv,clv,SPR,Closing line value for spread bets,plusminus.circle.fill,spread,,,,,{},true
-3,clv,clv,O/U,Closing line value for over/under totals,arrow.up.arrow.down.circle.fill,total,,,,,{},true
-4,team,team,Color,Team primary color,paintpalette.fill,,,,,,{},true
-5,team,team,Region,Team geographic region,map.fill,,,,,,{},true
-6,team,team,Mascot,Team mascot animal or nickname,pawprint.fill,,,,,,{},true
-7,team,team,Conference,Team conference affiliation,rectangle.3.group.fill,,,,,,{},true
+1,clv,clv,ML,Closing line value for moneyline bets,lines.measurement.vertical,h2h,,,,,{},true
+2,clv,clv,SPR,Closing line value for spread bets,arrow.left.and.line.vertical.and.arrow.right,spread,,,,,{},true
+3,clv,clv,O/U,Closing line value for over/under totals,arrow.up.and.line.horizontal.and.arrow.down,total,,,,,{},true
+4,team,team,Color,Team primary color,paint.bucket.classic,,,,,,{},true
+5,team,team,Region,Team geographic region,mappin.and.ellipse,,,,,,{},true
+6,team,team,Mascot,Team mascot animal or nickname,theatermasks.fill,,,,,,{},true
+7,team,team,Conference,Team conference affiliation,figure.and.child.holdinghands,,,,,,{},true
 8,edge,risk,Large Stake,Triggered when 3 or more units are wagered on a single bet,batteryblock.stack.fill,,,,,,"{""min_units"": 3}",true
 9,edge,trigger,Consensus Color,Triggered when all bets on a slate share the same color,paint.bucket.classic,,,,,,"{""require_same_color"": true}",true
 10,edge,price,Line Shopper,Adds +0.10 decimal odds to every bet,tag.fill,,nickel,2,odds_add,0.1,"{""scope"": ""per_bet""}",true

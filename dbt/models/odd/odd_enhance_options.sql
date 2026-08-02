@@ -28,9 +28,10 @@ team_attr_values as (
 
 -- For team-type enhancements, randomly pick one available attribute value
 -- from the syndicate's leagues. The attribute is matched against en.name
--- (e.g. "Region", "Conference", "Mascot", "Color"). league_id and the
--- enhancement columns are carried through so the final select doesn't need
--- a second join back to the enhancement table.
+-- (e.g. "Region", "Conference", "Mascot", "Color"). Only identifying columns
+-- and the picked attr value are carried through — display attributes
+-- (name, description, symbol, etc.) live on odd.enhancement and are joined
+-- in downstream by odd_v_enhance_options.
 team_picks as (
     select distinct on (r.runner_id, en.enhancement_id)
         r.runner_id,
@@ -39,16 +40,6 @@ team_picks as (
         sl.league_id,
         en.enhancement_id,
         en.enhancement_type,
-        en.edge_type,
-        en.name,
-        en.description,
-        en.bet_type,
-        en.rarity,
-        en.cost,
-        en.effect,
-        en.value,
-        en.config,
-        en.symbol,
         tav.value as available_attr_value
     from {{ source('odd', 'runner') }} r
     join syndicate_leagues sl  on sl.syndicate_id = r.syndicate_id
@@ -71,17 +62,7 @@ non_team_picks as (
         r.syndicate_id,
         sl.league_id,
         en.enhancement_id,
-        en.enhancement_type,
-        en.edge_type,
-        en.name,
-        en.description,
-        en.bet_type,
-        en.rarity,
-        en.cost,
-        en.effect,
-        en.value,
-        en.config,
-        en.symbol
+        en.enhancement_type
     from {{ source('odd', 'runner') }} r
     join syndicate_leagues sl on sl.syndicate_id = r.syndicate_id
     cross join {{ source('odd', 'enhancement') }} en
@@ -89,6 +70,25 @@ non_team_picks as (
       and en.active            = true
       and en.enhancement_type <> 'team'
     order by r.runner_id, en.enhancement_id, random()
+),
+
+-- Cap Edge-type options to 3 random picks per runner; CLV passes through
+-- unlimited (only 3 CLV rows exist today, but nothing here hardcodes that).
+non_team_picks_limited as (
+    select runner_id, bettor_id, syndicate_id, league_id, enhancement_id, enhancement_type
+    from non_team_picks
+    where enhancement_type = 'clv'
+
+    union all
+
+    select runner_id, bettor_id, syndicate_id, league_id, enhancement_id, enhancement_type
+    from (
+        select *,
+            row_number() over (partition by runner_id order by random()) as edge_rn
+        from non_team_picks
+        where enhancement_type = 'edge'
+    ) ranked_edges
+    where edge_rn <= 3
 )
 
 select
@@ -98,16 +98,6 @@ select
     league_id,
     enhancement_id,
     enhancement_type,
-    edge_type,
-    name,
-    description,
-    bet_type,
-    rarity,
-    cost,
-    effect,
-    value,
-    config,
-    symbol,
     available_attr_value,
     md5(
         runner_id::text
@@ -126,20 +116,10 @@ select
     league_id,
     enhancement_id,
     enhancement_type,
-    edge_type,
-    name,
-    description,
-    bet_type,
-    rarity,
-    cost,
-    effect,
-    value,
-    config,
-    symbol,
     null::text as available_attr_value,
     md5(
         runner_id::text
         || enhancement_id::text
         || coalesce(league_id::text, '')
     ) as option_hash
-from non_team_picks
+from non_team_picks_limited

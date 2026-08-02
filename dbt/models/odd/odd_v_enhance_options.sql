@@ -12,16 +12,23 @@ select
     o.syndicate_id,
     o.league_id,
     o.enhancement_id,
-    o.enhancement_type,
-    o.name,
-    o.description,
-    o.bet_type,
-    o.config,
-    o.symbol,
+    en.enhancement_type,
+    en.edge_type,
+    en.name,
+    en.description,
+    en.bet_type,
+    en.rarity,
+    en.cost,
+    en.effect,
+    en.value,
+    en.config,
+    en.symbol,
     o.available_attr_value,
     o.option_hash
 
 from {{ ref('odd_enhance_options') }} o
+join {{ source('odd', 'enhancement') }} en
+    on en.enhancement_id = o.enhancement_id
 left join {{ source('odd', 'enhanced') }} ed
     on  ed.option_hash = o.option_hash
     and ed.active      = true

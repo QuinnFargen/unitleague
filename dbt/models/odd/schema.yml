@@ -145,10 +145,13 @@ models:
 
   - name: odd_enhance_options
     description: >
-      View offering one row per runner × enhancement × current week, excluding enhancements
-      the runner has already chosen this week. option_hash is md5(runner_id || enhancement_id
-      || league_id || available_attr_value) and must be submitted with the selection to
-      prevent reuse.
+      Table with one row per runner × available enhancement. Edge-type enhancements are
+      capped to 3 random picks per runner; clv-type enhancements are never capped. Carries
+      only identifying columns — display attributes (name, description, symbol, edge_type,
+      rarity, cost, effect, value, config) live on odd.enhancement and are joined in by
+      odd_v_enhance_options rather than duplicated here. option_hash is
+      md5(runner_id || enhancement_id || league_id || available_attr_value) and must be
+      submitted with the selection to prevent reuse.
     columns:
       - name: runner_id
         description: "Foreign key to odd.runner"
@@ -164,8 +167,35 @@ models:
         tests: [not_null]
       - name: enhancement_type
         description: "'clv', 'edge', or 'team'"
+      - name: league_id
+        description: "League the available_attr_value belongs to (team-type enhancements only; NULL otherwise)"
+      - name: available_attr_value
+        description: "For team-type enhancements: the randomly-picked attribute value (e.g. a region or conference) available within league_id. NULL for non-team enhancements."
+      - name: option_hash
+        description: "md5(runner_id || enhancement_id || league_id || available_attr_value) — submit with selection to validate and prevent reuse"
+
+  - name: odd_v_enhance_options
+    description: >
+      View over odd_enhance_options, joined to odd.enhancement for all display attributes,
+      anti-joined against odd.enhanced (on option_hash, active = true) to exclude options
+      the runner has already chosen. This is what the API's enhance-options endpoint reads.
+    columns:
+      - name: runner_id
+        description: "Foreign key to odd.runner"
+        tests: [not_null]
+      - name: bettor_id
+        description: "Foreign key to odd.bettor"
+        tests: [not_null]
+      - name: syndicate_id
+        description: "Foreign key to odd.syndicate"
+        tests: [not_null]
+      - name: enhancement_id
+        description: "Foreign key to odd.enhancement"
+        tests: [not_null]
+      - name: enhancement_type
+        description: "'clv', 'edge', or 'team' — from odd.enhancement"
       - name: edge_type
-        description: "'price', 'unit', 'clv', 'team', 'balance', 'trigger', or 'risk'"
+        description: "'price', 'unit', 'clv', 'team', 'balance', 'trigger', or 'risk' — from odd.enhancement"
       - name: name
         description: "Display name of the enhancement"
       - name: description
@@ -182,8 +212,8 @@ models:
         description: "Magnitude of `effect`"
       - name: config
         description: "Bespoke per-edge parameters not shared across enough rows to deserve a column: scope, condition, scaling, penalty, constraint, min_odds, max_odds, threshold, min_units, require_same_color, etc."
-      - name: week_id
-        description: "Current week_id from ball.week"
+      - name: symbol
+        description: "SF Symbol name for display"
       - name: league_id
         description: "League the available_attr_value belongs to (team-type enhancements only; NULL otherwise)"
       - name: available_attr_value

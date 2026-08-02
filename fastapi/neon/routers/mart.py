@@ -223,24 +223,6 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
-@router.get("/mart/enhance_options")
-def get_enhance_options(syndicate_id: int = Query(None),
-                        bettor_id: int = Query(None)):
-    q = "SELECT * FROM odd.v_enhance_options WHERE 1=1"
-    query_params = {}
-
-    if syndicate_id:
-        q += " AND syndicate_id = :syndicate_id"
-        query_params["syndicate_id"] = syndicate_id
-
-    if bettor_id:
-        q += " AND bettor_id = :bettor_id"
-        query_params["bettor_id"] = bettor_id
-
-    with engine.connect() as conn:
-        result = conn.execute(text(q), query_params)
-        return [dict(row._mapping) for row in result]
-
 @router.get("/mart/runner")
 def get_runner(syndicate_id: int = Query(None),
                bettor_id: int = Query(None),

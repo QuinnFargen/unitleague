@@ -21,6 +21,10 @@ select
     t.team_id,
     t.abbr,
     t.league_id,
+    t.conf,
+    t.color,
+    t.region,
+    t.category,
     n.season_id,
     n.season_concat,
     n.yr,
@@ -39,4 +43,5 @@ from completed c
 join {{ ref('team') }}   t on t.team_id   = c.team_id
 join {{ ref('season') }} n on n.season_id = c.season_id
 
-group by t.team_id, t.abbr, t.league_id, n.season_id, n.season_concat, n.yr
+group by t.team_id, t.abbr, t.league_id, t.conf, t.color, t.region, t.category,
+         n.season_id, n.season_concat, n.yr

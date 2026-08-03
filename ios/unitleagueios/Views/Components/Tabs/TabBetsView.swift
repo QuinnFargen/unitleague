@@ -148,20 +148,21 @@ struct TabBetsView: View {
         }
     }
 
-    private var historyForDate: [Txn] {
-        completedRecords.filter { $0.gameDate == dateKey }
+    private var historyRecords: [Txn] {
+        completedRecords.sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
     }
 
     private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
-        let bySyndicate = Dictionary(grouping: historyForDate, by: \.syndicateId)
-        return bySyndicate.keys.sorted().map { sid in
+        let bySyndicate = Dictionary(grouping: historyRecords, by: \.syndicateId)
+        return bySyndicate.keys.sorted().compactMap { sid in
             let group = bySyndicate[sid] ?? []
-            let singles = group.filter { $0.parlayId == nil }
-                .sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
+            let singles = group.filter { $0.parlayId == nil && $0.txnType == "straight" }
+                .sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
             let parlayIds = Set(group.filter { $0.parlayId != nil }.map { $0.parlayId! })
             let parlayMap = Dictionary(grouping: historyLegs.filter { $0.parlayId.map(parlayIds.contains) ?? false }, by: { $0.parlayId! })
             let parlays = parlayMap.values.map { $0 }
-                .sorted { parseGameTime($0.first?.gameTime) < parseGameTime($1.first?.gameTime) }
+                .sorted { ($0.first?.insertDt ?? "") > ($1.first?.insertDt ?? "") }
+            guard !singles.isEmpty || !parlays.isEmpty else { return nil }
             return (syndicateId: sid, singles: singles, parlays: parlays)
         }
     }
@@ -581,7 +582,7 @@ struct TabBetsView: View {
                 Spacer()
                 ProgressView()
                 Spacer()
-            } else if historyForDate.isEmpty {
+            } else if historyRecords.isEmpty {
                 Spacer()
                 Text("No bet history")
                     .font(.subheadline)
@@ -595,7 +596,7 @@ struct TabBetsView: View {
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
-                            Text("\(historyForDate.count)")
+                            Text("\(historyGroups.reduce(0) { $0 + $1.singles.count + $1.parlays.count })")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
                         }

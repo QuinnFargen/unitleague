@@ -7,7 +7,7 @@ struct TabSyndicateView: View {
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
     @AppStorage("profileSymbol")       private var profileSymbol: String = ProfileOption.symbols[0]
 
-    @State private var syndicates: [Syndicate] = []
+    @State private var syndicates: [Syndicate] = SyndicateCache.load()
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingJoin = false
@@ -101,12 +101,13 @@ struct TabSyndicateView: View {
 
     private func load() async {
         guard bettorId > 0 else { return }
-        isLoading = true
+        isLoading = syndicates.isEmpty
         fetchError = nil
         do {
             let raw = try await service.fetchSyndicate(bettorId: bettorId)
             var seen = Set<Int>()
             syndicates = raw.filter { seen.insert($0.syndicateId).inserted }
+            SyndicateCache.save(syndicates)
         } catch {
             fetchError = error.localizedDescription
         }
@@ -185,6 +186,22 @@ enum SyndicateOption {
         "pills.fill",
         "pi.square.fill"
     ]
+}
+
+private enum SyndicateCache {
+    private static let key = "cachedSyndicates"
+
+    static func load() -> [Syndicate] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let saved = try? JSONDecoder().decode([Syndicate].self, from: data)
+        else { return [] }
+        return saved
+    }
+
+    static func save(_ items: [Syndicate]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
+    }
 }
 
 #Preview {

@@ -174,11 +174,15 @@ struct TabToolbar: ViewModifier {
     @AppStorage("profileSymbol")       private var profileSymbol: String       = ProfileOption.symbols[0]
     @AppStorage("leagueSymbol")        private var leagueSymbol: String        = "person.circle.fill"
     @AppStorage("leagueColorName")     private var leagueColorName: String     = AccentOption.allCases[0].rawValue
+    @AppStorage("userUnits")           private var userUnits: Int              = 100
     @AppStorage("bettorId")            private var bettorId: Int               = 0
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int    = 0
     @AppStorage("leagueRank")          private var leagueRank: Int             = 0
     @State private var showingSyndicateSelector = false
     @State private var showingBalances = false
+    @State private var currentRunner: Runner?
+
+    private let runnerService = RunnerService()
 
     private func rankLabel(_ rank: Int) -> String {
         switch rank {
@@ -210,14 +214,27 @@ struct TabToolbar: ViewModifier {
         .fixedSize()
     }
 
+    private var displayedBalance: Int {
+        selectedSyndicateId == 0 ? userUnits : Int((currentRunner?.balance ?? 0).rounded())
+    }
+
     private var profileTrailingItem: some View {
         Button { showingBalances = true } label: {
-            Image(systemName: profileSymbol)
-                .font(.title2)
-                .foregroundStyle(theme.accent)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .clipShape(Capsule())
+            HStack(spacing: 10) {
+                HStack(spacing: 3) {
+                    Image(systemName: "nairasign.circle.fill")
+                    Text("\(displayedBalance)").fontWeight(.semibold)
+                }
+                .font(.subheadline)
+                .foregroundStyle(theme.primaryText(colorScheme))
+
+                Image(systemName: profileSymbol)
+                    .font(.title2)
+                    .foregroundStyle(theme.accent)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .clipShape(Capsule())
         }
         .buttonStyle(.plain)
         .fixedSize()
@@ -253,6 +270,12 @@ struct TabToolbar: ViewModifier {
             .sheet(isPresented: $showingBalances) {
                 SheetSyndicateBalances(bettorId: bettorId)
             }
+            .task(id: "\(bettorId)-\(selectedSyndicateId)") { await loadRunner() }
+    }
+
+    private func loadRunner() async {
+        guard bettorId != 0, selectedSyndicateId != 0 else { currentRunner = nil; return }
+        currentRunner = (try? await runnerService.fetchRunner(bettorId: bettorId, syndicateId: selectedSyndicateId))?.first
     }
 }
 

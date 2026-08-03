@@ -6,6 +6,7 @@ struct TabBetsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId")            private var bettorId: Int            = 0
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int  = 0
+    @AppStorage("profileSymbol")       private var profileSymbol: String    = ProfileOption.symbols[0]
     @State private var selectedDate: Date = .now
     @State private var selectedLeagueId: Int? = nil
     @State private var selectedTeamId: Int? = nil
@@ -670,6 +671,17 @@ struct TabBetsView: View {
         )
     }
 
+    private var soloSyndicate: Syndicate {
+        Syndicate(
+            syndicateId: 0,
+            name: "Solo Loser",
+            isPublic: false,
+            createdByBettorId: bettorId,
+            symbol: profileSymbol,
+            color: theme.accentOption.rawValue
+        )
+    }
+
     private func fetchActiveBetsData() async {
         guard bettorId != 0 else { return }
         isLoadingActive = txnRecords.isEmpty
@@ -677,6 +689,10 @@ struct TabBetsView: View {
         txnRecords = (try? await txnService.fetchActiveBets(bettorId: bettorId)) ?? []
         let ids = Set(txnRecords.map(\.syndicateId))
         for sid in ids where syndicates[sid] == nil {
+            if sid == 0 {
+                syndicates[0] = soloSyndicate
+                continue
+            }
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
                 syndicates[sid] = result.first
             }
@@ -716,6 +732,10 @@ struct TabBetsView: View {
         historyLegs = (try? await txnService.fetchTxnBets(bettorId: bettorId)) ?? []
         let ids = Set(completedRecords.map(\.syndicateId))
         for sid in ids where historySyndicates[sid] == nil {
+            if sid == 0 {
+                historySyndicates[0] = soloSyndicate
+                continue
+            }
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
                 historySyndicates[sid] = result.first
             }

@@ -10,6 +10,8 @@ struct SheetSyndicateBalances: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("profileSymbol") private var profileSymbol: String = ProfileOption.symbols[0]
+    @AppStorage("userUnits")     private var userUnits: Int         = 100
 
     let bettorId: Int
     var mockData: (syndicates: [Syndicate], runners: [Int: Runner], txns: [Txn])? = nil
@@ -33,6 +35,31 @@ struct SheetSyndicateBalances: View {
 
     private func possibleReturn(_ syndicateId: Int) -> Double {
         txns(for: syndicateId).reduce(0) { $0 + $1.unit * $1.price }
+    }
+
+    private var soloSyndicate: Syndicate {
+        Syndicate(
+            syndicateId: 0,
+            name: "Solo Loser",
+            isPublic: false,
+            createdByBettorId: bettorId,
+            symbol: profileSymbol,
+            color: theme.accentOption.rawValue
+        )
+    }
+
+    private var soloRunner: Runner {
+        Runner(
+            runnerId: 0,
+            bettorId: bettorId,
+            syndicateId: 0,
+            role: "solo",
+            active: true,
+            balance: Double(userUnits),
+            profileName: nil,
+            symbol: profileSymbol,
+            color: theme.accentOption.rawValue
+        )
     }
 
     var body: some View {
@@ -133,9 +160,11 @@ struct SheetSyndicateBalances: View {
         async let txnsTask = txnService.fetchActiveBets(bettorId: bettorId)
         let raw = (try? await syndicatesTask) ?? []
         var seen = Set<Int>()
-        syndicates = raw.filter { seen.insert($0.syndicateId).inserted }
+        syndicates = [soloSyndicate] + raw.filter { seen.insert($0.syndicateId).inserted }
         let runnerList = (try? await runnersTask) ?? []
-        runners = Dictionary(runnerList.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first })
+        var runnerMap = Dictionary(runnerList.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first })
+        runnerMap[0] = soloRunner
+        runners = runnerMap
         activeTxns = (try? await txnsTask) ?? []
     }
 }

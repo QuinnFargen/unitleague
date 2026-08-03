@@ -41,6 +41,38 @@ enum Mock {
     )
     static var teamsNBA: [Team] { [teamLAL, teamBOS, teamGSW] }
 
+    // MARK: TeamSeason
+
+    static let teamSeasonLAL = TeamSeason(
+        teamId: 1, abbr: "LAL", leagueId: 1,
+        conf: "West", color: "Purple", region: "West", category: "Person",
+        seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
+        gamesPlayed: 42, wins: 30, losses: 12,
+        last5Str: "WWLWW", last5Wins: 4, last10Wins: 7, last15Wins: 10
+    )
+    static let teamSeasonBOS = TeamSeason(
+        teamId: 2, abbr: "BOS", leagueId: 1,
+        conf: "East", color: "Green", region: "East", category: "Person",
+        seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
+        gamesPlayed: 42, wins: 26, losses: 16,
+        last5Str: "LWWLL", last5Wins: 2, last10Wins: 5, last15Wins: 9
+    )
+    static var teamSeasonsNBA: [TeamSeason] { [teamSeasonLAL, teamSeasonBOS] }
+
+    // MARK: TeamOddsRecent
+
+    static let teamOddsRecentLAL = TeamOddsRecent(
+        teamId: 1, leagueId: 1, abbr: "LAL",
+        atsWins: 6, atsLosses: 4, atsLast10Str: "WWLWLWWLWL",
+        overCount: 6, underCount: 4
+    )
+    static let teamOddsRecentBOS = TeamOddsRecent(
+        teamId: 2, leagueId: 1, abbr: "BOS",
+        atsWins: 3, atsLosses: 7, atsLast10Str: "LLWLLWLLLW",
+        overCount: 4, underCount: 6
+    )
+    static var teamOddsRecentNBA: [TeamOddsRecent] { [teamOddsRecentLAL, teamOddsRecentBOS] }
+
     // MARK: Syndicates
 
     static let syndicate = Syndicate(
@@ -409,18 +441,21 @@ enum Mock {
         [
             Sched(
                 id: "s1", teamAbbr: "LAL", oppAbbr: "BOS",
+                oppConf: "East", oppColor: "Green", oppRegion: "East", oppMascot: "Celtics",
                 gameDate: "2026-06-08", gameNum: 82, yr: 2026, schedConcat: nil,
                 teamScore: 112, oppScore: 104, home: true, won: true,
                 gameId: 100, leagueId: 1, teamId: 1, oppTeamId: 2
             ),
             Sched(
                 id: "s2", teamAbbr: "LAL", oppAbbr: "GSW",
+                oppConf: "West", oppColor: "Gold", oppRegion: "West", oppMascot: "Warriors",
                 gameDate: "2026-06-10", gameNum: 83, yr: 2026, schedConcat: nil,
                 teamScore: nil, oppScore: nil, home: false, won: nil,
                 gameId: 101, leagueId: 1, teamId: 1, oppTeamId: 3
             ),
             Sched(
                 id: "s3", teamAbbr: "LAL", oppAbbr: "DEN",
+                oppConf: "West", oppColor: "Blue", oppRegion: "West", oppMascot: "Nuggets",
                 gameDate: "2026-06-01", gameNum: 81, yr: 2026, schedConcat: nil,
                 teamScore: 98, oppScore: 105, home: true, won: false,
                 gameId: 99, leagueId: 1, teamId: 1, oppTeamId: 4

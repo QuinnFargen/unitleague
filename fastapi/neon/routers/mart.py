@@ -18,7 +18,8 @@ def get_team(league_id: int = Query(None)
             ,conf: str = Query(None)
             ,color: str = Query(None)
             ,region: str = Query(None)
-            ,category: str = Query(None)):
+            ,category: str = Query(None)
+            ,mascot: str = Query(None)):
     q = "SELECT * FROM mart.team WHERE 1=1"
     query_params = {}
 
@@ -45,6 +46,10 @@ def get_team(league_id: int = Query(None)
         q += " AND category = :category"
         query_params["category"] = category
 
+    if mascot:
+        q += " AND mascot = :mascot"
+        query_params["mascot"] = mascot
+
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
@@ -70,7 +75,12 @@ def get_game(game_dt: str = Query(None)
 @router.get("/mart/sched")
 def get_sched(team_id: str = Query(None)
             , league_id: int = Query(None)
-            , yr: int = Query(None)):
+            , yr: int = Query(None)
+            , opp_conf: str = Query(None)
+            , opp_color: str = Query(None)
+            , opp_region: str = Query(None)
+            , opp_mascot: str = Query(None)
+            , limit: int = Query(None)):
     q = "SELECT * FROM mart.sched WHERE 1=1"
     query_params = {}
 
@@ -85,6 +95,69 @@ def get_sched(team_id: str = Query(None)
     if team_id:
         q += " AND team_id = :team_id"
         query_params["team_id"] = team_id
+
+    if opp_conf:
+        q += " AND opp_conf = :opp_conf"
+        query_params["opp_conf"] = opp_conf
+
+    if opp_color:
+        q += " AND opp_color = :opp_color"
+        query_params["opp_color"] = opp_color
+
+    if opp_region:
+        q += " AND opp_region = :opp_region"
+        query_params["opp_region"] = opp_region
+
+    if opp_mascot:
+        q += " AND opp_mascot = :opp_mascot"
+        query_params["opp_mascot"] = opp_mascot
+
+    if limit:
+        q += " ORDER BY game_dt DESC LIMIT :limit"
+        query_params["limit"] = limit
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
+@router.get("/mart/team_season")
+def get_team_season(league_id: int = Query(None)
+                   , team_id: int = Query(None)
+                   , yr: int = Query(None)
+                   , conf: str = Query(None)
+                   , color: str = Query(None)
+                   , region: str = Query(None)
+                   , category: str = Query(None)):
+    q = "SELECT * FROM mart.team_season WHERE 1=1"
+    query_params = {}
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
+
+    if team_id:
+        q += " AND team_id = :team_id"
+        query_params["team_id"] = team_id
+
+    if yr:
+        q += " AND yr = :yr"
+        query_params["yr"] = yr
+
+    if conf:
+        q += " AND conf = :conf"
+        query_params["conf"] = conf
+
+    if color:
+        q += " AND color = :color"
+        query_params["color"] = color
+
+    if region:
+        q += " AND region = :region"
+        query_params["region"] = region
+
+    if category:
+        q += " AND category = :category"
+        query_params["category"] = category
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)
@@ -118,6 +191,24 @@ def get_game_oddall(game_id: int = Query(...)):
     q = "SELECT * FROM mart.game_oddall WHERE game_id = :game_id"
     with engine.connect() as conn:
         result = conn.execute(text(q), {"game_id": game_id})
+        return [dict(row._mapping) for row in result]
+
+@router.get("/mart/team_odds_recent")
+def get_team_odds_recent(league_id: int = Query(None)
+                        , team_id: int = Query(None)):
+    q = "SELECT * FROM mart.team_odds_recent WHERE 1=1"
+    query_params = {}
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
+
+    if team_id:
+        q += " AND team_id = :team_id"
+        query_params["team_id"] = team_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
 @router.get("/mart/txn")

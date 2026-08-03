@@ -19,6 +19,7 @@ struct ViewTeamList: View {
     @State private var errorMessage: String?
     @State private var selectedConf: String? = nil
     @State private var selectedDiv: String? = nil
+    @State private var selectedMascot: String? = nil
     @State private var teamLevels: [Int: Int] = [:]
 
     private let teamService = TeamService()
@@ -44,11 +45,16 @@ struct ViewTeamList: View {
         return raw.sorted()
     }
 
+    private var mascots: [String] {
+        Array(Set(teams.filter { $0.id != 50000 && $0.id != 60000 }.compactMap(\.mascot))).sorted()
+    }
+
     private var displayedTeams: [Team] {
         teams.filter { team in
             if team.id == 50000 || team.id == 60000 { return false }
             if let conf = selectedConf, team.conf != conf { return false }
             if let div = selectedDiv, team.div != div { return false }
+            if let mascot = selectedMascot, team.mascot != mascot { return false }
             return true
         }
     }
@@ -114,6 +120,24 @@ struct ViewTeamList: View {
                             .padding(.vertical, 8)
                         }
                         .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+
+                    // Mascot filter
+                    if !mascots.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(mascots, id: \.self) { mascot in
+                                    FilterChip(
+                                        label: mascot,
+                                        isSelected: selectedMascot == mascot
+                                    ) {
+                                        selectedMascot = (selectedMascot == mascot) ? nil : mascot
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                            .padding(.vertical, 8)
+                        }
                     }
 
                     if !confs.isEmpty {

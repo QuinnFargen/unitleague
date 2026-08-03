@@ -52,9 +52,26 @@ struct CardLeague: View {
                     }
                     .buttonStyle(.plain)
 
-                    LeagueOptionCell(icon: "list.number", title: "Ranks")
-                    LeagueOptionCell(icon: "calendar", title: "Sched")
-                    LeagueOptionCell(icon: "chart.bar", title: "Odds")
+                    NavigationLink {
+                        ViewRank(league: league)
+                    } label: {
+                        LeagueOptionCell(icon: "list.number", title: "Ranks")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink {
+                        ViewLeagueSched(league: league)
+                    } label: {
+                        LeagueOptionCell(icon: "calendar", title: "Sched")
+                    }
+                    .buttonStyle(.plain)
+
+                    NavigationLink {
+                        ViewOdds(league: league)
+                    } label: {
+                        LeagueOptionCell(icon: "chart.bar", title: "Odds")
+                    }
+                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 12)

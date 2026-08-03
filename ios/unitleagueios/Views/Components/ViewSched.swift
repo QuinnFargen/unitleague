@@ -16,6 +16,11 @@ struct ViewSched: View {
 
     @State private var selectedMode: SchedMode = .year
     @State private var selectedYear: Int = Calendar.current.component(.year, from: .now)
+    @State private var selectedOppConf: String? = nil
+    @State private var selectedOppColor: String? = nil
+    @State private var selectedOppRegion: String? = nil
+    @State private var selectedOppMascot: String? = nil
+    @State private var leagueTeams: [Team] = []
     @State private var schedule: [Sched] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -28,6 +33,7 @@ struct ViewSched: View {
 
     private let schedService = SchedService()
     private let enhancementService = EnhancementService()
+    private let teamService = TeamService()
 
     init(team: Team, league: League) {
         self.team = team
@@ -40,6 +46,19 @@ struct ViewSched: View {
         let currentYear = Calendar.current.component(.year, from: .now)
         let end = max(league.yrData ?? currentYear, 2020)
         return Array(2020 ... end).reversed()
+    }
+
+    private var opponentPool: [Team] {
+        leagueTeams.filter { $0.id != 50000 && $0.id != 60000 && $0.id != team.id }
+    }
+
+    private var oppConfs: [String]   { Array(Set(opponentPool.compactMap(\.conf))).sorted() }
+    private var oppColors: [String]  { Array(Set(opponentPool.compactMap(\.color))).sorted() }
+    private var oppRegions: [String] { Array(Set(opponentPool.compactMap(\.region))).sorted() }
+    private var oppMascots: [String] { Array(Set(opponentPool.compactMap(\.mascot))).sorted() }
+
+    private var fetchKey: String {
+        "\(selectedMode)-\(selectedYear)-\(selectedOppConf ?? "")-\(selectedOppColor ?? "")-\(selectedOppRegion ?? "")-\(selectedOppMascot ?? "")"
     }
 
     var body: some View {
@@ -74,9 +93,26 @@ struct ViewSched: View {
                                 }
                             }
                         } else {
-                            FilterChip(label: "Region", isSelected: false) {}
-                            FilterChip(label: "Color", isSelected: false) {}
-                            FilterChip(label: "Region", isSelected: false) {}
+                            ForEach(oppConfs, id: \.self) { conf in
+                                FilterChip(label: conf, isSelected: selectedOppConf == conf) {
+                                    selectedOppConf = (selectedOppConf == conf) ? nil : conf
+                                }
+                            }
+                            ForEach(oppColors, id: \.self) { color in
+                                FilterChip(label: color, isSelected: selectedOppColor == color) {
+                                    selectedOppColor = (selectedOppColor == color) ? nil : color
+                                }
+                            }
+                            ForEach(oppRegions, id: \.self) { region in
+                                FilterChip(label: region, isSelected: selectedOppRegion == region) {
+                                    selectedOppRegion = (selectedOppRegion == region) ? nil : region
+                                }
+                            }
+                            ForEach(oppMascots, id: \.self) { mascot in
+                                FilterChip(label: mascot, isSelected: selectedOppMascot == mascot) {
+                                    selectedOppMascot = (selectedOppMascot == mascot) ? nil : mascot
+                                }
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -135,8 +171,13 @@ struct ViewSched: View {
         }
         .navigationTitle(team.name)
         .navigationBarTitleDisplayMode(.inline)
-        .task(id: selectedYear) { await fetchSchedule() }
+        .task(id: fetchKey) { await fetchSchedule() }
         .task { await loadTeamLevel() }
+        .task { await loadLeagueTeams() }
+    }
+
+    private func loadLeagueTeams() async {
+        leagueTeams = (try? await teamService.fetchTeams(leagueId: league.id)) ?? []
     }
 
     private func loadTeamLevel() async {
@@ -151,7 +192,19 @@ struct ViewSched: View {
         schedule = []
         scrollTarget = nil
         do {
-            let raw = try await schedService.fetchSchedule(teamId: team.id, yr: selectedYear)
+            let raw: [Sched]
+            if selectedMode == .year {
+                raw = try await schedService.fetchSchedule(teamId: team.id, yr: selectedYear)
+            } else {
+                raw = try await schedService.fetchSchedule(
+                    teamId: team.id,
+                    oppConf: selectedOppConf,
+                    oppColor: selectedOppColor,
+                    oppRegion: selectedOppRegion,
+                    oppMascot: selectedOppMascot,
+                    limit: 10
+                )
+            }
             schedule = raw.sorted { $0.gameNum > $1.gameNum }
             scrollTarget = lastFinalId
         } catch {

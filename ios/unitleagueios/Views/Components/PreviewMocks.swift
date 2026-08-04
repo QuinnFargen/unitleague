@@ -48,14 +48,14 @@ enum Mock {
         conf: "West", color: "Purple", region: "West", category: "Person",
         seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
         gamesPlayed: 42, wins: 30, losses: 12,
-        last5Str: "WWLWW", last5Wins: 4, last10Wins: 7, last15Wins: 10
+        last5Str: "WWLWW", last10Str: "WWLWWLLWLW", last5Wins: 4, last10Wins: 7, last15Wins: 10
     )
     static let teamSeasonBOS = TeamSeason(
         teamId: 2, abbr: "BOS", leagueId: 1,
         conf: "East", color: "Green", region: "East", category: "Person",
         seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
         gamesPlayed: 42, wins: 26, losses: 16,
-        last5Str: "LWWLL", last5Wins: 2, last10Wins: 5, last15Wins: 9
+        last5Str: "LWWLL", last10Str: "LWWLLWLWLW", last5Wins: 2, last10Wins: 5, last15Wins: 9
     )
     static var teamSeasonsNBA: [TeamSeason] { [teamSeasonLAL, teamSeasonBOS] }
 
@@ -63,13 +63,15 @@ enum Mock {
 
     static let teamOddsRecentLAL = TeamOddsRecent(
         teamId: 1, leagueId: 1, abbr: "LAL",
+        conf: "West", color: "Purple", region: "West", category: "Person",
         atsWins: 6, atsLosses: 4, atsLast10Str: "WWLWLWWLWL",
-        overCount: 6, underCount: 4
+        overCount: 6, underCount: 4, ouLast10Str: "OUOOUOUUOU"
     )
     static let teamOddsRecentBOS = TeamOddsRecent(
         teamId: 2, leagueId: 1, abbr: "BOS",
+        conf: "East", color: "Green", region: "East", category: "Person",
         atsWins: 3, atsLosses: 7, atsLast10Str: "LLWLLWLLLW",
-        overCount: 4, underCount: 6
+        overCount: 4, underCount: 6, ouLast10Str: "UUOUUOUOOU"
     )
     static var teamOddsRecentNBA: [TeamOddsRecent] { [teamOddsRecentLAL, teamOddsRecentBOS] }
 

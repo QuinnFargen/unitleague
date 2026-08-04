@@ -74,7 +74,11 @@ ou_agg as (
     select
         team_id,
         sum(case when over_won  then 1 else 0 end) as over_count,
-        sum(case when under_won then 1 else 0 end) as under_count
+        sum(case when under_won then 1 else 0 end) as under_count,
+        string_agg(
+            case when over_won then 'O' else 'U' end, ''
+            order by ou_recency_rank
+        )                                           as ou_last10_str
     from ou_ranked
     where ou_recency_rank <= 10
     group by team_id
@@ -84,11 +88,16 @@ select
     t.team_id,
     t.league_id,
     t.abbr,
+    t.conf,
+    t.color,
+    t.region,
+    t.category,
     coalesce(ats.ats_wins, 0)    as ats_wins,
     coalesce(ats.ats_losses, 0)  as ats_losses,
     ats.ats_last10_str,
     coalesce(ou.over_count, 0)   as over_count,
-    coalesce(ou.under_count, 0)  as under_count
+    coalesce(ou.under_count, 0)  as under_count,
+    ou.ou_last10_str
 
 from {{ ref('team') }} t
 left join ats_agg ats on ats.team_id = t.team_id

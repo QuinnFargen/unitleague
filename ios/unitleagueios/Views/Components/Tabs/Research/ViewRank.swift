@@ -1,5 +1,12 @@
 import SwiftUI
 
+private enum RankFilterCategory: String, CaseIterable {
+    case conf = "Conf"
+    case color = "Color"
+    case region = "Region"
+    case category = "Category"
+}
+
 struct ViewRank: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -10,6 +17,7 @@ struct ViewRank: View {
     @State private var selectedColor: String? = nil
     @State private var selectedRegion: String? = nil
     @State private var selectedCategory: String? = nil
+    @State private var expandedCategory: RankFilterCategory? = nil
     @State private var seasons: [TeamSeason] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
@@ -32,6 +40,37 @@ struct ViewRank: View {
     private var colors: [String]     { Array(Set(seasons.compactMap(\.color))).sorted() }
     private var regions: [String]    { Array(Set(seasons.compactMap(\.region))).sorted() }
     private var categories: [String] { Array(Set(seasons.compactMap(\.category))).sorted() }
+
+    private var availableFilterCategories: [RankFilterCategory] {
+        RankFilterCategory.allCases.filter { !filterOptions(for: $0).isEmpty }
+    }
+
+    private func filterOptions(for category: RankFilterCategory) -> [String] {
+        switch category {
+        case .conf:     return confs
+        case .color:    return colors
+        case .region:   return regions
+        case .category: return categories
+        }
+    }
+
+    private func filterCategoryValue(_ category: RankFilterCategory) -> String? {
+        switch category {
+        case .conf:     return selectedConf
+        case .color:    return selectedColor
+        case .region:   return selectedRegion
+        case .category: return selectedCategory
+        }
+    }
+
+    private func toggleFilterValue(_ category: RankFilterCategory, _ value: String) {
+        switch category {
+        case .conf:     selectedConf     = (selectedConf == value)     ? nil : value
+        case .color:    selectedColor    = (selectedColor == value)    ? nil : value
+        case .region:   selectedRegion   = (selectedRegion == value)   ? nil : value
+        case .category: selectedCategory = (selectedCategory == value) ? nil : value
+        }
+    }
 
     private var displayedSeasons: [TeamSeason] {
         seasons
@@ -63,13 +102,16 @@ struct ViewRank: View {
                     .padding(.vertical, 8)
                 }
 
-                // Conf filter
-                if !confs.isEmpty {
+                // Filter category row
+                if !availableFilterCategories.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            ForEach(confs, id: \.self) { conf in
-                                FilterChip(label: conf, isSelected: selectedConf == conf) {
-                                    selectedConf = (selectedConf == conf) ? nil : conf
+                            ForEach(availableFilterCategories, id: \.self) { category in
+                                FilterChip(
+                                    label: category.rawValue,
+                                    isSelected: expandedCategory == category || filterCategoryValue(category) != nil
+                                ) {
+                                    expandedCategory = (expandedCategory == category) ? nil : category
                                 }
                             }
                         }
@@ -78,49 +120,20 @@ struct ViewRank: View {
                     }
                 }
 
-                // Color filter
-                if !colors.isEmpty {
+                // Options row for the expanded filter category
+                if let category = expandedCategory {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            ForEach(colors, id: \.self) { color in
-                                FilterChip(label: color, isSelected: selectedColor == color) {
-                                    selectedColor = (selectedColor == color) ? nil : color
+                            ForEach(filterOptions(for: category), id: \.self) { value in
+                                FilterChip(label: value, isSelected: filterCategoryValue(category) == value) {
+                                    toggleFilterValue(category, value)
                                 }
                             }
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 8)
                     }
-                }
-
-                // Region filter
-                if !regions.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(regions, id: \.self) { region in
-                                FilterChip(label: region, isSelected: selectedRegion == region) {
-                                    selectedRegion = (selectedRegion == region) ? nil : region
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                }
-
-                // Category filter
-                if !categories.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(categories, id: \.self) { category in
-                                FilterChip(label: category, isSelected: selectedCategory == category) {
-                                    selectedCategory = (selectedCategory == category) ? nil : category
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
                 Divider()

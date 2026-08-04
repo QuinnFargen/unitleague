@@ -13,20 +13,16 @@ struct CardRank: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 24, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(season.abbr)
-                    .font(.headline)
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                if let streak = season.last5Str {
-                    Text("Last 5: \(streak)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
+            Text(season.abbr)
+                .font(.headline)
+                .foregroundStyle(theme.primaryText(colorScheme))
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 2) {
+                if let streak = season.last10Str {
+                    StreakText(streak: streak, positiveChar: "W")
+                }
                 Text("\(season.wins)-\(season.losses)")
                     .font(.headline)
                     .foregroundStyle(theme.primaryText(colorScheme))

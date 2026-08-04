@@ -27,6 +27,25 @@ struct FilterChip: View {
     }
 }
 
+// MARK: - StreakText
+
+struct StreakText: View {
+    @EnvironmentObject private var theme: AppTheme
+    let streak: String
+    let positiveChar: Character
+    var font: Font = .caption2.weight(.semibold)
+
+    var body: some View {
+        HStack(spacing: 1) {
+            ForEach(Array(streak.enumerated()), id: \.offset) { _, ch in
+                Text(String(ch))
+                    .font(font)
+                    .foregroundStyle(ch == positiveChar ? theme.win : theme.loss)
+            }
+        }
+    }
+}
+
 // MARK: - SyndicateHeaderRow
 
 struct SyndicateHeaderRow: View {

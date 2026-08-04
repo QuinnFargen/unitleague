@@ -35,6 +35,10 @@ select
         case when c.won then 'W' else 'L' end, ''
         order by c.recency_rank
     ) filter (where c.recency_rank <= 5)                               as last_5_str,
+    string_agg(
+        case when c.won then 'W' else 'L' end, ''
+        order by c.recency_rank
+    ) filter (where c.recency_rank <= 10)                              as last_10_str,
     sum(case when c.recency_rank <= 5  and c.won then 1 else 0 end)   as last_5_wins,
     sum(case when c.recency_rank <= 10 and c.won then 1 else 0 end)   as last_10_wins,
     sum(case when c.recency_rank <= 15 and c.won then 1 else 0 end)   as last_15_wins

@@ -5,6 +5,13 @@ private enum SchedMode: String, CaseIterable {
     case recent = "Recent"
 }
 
+private enum SchedOppCategory: String, CaseIterable {
+    case conf = "Conf"
+    case color = "Color"
+    case region = "Region"
+    case mascot = "Mascot"
+}
+
 struct ViewSched: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -20,6 +27,7 @@ struct ViewSched: View {
     @State private var selectedOppColor: String? = nil
     @State private var selectedOppRegion: String? = nil
     @State private var selectedOppMascot: String? = nil
+    @State private var expandedOppCategory: SchedOppCategory? = nil
     @State private var leagueTeams: [Team] = []
     @State private var schedule: [Sched] = []
     @State private var isLoading = false
@@ -57,6 +65,37 @@ struct ViewSched: View {
     private var oppRegions: [String] { Array(Set(opponentPool.compactMap(\.region))).sorted() }
     private var oppMascots: [String] { Array(Set(opponentPool.compactMap(\.mascot))).sorted() }
 
+    private var availableOppCategories: [SchedOppCategory] {
+        SchedOppCategory.allCases.filter { !oppOptions(for: $0).isEmpty }
+    }
+
+    private func oppOptions(for category: SchedOppCategory) -> [String] {
+        switch category {
+        case .conf:   return oppConfs
+        case .color:  return oppColors
+        case .region: return oppRegions
+        case .mascot: return oppMascots
+        }
+    }
+
+    private func oppCategoryValue(_ category: SchedOppCategory) -> String? {
+        switch category {
+        case .conf:   return selectedOppConf
+        case .color:  return selectedOppColor
+        case .region: return selectedOppRegion
+        case .mascot: return selectedOppMascot
+        }
+    }
+
+    private func toggleOppValue(_ category: SchedOppCategory, _ value: String) {
+        switch category {
+        case .conf:   selectedOppConf   = (selectedOppConf == value)   ? nil : value
+        case .color:  selectedOppColor  = (selectedOppColor == value)  ? nil : value
+        case .region: selectedOppRegion = (selectedOppRegion == value) ? nil : value
+        case .mascot: selectedOppMascot = (selectedOppMascot == value) ? nil : value
+        }
+    }
+
     private var fetchKey: String {
         "\(selectedMode)-\(selectedYear)-\(selectedOppConf ?? "")-\(selectedOppColor ?? "")-\(selectedOppRegion ?? "")-\(selectedOppMascot ?? "")"
     }
@@ -83,7 +122,7 @@ struct ViewSched: View {
                     .padding(.vertical, 8)
                 }
 
-                // Secondary filter row
+                // Secondary filter row — years, or opponent filter categories
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         if selectedMode == .year {
@@ -93,24 +132,12 @@ struct ViewSched: View {
                                 }
                             }
                         } else {
-                            ForEach(oppConfs, id: \.self) { conf in
-                                FilterChip(label: conf, isSelected: selectedOppConf == conf) {
-                                    selectedOppConf = (selectedOppConf == conf) ? nil : conf
-                                }
-                            }
-                            ForEach(oppColors, id: \.self) { color in
-                                FilterChip(label: color, isSelected: selectedOppColor == color) {
-                                    selectedOppColor = (selectedOppColor == color) ? nil : color
-                                }
-                            }
-                            ForEach(oppRegions, id: \.self) { region in
-                                FilterChip(label: region, isSelected: selectedOppRegion == region) {
-                                    selectedOppRegion = (selectedOppRegion == region) ? nil : region
-                                }
-                            }
-                            ForEach(oppMascots, id: \.self) { mascot in
-                                FilterChip(label: mascot, isSelected: selectedOppMascot == mascot) {
-                                    selectedOppMascot = (selectedOppMascot == mascot) ? nil : mascot
+                            ForEach(availableOppCategories, id: \.self) { category in
+                                FilterChip(
+                                    label: category.rawValue,
+                                    isSelected: expandedOppCategory == category || oppCategoryValue(category) != nil
+                                ) {
+                                    expandedOppCategory = (expandedOppCategory == category) ? nil : category
                                 }
                             }
                         }
@@ -119,6 +146,22 @@ struct ViewSched: View {
                     .padding(.vertical, 8)
                 }
                 .animation(.easeInOut(duration: 0.2), value: selectedMode)
+
+                // Tertiary row — options for the expanded opponent filter category
+                if selectedMode == .recent, let category = expandedOppCategory {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(oppOptions(for: category), id: \.self) { value in
+                                FilterChip(label: value, isSelected: oppCategoryValue(category) == value) {
+                                    toggleOppValue(category, value)
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.vertical, 8)
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
 
                 Divider()
                     .background(theme.divider(colorScheme))

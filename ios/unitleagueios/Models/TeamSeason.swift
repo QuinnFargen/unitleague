@@ -16,6 +16,7 @@ struct TeamSeason: Codable, Identifiable {
     let wins: Int
     let losses: Int
     let last5Str: String?
+    let last10Str: String?
     let last5Wins: Int?
     let last10Wins: Int?
     let last15Wins: Int?
@@ -31,6 +32,7 @@ struct TeamSeason: Codable, Identifiable {
         case gamesPlayed  = "games_played"
         case wins, losses
         case last5Str     = "last_5_str"
+        case last10Str    = "last_10_str"
         case last5Wins    = "last_5_wins"
         case last10Wins   = "last_10_wins"
         case last15Wins   = "last_15_wins"

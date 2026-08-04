@@ -31,9 +31,9 @@ struct CardOddsTrend: View {
                 Text("\(record.overCount) O / \(record.underCount) U")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(theme.primaryText(colorScheme))
-                Text("Last 10")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                if let streak = record.ouLast10Str {
+                    StreakText(streak: streak, positiveChar: "O")
+                }
             }
         }
         .padding()

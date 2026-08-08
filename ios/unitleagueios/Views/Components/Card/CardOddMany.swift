@@ -16,11 +16,6 @@ struct CardOddMany: View {
 
     private let colW: CGFloat = 62
 
-    private func formatPrice(_ price: Double) -> String { String(format: "%.2f", price) }
-    private func formatPoints(_ points: Double) -> String {
-        points == points.rounded() ? "\(Int(points))" : String(format: "%.1f", points)
-    }
-
     private func oddsCapsuleColor(_ price: Double) -> Color {
         let distance = min(abs(price - 2.0) * 0.5, 0.85)
         let base = price < 2.0 ? theme.win : theme.loss
@@ -108,12 +103,12 @@ struct CardOddMany: View {
     @ViewBuilder
     private func oddsLabel(_ odd: OddMany) -> some View {
         VStack(spacing: 1) {
-            Text(formatPrice(odd.price))
+            Text(OddsFormatting.formatPrice(odd.price))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(theme.primaryText(colorScheme))
             if let pts = odd.points {
                 let prefix = odd.betType == "OVER" ? "O" : (odd.betType == "UNDER" ? "U" : "")
-                let label = prefix.isEmpty ? formatPoints(pts) : "\(prefix) \(formatPoints(pts))"
+                let label = prefix.isEmpty ? OddsFormatting.formatPoints(pts) : "\(prefix) \(OddsFormatting.formatPoints(pts))"
                 Text(label)
                     .font(.caption2)
                     .foregroundStyle(.secondary)

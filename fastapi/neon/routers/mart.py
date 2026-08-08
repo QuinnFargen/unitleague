@@ -72,6 +72,19 @@ def get_game(game_dt: str = Query(None)
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@router.get("/mart/league_game_dates")
+def get_league_game_dates(league_id: int = Query(None)):
+    q = "SELECT * FROM mart.league_game_dates WHERE 1=1"
+    query_params = {}
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @router.get("/mart/sched")
 def get_sched(team_id: str = Query(None)
             , league_id: int = Query(None)

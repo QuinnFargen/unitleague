@@ -27,6 +27,62 @@ struct FilterChip: View {
     }
 }
 
+// MARK: - RowCapsuleButton
+
+struct RowCapsuleButton: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let systemName: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? theme.accent : theme.primaryText(colorScheme))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(isSelected ? theme.accent.opacity(0.15) : theme.chipUnselected(colorScheme))
+                .clipShape(Capsule())
+        }
+    }
+}
+
+// MARK: - SegmentedToggle
+
+struct SegmentedToggle: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let leftLabel: String
+    let rightLabel: String
+    @Binding var isRightSelected: Bool
+
+    var body: some View {
+        HStack(spacing: 2) {
+            segment(leftLabel, selected: !isRightSelected) { isRightSelected = false }
+            segment(rightLabel, selected: isRightSelected) { isRightSelected = true }
+        }
+        .padding(3)
+        .background(theme.chipUnselected(colorScheme))
+        .clipShape(Capsule())
+    }
+
+    @ViewBuilder
+    private func segment(_ label: String, selected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(.subheadline.weight(selected ? .semibold : .regular))
+                .foregroundStyle(selected ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 6)
+                .background(selected ? theme.chipSelected(colorScheme) : Color.clear)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+}
+
 // MARK: - StreakText
 
 struct StreakText: View {
@@ -110,6 +166,9 @@ struct DateNavigationHeader: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Binding var selectedDate: Date
+    /// When non-nil (and non-empty), prior/next navigation jumps to the nearest earlier/later
+    /// date in this set instead of stepping by a plain calendar day.
+    var validDates: Set<Date>? = nil
     @State private var showDatePicker = false
 
     private let displayFormatter: DateFormatter = {
@@ -119,20 +178,30 @@ struct DateNavigationHeader: View {
         return f
     }()
 
+    private func step(_ direction: Int) -> Date {
+        guard let validDates, !validDates.isEmpty else {
+            return Calendar.current.date(byAdding: .day, value: direction, to: selectedDate) ?? selectedDate
+        }
+        let sortedDates = validDates.sorted()
+        if direction > 0 {
+            return sortedDates.first(where: { $0 > selectedDate }) ?? selectedDate
+        } else {
+            return sortedDates.last(where: { $0 < selectedDate }) ?? selectedDate
+        }
+    }
+
     private var prevDayNumber: Int {
-        let prev = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
-        return Calendar.current.component(.day, from: prev)
+        Calendar.current.component(.day, from: step(-1))
     }
 
     private var nextDayNumber: Int {
-        let next = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
-        return Calendar.current.component(.day, from: next)
+        Calendar.current.component(.day, from: step(1))
     }
 
     var body: some View {
         HStack(spacing: 12) {
             Button {
-                selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate) ?? selectedDate
+                selectedDate = step(-1)
             } label: {
                 HStack {
                     Image(systemName: "chevron.left").font(.title3.weight(.semibold))
@@ -151,11 +220,11 @@ struct DateNavigationHeader: View {
                     .foregroundStyle(theme.primaryText(colorScheme))
             }
             .sheet(isPresented: $showDatePicker) {
-                SharedDatePickerSheet(selectedDate: $selectedDate)
+                SharedDatePickerSheet(selectedDate: $selectedDate, validDates: validDates)
             }
 
             Button {
-                selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate) ?? selectedDate
+                selectedDate = step(1)
             } label: {
                 HStack {
                     Image(systemName: "\(nextDayNumber).calendar").font(.title3.weight(.semibold))
@@ -187,7 +256,13 @@ private struct SharedDatePickerSheet: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Binding var selectedDate: Date
+    var validDates: Set<Date>? = nil
     @Environment(\.dismiss) private var dismiss
+
+    private func nearestValidDate(to date: Date) -> Date {
+        guard let validDates, !validDates.isEmpty else { return date }
+        return validDates.min(by: { abs($0.timeIntervalSince(date)) < abs($1.timeIntervalSince(date)) }) ?? date
+    }
 
     var body: some View {
         NavigationStack {
@@ -202,7 +277,10 @@ private struct SharedDatePickerSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button("Done") {
+                        selectedDate = nearestValidDate(to: selectedDate)
+                        dismiss()
+                    }
                 }
             }
         }

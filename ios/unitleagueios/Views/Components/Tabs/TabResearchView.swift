@@ -30,7 +30,7 @@ struct TabResearchView: View {
             let lhsDate = lhs.seasonStartDt.flatMap(seasonStartDateFormatter.date(from:))
             let rhsDate = rhs.seasonStartDt.flatMap(seasonStartDateFormatter.date(from:))
             switch (lhsDate, rhsDate) {
-            case let (l?, r?): return l < r
+            case let (l?, r?): return l > r
             case (nil, _?):    return false
             case (_?, nil):    return true
             case (nil, nil):   return false

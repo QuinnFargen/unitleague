@@ -43,13 +43,6 @@ struct CardLeague: View {
                     LeagueOptionIcon(icon: "list.number")
                 }
                 .buttonStyle(.plain)
-
-                NavigationLink {
-                    ViewOdds(league: league)
-                } label: {
-                    LeagueOptionIcon(icon: "chart.bar")
-                }
-                .buttonStyle(.plain)
             }
         }
         .padding()
@@ -67,14 +60,14 @@ private struct LeagueOptionIcon: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 10)
                 .fill(theme.appBackground(colorScheme))
-                .frame(width: 36, height: 36)
+                .frame(width: 44, height: 44)
             Image(systemName: icon)
-                .font(.subheadline)
+                .font(.title2)
                 .foregroundStyle(theme.accent)
         }
-        .frame(width: 36, height: 36)
+        .frame(width: 44, height: 44)
     }
 }
 

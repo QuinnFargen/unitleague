@@ -27,25 +27,6 @@ struct CardOddSingle: View {
         return timeOutputFormatter.string(from: date)
     }
 
-    private func formatPrice(_ price: Double) -> String {
-        String(format: "%.2f", price)
-    }
-
-    private func formatPoints(_ points: Double) -> String {
-        points == points.rounded() ? "\(Int(points))" : String(format: "%.1f", points)
-    }
-
-    private func formatPointsSigned(_ points: Double) -> String {
-        points == points.rounded()
-            ? (points >= 0 ? "+\(Int(points))" : "\(Int(points))")
-            : String(format: points >= 0 ? "+%.1f" : "%.1f", points)
-    }
-
-    private func impliedPct(_ price: Double?) -> String {
-        guard let p = price, p > 0 else { return "" }
-        return "\(Int((1.0 / p * 100.0).rounded()))%"
-    }
-
     private func oddsCapsuleColor(_ price: Double, betHash: String?, won: Bool?) -> Color {
         guard betHash != nil else { return theme.accent.opacity(0.2) }
         if let won { return won ? theme.accent.opacity(0.7) : theme.chipUnselected(colorScheme) }
@@ -76,7 +57,7 @@ struct CardOddSingle: View {
     @ViewBuilder
     private func priceCapsuleLabel(_ price: Double, subtitle: String, betHash: String?, won: Bool?) -> some View {
         VStack(spacing: 1) {
-            Text(formatPrice(price))
+            Text(OddsFormatting.formatPrice(price))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(theme.primaryText(colorScheme))
             if !subtitle.isEmpty {
@@ -120,29 +101,29 @@ struct CardOddSingle: View {
         switch betType {
         case "ML":
             return SingleData(
-                awayPrice: odd.mlAwayPrice, awayBetLabel: "", awayMLPct: impliedPct(odd.mlAwayPrice),
+                awayPrice: odd.mlAwayPrice, awayBetLabel: "", awayMLPct: OddsFormatting.impliedPct(odd.mlAwayPrice),
                 awayBetHash: odd.mlAwayBetHash, awayWon: odd.mlAwayWon, awayPoints: nil, awaySide: "Away",
-                homePrice: odd.mlHomePrice, homeBetLabel: "", homeMLPct: impliedPct(odd.mlHomePrice),
+                homePrice: odd.mlHomePrice, homeBetLabel: "", homeMLPct: OddsFormatting.impliedPct(odd.mlHomePrice),
                 homeBetHash: odd.mlHomeBetHash, homeWon: odd.mlHomeWon, homePoints: nil, homeSide: "Home"
             )
         case "SPR":
             return SingleData(
                 awayPrice: odd.sprAwayPrice,
-                awayBetLabel: odd.sprAwayPoints.map(formatPointsSigned) ?? "",
-                awayMLPct: impliedPct(odd.sprAwayPrice),
+                awayBetLabel: odd.sprAwayPoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                awayMLPct: OddsFormatting.impliedPct(odd.sprAwayPrice),
                 awayBetHash: odd.sprAwayBetHash, awayWon: odd.sprAwayWon, awayPoints: odd.sprAwayPoints, awaySide: "Away",
                 homePrice: odd.sprHomePrice,
-                homeBetLabel: odd.sprHomePoints.map(formatPointsSigned) ?? "",
-                homeMLPct: impliedPct(odd.sprHomePrice),
+                homeBetLabel: odd.sprHomePoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                homeMLPct: OddsFormatting.impliedPct(odd.sprHomePrice),
                 homeBetHash: odd.sprHomeBetHash, homeWon: odd.sprHomeWon, homePoints: odd.sprHomePoints, homeSide: "Home"
             )
         case "O/U":
-            let total = (odd.overPoints ?? odd.underPoints).map(formatPoints) ?? ""
+            let total = (odd.overPoints ?? odd.underPoints).map(OddsFormatting.formatPoints) ?? ""
             let pts = odd.overPoints ?? odd.underPoints
             return SingleData(
-                awayPrice: odd.overPrice, awayBetLabel: "O \(total)", awayMLPct: impliedPct(odd.overPrice),
+                awayPrice: odd.overPrice, awayBetLabel: "O \(total)", awayMLPct: OddsFormatting.impliedPct(odd.overPrice),
                 awayBetHash: odd.overBetHash, awayWon: odd.overWon, awayPoints: pts, awaySide: "Over",
-                homePrice: odd.underPrice, homeBetLabel: "U \(total)", homeMLPct: impliedPct(odd.underPrice),
+                homePrice: odd.underPrice, homeBetLabel: "U \(total)", homeMLPct: OddsFormatting.impliedPct(odd.underPrice),
                 homeBetHash: odd.underBetHash, homeWon: odd.underWon, homePoints: pts, homeSide: "Under"
             )
         default:

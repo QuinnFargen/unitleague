@@ -168,7 +168,7 @@ struct ViewRank: View {
                             LazyVStack(spacing: 12) {
                                 ForEach(Array(displayedSeasons.enumerated()), id: \.element.id) { index, season in
                                     NavigationLink {
-                                        ViewSchedLoader(teamId: season.teamId, leagueId: season.leagueId)
+                                        ViewSchedLoader(teamId: season.teamId, leagueId: season.leagueId, initialYear: selectedYear)
                                     } label: {
                                         CardRank(rank: index + 1, season: season)
                                     }

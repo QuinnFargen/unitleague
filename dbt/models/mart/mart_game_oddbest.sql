@@ -95,9 +95,14 @@ select
     spr_h.points         as spr_home_points,
     spr_h.bet_concat     as spr_home_bet_concat,
     case
-        when g.h is not null and spr_h.points is not null
-        then (g.h + spr_h.points) > g.a
+        when g.h is null or spr_h.points is null   then null
+        when (g.h + spr_h.points) = g.a            then null
+        else (g.h + spr_h.points) > g.a
     end                  as spr_home_won,
+    case
+        when g.h is not null and spr_h.points is not null
+        then (g.h + spr_h.points) = g.a
+    end                  as spr_home_push,
 
     spr_a.bet_hash       as spr_away_bet_hash,
     spr_a.bookmaker      as spr_away_bookmaker,
@@ -105,9 +110,14 @@ select
     spr_a.points         as spr_away_points,
     spr_a.bet_concat     as spr_away_bet_concat,
     case
-        when g.a is not null and spr_a.points is not null
-        then (g.a + spr_a.points) > g.h
+        when g.a is null or spr_a.points is null   then null
+        when (g.a + spr_a.points) = g.h            then null
+        else (g.a + spr_a.points) > g.h
     end                  as spr_away_won,
+    case
+        when g.a is not null and spr_a.points is not null
+        then (g.a + spr_a.points) = g.h
+    end                  as spr_away_push,
 
     ov.bet_hash          as over_bet_hash,
     ov.bookmaker         as over_bookmaker,
@@ -115,8 +125,9 @@ select
     ov.points            as over_points,
     ov.bet_concat        as over_bet_concat,
     case
-        when g.h is not null and ov.points is not null
-        then (g.h + g.a) > ov.points
+        when g.h is null or ov.points is null      then null
+        when (g.h + g.a) = ov.points                then null
+        else (g.h + g.a) > ov.points
     end                  as over_won,
 
     un.bet_hash          as under_bet_hash,
@@ -125,9 +136,14 @@ select
     un.points            as under_points,
     un.bet_concat        as under_bet_concat,
     case
-        when g.h is not null and un.points is not null
-        then (g.h + g.a) < un.points
+        when g.h is null or un.points is null      then null
+        when (g.h + g.a) = un.points                then null
+        else (g.h + g.a) < un.points
     end                  as under_won,
+    case
+        when g.h is not null and coalesce(ov.points, un.points) is not null
+        then (g.h + g.a) = coalesce(ov.points, un.points)
+    end                  as total_push,
 
     current_timestamp    as last_updated_ts
 

@@ -43,11 +43,11 @@ struct ViewSched: View {
     private let enhancementService = EnhancementService()
     private let teamService = TeamService()
 
-    init(team: Team, league: League) {
+    init(team: Team, league: League, initialYear: Int? = nil) {
         self.team = team
         self.league = league
         let currentYear = Calendar.current.component(.year, from: .now)
-        _selectedYear = State(initialValue: league.yrData ?? currentYear)
+        _selectedYear = State(initialValue: initialYear ?? league.yrData ?? currentYear)
     }
 
     private var years: [Int] {
@@ -265,6 +265,7 @@ struct ViewSched: View {
 struct ViewSchedLoader: View {
     let teamId: Int
     let leagueId: Int
+    var initialYear: Int? = nil
 
     @State private var team: Team?
     @State private var league: League?
@@ -275,7 +276,7 @@ struct ViewSchedLoader: View {
     var body: some View {
         Group {
             if let team, let league {
-                ViewSched(team: team, league: league)
+                ViewSched(team: team, league: league, initialYear: initialYear)
             } else {
                 ProgressView().task { await load() }
             }

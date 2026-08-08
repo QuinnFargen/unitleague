@@ -46,6 +46,28 @@ struct StreakText: View {
     }
 }
 
+// MARK: - TrendStreakText
+
+/// Like `StreakText`, but each source character maps to its own display glyph
+/// and an optional color (nil falls back to `.secondary`) via `mapping`.
+struct TrendStreakText: View {
+    @EnvironmentObject private var theme: AppTheme
+    let streak: String
+    let mapping: (Character) -> (display: String, color: Color?)
+    var font: Font = .caption2.weight(.semibold)
+
+    var body: some View {
+        HStack(spacing: 1) {
+            ForEach(Array(streak.enumerated()), id: \.offset) { _, ch in
+                let (display, color) = mapping(ch)
+                Text(display)
+                    .font(font)
+                    .foregroundStyle(color ?? .secondary)
+            }
+        }
+    }
+}
+
 // MARK: - SyndicateHeaderRow
 
 struct SyndicateHeaderRow: View {

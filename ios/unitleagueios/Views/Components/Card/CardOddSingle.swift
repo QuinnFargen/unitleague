@@ -35,6 +35,12 @@ struct CardOddSingle: View {
         points == points.rounded() ? "\(Int(points))" : String(format: "%.1f", points)
     }
 
+    private func formatPointsSigned(_ points: Double) -> String {
+        points == points.rounded()
+            ? (points >= 0 ? "+\(Int(points))" : "\(Int(points))")
+            : String(format: points >= 0 ? "+%.1f" : "%.1f", points)
+    }
+
     private func impliedPct(_ price: Double?) -> String {
         guard let p = price, p > 0 else { return "" }
         return "\(Int((1.0 / p * 100.0).rounded()))%"
@@ -122,11 +128,11 @@ struct CardOddSingle: View {
         case "SPR":
             return SingleData(
                 awayPrice: odd.sprAwayPrice,
-                awayBetLabel: odd.sprAwayPoints.map(formatPoints) ?? "",
+                awayBetLabel: odd.sprAwayPoints.map(formatPointsSigned) ?? "",
                 awayMLPct: impliedPct(odd.sprAwayPrice),
                 awayBetHash: odd.sprAwayBetHash, awayWon: odd.sprAwayWon, awayPoints: odd.sprAwayPoints, awaySide: "Away",
                 homePrice: odd.sprHomePrice,
-                homeBetLabel: odd.sprHomePoints.map(formatPoints) ?? "",
+                homeBetLabel: odd.sprHomePoints.map(formatPointsSigned) ?? "",
                 homeMLPct: impliedPct(odd.sprHomePrice),
                 homeBetHash: odd.sprHomeBetHash, homeWon: odd.sprHomeWon, homePoints: odd.sprHomePoints, homeSide: "Home"
             )
@@ -149,24 +155,29 @@ struct CardOddSingle: View {
     private var singleModeLayout: some View {
         let d = singleData()
         HStack(spacing: 8) {
-            Image(systemName: odd.sportIcon)
-                .font(.title2)
-                .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 28)
+            NavigationLink {
+                ViewGameDetail(
+                    gameId: odd.gameId,
+                    home: odd.homeAbbr,
+                    away: odd.awayAbbr,
+                    homeTeamId: odd.homeTeamId,
+                    awayTeamId: odd.awayTeamId,
+                    leagueId: odd.leagueId
+                )
+            } label: {
+                Image(systemName: odd.sportIcon)
+                    .font(.title2)
+                    .foregroundStyle(theme.primaryText(colorScheme))
+                    .frame(width: 28)
+            }
+            .buttonStyle(.plain)
 
-            VStack(spacing: 2) {
-                priceCapsule(d.awayPrice, betHash: d.awayBetHash, won: d.awayWon) {
-                    guard let p = d.awayPrice, let h = d.awayBetHash else { return }
-                    onBetSelected(SelectedBet(betHash: h, type: betType, side: d.awaySide, price: p, points: d.awayPoints,
-                                              awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                              gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                              homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
-                }
-                if !d.awayMLPct.isEmpty {
-                    Text(d.awayMLPct)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
+            priceCapsule(d.awayPrice, subtitle: d.awayMLPct, betHash: d.awayBetHash, won: d.awayWon) {
+                guard let p = d.awayPrice, let h = d.awayBetHash else { return }
+                onBetSelected(SelectedBet(betHash: h, type: betType, side: d.awaySide, price: p, points: d.awayPoints,
+                                          awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                          gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                          homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
             }
 
             if !d.awayBetLabel.isEmpty {
@@ -192,19 +203,12 @@ struct CardOddSingle: View {
                     .foregroundStyle(.secondary)
             }
 
-            VStack(spacing: 2) {
-                priceCapsule(d.homePrice, betHash: d.homeBetHash, won: d.homeWon) {
-                    guard let p = d.homePrice, let h = d.homeBetHash else { return }
-                    onBetSelected(SelectedBet(betHash: h, type: betType, side: d.homeSide, price: p, points: d.homePoints,
-                                              awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                              gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                              homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
-                }
-                if !d.homeMLPct.isEmpty {
-                    Text(d.homeMLPct)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
+            priceCapsule(d.homePrice, subtitle: d.homeMLPct, betHash: d.homeBetHash, won: d.homeWon) {
+                guard let p = d.homePrice, let h = d.homeBetHash else { return }
+                onBetSelected(SelectedBet(betHash: h, type: betType, side: d.homeSide, price: p, points: d.homePoints,
+                                          awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                          gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                          homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
             }
         }
     }

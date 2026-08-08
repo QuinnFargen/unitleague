@@ -196,6 +196,7 @@ def get_game_oddall(game_id: int = Query(...)):
 @router.get("/mart/team_odds_recent")
 def get_team_odds_recent(league_id: int = Query(None)
                         , team_id: int = Query(None)
+                        , yr: int = Query(None)
                         , conf: str = Query(None)
                         , color: str = Query(None)
                         , region: str = Query(None)
@@ -210,6 +211,10 @@ def get_team_odds_recent(league_id: int = Query(None)
     if team_id:
         q += " AND team_id = :team_id"
         query_params["team_id"] = team_id
+
+    if yr:
+        q += " AND yr = :yr"
+        query_params["yr"] = yr
 
     if conf:
         q += " AND conf = :conf"

@@ -85,7 +85,7 @@ def cancel_txn(txn_id: int):
         return dict(row._mapping)
 
 @router.get("/odd/txn")
-def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
+def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None), game_id: int = Query(None)):
     q = "SELECT * FROM odd.v_txn WHERE game_dt >= CURRENT_DATE AND canceled = false"
     query_params = {}
 
@@ -96,6 +96,10 @@ def get_txn(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
     if syndicate_id:
         q += " AND syndicate_id = :syndicate_id"
         query_params["syndicate_id"] = syndicate_id
+
+    if game_id:
+        q += " AND game_id = :game_id"
+        query_params["game_id"] = game_id
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)

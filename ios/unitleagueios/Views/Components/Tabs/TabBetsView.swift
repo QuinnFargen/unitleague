@@ -27,6 +27,7 @@ struct TabBetsView: View {
     @State private var syndicates: [Int: Syndicate] = [:]
     @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoadingActive = false
+    @State private var isEditingActiveBets = false
     @State private var completedRecords: [Txn] = []
     @State private var historyLegs: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
@@ -495,6 +496,11 @@ struct TabBetsView: View {
                             Text("\(activeBetsForDate.count)")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
+                            Button(isEditingActiveBets ? "Done" : "Edit") {
+                                isEditingActiveBets.toggle()
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(theme.accent)
                         }
                         .padding(.horizontal, 16)
 
@@ -508,11 +514,11 @@ struct TabBetsView: View {
                                 )
 
                                 ForEach(group.singles) { txn in
-                                    CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) })
+                                    CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) }, isEditing: isEditingActiveBets)
                                 }
 
                                 ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                    CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) })
+                                    CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) }, isEditing: isEditingActiveBets)
                                 }
                             }
                             .padding(.horizontal, 16)

@@ -30,14 +30,16 @@ select
     n.yr,
     count(*)                                                            as games_played,
     sum(case when c.won then 1 else 0 end)                             as wins,
-    sum(case when not c.won then 1 else 0 end)                         as losses,
+    sum(case when c.won = false then 1 else 0 end)                     as losses,
+    sum(case when c.won then 1 else 0 end)::numeric
+        / nullif(count(*), 0)                                          as win_pct,
     string_agg(
-        case when c.won then 'W' else 'L' end, ''
-        order by c.recency_rank
+        case when c.won is null then 'T' when c.won then 'W' else 'L' end, ''
+        order by c.recency_rank desc
     ) filter (where c.recency_rank <= 5)                               as last_5_str,
     string_agg(
-        case when c.won then 'W' else 'L' end, ''
-        order by c.recency_rank
+        case when c.won is null then 'T' when c.won then 'W' else 'L' end, ''
+        order by c.recency_rank desc
     ) filter (where c.recency_rank <= 10)                              as last_10_str,
     sum(case when c.recency_rank <= 5  and c.won then 1 else 0 end)   as last_5_wins,
     sum(case when c.recency_rank <= 10 and c.won then 1 else 0 end)   as last_10_wins,

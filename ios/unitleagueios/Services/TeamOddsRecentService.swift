@@ -1,10 +1,11 @@
 import Foundation
 
 class TeamOddsRecentService {
-    func fetchTeamOddsRecent(leagueId: Int, conf: String? = nil, color: String? = nil,
+    func fetchTeamOddsRecent(leagueId: Int, yr: Int? = nil, conf: String? = nil, color: String? = nil,
                               region: String? = nil, category: String? = nil) async throws -> [TeamOddsRecent] {
         var components = URLComponents(string: "\(APIClient.baseURL)/mart/team_odds_recent")!
         var queryItems = [URLQueryItem(name: "league_id", value: "\(leagueId)")]
+        if let yr       { queryItems.append(URLQueryItem(name: "yr",       value: "\(yr)")) }
         if let conf     { queryItems.append(URLQueryItem(name: "conf",     value: conf)) }
         if let color    { queryItems.append(URLQueryItem(name: "color",    value: color)) }
         if let region   { queryItems.append(URLQueryItem(name: "region",   value: region)) }

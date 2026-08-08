@@ -10,6 +10,22 @@ struct TabResearchView: View {
 
     private let service = LeagueService()
 
+    private let statusOrder = ["playoffs", "regular season", "preseason", "offseason"]
+    private let statusLabels: [String: String] = [
+        "playoffs": "Playoffs",
+        "regular season": "Regular Season",
+        "preseason": "Preseason",
+        "offseason": "Offseason"
+    ]
+
+    private var groupedLeagues: [(status: String, leagues: [League])] {
+        let byStatus = Dictionary(grouping: leagues, by: \.status)
+        return statusOrder.compactMap { status in
+            guard let group = byStatus[status], !group.isEmpty else { return nil }
+            return (status: status, leagues: group)
+        }
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -32,14 +48,25 @@ struct TabResearchView: View {
                         .padding()
                     } else {
                         ScrollView {
-                            LazyVStack(spacing: 12) {
-                                ForEach(leagues) { league in
-                                    CardLeague(
-                                        league: league,
-                                        isExpanded: expandedLeagueId == league.id
-                                    ) {
-                                        withAnimation(.easeInOut(duration: 0.2)) {
-                                            expandedLeagueId = expandedLeagueId == league.id ? nil : league.id
+                            LazyVStack(alignment: .leading, spacing: 20) {
+                                ForEach(groupedLeagues, id: \.status) { group in
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(statusLabels[group.status] ?? group.status.capitalized)
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(.secondary)
+                                            .padding(.horizontal, 4)
+
+                                        VStack(spacing: 12) {
+                                            ForEach(group.leagues) { league in
+                                                CardLeague(
+                                                    league: league,
+                                                    isExpanded: expandedLeagueId == league.id
+                                                ) {
+                                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                                        expandedLeagueId = expandedLeagueId == league.id ? nil : league.id
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }

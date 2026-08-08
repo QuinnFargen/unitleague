@@ -15,6 +15,7 @@ struct TeamSeason: Codable, Identifiable {
     let gamesPlayed: Int
     let wins: Int
     let losses: Int
+    let winPct: Double
     let last5Str: String?
     let last10Str: String?
     let last5Wins: Int?
@@ -31,14 +32,11 @@ struct TeamSeason: Codable, Identifiable {
         case yr
         case gamesPlayed  = "games_played"
         case wins, losses
+        case winPct       = "win_pct"
         case last5Str     = "last_5_str"
         case last10Str    = "last_10_str"
         case last5Wins    = "last_5_wins"
         case last10Wins   = "last_10_wins"
         case last15Wins   = "last_15_wins"
-    }
-
-    var winPct: Double {
-        gamesPlayed > 0 ? Double(wins) / Double(gamesPlayed) : 0
     }
 }

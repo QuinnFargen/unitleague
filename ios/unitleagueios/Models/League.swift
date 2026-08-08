@@ -8,10 +8,11 @@ struct League: Codable, Identifiable {
     let weather: String
     let yrOrig: Int
     let yrData: Int?
+    let status: String
 
     enum CodingKeys: String, CodingKey {
         case id = "league_id"
-        case abbr, name, sport, weather
+        case abbr, name, sport, weather, status
         case yrOrig = "yr_orig"
         case yrData = "yr_data"
     }

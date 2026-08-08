@@ -17,18 +17,19 @@ struct CardRank: View {
                 .font(.headline)
                 .foregroundStyle(theme.primaryText(colorScheme))
 
+            HStack(spacing: 4) {
+                Text("\(season.wins)-\(season.losses)")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(theme.primaryText(colorScheme))
+                Text("(\(String(format: "%.3f", season.winPct)))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
-                if let streak = season.last10Str {
-                    StreakText(streak: streak, positiveChar: "W")
-                }
-                Text("\(season.wins)-\(season.losses)")
-                    .font(.headline)
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                Text(String(format: "%.3f", season.winPct))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+            if let streak = season.last10Str {
+                StreakText(streak: streak, positiveChar: "W")
             }
         }
         .padding()

@@ -7,12 +7,21 @@ private enum OddsFilterCategory: String, CaseIterable {
     case category = "Category"
 }
 
+private enum OddsSortBy: String, CaseIterable {
+    case ml = "ML"
+    case spr = "SPR"
+    case ou = "O/U"
+}
+
 struct ViewOdds: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let league: League
 
+    @State private var selectedYear: Int
+    @State private var sortBy: OddsSortBy = .ml
     @State private var records: [TeamOddsRecent] = []
+    @State private var seasons: [TeamSeason] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
     @State private var selectedConf: String? = nil
@@ -22,6 +31,30 @@ struct ViewOdds: View {
     @State private var expandedCategory: OddsFilterCategory? = nil
 
     private let service = TeamOddsRecentService()
+    private let seasonService = TeamSeasonService()
+
+    private struct TrendEntry: Identifiable {
+        let record: TeamOddsRecent
+        let season: TeamSeason?
+        var id: Int { record.teamId }
+    }
+
+    init(league: League) {
+        self.league = league
+        let currentYear = Calendar.current.component(.year, from: .now)
+        _selectedYear = State(initialValue: league.yrData ?? currentYear)
+    }
+
+    private var years: [Int] {
+        let currentYear = Calendar.current.component(.year, from: .now)
+        let end = max(league.yrData ?? currentYear, 2020)
+        return Array(2020 ... end).reversed()
+    }
+
+    private var entries: [TrendEntry] {
+        let seasonsByTeam = Dictionary(uniqueKeysWithValues: seasons.map { ($0.teamId, $0) })
+        return records.map { TrendEntry(record: $0, season: seasonsByTeam[$0.teamId]) }
+    }
 
     private var confs: [String]      { Array(Set(records.compactMap(\.conf))).sorted() }
     private var colors: [String]     { Array(Set(records.compactMap(\.color))).sorted() }
@@ -59,14 +92,22 @@ struct ViewOdds: View {
         }
     }
 
-    private var displayedRecords: [TeamOddsRecent] {
-        records.filter { record in
-            if let conf = selectedConf, record.conf != conf { return false }
-            if let color = selectedColor, record.color != color { return false }
-            if let region = selectedRegion, record.region != region { return false }
-            if let category = selectedCategory, record.category != category { return false }
-            return true
-        }
+    private var displayedEntries: [TrendEntry] {
+        entries
+            .filter { entry in
+                if let conf = selectedConf, entry.record.conf != conf { return false }
+                if let color = selectedColor, entry.record.color != color { return false }
+                if let region = selectedRegion, entry.record.region != region { return false }
+                if let category = selectedCategory, entry.record.category != category { return false }
+                return true
+            }
+            .sorted { lhs, rhs in
+                switch sortBy {
+                case .ml:  return (lhs.season?.winPct ?? 0) > (rhs.season?.winPct ?? 0)
+                case .spr: return (lhs.record.atsCoverPct ?? 0) > (rhs.record.atsCoverPct ?? 0)
+                case .ou:  return (lhs.record.overPct ?? 0) > (rhs.record.overPct ?? 0)
+                }
+            }
     }
 
     var body: some View {
@@ -74,6 +115,32 @@ struct ViewOdds: View {
             theme.appBackground(colorScheme).ignoresSafeArea()
 
             VStack(spacing: 0) {
+                // Year row
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(years, id: \.self) { year in
+                            FilterChip(label: String(year), isSelected: selectedYear == year) {
+                                selectedYear = year
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+
+                // Sort row
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(OddsSortBy.allCases, id: \.self) { option in
+                            FilterChip(label: option.rawValue, isSelected: sortBy == option) {
+                                sortBy = option
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                }
+
                 // Filter category row
                 if !availableFilterCategories.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -108,10 +175,8 @@ struct ViewOdds: View {
                     .transition(.opacity.combined(with: .move(edge: .top)))
                 }
 
-                if !availableFilterCategories.isEmpty {
-                    Divider()
-                        .background(theme.divider(colorScheme))
-                }
+                Divider()
+                    .background(theme.divider(colorScheme))
 
                 Group {
                     if isLoading {
@@ -132,7 +197,7 @@ struct ViewOdds: View {
                         }
                         .padding()
                         Spacer()
-                    } else if displayedRecords.isEmpty {
+                    } else if displayedEntries.isEmpty {
                         Spacer()
                         Text("No odds trends available")
                             .foregroundStyle(.secondary)
@@ -140,11 +205,11 @@ struct ViewOdds: View {
                     } else {
                         ScrollView {
                             LazyVStack(spacing: 12) {
-                                ForEach(displayedRecords) { record in
+                                ForEach(displayedEntries) { entry in
                                     NavigationLink {
-                                        ViewSchedLoader(teamId: record.teamId, leagueId: record.leagueId)
+                                        ViewSchedLoader(teamId: entry.record.teamId, leagueId: entry.record.leagueId, initialYear: selectedYear)
                                     } label: {
-                                        CardOddsTrend(record: record)
+                                        CardOddsTrend(record: entry.record, season: entry.season)
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -158,14 +223,18 @@ struct ViewOdds: View {
         }
         .navigationTitle("\(league.abbr) Odds")
         .navigationBarTitleDisplayMode(.inline)
-        .task { await fetchRecords() }
+        .task(id: selectedYear) { await fetchRecords() }
     }
 
     private func fetchRecords() async {
         isLoading = true
         errorMessage = nil
         do {
-            records = try await service.fetchTeamOddsRecent(leagueId: league.id)
+            async let recordsTask = service.fetchTeamOddsRecent(leagueId: league.id, yr: selectedYear)
+            async let seasonsTask = seasonService.fetchTeamSeasons(leagueId: league.id, yr: selectedYear)
+            let (fetchedRecords, fetchedSeasons) = try await (recordsTask, seasonsTask)
+            records = fetchedRecords
+            seasons = fetchedSeasons
         } catch {
             errorMessage = error.localizedDescription
         }

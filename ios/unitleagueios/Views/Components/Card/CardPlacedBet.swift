@@ -55,20 +55,34 @@ func betLabel(for bet: SelectedBet) -> String {
 struct CardPlacedBet: View {
     let txn: Txn
     var onCancel: (() -> Void)? = nil
+    var isEditing: Bool = false
 
     @State private var showCancelConfirm = false
 
     var body: some View {
-        CardBet(bet: selectedBet(from: txn), won: txn.won)
-            .onLongPressGesture {
-                if onCancel != nil { showCancelConfirm = true }
+        Group {
+            if isEditing && onCancel != nil {
+                Button { showCancelConfirm = true } label: {
+                    CardBet(bet: selectedBet(from: txn), won: txn.won)
+                }
+                .buttonStyle(.plain)
+            } else if let gameId = txn.gameId {
+                NavigationLink {
+                    ViewGameDetailLoader(gameId: gameId)
+                } label: {
+                    CardBet(bet: selectedBet(from: txn), won: txn.won)
+                }
+                .buttonStyle(.plain)
+            } else {
+                CardBet(bet: selectedBet(from: txn), won: txn.won)
             }
-            .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
-                Button("Cancel Bet", role: .destructive) { onCancel?() }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This will cancel your placed bet and cannot be undone.")
-            }
+        }
+        .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {
+            Button("Cancel Bet", role: .destructive) { onCancel?() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will cancel your placed bet and cannot be undone.")
+        }
     }
 }
 

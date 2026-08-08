@@ -9,11 +9,11 @@ enum Mock {
 
     static let leagueNBA = League(
         id: 1, abbr: "NBA", name: "NBA", sport: "basketball",
-        weather: "none", yrOrig: 1946, yrData: nil
+        weather: "none", yrOrig: 1946, yrData: nil, status: "regular season"
     )
     static let leagueNFL = League(
         id: 2, abbr: "NFL", name: "NFL", sport: "football",
-        weather: "outdoor", yrOrig: 1920, yrData: nil
+        weather: "outdoor", yrOrig: 1920, yrData: nil, status: "playoffs"
     )
 
     // MARK: Teams
@@ -47,15 +47,15 @@ enum Mock {
         teamId: 1, abbr: "LAL", leagueId: 1,
         conf: "West", color: "Purple", region: "West", category: "Person",
         seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
-        gamesPlayed: 42, wins: 30, losses: 12,
-        last5Str: "WWLWW", last10Str: "WWLWWLLWLW", last5Wins: 4, last10Wins: 7, last15Wins: 10
+        gamesPlayed: 42, wins: 30, losses: 12, winPct: 0.714,
+        last5Str: "WWLWW", last10Str: "WLLWLWWLWW", last5Wins: 4, last10Wins: 7, last15Wins: 10
     )
     static let teamSeasonBOS = TeamSeason(
         teamId: 2, abbr: "BOS", leagueId: 1,
         conf: "East", color: "Green", region: "East", category: "Person",
         seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
-        gamesPlayed: 42, wins: 26, losses: 16,
-        last5Str: "LWWLL", last10Str: "LWWLLWLWLW", last5Wins: 2, last10Wins: 5, last15Wins: 9
+        gamesPlayed: 42, wins: 26, losses: 16, winPct: 0.619,
+        last5Str: "LWWLL", last10Str: "WLWLWLLWWL", last5Wins: 2, last10Wins: 5, last15Wins: 9
     )
     static var teamSeasonsNBA: [TeamSeason] { [teamSeasonLAL, teamSeasonBOS] }
 
@@ -64,14 +64,16 @@ enum Mock {
     static let teamOddsRecentLAL = TeamOddsRecent(
         teamId: 1, leagueId: 1, abbr: "LAL",
         conf: "West", color: "Purple", region: "West", category: "Person",
-        atsWins: 6, atsLosses: 4, atsLast10Str: "WWLWLWWLWL",
-        overCount: 6, underCount: 4, ouLast10Str: "OUOOUOUUOU"
+        seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
+        atsWins: 6, atsLosses: 4, atsPushes: 1, atsLast10Str: "LWLWW=LWLW", atsCoverPct: 0.6,
+        overCount: 6, underCount: 4, ouPushes: 0, ouLast10Str: "UOUOUUOOUO", overPct: 0.6
     )
     static let teamOddsRecentBOS = TeamOddsRecent(
         teamId: 2, leagueId: 1, abbr: "BOS",
         conf: "East", color: "Green", region: "East", category: "Person",
-        atsWins: 3, atsLosses: 7, atsLast10Str: "LLWLLWLLLW",
-        overCount: 4, underCount: 6, ouLast10Str: "UUOUUOUOOU"
+        seasonId: 2026, seasonConcat: "2026_NBA", yr: 2026,
+        atsWins: 3, atsLosses: 7, atsPushes: 0, atsLast10Str: "WLLLWLLLLW", atsCoverPct: 0.3,
+        overCount: 4, underCount: 6, ouPushes: 1, ouLast10Str: "OUUOU=UUOU", overPct: 0.4
     )
     static var teamOddsRecentNBA: [TeamOddsRecent] { [teamOddsRecentLAL, teamOddsRecentBOS] }
 

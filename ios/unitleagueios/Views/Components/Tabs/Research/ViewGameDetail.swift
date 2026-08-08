@@ -21,12 +21,14 @@ struct ViewGameDetail: View {
     @State private var selectedBet: SelectedBet?
     @State private var oddMany: [OddMany] = []
     @State private var teamLevels: [Int: Int] = [:]
+    @State private var gameBets: [Txn] = []
 
     private let oddService = OddsService()
     private let teamService = TeamService()
     private let leagueService = LeagueService()
     private let oddManyService = OddManyService()
     private let enhancementService = EnhancementService()
+    private let txnService = TxnService()
 
     // Standard init — data loaded via .task { fetchData() }
     init(gameId: Int, home: String, away: String,
@@ -108,6 +110,22 @@ struct ViewGameDetail: View {
                     }
                     .padding(.horizontal)
 
+                    if !gameBets.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Bets")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+
+                            VStack(spacing: 8) {
+                                ForEach(gameBets) { txn in
+                                    CardBetSlim(txn: txn)
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+
                     if isUpcoming && !oddMany.isEmpty {
                         CardOddMany(odds: oddMany, awayAbbr: away, homeAbbr: home) { bet in
                             selectedBet = bet
@@ -123,6 +141,7 @@ struct ViewGameDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchData() }
         .task { await loadTeamLevels() }
+        .task { await loadGameBets() }
         .sheet(item: $selectedBet) { bet in
             SheetConfirmBet(bet: bet, bettorId: bettorId, syndicateId: selectedSyndicateId)
         }
@@ -145,6 +164,10 @@ struct ViewGameDetail: View {
         oddMany = many ?? []
     }
 
+    private func loadGameBets() async {
+        gameBets = (try? await txnService.fetchActiveBets(gameId: gameId)) ?? []
+    }
+
     private func loadTeamLevels() async {
         guard bettorId != 0, selectedSyndicateId != 0 else { return }
         let enhanced = (try? await enhancementService.fetchEnhanced(bettorId: bettorId, syndicateId: selectedSyndicateId)) ?? []
@@ -153,6 +176,40 @@ struct ViewGameDetail: View {
             levels[item.teamId] = item.level
         }
         teamLevels = levels
+    }
+}
+
+// MARK: - ViewGameDetailLoader
+
+/// Resolves a game's odds by id then pushes into `ViewGameDetail`. Used where only
+/// a `gameId` is on hand (e.g. from a `Txn`) and the home/away team ids and league
+/// id `ViewGameDetail`'s init needs haven't been fetched yet.
+struct ViewGameDetailLoader: View {
+    let gameId: Int
+
+    @State private var odd: Odds?
+
+    private let oddService = OddsService()
+
+    var body: some View {
+        Group {
+            if let odd {
+                ViewGameDetail(
+                    gameId: odd.gameId,
+                    home: odd.homeAbbr,
+                    away: odd.awayAbbr,
+                    homeTeamId: odd.homeTeamId,
+                    awayTeamId: odd.awayTeamId,
+                    leagueId: odd.leagueId
+                )
+            } else {
+                ProgressView().task { await load() }
+            }
+        }
+    }
+
+    private func load() async {
+        odd = (try? await oddService.fetchOddBest(gameId: gameId))?.first
     }
 }
 

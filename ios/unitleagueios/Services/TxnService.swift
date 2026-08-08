@@ -68,6 +68,14 @@ struct TxnService {
         return try JSONDecoder().decode([Txn].self, from: data)
     }
 
+    func fetchActiveBets(gameId: Int) async throws -> [Txn] {
+        var components = URLComponents(string: "\(APIClient.baseURL)/odd/txn")!
+        components.queryItems = [URLQueryItem(name: "game_id", value: "\(gameId)")]
+        guard let url = components.url else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([Txn].self, from: data)
+    }
+
     func fetchCompletedBets(bettorId: Int) async throws -> [Txn] {
         var components = URLComponents(string: "\(APIClient.baseURL)/mart/txn")!
         components.queryItems = [URLQueryItem(name: "bettor_id", value: "\(bettorId)")]

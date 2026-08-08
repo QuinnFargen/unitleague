@@ -4,36 +4,71 @@ struct CardOddsTrend: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let record: TeamOddsRecent
+    var season: TeamSeason? = nil
+
+    private func pctLabel(_ pct: Double?) -> String {
+        guard let pct else { return "—" }
+        let s = String(format: "%.3f", pct)
+        return s.hasPrefix("0.") ? String(s.dropFirst()) : s
+    }
+
+    private func mlMapping(_ ch: Character) -> (display: String, color: Color?) {
+        switch ch {
+        case "W": return ("W", theme.win)
+        case "L": return ("L", theme.loss)
+        case "T": return ("T", nil)
+        default:  return (String(ch), nil)
+        }
+    }
+
+    private func atsMapping(_ ch: Character) -> (display: String, color: Color?) {
+        switch ch {
+        case "W": return ("+", theme.win)
+        case "L": return ("-", theme.loss)
+        case "=": return ("=", nil)
+        default:  return (String(ch), nil)
+        }
+    }
+
+    private func ouMapping(_ ch: Character) -> (display: String, color: Color?) {
+        switch ch {
+        case "O": return ("O", theme.win)
+        case "U": return ("U", theme.loss)
+        case "=": return ("=", nil)
+        default:  return (String(ch), nil)
+        }
+    }
+
+    @ViewBuilder
+    private func trendRow(_ label: String, pct: String, streak: String?, mapping: @escaping (Character) -> (display: String, color: Color?)) -> some View {
+        HStack(spacing: 6) {
+            Text(label)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .frame(width: 28, alignment: .leading)
+            Text(pct)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .frame(width: 40, alignment: .leading)
+            if let streak {
+                TrendStreakText(streak: streak, mapping: mapping)
+            }
+        }
+    }
 
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             Text(record.abbr)
                 .font(.headline)
                 .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 56, alignment: .leading)
+                .frame(width: 44, alignment: .leading)
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(record.atsWins)-\(record.atsLosses) ATS")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                if let streak = record.atsLast10Str {
-                    Text(streak)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Divider().frame(height: 28)
-
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("\(record.overCount) O / \(record.underCount) U")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(theme.primaryText(colorScheme))
-                if let streak = record.ouLast10Str {
-                    StreakText(streak: streak, positiveChar: "O")
-                }
+            VStack(alignment: .trailing, spacing: 3) {
+                trendRow("WIN", pct: pctLabel(season?.winPct), streak: season?.last10Str, mapping: mlMapping)
+                trendRow("ATS", pct: pctLabel(record.atsCoverPct), streak: record.atsLast10Str, mapping: atsMapping)
+                trendRow("TOT", pct: pctLabel(record.overPct), streak: record.ouLast10Str, mapping: ouMapping)
             }
         }
         .padding()
@@ -44,8 +79,8 @@ struct CardOddsTrend: View {
 
 #Preview("CardOddsTrend") {
     VStack(spacing: 12) {
-        CardOddsTrend(record: Mock.teamOddsRecentLAL)
-        CardOddsTrend(record: Mock.teamOddsRecentBOS)
+        CardOddsTrend(record: Mock.teamOddsRecentLAL, season: Mock.teamSeasonLAL)
+        CardOddsTrend(record: Mock.teamOddsRecentBOS, season: Mock.teamSeasonBOS)
     }
     .padding()
     .environmentObject(AppTheme())

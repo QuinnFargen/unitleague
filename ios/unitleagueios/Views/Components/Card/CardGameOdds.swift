@@ -232,13 +232,8 @@ struct CardGameOdds: View {
 
                 // Home row
                 HStack(spacing: 4) {
-                    HStack(spacing: 4) {
-                        Text("@")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                        teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     if let s = scores { scoreCapsule(s.home) }
                     priceCapsule(odd.mlHomePrice, subtitle: impliedPct(odd.mlHomePrice),
                                  betHash: odd.mlHomeBetHash, won: odd.mlHomeWon) {

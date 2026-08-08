@@ -34,6 +34,15 @@ season_start as (
         max(reg_start_dt) as season_start_dt
     from {{ ref('season') }}
     group by league_id
+),
+
+game_dates_summary as (
+    select
+        league_id,
+        max(game_dt) filter (where game_dt <= current_date) as last_game_dt,
+        bool_or(game_dt = current_date)                     as has_game_today
+    from {{ ref('mart_league_game_dates') }}
+    group by league_id
 )
 
 select
@@ -45,9 +54,15 @@ select
     my.yr_data,
     l.weather,
     coalesce(s.status, 'offseason')                                 as status,
-    ss.season_start_dt
+    ss.season_start_dt,
+    case
+        when coalesce(s.status, 'offseason') != 'offseason'
+             and coalesce(gd.has_game_today, false)                 then current_date
+        else gd.last_game_dt
+    end                                                              as lastscheddate
 
 from {{ ref('league') }} l
 left join season_status s on s.league_id = l.league_id
 left join season_max_yr my on my.league_id = l.league_id
 left join season_start ss on ss.league_id = l.league_id
+left join game_dates_summary gd on gd.league_id = l.league_id

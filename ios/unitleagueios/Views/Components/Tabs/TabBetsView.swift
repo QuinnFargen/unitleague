@@ -122,6 +122,10 @@ struct TabBetsView: View {
         return teamFiltered.sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
 
+    private var oddsByGameId: [Int: Odds] {
+        Dictionary(uniqueKeysWithValues: odds.map { ($0.gameId, $0) })
+    }
+
     private var displayedGames: [Game] {
         let filtered: [Game]
         if let teamId = selectedTeamId {
@@ -457,7 +461,7 @@ struct TabBetsView: View {
                                         leagueId: game.leagueId
                                     )
                                 } label: {
-                                    CardGame(game: game)
+                                    CardGame(game: game, odds: oddsByGameId[game.id])
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -746,26 +750,6 @@ struct TabBetsView: View {
             if let result = try? await syndicateService.fetchSyndicate(syndicateId: sid, bettorId: nil) {
                 historySyndicates[sid] = result.first
             }
-        }
-    }
-}
-
-private struct RowCapsuleButton: View {
-    @EnvironmentObject private var theme: AppTheme
-    @Environment(\.colorScheme) private var colorScheme
-    let systemName: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .foregroundStyle(isSelected ? theme.accent : theme.primaryText(colorScheme))
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
-                .background(isSelected ? theme.accent.opacity(0.15) : theme.chipUnselected(colorScheme))
-                .clipShape(Capsule())
         }
     }
 }

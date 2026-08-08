@@ -9,11 +9,13 @@ enum Mock {
 
     static let leagueNBA = League(
         id: 1, abbr: "NBA", name: "NBA", sport: "basketball",
-        weather: "none", yrOrig: 1946, yrData: nil, status: "regular season", seasonStartDt: "2026-10-21"
+        weather: "none", yrOrig: 1946, yrData: nil, status: "regular season", seasonStartDt: "2026-10-21",
+        lastSchedDt: nil
     )
     static let leagueNFL = League(
         id: 2, abbr: "NFL", name: "NFL", sport: "football",
-        weather: "outdoor", yrOrig: 1920, yrData: nil, status: "playoffs", seasonStartDt: "2026-09-10"
+        weather: "outdoor", yrOrig: 1920, yrData: nil, status: "playoffs", seasonStartDt: "2026-09-10",
+        lastSchedDt: nil
     )
 
     // MARK: Teams

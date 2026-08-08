@@ -44,19 +44,6 @@ struct CardGameOdds: View {
         }
     }
 
-    private func formatPrice(_ price: Double) -> String {
-        String(format: "%.2f", price)
-    }
-
-    private func formatPoints(_ points: Double) -> String {
-        points == points.rounded() ? "\(Int(points))" : String(format: "%.1f", points)
-    }
-
-    private func impliedPct(_ price: Double?) -> String {
-        guard let p = price, p > 0 else { return "" }
-        return "\(Int((1.0 / p * 100.0).rounded()))%"
-    }
-
     private func oddsCapsuleColor(_ price: Double, betHash: String?, won: Bool?) -> Color {
         guard betHash != nil else { return theme.accent.opacity(0.2) }
         if let won { return won ? theme.accent.opacity(0.7) : theme.chipUnselected(colorScheme) }
@@ -112,11 +99,11 @@ struct CardGameOdds: View {
         if let p = price {
             if betHash != nil, let onTap {
                 Button(action: onTap) {
-                    priceCapsuleLabel(p, display: displayOverride ?? formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
+                    priceCapsuleLabel(p, display: displayOverride ?? OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
                 }
                 .buttonStyle(.plain)
             } else {
-                priceCapsuleLabel(p, display: displayOverride ?? formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
+                priceCapsuleLabel(p, display: displayOverride ?? OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
             }
         } else {
             Text("—")
@@ -146,7 +133,7 @@ struct CardGameOdds: View {
     }
 
     var body: some View {
-        let ouTotal = (odd.overPoints ?? odd.underPoints).map(formatPoints) ?? ""
+        let ouTotal = (odd.overPoints ?? odd.underPoints).map(OddsFormatting.formatPoints) ?? ""
         let awayOUWon = awayIsFav ? odd.underWon : odd.overWon
         let homeOUWon = awayIsFav ? odd.overWon : odd.underWon
         let sprAwayLost = odd.sprAwayWon == false
@@ -194,7 +181,7 @@ struct CardGameOdds: View {
                     teamAbbrCapsule(odd.awayAbbr, teamId: odd.awayTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     if let s = scores { scoreCapsule(s.away) }
-                    priceCapsule(odd.mlAwayPrice, subtitle: impliedPct(odd.mlAwayPrice),
+                    priceCapsule(odd.mlAwayPrice, subtitle: OddsFormatting.impliedPct(odd.mlAwayPrice),
                                  betHash: odd.mlAwayBetHash, won: odd.mlAwayWon) {
                         guard let p = odd.mlAwayPrice, let h = odd.mlAwayBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "ML", side: "Away", price: p, points: nil,
@@ -203,9 +190,9 @@ struct CardGameOdds: View {
                                                   homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(odd.sprAwayPrice,
-                                 subtitle: sprAwayLost ? "" : (odd.sprAwayPoints.map(formatPoints) ?? ""),
+                                 subtitle: sprAwayLost ? "" : (odd.sprAwayPoints.map(OddsFormatting.formatPoints) ?? ""),
                                  betHash: odd.sprAwayBetHash, won: odd.sprAwayWon,
-                                 displayOverride: sprAwayLost ? odd.margin.map(formatPoints) : nil) {
+                                 displayOverride: sprAwayLost ? odd.margin.map(OddsFormatting.formatPoints) : nil) {
                         guard let p = odd.sprAwayPrice, let h = odd.sprAwayBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Away", price: p, points: odd.sprAwayPoints,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
@@ -217,7 +204,7 @@ struct CardGameOdds: View {
                         subtitle: awayOUWon == false ? "" : (awayIsFav ? "U \(ouTotal)" : "O \(ouTotal)"),
                         betHash: awayIsFav ? odd.underBetHash : odd.overBetHash,
                         won: awayOUWon,
-                        displayOverride: awayOUWon == false ? odd.total.map(formatPoints) : nil
+                        displayOverride: awayOUWon == false ? odd.total.map(OddsFormatting.formatPoints) : nil
                     ) {
                         let price = awayIsFav ? odd.underPrice : odd.overPrice
                         let hash  = awayIsFav ? odd.underBetHash : odd.overBetHash
@@ -235,7 +222,7 @@ struct CardGameOdds: View {
                     teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     if let s = scores { scoreCapsule(s.home) }
-                    priceCapsule(odd.mlHomePrice, subtitle: impliedPct(odd.mlHomePrice),
+                    priceCapsule(odd.mlHomePrice, subtitle: OddsFormatting.impliedPct(odd.mlHomePrice),
                                  betHash: odd.mlHomeBetHash, won: odd.mlHomeWon) {
                         guard let p = odd.mlHomePrice, let h = odd.mlHomeBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "ML", side: "Home", price: p, points: nil,
@@ -244,9 +231,9 @@ struct CardGameOdds: View {
                                                   homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
                     priceCapsule(odd.sprHomePrice,
-                                 subtitle: sprHomeLost ? "" : (odd.sprHomePoints.map(formatPoints) ?? ""),
+                                 subtitle: sprHomeLost ? "" : (odd.sprHomePoints.map(OddsFormatting.formatPoints) ?? ""),
                                  betHash: odd.sprHomeBetHash, won: odd.sprHomeWon,
-                                 displayOverride: sprHomeLost ? odd.margin.map(formatPoints) : nil) {
+                                 displayOverride: sprHomeLost ? odd.margin.map(OddsFormatting.formatPoints) : nil) {
                         guard let p = odd.sprHomePrice, let h = odd.sprHomeBetHash else { return }
                         onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Home", price: p, points: odd.sprHomePoints,
                                                   awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
@@ -258,7 +245,7 @@ struct CardGameOdds: View {
                         subtitle: homeOUWon == false ? "" : (awayIsFav ? "O \(ouTotal)" : "U \(ouTotal)"),
                         betHash: awayIsFav ? odd.overBetHash : odd.underBetHash,
                         won: homeOUWon,
-                        displayOverride: homeOUWon == false ? odd.total.map(formatPoints) : nil
+                        displayOverride: homeOUWon == false ? odd.total.map(OddsFormatting.formatPoints) : nil
                     ) {
                         let price = awayIsFav ? odd.overPrice : odd.underPrice
                         let hash  = awayIsFav ? odd.overBetHash : odd.underBetHash

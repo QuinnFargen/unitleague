@@ -10,6 +10,7 @@ struct League: Codable, Identifiable {
     let yrData: Int?
     let status: String
     let seasonStartDt: String?
+    let lastSchedDt: String?
 
     enum CodingKeys: String, CodingKey {
         case id = "league_id"
@@ -17,6 +18,7 @@ struct League: Codable, Identifiable {
         case yrOrig       = "yr_orig"
         case yrData       = "yr_data"
         case seasonStartDt = "season_start_dt"
+        case lastSchedDt   = "lastscheddate"
     }
 
     var sportIcon: String { League.sportIcon(for: id) }

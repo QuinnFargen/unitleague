@@ -55,14 +55,16 @@ struct TrendStreakText: View {
     let streak: String
     let mapping: (Character) -> (display: String, color: Color?)
     var font: Font = .caption2.weight(.semibold)
+    var charWidth: CGFloat = 11
 
     var body: some View {
-        HStack(spacing: 1) {
+        HStack(spacing: 0) {
             ForEach(Array(streak.enumerated()), id: \.offset) { _, ch in
                 let (display, color) = mapping(ch)
                 Text(display)
-                    .font(font)
+                    .font(font.monospaced())
                     .foregroundStyle(color ?? .secondary)
+                    .frame(width: charWidth)
             }
         }
     }

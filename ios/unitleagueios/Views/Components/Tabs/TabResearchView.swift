@@ -6,7 +6,6 @@ struct TabResearchView: View {
     @State private var leagues: [League] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var expandedLeagueId: Int? = 1
 
     private let service = LeagueService()
 
@@ -18,11 +17,32 @@ struct TabResearchView: View {
         "offseason": "Offseason"
     ]
 
+    private let seasonStartDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private func sortedForDisplay(_ group: [League], status: String) -> [League] {
+        guard status == "offseason" else { return group }
+        return group.sorted { lhs, rhs in
+            let lhsDate = lhs.seasonStartDt.flatMap(seasonStartDateFormatter.date(from:))
+            let rhsDate = rhs.seasonStartDt.flatMap(seasonStartDateFormatter.date(from:))
+            switch (lhsDate, rhsDate) {
+            case let (l?, r?): return l < r
+            case (nil, _?):    return false
+            case (_?, nil):    return true
+            case (nil, nil):   return false
+            }
+        }
+    }
+
     private var groupedLeagues: [(status: String, leagues: [League])] {
         let byStatus = Dictionary(grouping: leagues, by: \.status)
         return statusOrder.compactMap { status in
             guard let group = byStatus[status], !group.isEmpty else { return nil }
-            return (status: status, leagues: group)
+            return (status: status, leagues: sortedForDisplay(group, status: status))
         }
     }
 
@@ -58,14 +78,7 @@ struct TabResearchView: View {
 
                                         VStack(spacing: 12) {
                                             ForEach(group.leagues) { league in
-                                                CardLeague(
-                                                    league: league,
-                                                    isExpanded: expandedLeagueId == league.id
-                                                ) {
-                                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                                        expandedLeagueId = expandedLeagueId == league.id ? nil : league.id
-                                                    }
-                                                }
+                                                CardLeague(league: league)
                                             }
                                         }
                                     }

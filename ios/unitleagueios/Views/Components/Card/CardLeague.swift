@@ -4,119 +4,84 @@ struct CardLeague: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let league: League
-    let isExpanded: Bool
-    let onTap: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            Button(action: onTap) {
-                HStack(spacing: 16) {
-                    Image(systemName: league.sportIcon)
-                        .font(.title2)
-                        .foregroundStyle(theme.primaryText(colorScheme))
-                        .frame(width: 44, height: 44)
-                        .background(theme.cardBackground(colorScheme))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+        HStack(spacing: 16) {
+            Image(systemName: league.sportIcon)
+                .font(.title2)
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .frame(width: 44, height: 44)
+                .background(theme.cardBackground(colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(league.abbr)
-                            .font(.title2.weight(.semibold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                        Text(league.sport)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+            Text(league.abbr)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .multilineTextAlignment(.center)
+                .frame(width: 52, alignment: .center)
 
-                    Spacer()
+            Spacer()
 
-                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(width: 32, height: 32)
-                        .background(theme.cardBackground(colorScheme))
-                        .clipShape(Circle())
+            HStack(spacing: 10) {
+                NavigationLink {
+                    ViewTeamList(league: league)
+                } label: {
+                    LeagueOptionIcon(icon: "person.2")
                 }
-                .padding()
-            }
-            .buttonStyle(.plain)
+                .buttonStyle(.plain)
 
-            if isExpanded {
-                Divider().background(theme.divider(colorScheme))
-                    .padding(.horizontal)
-
-                HStack(spacing: 12) {
-                    NavigationLink {
-                        ViewTeamList(league: league)
-                    } label: {
-                        LeagueOptionCell(icon: "person.2", title: "Teams")
-                    }
-                    .buttonStyle(.plain)
-
-                    NavigationLink {
-                        ViewRank(league: league)
-                    } label: {
-                        LeagueOptionCell(icon: "list.number", title: "Ranks")
-                    }
-                    .buttonStyle(.plain)
-
-                    NavigationLink {
-                        ViewLeagueSched(league: league)
-                    } label: {
-                        LeagueOptionCell(icon: "calendar", title: "Sched")
-                    }
-                    .buttonStyle(.plain)
-
-                    NavigationLink {
-                        ViewOdds(league: league)
-                    } label: {
-                        LeagueOptionCell(icon: "chart.bar", title: "Odds")
-                    }
-                    .buttonStyle(.plain)
+                NavigationLink {
+                    ViewLeagueSched(league: league)
+                } label: {
+                    LeagueOptionIcon(icon: "calendar")
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 12)
+                .buttonStyle(.plain)
+
+                NavigationLink {
+                    ViewRank(league: league)
+                } label: {
+                    LeagueOptionIcon(icon: "list.number")
+                }
+                .buttonStyle(.plain)
+
+                NavigationLink {
+                    ViewOdds(league: league)
+                } label: {
+                    LeagueOptionIcon(icon: "chart.bar")
+                }
+                .buttonStyle(.plain)
             }
         }
+        .padding()
         .background(theme.cardBackground(colorScheme))
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
 
-// MARK: - LeagueOptionCell
+// MARK: - LeagueOptionIcon
 
-private struct LeagueOptionCell: View {
+private struct LeagueOptionIcon: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let icon: String
-    let title: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(theme.appBackground(colorScheme))
-                    .frame(width: 32, height: 32)
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundStyle(theme.accent)
-            }
-            .frame(width: 32, height: 32)
-
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(theme.primaryText(colorScheme))
+        ZStack {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(theme.appBackground(colorScheme))
+                .frame(width: 36, height: 36)
+            Image(systemName: icon)
+                .font(.subheadline)
+                .foregroundStyle(theme.accent)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(10)
-        .background(theme.cardBackground(colorScheme))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .frame(width: 36, height: 36)
     }
 }
 
 #Preview("CardLeague") {
     VStack(spacing: 12) {
-        CardLeague(league: Mock.leagueNBA, isExpanded: false) {}
-        CardLeague(league: Mock.leagueNFL, isExpanded: true) {}
+        CardLeague(league: Mock.leagueNBA)
+        CardLeague(league: Mock.leagueNFL)
     }
     .padding()
     .environmentObject(AppTheme())

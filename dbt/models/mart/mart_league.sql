@@ -26,6 +26,14 @@ season_max_yr as (
         max(yr) as yr_data
     from {{ ref('mart_season') }}
     group by league_id
+),
+
+season_start as (
+    select
+        league_id,
+        max(reg_start_dt) as season_start_dt
+    from {{ ref('season') }}
+    group by league_id
 )
 
 select
@@ -36,8 +44,10 @@ select
     l.yr_orig,
     my.yr_data,
     l.weather,
-    coalesce(s.status, 'offseason')                                 as status
+    coalesce(s.status, 'offseason')                                 as status,
+    ss.season_start_dt
 
 from {{ ref('league') }} l
 left join season_status s on s.league_id = l.league_id
 left join season_max_yr my on my.league_id = l.league_id
+left join season_start ss on ss.league_id = l.league_id

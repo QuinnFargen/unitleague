@@ -41,15 +41,15 @@ struct CardOddsTrend: View {
 
     @ViewBuilder
     private func trendRow(_ label: String, pct: String, streak: String?, mapping: @escaping (Character) -> (display: String, color: Color?)) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 8) {
             Text(label)
                 .font(.caption2.weight(.semibold))
                 .foregroundStyle(.secondary)
-                .frame(width: 28, alignment: .leading)
+                .frame(width: 26, alignment: .leading)
             Text(pct)
-                .font(.caption.weight(.semibold))
+                .font(.caption.weight(.semibold).monospacedDigit())
                 .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 40, alignment: .leading)
+                .frame(width: 36, alignment: .trailing)
             if let streak {
                 TrendStreakText(streak: streak, mapping: mapping)
             }
@@ -57,7 +57,7 @@ struct CardOddsTrend: View {
     }
 
     var body: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center) {
             Text(record.abbr)
                 .font(.headline)
                 .foregroundStyle(theme.primaryText(colorScheme))
@@ -65,7 +65,7 @@ struct CardOddsTrend: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 3) {
+            VStack(alignment: .leading, spacing: 4) {
                 trendRow("WIN", pct: pctLabel(season?.winPct), streak: season?.last10Str, mapping: mlMapping)
                 trendRow("ATS", pct: pctLabel(record.atsCoverPct), streak: record.atsLast10Str, mapping: atsMapping)
                 trendRow("TOT", pct: pctLabel(record.overPct), streak: record.ouLast10Str, mapping: ouMapping)

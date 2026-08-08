@@ -39,9 +39,7 @@ with unpivoted as (
 scoped as (
     select
         u.*,
-        s.season_id,
-        s.yr,
-        s.season_concat
+        s.season_id
     from unpivoted u
     join {{ ref('ball_sched') }} s
         on  s.game_id = u.game_id

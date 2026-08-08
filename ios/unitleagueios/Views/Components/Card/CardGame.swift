@@ -35,9 +35,9 @@ struct CardGame: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: game.sportIcon)
-                .font(.title)
+                .font(.caption)
                 .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 34)
+                .frame(width: 16)
 
             HStack(spacing: 4) {
                 awayLabel
@@ -55,13 +55,13 @@ struct CardGame: View {
             Spacer(minLength: 8)
 
             if let hscore = game.homeScore, let ascore = game.awayScore {
-                HStack(spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("\(ascore) – \(hscore)")
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(theme.primaryText(colorScheme))
-                    Text("FINAL")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    Text("\(ascore + hscore)")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(odds?.overWon == true ? theme.win : .secondary)
                 }
             } else if let time = formattedTime {
                 Text(time)

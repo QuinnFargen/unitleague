@@ -42,12 +42,14 @@ struct CardGame: View {
             HStack(spacing: 4) {
                 Text(game.away)
                     .foregroundStyle(game.winner == game.away ? theme.accent : theme.primaryText(colorScheme))
-                    .frame(width: 34, alignment: .leading)
+                    .lineLimit(1)
+                    .frame(width: 50, alignment: .leading)
                 Text("@")
                     .foregroundStyle(.secondary)
                 Text(game.home)
                     .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
-                    .frame(width: 34, alignment: .leading)
+                    .lineLimit(1)
+                    .frame(width: 50, alignment: .leading)
                 if let oddsGroup = oddsGroupText {
                     oddsGroup
                         .font(.caption2.weight(.semibold))
@@ -63,7 +65,8 @@ struct CardGame: View {
                         .font(.subheadline.weight(.bold))
                         .monospacedDigit()
                         .foregroundStyle(game.winner == game.away ? theme.accent : theme.primaryText(colorScheme))
-                        .frame(width: 28, alignment: .trailing)
+                        .lineLimit(1)
+                        .frame(width: 32, alignment: .trailing)
                     Text(" – ")
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(theme.primaryText(colorScheme))
@@ -71,7 +74,8 @@ struct CardGame: View {
                         .font(.subheadline.weight(.bold))
                         .monospacedDigit()
                         .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
-                        .frame(width: 28, alignment: .leading)
+                        .lineLimit(1)
+                        .frame(width: 32, alignment: .leading)
                 }
             } else if let time = formattedTime {
                 Text(time)
@@ -97,7 +101,7 @@ struct CardGame: View {
         let parts = [awayOddsText(odds), homeOddsText(odds), totalOddsText(odds)].compactMap { $0 }
         guard !parts.isEmpty else { return nil }
         let joined = parts.dropFirst().reduce(parts[0]) { acc, next in
-            acc + Text(", ").foregroundColor(.secondary) + next
+            acc + Text("|").foregroundColor(.secondary) + next
         }
         return Text("(").foregroundColor(.secondary) + joined + Text(")").foregroundColor(.secondary)
     }

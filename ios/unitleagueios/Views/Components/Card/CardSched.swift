@@ -23,7 +23,7 @@ struct CardSched: View {
 
     private let dateOutputFormatter: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "EEE, MMM d, yyyy"
+        f.dateFormat = "EEE, MMM d"
         f.locale = Locale(identifier: "en_US_POSIX")
         return f
     }()
@@ -38,32 +38,48 @@ struct CardSched: View {
         entry.home ? "vs \(entry.oppAbbr ?? "TBD")" : "@ \(entry.oppAbbr ?? "TBD")"
     }
 
+    private var isPlayed: Bool { entry.teamScore != nil && entry.oppScore != nil }
+
     var body: some View {
+        if let gameId = entry.gameId {
+            NavigationLink {
+                ViewGameDetailLoader(gameId: gameId)
+            } label: {
+                cardBody
+            }
+            .buttonStyle(.plain)
+        } else {
+            cardBody
+        }
+    }
+
+    private var cardBody: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 4) {
+            if isPlayed {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(matchup)
+                        .font(.headline)
+                        .foregroundStyle(entry.won == true ? theme.win : theme.loss)
+                    Text(formattedDate)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
                 Text(matchup)
                     .font(.headline)
-                    .foregroundStyle(entry.teamScore != nil && entry.oppScore != nil
-                        ? (entry.won == true ? theme.win : theme.loss)
-                        : theme.primaryText(colorScheme))
-                Text(formattedDate)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(theme.primaryText(colorScheme))
             }
 
             Spacer()
 
             if let teamScore = entry.teamScore, let oppScore = entry.oppScore {
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(teamScore) – \(oppScore)")
-                        .font(.headline)
-                        .foregroundStyle(theme.primaryText(colorScheme))
-                    if let won = entry.won {
-                        Text(won ? "W · FINAL" : "L · FINAL")
-                            .font(.caption2)
-                            .foregroundStyle(won ? theme.win : theme.loss)
-                    }
-                }
+                Text("\(teamScore) – \(oppScore)")
+                    .font(.headline)
+                    .foregroundStyle(
+                        entry.won == true ? theme.win
+                        : entry.won == false ? theme.loss
+                        : theme.primaryText(colorScheme)
+                    )
             } else {
                 Text(formattedDate)
                     .font(.subheadline)

@@ -61,7 +61,8 @@ struct CardOddsTrend: View {
             Text(record.abbr)
                 .font(.headline)
                 .foregroundStyle(theme.primaryText(colorScheme))
-                .frame(width: 44, alignment: .leading)
+                .frame(width: 52, alignment: .leading)
+                .lineLimit(1)
 
             Spacer()
 

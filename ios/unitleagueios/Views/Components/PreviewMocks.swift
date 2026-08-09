@@ -403,6 +403,28 @@ enum Mock {
         return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
     }
 
+    static let txnUnitDeposit: Txn = {
+        let json = """
+        {
+          "txn_id": 7, "bettor_id": 42, "syndicate_id": 1,
+          "txn_type": "unit", "bet_hash": null, "parlay_id": null,
+          "unit": 100.0, "price": 1.0, "won": null, "canceled": null
+        }
+        """
+        return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
+    }()
+
+    static let txnUnitWithdrawal: Txn = {
+        let json = """
+        {
+          "txn_id": 8, "bettor_id": 42, "syndicate_id": 1,
+          "txn_type": "unit", "bet_hash": null, "parlay_id": null,
+          "unit": -50.0, "price": 1.0, "won": null, "canceled": null
+        }
+        """
+        return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
+    }()
+
     // MARK: Enhancements
 
     static let enhanceOptionCLV = EnhanceOption(

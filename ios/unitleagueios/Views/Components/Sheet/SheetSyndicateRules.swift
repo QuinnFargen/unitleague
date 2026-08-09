@@ -8,6 +8,8 @@ struct SheetSyndicateRules: View {
     let isAdmin: Bool
 
     @State private var selectedLeagueIds: Set<Int>
+    @State private var syndicateType: String?
+    @State private var rulesCollapsed: Bool = true
     @State private var blockedTypes: Set<String>
     @State private var blockedEdgeIds: Set<Int>
     @State private var maxClvLevel: Int
@@ -31,6 +33,7 @@ struct SheetSyndicateRules: View {
         self.isAdmin = isAdmin
         let config = syndicate.wrappedValue.config
         _selectedLeagueIds = State(initialValue: Set(config?.leagueIds ?? []))
+        _syndicateType = State(initialValue: config?.syndicateType)
         _blockedTypes = State(initialValue: Set(config?.blockedEnhancementTypes ?? []))
         _blockedEdgeIds = State(initialValue: Set(config?.blockedEnhancementIds ?? []))
         _maxClvLevel = State(initialValue: config?.maxClvLevel ?? 0)
@@ -70,84 +73,112 @@ struct SheetSyndicateRules: View {
                             }
                         }
 
-                        section(title: "Wager Minimums") {
-                            VStack(spacing: 10) {
-                                numberRow(title: "Min Units Wagered", value: $minUnitsWagered, range: 0...50, zeroLabel: "No minimum")
-                                numberRow(title: "Min # of Wagers", value: $minWagers, range: 0...50, zeroLabel: "No minimum")
+                        section(title: "Syndicate Type") {
+                            HStack(spacing: 8) {
+                                ForEach(SyndicateType.allCases, id: \.self) { type in
+                                    toggleChip(title: type.rawValue, isOn: syndicateType == type.rawValue) {
+                                        syndicateType = (syndicateType == type.rawValue) ? nil : type.rawValue
+                                    }
+                                }
                             }
                         }
 
-                        section(title: "Block Enhancement Types") {
-                            HStack(spacing: 8) {
-                                ForEach(enhancementTypes, id: \.self) { type in
-                                    toggleChip(title: type.uppercased(), isOn: blockedTypes.contains(type)) {
-                                        if blockedTypes.contains(type) {
-                                            blockedTypes.remove(type)
-                                        } else {
-                                            blockedTypes.insert(type)
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) { rulesCollapsed.toggle() }
+                        } label: {
+                            HStack {
+                                Text("Standard Edge Rules")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Image(systemName: "chevron.down")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                    .rotationEffect(.degrees(rulesCollapsed ? -90 : 0))
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        if !rulesCollapsed {
+                            section(title: "Wager Minimums") {
+                                VStack(spacing: 10) {
+                                    numberRow(title: "Min Units Wagered", value: $minUnitsWagered, range: 0...50, zeroLabel: "No minimum")
+                                    numberRow(title: "Min # of Wagers", value: $minWagers, range: 0...50, zeroLabel: "No minimum")
+                                }
+                            }
+
+                            section(title: "Block Enhancement Types") {
+                                HStack(spacing: 8) {
+                                    ForEach(enhancementTypes, id: \.self) { type in
+                                        toggleChip(title: type.uppercased(), isOn: blockedTypes.contains(type)) {
+                                            if blockedTypes.contains(type) {
+                                                blockedTypes.remove(type)
+                                            } else {
+                                                blockedTypes.insert(type)
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 
-                        section(title: "Enhancement Cost") {
-                            HStack(spacing: 8) {
-                                ForEach([1, 2, 3, 4], id: \.self) { mult in
-                                    toggleChip(title: "\(mult)x", isOn: costMultiplier == mult) {
-                                        costMultiplier = mult
+                            section(title: "Enhancement Cost") {
+                                HStack(spacing: 8) {
+                                    ForEach([1, 2, 3, 4], id: \.self) { mult in
+                                        toggleChip(title: "\(mult)x", isOn: costMultiplier == mult) {
+                                            costMultiplier = mult
+                                        }
                                     }
                                 }
+                                Text("Multiplies every enhancement's base cost (1, 2, 3, 5, 8).")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
-                            Text("Multiplies every enhancement's base cost (1, 2, 3, 5, 8).")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
 
-                        section(title: "Max Levels") {
-                            VStack(spacing: 10) {
-                                numberRow(title: "CLV Max Level", value: $maxClvLevel, range: 0...20, zeroLabel: "No limit")
-                                numberRow(title: "Team Max Level", value: $maxTeamLevel, range: 0...20, zeroLabel: "No limit")
-                            }
-                        }
-
-                        section(title: "Max Active Edges Per Runner") {
-                            HStack(spacing: 8) {
-                                ForEach([0, 1, 3, 5], id: \.self) { max in
-                                    toggleChip(title: max == 0 ? "No Limit" : "\(max)", isOn: maxActiveEdges == max) {
-                                        maxActiveEdges = max
-                                    }
+                            section(title: "Max Levels") {
+                                VStack(spacing: 10) {
+                                    numberRow(title: "CLV Max Level", value: $maxClvLevel, range: 0...20, zeroLabel: "No limit")
+                                    numberRow(title: "Team Max Level", value: $maxTeamLevel, range: 0...20, zeroLabel: "No limit")
                                 }
                             }
-                            Text("Caps how many active Edge-type enhancements a runner can hold at once.")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
 
-                        section(title: "Block Specific Edges") {
-                            Toggle("Block Specific Edges", isOn: $blockEdgesEnabled)
-                                .tint(theme.accent)
-                                .disabled(!isAdmin)
+                            section(title: "Max Active Edges Per Runner") {
+                                HStack(spacing: 8) {
+                                    ForEach([0, 1, 3, 5], id: \.self) { max in
+                                        toggleChip(title: max == 0 ? "No Limit" : "\(max)", isOn: maxActiveEdges == max) {
+                                            maxActiveEdges = max
+                                        }
+                                    }
+                                }
+                                Text("Caps how many active Edge-type enhancements a runner can hold at once.")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
 
-                            if blockEdgesEnabled {
-                                if isLoading && edges.isEmpty {
-                                    ProgressView().frame(maxWidth: .infinity)
-                                } else if edges.isEmpty {
-                                    Text("No edge enhancements available.")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    VStack(spacing: 8) {
-                                        ForEach(edges) { edge in
-                                            checklistRow(
-                                                title: edge.name,
-                                                subtitle: edge.description,
-                                                isSelected: blockedEdgeIds.contains(edge.enhancementId)
-                                            ) {
-                                                if blockedEdgeIds.contains(edge.enhancementId) {
-                                                    blockedEdgeIds.remove(edge.enhancementId)
-                                                } else {
-                                                    blockedEdgeIds.insert(edge.enhancementId)
+                            section(title: "Block Specific Edges") {
+                                Toggle("Block Specific Edges", isOn: $blockEdgesEnabled)
+                                    .tint(theme.accent)
+                                    .disabled(!isAdmin)
+
+                                if blockEdgesEnabled {
+                                    if isLoading && edges.isEmpty {
+                                        ProgressView().frame(maxWidth: .infinity)
+                                    } else if edges.isEmpty {
+                                        Text("No edge enhancements available.")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    } else {
+                                        VStack(spacing: 8) {
+                                            ForEach(edges) { edge in
+                                                checklistRow(
+                                                    title: edge.name,
+                                                    subtitle: edge.description,
+                                                    isSelected: blockedEdgeIds.contains(edge.enhancementId)
+                                                ) {
+                                                    if blockedEdgeIds.contains(edge.enhancementId) {
+                                                        blockedEdgeIds.remove(edge.enhancementId)
+                                                    } else {
+                                                        blockedEdgeIds.insert(edge.enhancementId)
+                                                    }
                                                 }
                                             }
                                         }
@@ -279,6 +310,7 @@ struct SheetSyndicateRules: View {
         errorMessage = nil
         let config = SyndicateConfig(
             leagueIds: selectedLeagueIds.isEmpty ? nil : Array(selectedLeagueIds).sorted(),
+            syndicateType: syndicateType,
             blockedEnhancementTypes: blockedTypes.isEmpty ? nil : Array(blockedTypes).sorted(),
             blockedEnhancementIds: blockEdgesEnabled && !blockedEdgeIds.isEmpty ? Array(blockedEdgeIds).sorted() : nil,
             maxClvLevel: maxClvLevel == 0 ? nil : maxClvLevel,

@@ -10,7 +10,7 @@ struct CardPlacedParlay: View {
     @State private var showCancelConfirm = false
 
     private var combinedOdds: Double {
-        legs.map(\.price).reduce(1.0, *)
+        legs.map { $0.price ?? 1.0 }.reduce(1.0, *)
     }
 
     private var won: Bool? {

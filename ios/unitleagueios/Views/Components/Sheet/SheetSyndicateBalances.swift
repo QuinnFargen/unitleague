@@ -34,7 +34,7 @@ struct SheetSyndicateBalances: View {
     }
 
     private func possibleReturn(_ syndicateId: Int) -> Double {
-        txns(for: syndicateId).reduce(0) { $0 + $1.unit * $1.price }
+        txns(for: syndicateId).reduce(0) { $0 + $1.unit * ($1.price ?? 0) }
     }
 
     private var soloSyndicate: Syndicate {

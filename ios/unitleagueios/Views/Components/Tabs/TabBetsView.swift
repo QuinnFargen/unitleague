@@ -32,6 +32,9 @@ struct TabBetsView: View {
     @State private var historyLegs: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
     @State private var isLoadingHistory = false
+    @State private var selectedHistorySyndicateIds: Set<Int> = []
+    @State private var selectedHistoryBetTypes: Set<String> = []
+    @State private var selectedHistoryResults: Set<Bool> = []
 
     private let cycleOrder = ["ML", "SPR", "O/U"]
 
@@ -157,7 +160,7 @@ struct TabBetsView: View {
         completedRecords.sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
     }
 
-    private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
+    private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]], units: [Txn])] {
         let bySyndicate = Dictionary(grouping: historyRecords, by: \.syndicateId)
         return bySyndicate.keys.sorted().compactMap { sid in
             let group = bySyndicate[sid] ?? []
@@ -167,8 +170,38 @@ struct TabBetsView: View {
             let parlayMap = Dictionary(grouping: historyLegs.filter { $0.parlayId.map(parlayIds.contains) ?? false }, by: { $0.parlayId! })
             let parlays = parlayMap.values.map { $0 }
                 .sorted { ($0.first?.insertDt ?? "") > ($1.first?.insertDt ?? "") }
-            guard !singles.isEmpty || !parlays.isEmpty else { return nil }
-            return (syndicateId: sid, singles: singles, parlays: parlays)
+            let units = group.filter { $0.txnType == "unit" }
+                .sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
+            guard !singles.isEmpty || !parlays.isEmpty || !units.isEmpty else { return nil }
+            return (syndicateId: sid, singles: singles, parlays: parlays, units: units)
+        }
+    }
+
+    private func parlayResult(_ legs: [Txn]) -> Bool? {
+        if legs.contains(where: { $0.won == false }) { return false }
+        if legs.contains(where: { $0.won == nil })    { return nil }
+        return true
+    }
+
+    private var filteredHistoryGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]], units: [Txn])] {
+        historyGroups.compactMap { group in
+            if !selectedHistorySyndicateIds.isEmpty && !selectedHistorySyndicateIds.contains(group.syndicateId) {
+                return nil
+            }
+            let showSingles = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("straight")
+            let showParlays = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("parlay")
+            let showUnits = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("unit")
+
+            let singles = showSingles ? group.singles.filter { txn in
+                selectedHistoryResults.isEmpty || (txn.won.map(selectedHistoryResults.contains) ?? false)
+            } : []
+            let parlays = showParlays ? group.parlays.filter { legs in
+                selectedHistoryResults.isEmpty || (parlayResult(legs).map(selectedHistoryResults.contains) ?? false)
+            } : []
+            let units = (showUnits && selectedHistoryResults.isEmpty) ? group.units : []
+
+            guard !singles.isEmpty || !parlays.isEmpty || !units.isEmpty else { return nil }
+            return (syndicateId: group.syndicateId, singles: singles, parlays: parlays, units: units)
         }
     }
 
@@ -610,13 +643,22 @@ struct TabBetsView: View {
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
-                            Text("\(historyGroups.reduce(0) { $0 + $1.singles.count + $1.parlays.count })")
+                            Text("\(filteredHistoryGroups.reduce(0) { $0 + $1.singles.count + $1.parlays.count + $1.units.count })")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 16)
 
-                        ForEach(historyGroups, id: \.syndicateId) { group in
+                        historyFilterChips
+
+                        if filteredHistoryGroups.isEmpty {
+                            Text("No bets match these filters")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 16)
+                        }
+
+                        ForEach(filteredHistoryGroups, id: \.syndicateId) { group in
                             VStack(alignment: .leading, spacing: 10) {
                                 let syndicate = historySyndicates[group.syndicateId]
                                 HStack(spacing: 6) {
@@ -635,6 +677,10 @@ struct TabBetsView: View {
                                 ForEach(group.parlays, id: \.first?.parlayId) { legs in
                                     CardPlacedParlay(legs: legs, onCancel: nil)
                                 }
+
+                                ForEach(group.units) { txn in
+                                    CardPlacedUnit(txn: txn)
+                                }
                             }
                             .padding(.horizontal, 16)
                         }
@@ -642,6 +688,75 @@ struct TabBetsView: View {
                     .padding(.top, 12)
                     .padding(.bottom, 24)
                 }
+            }
+        }
+    }
+
+    private var historySyndicateFilterOptions: [Int] {
+        Array(Set(historyRecords.map(\.syndicateId))).sorted()
+    }
+
+    private func historySyndicateLabel(_ sid: Int) -> String {
+        myRunners[sid]?.profileName ?? historySyndicates[sid]?.name ?? "Syndicate \(sid)"
+    }
+
+    @ViewBuilder
+    private var historyFilterChips: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if historySyndicateFilterOptions.count > 1 {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(historySyndicateFilterOptions, id: \.self) { sid in
+                            FilterChip(
+                                label: historySyndicateLabel(sid),
+                                isSelected: selectedHistorySyndicateIds.contains(sid)
+                            ) {
+                                if selectedHistorySyndicateIds.contains(sid) {
+                                    selectedHistorySyndicateIds.remove(sid)
+                                } else {
+                                    selectedHistorySyndicateIds.insert(sid)
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach([("Bets", "straight"), ("Parlays", "parlay"), ("Units", "unit")], id: \.1) { label, value in
+                        FilterChip(
+                            label: label,
+                            isSelected: selectedHistoryBetTypes.contains(value)
+                        ) {
+                            if selectedHistoryBetTypes.contains(value) {
+                                selectedHistoryBetTypes.remove(value)
+                            } else {
+                                selectedHistoryBetTypes.insert(value)
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach([("Won", true), ("Lost", false)], id: \.1) { label, value in
+                        FilterChip(
+                            label: label,
+                            isSelected: selectedHistoryResults.contains(value)
+                        ) {
+                            if selectedHistoryResults.contains(value) {
+                                selectedHistoryResults.remove(value)
+                            } else {
+                                selectedHistoryResults.insert(value)
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
             }
         }
     }

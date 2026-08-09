@@ -7,7 +7,7 @@ func selectedBet(from txn: Txn) -> SelectedBet {
         betHash:  txn.betHash ?? "",
         type:     txn.betType ?? "",
         side:     "",
-        price:    txn.price,
+        price:    txn.price ?? 0,
         points:   txn.points,
         awayAbbr: txn.away ?? "—",
         homeAbbr: txn.home ?? "—",

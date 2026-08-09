@@ -9,7 +9,7 @@ struct Txn: Codable, Identifiable {
     let betHash: String?
     let parlayId: Int?
     let unit: Double
-    let price: Double
+    let price: Double?
     let won: Bool?
     let canceled: Bool?
     let cancelTs: String?

@@ -497,14 +497,18 @@ struct TabBetsView: View {
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
-                            Text("\(activeBetsForDate.count)")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.secondary)
                             Button(isEditingActiveBets ? "Done" : "Edit") {
                                 isEditingActiveBets.toggle()
                             }
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(theme.accent)
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
+                            .background(theme.chipUnselected(colorScheme))
+                            .clipShape(Capsule())
+                            Text("\(activeBetsForDate.count)")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 16)
 

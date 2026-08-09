@@ -40,14 +40,17 @@ struct CardGame: View {
                 .frame(width: 16)
 
             HStack(spacing: 4) {
-                awayLabel
+                Text(game.away)
+                    .foregroundStyle(game.winner == game.away ? theme.accent : theme.primaryText(colorScheme))
+                    .frame(width: 34, alignment: .leading)
                 Text("@")
                     .foregroundStyle(.secondary)
-                homeLabel
-                if let total = totalPoints {
-                    Text("[\(OddsFormatting.formatPoints(total))]")
+                Text(game.home)
+                    .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
+                    .frame(width: 34, alignment: .leading)
+                if let oddsGroup = oddsGroupText {
+                    oddsGroup
                         .font(.caption2.weight(.semibold))
-                        .foregroundStyle(odds?.overWon == true ? theme.win : .secondary)
                 }
             }
             .font(.subheadline.weight(.semibold))
@@ -55,13 +58,20 @@ struct CardGame: View {
             Spacer(minLength: 8)
 
             if let hscore = game.homeScore, let ascore = game.awayScore {
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("\(ascore) – \(hscore)")
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    Text("\(ascore)")
+                        .font(.subheadline.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(game.winner == game.away ? theme.accent : theme.primaryText(colorScheme))
+                        .frame(width: 28, alignment: .trailing)
+                    Text(" – ")
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(theme.primaryText(colorScheme))
-                    Text("\(ascore + hscore)")
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(odds?.overWon == true ? theme.win : .secondary)
+                    Text("\(hscore)")
+                        .font(.subheadline.weight(.bold))
+                        .monospacedDigit()
+                        .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
+                        .frame(width: 28, alignment: .leading)
                 }
             } else if let time = formattedTime {
                 Text(time)
@@ -79,38 +89,45 @@ struct CardGame: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    @ViewBuilder
-    private var awayLabel: some View {
-        HStack(spacing: 2) {
-            Text(game.away)
-                .foregroundStyle(game.winner == game.away ? theme.win : theme.primaryText(colorScheme))
-            if awayIsFav == true, let pts = odds?.sprAwayPoints {
-                Text("(\(OddsFormatting.formatPointsSigned(pts)))")
-                    .font(.caption2)
-                    .foregroundStyle(odds?.sprAwayWon == true ? theme.win : .secondary)
-            } else if awayIsFav == false {
-                Text("(\(OddsFormatting.impliedPct(odds?.mlAwayPrice)))")
-                    .font(.caption2)
-                    .foregroundStyle(odds?.mlAwayWon == true ? theme.win : .secondary)
-            }
+    /// Single combined parenthetical: away's own stat (spread if favored, else implied ML%),
+    /// home's own stat (mirrored), then the total O/U line — each colored independently by
+    /// whether that particular bet won.
+    private var oddsGroupText: Text? {
+        guard let odds else { return nil }
+        let parts = [awayOddsText(odds), homeOddsText(odds), totalOddsText(odds)].compactMap { $0 }
+        guard !parts.isEmpty else { return nil }
+        let joined = parts.dropFirst().reduce(parts[0]) { acc, next in
+            acc + Text(", ").foregroundColor(.secondary) + next
         }
+        return Text("(").foregroundColor(.secondary) + joined + Text(")").foregroundColor(.secondary)
     }
 
-    @ViewBuilder
-    private var homeLabel: some View {
-        HStack(spacing: 2) {
-            Text(game.home)
-                .foregroundStyle(game.winner == game.home ? theme.win : theme.primaryText(colorScheme))
-            if awayIsFav == false, let pts = odds?.sprHomePoints {
-                Text("(\(OddsFormatting.formatPointsSigned(pts)))")
-                    .font(.caption2)
-                    .foregroundStyle(odds?.sprHomeWon == true ? theme.win : .secondary)
-            } else if awayIsFav == true {
-                Text("(\(OddsFormatting.impliedPct(odds?.mlHomePrice)))")
-                    .font(.caption2)
-                    .foregroundStyle(odds?.mlHomeWon == true ? theme.win : .secondary)
-            }
+    private func awayOddsText(_ odds: Odds) -> Text? {
+        if awayIsFav == true, let pts = odds.sprAwayPoints {
+            return Text(OddsFormatting.formatPointsSigned(pts))
+                .foregroundColor(odds.sprAwayWon == true ? theme.accent : .secondary)
+        } else if awayIsFav == false {
+            return Text(OddsFormatting.impliedPct(odds.mlAwayPrice))
+                .foregroundColor(odds.mlAwayWon == true ? theme.accent : .secondary)
         }
+        return nil
+    }
+
+    private func homeOddsText(_ odds: Odds) -> Text? {
+        if awayIsFav == false, let pts = odds.sprHomePoints {
+            return Text(OddsFormatting.formatPointsSigned(pts))
+                .foregroundColor(odds.sprHomeWon == true ? theme.accent : .secondary)
+        } else if awayIsFav == true {
+            return Text(OddsFormatting.impliedPct(odds.mlHomePrice))
+                .foregroundColor(odds.mlHomeWon == true ? theme.accent : .secondary)
+        }
+        return nil
+    }
+
+    private func totalOddsText(_ odds: Odds) -> Text? {
+        guard let total = totalPoints else { return nil }
+        return Text(OddsFormatting.formatPoints(total))
+            .foregroundColor(odds.overWon == true ? theme.accent : .secondary)
     }
 }
 

@@ -98,6 +98,10 @@ struct ViewRank: View {
         }
     }
 
+    private func displayLabel(for category: RankFilterCategory) -> String {
+        category == .category && mode == .odds ? "Mascot" : category.rawValue
+    }
+
     private func filterCategoryValue(_ category: RankFilterCategory) -> String? {
         switch category {
         case .conf:     return selectedConf
@@ -189,34 +193,21 @@ struct ViewRank: View {
             theme.appBackground(colorScheme).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Year row + Rank/Odds mode toggle
-                HStack(spacing: 8) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            if mode == .odds {
-                                RowCapsuleButton(systemName: cycleIcon(for: sortBy), isSelected: true) {
-                                    advanceSortBy()
-                                }
-                            }
-                            ForEach(years, id: \.self) { year in
-                                FilterChip(label: String(year), isSelected: selectedYear == year) {
-                                    selectedYear = year
-                                }
+                // Year row
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        if mode == .odds {
+                            RowCapsuleButton(systemName: cycleIcon(for: sortBy), isSelected: true) {
+                                advanceSortBy()
                             }
                         }
-                        .padding(.vertical, 8)
+                        ForEach(years, id: \.self) { year in
+                            FilterChip(label: String(year), isSelected: selectedYear == year) {
+                                selectedYear = year
+                            }
+                        }
                     }
-
-                    Spacer(minLength: 8)
-
-                    SegmentedToggle(
-                        leftLabel: "Rank",
-                        rightLabel: "Odds",
-                        isRightSelected: Binding(
-                            get: { mode == .odds },
-                            set: { mode = $0 ? .odds : .rank }
-                        )
-                    )
+                    .padding(.vertical, 8)
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 4)
@@ -227,7 +218,7 @@ struct ViewRank: View {
                         HStack(spacing: 8) {
                             ForEach(availableFilterCategories, id: \.self) { category in
                                 FilterChip(
-                                    label: category.rawValue,
+                                    label: displayLabel(for: category),
                                     isSelected: expandedCategory == category || filterCategoryValue(category) != nil
                                 ) {
                                     expandedCategory = (expandedCategory == category) ? nil : category
@@ -344,6 +335,18 @@ struct ViewRank: View {
         }
         .navigationTitle("\(league.abbr) \(mode == .rank ? "Ranks" : "Odds")")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SegmentedToggle(
+                    leftLabel: "Rank",
+                    rightLabel: "Odds",
+                    isRightSelected: Binding(
+                        get: { mode == .odds },
+                        set: { mode = $0 ? .odds : .rank }
+                    )
+                )
+            }
+        }
         .task(id: selectedYear) { await fetchData() }
         .task(id: league.id) { await loadTeams() }
     }

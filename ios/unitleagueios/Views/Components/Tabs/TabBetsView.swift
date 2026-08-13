@@ -32,9 +32,9 @@ struct TabBetsView: View {
     @State private var historyLegs: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
     @State private var isLoadingHistory = false
-    @State private var selectedHistorySyndicateIds: Set<Int> = []
-    @State private var selectedHistoryBetTypes: Set<String> = []
-    @State private var selectedHistoryResults: Set<Bool> = []
+    @State private var selectedHistorySyndicateId: Int? = nil
+    @State private var selectedHistoryBetType: HistoryBetType? = nil
+    @State private var selectedHistoryResult: Bool? = nil
 
     private let cycleOrder = ["ML", "SPR", "O/U"]
 
@@ -44,6 +44,10 @@ struct TabBetsView: View {
         case "O/U": return "arrow.up.and.line.horizontal.and.arrow.down"
         default:    return "lines.measurement.vertical" // ML
         }
+    }
+
+    private enum HistoryBetType: String, CaseIterable {
+        case straight, parlay, unit
     }
 
     private let oddsService = OddsService()
@@ -185,20 +189,20 @@ struct TabBetsView: View {
 
     private var filteredHistoryGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]], units: [Txn])] {
         historyGroups.compactMap { group in
-            if !selectedHistorySyndicateIds.isEmpty && !selectedHistorySyndicateIds.contains(group.syndicateId) {
+            if let sid = selectedHistorySyndicateId, group.syndicateId != sid {
                 return nil
             }
-            let showSingles = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("straight")
-            let showParlays = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("parlay")
-            let showUnits = selectedHistoryBetTypes.isEmpty || selectedHistoryBetTypes.contains("unit")
+            let showSingles = selectedHistoryBetType == nil || selectedHistoryBetType == .straight
+            let showParlays = selectedHistoryBetType == nil || selectedHistoryBetType == .parlay
+            let showUnits = selectedHistoryBetType == nil || selectedHistoryBetType == .unit
 
             let singles = showSingles ? group.singles.filter { txn in
-                selectedHistoryResults.isEmpty || (txn.won.map(selectedHistoryResults.contains) ?? false)
+                selectedHistoryResult == nil || txn.won == selectedHistoryResult
             } : []
             let parlays = showParlays ? group.parlays.filter { legs in
-                selectedHistoryResults.isEmpty || (parlayResult(legs).map(selectedHistoryResults.contains) ?? false)
+                selectedHistoryResult == nil || parlayResult(legs) == selectedHistoryResult
             } : []
-            let units = (showUnits && selectedHistoryResults.isEmpty) ? group.units : []
+            let units = (showUnits && selectedHistoryResult == nil) ? group.units : []
 
             guard !singles.isEmpty || !parlays.isEmpty || !units.isEmpty else { return nil }
             return (syndicateId: group.syndicateId, singles: singles, parlays: parlays, units: units)
@@ -638,18 +642,17 @@ struct TabBetsView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
-                        HStack {
+                        HStack(spacing: 8) {
                             Text("Bet History")
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
+                            historyFilterCapsules
                             Spacer()
                             Text("\(filteredHistoryGroups.reduce(0) { $0 + $1.singles.count + $1.parlays.count + $1.units.count })")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 16)
-
-                        historyFilterChips
 
                         if filteredHistoryGroups.isEmpty {
                             Text("No bets match these filters")
@@ -696,68 +699,80 @@ struct TabBetsView: View {
         Array(Set(historyRecords.map(\.syndicateId))).sorted()
     }
 
-    private func historySyndicateLabel(_ sid: Int) -> String {
-        myRunners[sid]?.profileName ?? historySyndicates[sid]?.name ?? "Syndicate \(sid)"
+    private func historySyndicateSymbol(_ sid: Int) -> String {
+        historySyndicates[sid]?.symbol ?? "house.fill"
+    }
+
+    private func advanceHistorySyndicate() {
+        let options = historySyndicateFilterOptions
+        guard !options.isEmpty else { return }
+        guard let current = selectedHistorySyndicateId, let idx = options.firstIndex(of: current) else {
+            selectedHistorySyndicateId = options[0]
+            return
+        }
+        let next = idx + 1
+        selectedHistorySyndicateId = next < options.count ? options[next] : nil
+    }
+
+    private func advanceHistoryBetType() {
+        let order: [HistoryBetType] = [.straight, .parlay, .unit]
+        guard let current = selectedHistoryBetType, let idx = order.firstIndex(of: current) else {
+            selectedHistoryBetType = order[0]
+            return
+        }
+        let next = idx + 1
+        selectedHistoryBetType = next < order.count ? order[next] : nil
+    }
+
+    private func advanceHistoryResult() {
+        switch selectedHistoryResult {
+        case .none:      selectedHistoryResult = true
+        case .some(true): selectedHistoryResult = false
+        case .some(false): selectedHistoryResult = nil
+        }
+    }
+
+    private var historyRunnerCapsuleIcon: String {
+        selectedHistorySyndicateId.map(historySyndicateSymbol) ?? "person.3.fill"
+    }
+
+    private var historyBetTypeCapsuleIcon: String {
+        switch selectedHistoryBetType {
+        case .straight: return "lock.square.fill"
+        case .parlay:   return "lock.square.stack.fill"
+        case .unit:     return "nairasign.circle.fill"
+        case .none:     return "line.3.horizontal.decrease.circle"
+        }
+    }
+
+    private var historyResultCapsuleIcon: String {
+        switch selectedHistoryResult {
+        case .some(true):  return "checkmark.circle.fill"
+        case .some(false): return "x.circle.fill"
+        case .none:        return "checkmark.circle"
+        }
+    }
+
+    private var historyResultCapsuleTint: Color? {
+        switch selectedHistoryResult {
+        case .some(true):  return theme.win
+        case .some(false): return theme.loss
+        case .none:        return nil
+        }
     }
 
     @ViewBuilder
-    private var historyFilterChips: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            if historySyndicateFilterOptions.count > 1 {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(historySyndicateFilterOptions, id: \.self) { sid in
-                            FilterChip(
-                                label: historySyndicateLabel(sid),
-                                isSelected: selectedHistorySyndicateIds.contains(sid)
-                            ) {
-                                if selectedHistorySyndicateIds.contains(sid) {
-                                    selectedHistorySyndicateIds.remove(sid)
-                                } else {
-                                    selectedHistorySyndicateIds.insert(sid)
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                }
+    private var historyFilterCapsules: some View {
+        if historySyndicateFilterOptions.count > 1 {
+            RowCapsuleButton(systemName: historyRunnerCapsuleIcon, isSelected: selectedHistorySyndicateId != nil) {
+                advanceHistorySyndicate()
             }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach([("Bets", "straight"), ("Parlays", "parlay"), ("Units", "unit")], id: \.1) { label, value in
-                        FilterChip(
-                            label: label,
-                            isSelected: selectedHistoryBetTypes.contains(value)
-                        ) {
-                            if selectedHistoryBetTypes.contains(value) {
-                                selectedHistoryBetTypes.remove(value)
-                            } else {
-                                selectedHistoryBetTypes.insert(value)
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach([("Won", true), ("Lost", false)], id: \.1) { label, value in
-                        FilterChip(
-                            label: label,
-                            isSelected: selectedHistoryResults.contains(value)
-                        ) {
-                            if selectedHistoryResults.contains(value) {
-                                selectedHistoryResults.remove(value)
-                            } else {
-                                selectedHistoryResults.insert(value)
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-            }
+        }
+        RowCapsuleButton(systemName: historyBetTypeCapsuleIcon, isSelected: selectedHistoryBetType != nil) {
+            advanceHistoryBetType()
+        }
+        RowCapsuleButton(systemName: historyResultCapsuleIcon, isSelected: selectedHistoryResult != nil, tint: historyResultCapsuleTint) {
+            advanceHistoryResult()
         }
     }
 

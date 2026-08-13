@@ -24,12 +24,6 @@ struct CardGame: View {
         return timeOutputFormatter.string(from: date)
     }
 
-    /// nil when no odds are available; true when away is favored, false when home is favored.
-    private var awayIsFav: Bool? {
-        guard let away = odds?.sprAwayPoints else { return nil }
-        return away < 0
-    }
-
     private var totalPoints: Double? { odds?.overPoints ?? odds?.underPoints }
 
     var body: some View {
@@ -50,10 +44,8 @@ struct CardGame: View {
                     .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
                     .lineLimit(1)
                     .frame(width: 50, alignment: .leading)
-                if let oddsGroup = oddsGroupText {
-                    oddsGroup
-                        .font(.caption2.weight(.semibold))
-                }
+                oddsGroupView
+                    .font(.caption2.weight(.semibold))
             }
             .font(.subheadline.weight(.semibold))
 
@@ -93,39 +85,58 @@ struct CardGame: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    /// Single combined parenthetical: away's own stat (spread if favored, else implied ML%),
-    /// home's own stat (mirrored), then the total O/U line — each colored independently by
-    /// whether that particular bet won.
-    private var oddsGroupText: Text? {
+    private struct OddsSegment {
+        let text: Text
+        let width: CGFloat
+    }
+
+    /// Home team's implied ML%, home team's spread, then the total O/U line — fixed-width
+    /// columns so the values line up vertically across a schedule of many cards.
+    private var oddsSegments: [OddsSegment]? {
         guard let odds else { return nil }
-        let parts = [awayOddsText(odds), homeOddsText(odds), totalOddsText(odds)].compactMap { $0 }
-        guard !parts.isEmpty else { return nil }
-        let joined = parts.dropFirst().reduce(parts[0]) { acc, next in
-            acc + Text("|").foregroundColor(.secondary) + next
+        var segments: [OddsSegment] = []
+        if let pct = homePctText(odds) {
+            segments.append(OddsSegment(text: pct, width: 30))
         }
-        return Text("(").foregroundColor(.secondary) + joined + Text(")").foregroundColor(.secondary)
+        if let spread = homeSpreadText(odds) {
+            segments.append(OddsSegment(text: spread, width: 40))
+        }
+        if let total = totalOddsText(odds) {
+            segments.append(OddsSegment(text: total, width: 40))
+        }
+        return segments.isEmpty ? nil : segments
     }
 
-    private func awayOddsText(_ odds: Odds) -> Text? {
-        if awayIsFav == true, let pts = odds.sprAwayPoints {
-            return Text(OddsFormatting.formatPointsSigned(pts))
-                .foregroundColor(odds.sprAwayWon == true ? theme.accent : .secondary)
-        } else if awayIsFav == false {
-            return Text(OddsFormatting.impliedPct(odds.mlAwayPrice))
-                .foregroundColor(odds.mlAwayWon == true ? theme.accent : .secondary)
+    @ViewBuilder
+    private var oddsGroupView: some View {
+        if let segments = oddsSegments {
+            HStack(spacing: 0) {
+                ForEach(Array(segments.enumerated()), id: \.offset) { index, segment in
+                    if index > 0 {
+                        Text("|")
+                            .foregroundColor(.secondary)
+                            .frame(width: 8, alignment: .center)
+                    }
+                    segment.text
+                        .monospacedDigit()
+                        .frame(width: segment.width, alignment: .trailing)
+                }
+            }
         }
-        return nil
     }
 
-    private func homeOddsText(_ odds: Odds) -> Text? {
-        if awayIsFav == false, let pts = odds.sprHomePoints {
-            return Text(OddsFormatting.formatPointsSigned(pts))
-                .foregroundColor(odds.sprHomeWon == true ? theme.accent : .secondary)
-        } else if awayIsFav == true {
-            return Text(OddsFormatting.impliedPct(odds.mlHomePrice))
-                .foregroundColor(odds.mlHomeWon == true ? theme.accent : .secondary)
-        }
-        return nil
+    private func homePctText(_ odds: Odds) -> Text? {
+        guard let price = odds.mlHomePrice else { return nil }
+        let formatted = OddsFormatting.impliedPct(price)
+        guard !formatted.isEmpty else { return nil }
+        return Text(formatted)
+            .foregroundColor(odds.mlHomeWon == true ? theme.accent : .secondary)
+    }
+
+    private func homeSpreadText(_ odds: Odds) -> Text? {
+        guard let pts = odds.sprHomePoints else { return nil }
+        return Text(OddsFormatting.formatPointsSigned(pts))
+            .foregroundColor(odds.sprHomeWon == true ? theme.accent : .secondary)
     }
 
     private func totalOddsText(_ odds: Odds) -> Text? {

@@ -34,16 +34,18 @@ struct RowCapsuleButton: View {
     @Environment(\.colorScheme) private var colorScheme
     let systemName: String
     let isSelected: Bool
+    var tint: Color? = nil
     let action: () -> Void
 
     var body: some View {
+        let selectedColor = tint ?? theme.accent
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .foregroundStyle(isSelected ? theme.accent : theme.primaryText(colorScheme))
+                .foregroundStyle(isSelected ? selectedColor : theme.primaryText(colorScheme))
                 .padding(.horizontal, 14)
                 .padding(.vertical, 6)
-                .background(isSelected ? theme.accent.opacity(0.15) : theme.chipUnselected(colorScheme))
+                .background(isSelected ? selectedColor.opacity(0.15) : theme.chipUnselected(colorScheme))
                 .clipShape(Capsule())
         }
     }

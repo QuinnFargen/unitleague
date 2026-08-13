@@ -99,7 +99,7 @@ struct ViewRank: View {
     }
 
     private func displayLabel(for category: RankFilterCategory) -> String {
-        category == .category && mode == .odds ? "Mascot" : category.rawValue
+        category == .category ? "Mascot" : category.rawValue
     }
 
     private func filterCategoryValue(_ category: RankFilterCategory) -> String? {
@@ -315,11 +315,11 @@ struct ViewRank: View {
                         } else {
                             ScrollView {
                                 LazyVStack(spacing: 12) {
-                                    ForEach(displayedEntries) { entry in
+                                    ForEach(Array(displayedEntries.enumerated()), id: \.element.id) { index, entry in
                                         NavigationLink {
                                             ViewSchedLoader(teamId: entry.record.teamId, leagueId: entry.record.leagueId, initialYear: selectedYear)
                                         } label: {
-                                            CardOddsTrend(record: entry.record, season: entry.season)
+                                            CardRank(rank: index + 1, season: entry.season, record: entry.record)
                                         }
                                         .buttonStyle(.plain)
                                     }

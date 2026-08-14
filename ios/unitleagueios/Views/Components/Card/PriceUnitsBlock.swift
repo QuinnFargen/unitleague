@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Shared 3-layer price/units display: plain price×units, then (if present) enhanced
-/// price×units, then (if won) the units won in green. Used by `CardBet`'s right-side
-/// block and `CardPlacedParlay`'s header.
+/// Shared price/units display: a single line of price×units, with the enhanced values
+/// (when present) shown at the primary size in the accent color and the plain values
+/// shown smaller alongside them. The trailing units symbol recolors green/red once the
+/// bet is won/lost. Used by `CardBet`'s right-side block and `CardPlacedParlay`'s header.
 struct PriceUnitsBlock: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -14,48 +15,58 @@ struct PriceUnitsBlock: View {
     var unitEnhanced: Double? = nil
     var priceRowFont: Font = .headline
 
-    var body: some View {
-        VStack(alignment: .trailing, spacing: 3) {
-            row(price: price, unit: unit, font: priceRowFont, color: theme.primaryText(colorScheme))
+    private var hasEnhanced: Bool {
+        priceEnhanced != nil && unitEnhanced != nil && unit != nil
+    }
 
-            if let pe = priceEnhanced, let ue = unitEnhanced {
-                row(price: pe, unit: ue, font: .caption.weight(.semibold), color: theme.accent)
-            }
+    private var primaryColor: Color { theme.primaryText(colorScheme) }
 
-            if won == true {
-                let wonPrice = priceEnhanced ?? price
-                let wonUnit = unitEnhanced ?? unit ?? 0
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text("=")
-                        .font(priceRowFont)
-                        .foregroundStyle(theme.win)
-                    Text(String(format: "%.2f", wonPrice * wonUnit))
-                        .font(priceRowFont)
-                        .foregroundStyle(theme.win)
-                    Image(systemName: "nairasign.circle.fill")
-                        .font(priceRowFont)
-                        .foregroundStyle(theme.win)
-                }
-            }
+    private var iconColor: Color {
+        switch won {
+        case true?:  return theme.win
+        case false?: return theme.loss
+        default:     return primaryColor
         }
     }
 
-    @ViewBuilder
-    private func row(price: Double, unit: Double?, font: Font, color: Color) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 2) {
-            Text(String(format: "%.2f", price))
-                .font(font)
-                .foregroundStyle(color)
-            if let u = unit {
+    var body: some View {
+        if hasEnhanced, let pe = priceEnhanced, let ue = unitEnhanced, let u = unit {
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(String(format: "%.2f", pe))
+                    .font(priceRowFont)
+                    .foregroundStyle(theme.accent)
+                Text("(\(String(format: "%.2f", price)))")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Text("x")
-                    .font(font)
-                    .foregroundStyle(color)
-                Text(txnWagerLabel(u))
-                    .font(font)
-                    .foregroundStyle(color)
+                    .font(priceRowFont)
+                    .foregroundStyle(theme.accent)
+                Text(txnWagerLabel(ue))
+                    .font(priceRowFont)
+                    .foregroundStyle(theme.accent)
+                Text("(\(txnWagerLabel(u)))")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
                 Image(systemName: "nairasign.circle.fill")
-                    .font(font)
-                    .foregroundStyle(color)
+                    .font(priceRowFont)
+                    .foregroundStyle(iconColor)
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                Text(String(format: "%.2f", price))
+                    .font(priceRowFont)
+                    .foregroundStyle(primaryColor)
+                if let u = unit {
+                    Text("x")
+                        .font(priceRowFont)
+                        .foregroundStyle(primaryColor)
+                    Text(txnWagerLabel(u))
+                        .font(priceRowFont)
+                        .foregroundStyle(primaryColor)
+                    Image(systemName: "nairasign.circle.fill")
+                        .font(priceRowFont)
+                        .foregroundStyle(iconColor)
+                }
             }
         }
     }
@@ -64,10 +75,11 @@ struct PriceUnitsBlock: View {
 #Preview("PriceUnitsBlock") {
     VStack(alignment: .trailing, spacing: 16) {
         PriceUnitsBlock(price: 1.91, unit: 2, won: nil)
-        PriceUnitsBlock(price: 1.91, unit: 2, won: false)
-        PriceUnitsBlock(price: 1.91, unit: 2, won: nil, priceEnhanced: 2.10, unitEnhanced: 2.5)
-        PriceUnitsBlock(price: 1.91, unit: 2, won: true, priceEnhanced: 2.10, unitEnhanced: 2.5)
         PriceUnitsBlock(price: 1.91, unit: 2, won: true)
+        PriceUnitsBlock(price: 1.91, unit: 2, won: false)
+        PriceUnitsBlock(price: 1.91, unit: 2, won: nil, priceEnhanced: 2.35, unitEnhanced: 2.5)
+        PriceUnitsBlock(price: 1.91, unit: 2, won: true, priceEnhanced: 2.35, unitEnhanced: 2.5)
+        PriceUnitsBlock(price: 1.91, unit: 2, won: false, priceEnhanced: 2.35, unitEnhanced: 2.5)
     }
     .padding()
     .environmentObject(AppTheme())

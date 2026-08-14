@@ -6,6 +6,7 @@ struct CardBet: View {
     let bet: SelectedBet
     var won: Bool? = nil
     var priceMultiplier: Double? = nil
+    var showTime: Bool = true
 
     private let timeInputFmt: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -92,7 +93,7 @@ struct CardBet: View {
             }
             .font(.caption.weight(.semibold))
             .foregroundStyle(.secondary)
-        } else if let time = formattedTime {
+        } else if showTime, let time = formattedTime {
             Text(time)
                 .font(.caption)
                 .foregroundStyle(.secondary)

@@ -1,6 +1,8 @@
 import requests
 import pandas as pd
 import time
+import os
+os.chdir('/Users/quinnfargen/Documents/GitHub/unitleague/scripts/seed/')
 
 input_df = pd.read_csv('input.csv')
 input_df['year'] = input_df['year'].astype(int)
@@ -96,7 +98,8 @@ for _, row in input_df.iterrows():
 
     # Build URL with year, seasontype, and week number
     url = f'https://cdn.espn.com/core/nfl/schedule?xhr=1&year={year}&seasontype={seasontype}&week={weekNo}'
-    jsonData = requests.get(url, headers=headers).json()
+    # url = f'https://cdn.espn.com/core/nfl/schedule?xhr=1&year=2026&seasontype=1&week=1'
+    jsonData = requests.get(url).json()
 
     # Get schedule from JSON
     schedules = jsonData['content']['schedule']

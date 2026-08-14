@@ -96,7 +96,7 @@ for _, row in input_df.iterrows():
 
     # Build URL with year, seasontype, and week number
     url = f'https://cdn.espn.com/core/college-football/schedule?xhr=1&year={year}&seasontype={seasontype}&week={weekNo}'
-    jsonData = requests.get(url, headers=headers).json()
+    jsonData = requests.get(url).json()
 
     # Get schedule from JSON
     schedules = jsonData['content']['schedule']

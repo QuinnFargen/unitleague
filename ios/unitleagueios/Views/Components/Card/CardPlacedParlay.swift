@@ -50,16 +50,16 @@ struct CardPlacedParlay: View {
             Divider()
             ForEach(legs) { leg in
                 if isEditing {
-                    CardBet(bet: legBet(leg))
+                    CardBet(bet: legBet(leg), showTime: false)
                 } else if let gameId = leg.gameId {
                     NavigationLink {
                         ViewGameDetailLoader(gameId: gameId)
                     } label: {
-                        CardBet(bet: legBet(leg))
+                        CardBet(bet: legBet(leg), showTime: false)
                     }
                     .buttonStyle(.plain)
                 } else {
-                    CardBet(bet: legBet(leg))
+                    CardBet(bet: legBet(leg), showTime: false)
                 }
             }
         }
@@ -91,7 +91,12 @@ struct CardPlacedParlay: View {
 }
 
 #Preview("CardPlacedParlay") {
-    CardPlacedParlay(legs: Mock.txnParlay)
-        .padding()
-        .environmentObject(AppTheme())
+    VStack(spacing: 12) {
+        CardPlacedParlay(legs: Mock.txnParlay)
+        CardPlacedParlay(legs: Mock.txnParlayEnhanced)
+        CardPlacedParlay(legs: Mock.txnParlayWon)
+        CardPlacedParlay(legs: Mock.txnParlayLost)
+    }
+    .padding()
+    .environmentObject(AppTheme())
 }

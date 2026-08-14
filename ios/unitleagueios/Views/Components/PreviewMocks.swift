@@ -405,6 +405,90 @@ enum Mock {
         return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
     }
 
+    static var txnParlayEnhanced: [Txn] {
+        let json = """
+        [
+          {
+            "txn_id": 9, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "ml_bos_lal_002", "parlay_id": 100,
+            "unit": 1.0, "price": 2.10, "won": null, "canceled": null,
+            "bet_type": "ML", "points": null, "team": "BOS",
+            "home": "LAL", "away": "BOS",
+            "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
+            "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "BOS_ML",
+            "parlay_price_mult": 4.0311, "unit_enhanced": 1.25, "price_enhanced": 4.50
+          },
+          {
+            "txn_id": 10, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "spr_den_kc_002", "parlay_id": 100,
+            "unit": 0, "price": 1.91, "won": null, "canceled": null,
+            "bet_type": "SPR", "points": -3.5, "team": "KC",
+            "home": "KC", "away": "DEN",
+            "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
+            "game_id": 102, "bookmaker": "DraftKings", "bet_concat": "KC_SPR",
+            "parlay_price_mult": 4.0311
+          }
+        ]
+        """
+        return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
+    }
+
+    static var txnParlayWon: [Txn] {
+        let json = """
+        [
+          {
+            "txn_id": 11, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "ml_bos_lal_003", "parlay_id": 101,
+            "unit": 2.0, "price": 1.85, "won": true, "canceled": null,
+            "bet_type": "ML", "points": null, "team": "BOS",
+            "home": "LAL", "away": "BOS",
+            "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
+            "game_id": 100, "bookmaker": "FanDuel", "bet_concat": "BOS_ML",
+            "parlay_price_mult": 3.53, "h": 104, "a": 112
+          },
+          {
+            "txn_id": 12, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "spr_kc_den_003", "parlay_id": 101,
+            "unit": 0, "price": 1.91, "won": true, "canceled": null,
+            "bet_type": "SPR", "points": -3.5, "team": "KC",
+            "home": "KC", "away": "DEN",
+            "game_ts": "2026-06-08T20:00:00+00:00", "game_dt": "2026-06-08",
+            "game_id": 102, "bookmaker": "DraftKings", "bet_concat": "KC_SPR",
+            "parlay_price_mult": 3.53, "h": 24, "a": 17
+          }
+        ]
+        """
+        return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
+    }
+
+    static var txnParlayLost: [Txn] {
+        let json = """
+        [
+          {
+            "txn_id": 13, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "spr_lal_bos_004", "parlay_id": 102,
+            "unit": 1.5, "price": 1.91, "won": false, "canceled": null,
+            "bet_type": "SPR", "points": 5.5, "team": "LAL",
+            "home": "LAL", "away": "BOS",
+            "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
+            "game_id": 100, "bookmaker": "DraftKings", "bet_concat": "LAL_SPR",
+            "parlay_price_mult": 3.34, "h": 104, "a": 112
+          },
+          {
+            "txn_id": 14, "bettor_id": 42, "syndicate_id": 1,
+            "txn_type": "parlay", "bet_hash": "ml_kc_den_004", "parlay_id": 102,
+            "unit": 0, "price": 1.75, "won": true, "canceled": null,
+            "bet_type": "ML", "points": null, "team": "KC",
+            "home": "KC", "away": "DEN",
+            "game_ts": "2026-06-08T20:00:00+00:00", "game_dt": "2026-06-08",
+            "game_id": 102, "bookmaker": "DraftKings", "bet_concat": "KC_ML",
+            "parlay_price_mult": 3.34, "h": 24, "a": 17
+          }
+        ]
+        """
+        return try! JSONDecoder().decode([Txn].self, from: Data(json.utf8))
+    }
+
     static let txnUnitDeposit: Txn = {
         let json = """
         {

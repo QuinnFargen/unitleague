@@ -7,7 +7,8 @@ struct SheetSymbolPicker: View {
 
     @Binding var selectedSymbol: String
     let symbols: [String]
-    let accentColor: Color
+    @Binding var selectedColor: AccentOption
+    var blockedColors: Set<AccentOption> = []
     var title: String = "Choose Symbol"
 
     private let columns = [GridItem(.adaptive(minimum: 64), spacing: 14)]
@@ -18,31 +19,35 @@ struct SheetSymbolPicker: View {
                 theme.appBackground(colorScheme).ignoresSafeArea()
 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 14) {
-                        ForEach(symbols, id: \.self) { symbol in
-                            Button {
-                                selectedSymbol = symbol
-                                dismiss()
-                            } label: {
-                                Image(systemName: symbol)
-                                    .font(.title2)
-                                    .foregroundStyle(accentColor)
-                                    .frame(width: 60, height: 60)
-                                    .background(
-                                        selectedSymbol == symbol
-                                            ? accentColor.opacity(0.18)
-                                            : theme.cardBackground(colorScheme)
-                                    )
-                                    .clipShape(RoundedRectangle(cornerRadius: 14))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 14)
-                                            .stroke(
-                                                selectedSymbol == symbol ? accentColor : Color.clear,
-                                                lineWidth: 2
-                                            )
-                                    )
+                    VStack(alignment: .leading, spacing: 18) {
+                        colorSection
+
+                        LazyVGrid(columns: columns, spacing: 14) {
+                            ForEach(symbols, id: \.self) { symbol in
+                                Button {
+                                    selectedSymbol = symbol
+                                    dismiss()
+                                } label: {
+                                    Image(systemName: symbol)
+                                        .font(.title2)
+                                        .foregroundStyle(selectedColor.color)
+                                        .frame(width: 60, height: 60)
+                                        .background(
+                                            selectedSymbol == symbol
+                                                ? selectedColor.color.opacity(0.18)
+                                                : theme.cardBackground(colorScheme)
+                                        )
+                                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 14)
+                                                .stroke(
+                                                    selectedSymbol == symbol ? selectedColor.color : Color.clear,
+                                                    lineWidth: 2
+                                                )
+                                        )
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                     .padding(16)
@@ -57,6 +62,42 @@ struct SheetSymbolPicker: View {
             }
         }
     }
+
+    private var colorSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Color")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(AccentOption.allCases.filter { !blockedColors.contains($0) }) { option in
+                        Button {
+                            selectedColor = option
+                        } label: {
+                            VStack(spacing: 4) {
+                                Circle()
+                                    .fill(option.color)
+                                    .frame(width: 36, height: 36)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(theme.primaryText(colorScheme), lineWidth: selectedColor == option ? 2.5 : 0)
+                                    )
+                                    .shadow(
+                                        color: option.color.opacity(selectedColor == option ? 0.6 : 0),
+                                        radius: 6
+                                    )
+                                Text(option.label)
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
 }
 
 #Preview("SheetSymbolPicker") {
@@ -64,7 +105,7 @@ struct SheetSymbolPicker: View {
         SheetSymbolPicker(
             selectedSymbol: .constant(ProfileOption.symbols[0]),
             symbols: ProfileOption.symbols,
-            accentColor: .green,
+            selectedColor: .constant(.green),
             title: "Profile Symbol"
         )
         .environmentObject(AppTheme())

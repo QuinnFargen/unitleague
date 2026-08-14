@@ -13,6 +13,7 @@ struct ViewSyndicate: View {
     var onJoined: (() -> Void)? = nil
     @State private var runners: [Runner] = []
     @State private var activeBets: [Txn] = []
+    @State private var leagues: [League] = []
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingEdit = false
@@ -35,6 +36,11 @@ struct ViewSyndicate: View {
 
     private var sortedRunners: [Runner] {
         runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
+    }
+
+    private var leaguesForSyndicate: [League] {
+        guard let ids = syndicate.leagueIds, !ids.isEmpty else { return [] }
+        return leagues.filter { ids.contains($0.id) }
     }
 
     private func ordinal(_ n: Int) -> String {
@@ -266,6 +272,21 @@ struct ViewSyndicate: View {
                 }
             }
 
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    if let type = syndicate.syndicateType {
+                        tagCapsule(type)
+                    }
+                    if leaguesForSyndicate.isEmpty {
+                        tagCapsule("All Leagues")
+                    } else {
+                        ForEach(leaguesForSyndicate) { league in
+                            tagCapsule(league.abbr)
+                        }
+                    }
+                }
+            }
+
             if isAdmin && !syndicate.isStarted {
                 if let err = startError {
                     Text(err)
@@ -323,6 +344,16 @@ struct ViewSyndicate: View {
         .padding(.top, 16)
     }
 
+    private func tagCapsule(_ text: String) -> some View {
+        Text(text)
+            .font(.caption2.weight(.semibold))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .foregroundStyle(.secondary)
+            .background(theme.cardBackgroundProminent(colorScheme))
+            .clipShape(Capsule())
+    }
+
     private func rankInSyndicate() -> Int {
         let sorted = runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
         if let idx = sorted.firstIndex(where: { $0.bettorId == bettorId }) {
@@ -337,8 +368,10 @@ struct ViewSyndicate: View {
         do {
             async let runnersTask = RunnerService().fetchRunner(syndicateId: syndicate.syndicateId)
             async let betsTask = TxnService().fetchActiveBets(syndicateId: syndicate.syndicateId)
+            async let leaguesTask = LeagueService().fetchLeagues()
             runners = try await runnersTask
             activeBets = (try? await betsTask) ?? []
+            leagues = (try? await leaguesTask) ?? []
             if selectedSyndicateId == syndicate.syndicateId {
                 leagueRank = rankInSyndicate()
             }

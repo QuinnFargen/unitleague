@@ -1,5 +1,10 @@
 import SwiftUI
 
+private enum CapsulePick: Equatable {
+    case preset(Int)
+    case custom
+}
+
 struct SheetSyndicateEdit: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -9,16 +14,56 @@ struct SheetSyndicateEdit: View {
     @State private var nameInput: String
     @State private var selectedSymbol: String
     @State private var selectedColor: AccentOption
+    @State private var maxRunnerPick: CapsulePick
+    @State private var maxRunnerCustom: String
+    @State private var startUnitsPick: CapsulePick
+    @State private var startUnitsCustom: String
     @State private var isEditingName = false
     @State private var isSaving = false
     @State private var errorMessage: String?
     @State private var showingSymbolPicker = false
+
+    private let presets = [5, 10, 20]
+
+    private var maxRunner: Int? {
+        switch maxRunnerPick {
+        case .preset(let v): return v
+        case .custom: return Int(maxRunnerCustom.trimmingCharacters(in: .whitespaces))
+        }
+    }
+
+    private var startUnits: Int? {
+        switch startUnitsPick {
+        case .preset(let v): return v
+        case .custom: return Int(startUnitsCustom.trimmingCharacters(in: .whitespaces))
+        }
+    }
+
+    private var isValid: Bool {
+        let nameOK = !nameInput.trimmingCharacters(in: .whitespaces).isEmpty
+        let startUnitsOK = syndicate.isStarted || startUnits != nil
+        return nameOK && maxRunner != nil && startUnitsOK
+    }
+
+    private static func pick(for value: Int?, presets: [Int]) -> (CapsulePick, String) {
+        guard let value else { return (.preset(presets[1]), "") }
+        if presets.contains(value) { return (.preset(value), "") }
+        return (.custom, "\(value)")
+    }
 
     init(syndicate: Binding<Syndicate>) {
         _syndicate = syndicate
         _nameInput = State(initialValue: syndicate.wrappedValue.name)
         _selectedSymbol = State(initialValue: syndicate.wrappedValue.symbol ?? SyndicateOption.symbols[0])
         _selectedColor = State(initialValue: AccentOption(rawValue: syndicate.wrappedValue.color ?? "") ?? .green)
+
+        let presets = [5, 10, 20]
+        let (maxRunnerPick, maxRunnerCustom) = Self.pick(for: syndicate.wrappedValue.maxRunner, presets: presets)
+        _maxRunnerPick = State(initialValue: maxRunnerPick)
+        _maxRunnerCustom = State(initialValue: maxRunnerCustom)
+        let (startUnitsPick, startUnitsCustom) = Self.pick(for: syndicate.wrappedValue.startUnits, presets: presets)
+        _startUnitsPick = State(initialValue: startUnitsPick)
+        _startUnitsCustom = State(initialValue: startUnitsCustom)
     }
 
     var body: some View {
@@ -93,7 +138,7 @@ struct SheetSyndicateEdit: View {
                                 .padding(.horizontal, 32)
 
                             HStack(spacing: 12) {
-                                ForEach(AccentOption.allCases) { option in
+                                ForEach(AccentOption.primary) { option in
                                     Button {
                                         selectedColor = option
                                     } label: {
@@ -119,6 +164,25 @@ struct SheetSyndicateEdit: View {
                             .padding(.horizontal, 24)
                         }
 
+                        VStack(spacing: 16) {
+                            if syndicate.isStarted {
+                                valueRow(title: "Start Units", value: "\(syndicate.startUnits ?? 0)")
+                            } else {
+                                capsulePickerSection(
+                                    label: "Start Units",
+                                    pick: $startUnitsPick,
+                                    customText: $startUnitsCustom
+                                )
+                            }
+
+                            capsulePickerSection(
+                                label: "Max Members",
+                                pick: $maxRunnerPick,
+                                customText: $maxRunnerCustom
+                            )
+                        }
+                        .padding(.horizontal, 32)
+
                         if let error = errorMessage {
                             Text(error)
                                 .font(.caption)
@@ -138,7 +202,7 @@ struct SheetSyndicateEdit: View {
                                 .background(theme.accent.opacity(0.12))
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
-                        .disabled(nameInput.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
+                        .disabled(!isValid || isSaving)
                         .padding(.horizontal, 32)
                         .padding(.bottom, 40)
                     }
@@ -155,10 +219,72 @@ struct SheetSyndicateEdit: View {
                 SheetSymbolPicker(
                     selectedSymbol: $selectedSymbol,
                     symbols: SyndicateOption.symbols,
-                    accentColor: selectedColor.color,
+                    selectedColor: $selectedColor,
                     title: "Syndicate Symbol"
                 )
             }
+        }
+    }
+
+    @ViewBuilder
+    private func capsulePickerSection(label: String, pick: Binding<CapsulePick>, customText: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            HStack(spacing: 8) {
+                ForEach(presets, id: \.self) { value in
+                    capsuleChip(title: "\(value)", isSelected: pick.wrappedValue == .preset(value)) {
+                        pick.wrappedValue = .preset(value)
+                    }
+                }
+                capsuleChip(title: "#", isSelected: pick.wrappedValue == .custom) {
+                    pick.wrappedValue = .custom
+                }
+            }
+
+            if pick.wrappedValue == .custom {
+                TextField("Enter number", text: customText)
+                    .keyboardType(.numberPad)
+                    .padding(10)
+                    .background(theme.cardBackground(colorScheme))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func capsuleChip(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline.weight(isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(isSelected ? theme.chipSelected(colorScheme) : theme.chipUnselected(colorScheme))
+                .clipShape(Capsule())
+        }
+    }
+
+    @ViewBuilder
+    private func valueRow(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            HStack {
+                Text(value)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(theme.primaryText(colorScheme))
+                Spacer()
+            }
+            .padding()
+            .background(theme.cardBackground(colorScheme))
+            .clipShape(RoundedRectangle(cornerRadius: 14))
         }
     }
 
@@ -168,13 +294,16 @@ struct SheetSyndicateEdit: View {
         isSaving = true
         errorMessage = nil
         let id = syndicate.syndicateId
+        let startUnitsToSave = syndicate.isStarted ? nil : startUnits
         Task {
             do {
                 let updated = try await SyndicateService().updateSyndicate(
                     syndicateId: id,
                     name: trimmedName,
                     symbol: selectedSymbol,
-                    color: selectedColor.rawValue
+                    color: selectedColor.rawValue,
+                    maxRunner: maxRunner,
+                    startUnits: startUnitsToSave
                 )
                 syndicate = updated
                 dismiss()

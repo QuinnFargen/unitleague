@@ -61,6 +61,16 @@ struct SheetEditProfile: View {
         return Binding(get: { theme.accentOption }, set: { theme.accentOption = $0 })
     }
 
+    /// Green/red are reserved for win/loss indicators, so they're excluded from the
+    /// signed-in bettor's own profile color — runner colors aren't restricted.
+    private var blockedColors: Set<AccentOption> {
+        isRunnerMode ? [] : AccentOption.blockedForProfile
+    }
+
+    private var availableColorOptions: [AccentOption] {
+        AccentOption.primary.filter { !blockedColors.contains($0) }
+    }
+
     init(runner: Binding<Runner>? = nil) {
         self.runner = runner
         _runnerName = State(initialValue: runner?.wrappedValue.profileName ?? "")
@@ -85,6 +95,7 @@ struct SheetEditProfile: View {
 
                         colorSection(
                             title: isRunnerMode ? "Runner Color" : "Accent Color",
+                            options: availableColorOptions,
                             selection: colorBinding
                         )
 
@@ -158,7 +169,8 @@ struct SheetEditProfile: View {
                 SheetSymbolPicker(
                     selectedSymbol: symbolBinding,
                     symbols: ProfileOption.symbols,
-                    accentColor: displayColor,
+                    selectedColor: colorBinding,
+                    blockedColors: blockedColors,
                     title: isRunnerMode ? "Runner Symbol" : "Profile Symbol"
                 )
             }
@@ -282,7 +294,7 @@ struct SheetEditProfile: View {
     }
 
     @ViewBuilder
-    private func colorSection(title: String, selection: Binding<AccentOption>) -> some View {
+    private func colorSection(title: String, options: [AccentOption], selection: Binding<AccentOption>) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(title)
                 .font(.caption)
@@ -290,7 +302,7 @@ struct SheetEditProfile: View {
                 .padding(.horizontal, 32)
 
             HStack(spacing: 12) {
-                ForEach(AccentOption.allCases) { option in
+                ForEach(options) { option in
                     Button {
                         selection.wrappedValue = option
                     } label: {

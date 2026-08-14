@@ -8,11 +8,6 @@
 
 import SwiftUI
 
-private enum CapsulePick: Equatable {
-    case preset(Int)
-    case custom
-}
-
 struct SheetSyndicateCreate: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -22,36 +17,20 @@ struct SheetSyndicateCreate: View {
     @State private var name = ""
     @State private var description = ""
     @State private var password = ""
-    @State private var maxRunnerPick: CapsulePick = .preset(10)
-    @State private var maxRunnerCustom = ""
-    @State private var startUnitsPick: CapsulePick = .preset(10)
-    @State private var startUnitsCustom = ""
     @State private var isPublic = false
     @State private var selectedSymbol: String = SyndicateOption.symbols[0]
     @State private var selectedColor: AccentOption = .green
+    @State private var selectedLeagueIds: Set<Int> = []
+    @State private var syndicateType: String?
+    @State private var leagues: [League] = []
     @State private var isEditingName = false
     @State private var isLoading = false
+    @State private var isLoadingLeagues = false
     @State private var errorMessage: String?
     @State private var showingSymbolPicker = false
 
-    private let presets = [5, 10, 20]
-
-    private var maxRunner: Int? {
-        switch maxRunnerPick {
-        case .preset(let v): return v
-        case .custom: return Int(maxRunnerCustom.trimmingCharacters(in: .whitespaces))
-        }
-    }
-
-    private var startUnits: Int? {
-        switch startUnitsPick {
-        case .preset(let v): return v
-        case .custom: return Int(startUnitsCustom.trimmingCharacters(in: .whitespaces))
-        }
-    }
-
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty && maxRunner != nil && startUnits != nil
+        !name.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     private func create() {
@@ -65,10 +44,10 @@ struct SheetSyndicateCreate: View {
                     description: description.trimmingCharacters(in: .whitespaces).isEmpty ? nil : description,
                     isPublic: isPublic,
                     password: password.isEmpty ? nil : password,
-                    maxRunner: maxRunner,
-                    startUnits: startUnits,
                     symbol: selectedSymbol,
-                    color: selectedColor.rawValue
+                    color: selectedColor.rawValue,
+                    syndicateType: syndicateType,
+                    leagueIds: selectedLeagueIds.isEmpty ? nil : Array(selectedLeagueIds).sorted()
                 )
                 dismiss()
             } catch {
@@ -141,7 +120,7 @@ struct SheetSyndicateCreate: View {
                                 .padding(.horizontal, 32)
 
                             HStack(spacing: 12) {
-                                ForEach(AccentOption.allCases) { option in
+                                ForEach(AccentOption.primary) { option in
                                     Button {
                                         selectedColor = option
                                     } label: {
@@ -165,17 +144,46 @@ struct SheetSyndicateCreate: View {
                         }
 
                         VStack(spacing: 16) {
-                            capsulePickerSection(
-                                label: "Start Units",
-                                pick: $startUnitsPick,
-                                customText: $startUnitsCustom
-                            )
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Leagues")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 4)
 
-                            capsulePickerSection(
-                                label: "Max Members",
-                                pick: $maxRunnerPick,
-                                customText: $maxRunnerCustom
-                            )
+                                if isLoadingLeagues && leagues.isEmpty {
+                                    ProgressView().frame(maxWidth: .infinity)
+                                } else {
+                                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8) {
+                                        ForEach(leagues) { league in
+                                            capsuleChip(title: league.abbr, isSelected: selectedLeagueIds.contains(league.id)) {
+                                                if selectedLeagueIds.contains(league.id) {
+                                                    selectedLeagueIds.remove(league.id)
+                                                } else {
+                                                    selectedLeagueIds.insert(league.id)
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Text("No leagues selected allows every league.")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Syndicate Type")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 4)
+
+                                HStack(spacing: 8) {
+                                    ForEach(SyndicateType.allCases, id: \.self) { type in
+                                        capsuleChip(title: type.rawValue, isSelected: syndicateType == type.rawValue) {
+                                            syndicateType = (syndicateType == type.rawValue) ? nil : type.rawValue
+                                        }
+                                    }
+                                }
+                            }
 
                             Toggle("Public", isOn: $isPublic)
                                 .tint(theme.accent)
@@ -246,38 +254,14 @@ struct SheetSyndicateCreate: View {
                 SheetSymbolPicker(
                     selectedSymbol: $selectedSymbol,
                     symbols: SyndicateOption.symbols,
-                    accentColor: selectedColor.color,
+                    selectedColor: $selectedColor,
                     title: "Syndicate Symbol"
                 )
             }
-        }
-    }
-
-    @ViewBuilder
-    private func capsulePickerSection(label: String, pick: Binding<CapsulePick>, customText: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 4)
-
-            HStack(spacing: 8) {
-                ForEach(presets, id: \.self) { value in
-                    capsuleChip(title: "\(value)", isSelected: pick.wrappedValue == .preset(value)) {
-                        pick.wrappedValue = .preset(value)
-                    }
-                }
-                capsuleChip(title: "#", isSelected: pick.wrappedValue == .custom) {
-                    pick.wrappedValue = .custom
-                }
-            }
-
-            if pick.wrappedValue == .custom {
-                TextField("Enter number", text: customText)
-                    .keyboardType(.numberPad)
-                    .padding(10)
-                    .background(theme.cardBackground(colorScheme))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            .task {
+                isLoadingLeagues = true
+                leagues = (try? await LeagueService().fetchLeagues()) ?? []
+                isLoadingLeagues = false
             }
         }
     }

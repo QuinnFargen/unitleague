@@ -6,6 +6,25 @@ enum AccentOption: String, CaseIterable, Identifiable {
     case yellow  = "yellow"
     case stadium = "stadium"
     case teal    = "teal"
+    case blue    = "blue"
+    case orange  = "orange"
+    case rose    = "rose"
+    case sienna  = "sienna"
+    case grass   = "grass"
+    case coral   = "coral"
+    case slate   = "slate"
+    case lilac   = "lilac"
+
+    /// The original 5 accent colors — shown in the compact inline pickers (profile/syndicate
+    /// edit screens). The full 13-color set is only offered in `SheetSymbolPicker`.
+    static let primary: [AccentOption] = [.green, .red, .yellow, .stadium, .teal]
+
+    /// Green/red are reserved for win/loss indicators (see `AppTheme.win`/`.loss`, same hex
+    /// values), so they're excluded from the profile's own accent-color pickers to avoid
+    /// visually reading as a win/loss cue.
+    static let blockedForProfile: Set<AccentOption> = [.green, .red]
+
+    static let defaultProfileColor: AccentOption = .yellow
 
     var id: String { rawValue }
 
@@ -16,6 +35,14 @@ enum AccentOption: String, CaseIterable, Identifiable {
         case .yellow:  return Color(hex: "D8B061")
         case .stadium: return Color(hex: "7B5EA7")
         case .teal:    return Color(hex: "4ECDC4")
+        case .blue:    return Color(hex: "5B7DB1")
+        case .orange:  return Color(hex: "D08A47")
+        case .rose:    return Color(hex: "C67B96")
+        case .sienna:  return Color(hex: "96694A")
+        case .grass:   return Color(hex: "86B75A")
+        case .coral:   return Color(hex: "E0876B")
+        case .slate:   return Color(hex: "556873")
+        case .lilac:   return Color(hex: "A98BC9")
         }
     }
 
@@ -26,12 +53,23 @@ enum AccentOption: String, CaseIterable, Identifiable {
         case .yellow:  return "Amber"
         case .stadium: return "Stadium"
         case .teal:    return "Teal"
+        case .blue:    return "Denim"
+        case .orange:  return "Pumpkin"
+        case .rose:    return "Rosé"
+        case .sienna:  return "Umber"
+        case .grass:   return "Meadow"
+        case .coral:   return "Coral"
+        case .slate:   return "Slate"
+        case .lilac:   return "Lilac"
         }
     }
 }
 
 final class AppTheme: ObservableObject {
-    var accentOption: AccentOption = AccentOption(rawValue: UserDefaults.standard.string(forKey: "accentOption") ?? "green") ?? .green {
+    var accentOption: AccentOption = {
+        let stored = AccentOption(rawValue: UserDefaults.standard.string(forKey: "accentOption") ?? "") ?? AccentOption.defaultProfileColor
+        return AccentOption.blockedForProfile.contains(stored) ? AccentOption.defaultProfileColor : stored
+    }() {
         willSet { objectWillChange.send() }
         didSet  { UserDefaults.standard.set(accentOption.rawValue, forKey: "accentOption") }
     }

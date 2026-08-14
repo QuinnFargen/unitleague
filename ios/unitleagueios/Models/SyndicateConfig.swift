@@ -7,8 +7,6 @@ enum SyndicateType: String, CaseIterable {
 }
 
 struct SyndicateConfig: Codable, Equatable {
-    var leagueIds: [Int]?
-    var syndicateType: String?
     var blockedEnhancementTypes: [String]?
     var blockedEnhancementIds: [Int]?
     var maxClvLevel: Int?
@@ -21,8 +19,6 @@ struct SyndicateConfig: Codable, Equatable {
     var maxActiveEdges: Int?
 
     enum CodingKeys: String, CodingKey {
-        case leagueIds = "league_ids"
-        case syndicateType = "syndicate_type"
         case blockedEnhancementTypes = "blocked_enhancement_types"
         case blockedEnhancementIds = "blocked_enhancement_ids"
         case maxClvLevel = "max_clv_level"
@@ -34,8 +30,6 @@ struct SyndicateConfig: Codable, Equatable {
     }
 
     init(
-        leagueIds: [Int]? = nil,
-        syndicateType: String? = nil,
         blockedEnhancementTypes: [String]? = nil,
         blockedEnhancementIds: [Int]? = nil,
         maxClvLevel: Int? = nil,
@@ -45,8 +39,6 @@ struct SyndicateConfig: Codable, Equatable {
         costMultiplier: Int? = nil,
         maxActiveEdges: Int? = nil
     ) {
-        self.leagueIds = leagueIds
-        self.syndicateType = syndicateType
         self.blockedEnhancementTypes = blockedEnhancementTypes
         self.blockedEnhancementIds = blockedEnhancementIds
         self.maxClvLevel = maxClvLevel

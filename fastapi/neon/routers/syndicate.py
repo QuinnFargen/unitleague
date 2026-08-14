@@ -19,8 +19,8 @@ router = APIRouter(tags=["syndicate"])
 def create_syndicate(syndicate: SyndicateCreate):
     with engine.begin() as conn:
         syndicate_row = conn.execute(text("""
-            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config)
-            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id, :start_units, :config)
+            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config, syndicate_type, league_ids)
+            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id, :start_units, :config, :syndicate_type, :league_ids)
             RETURNING *
         """), {**syndicate.model_dump(), "config": json.dumps(syndicate.config) if syndicate.config else None}).fetchone()
 

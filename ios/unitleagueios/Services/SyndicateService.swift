@@ -12,7 +12,7 @@ class SyndicateService {
         return try JSONDecoder().decode([Syndicate].self, from: data)
     }
 
-    func createSyndicate(bettorId: Int, name: String, description: String? = nil, isPublic: Bool = false, password: String? = nil, maxRunner: Int? = nil, startUnits: Int? = nil, symbol: String? = nil, color: String? = nil) async throws -> Syndicate {
+    func createSyndicate(bettorId: Int, name: String, description: String? = nil, isPublic: Bool = false, password: String? = nil, symbol: String? = nil, color: String? = nil, syndicateType: String? = nil, leagueIds: [Int]? = nil) async throws -> Syndicate {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate") else {
             throw URLError(.badURL)
         }
@@ -23,10 +23,10 @@ class SyndicateService {
         var body: [String: Any] = ["bettor_id": bettorId, "name": name, "is_public": isPublic]
         if let desc = description { body["description"] = desc }
         if let pw = password { body["password"] = pw }
-        if let max = maxRunner { body["max_runner"] = max }
-        if let su = startUnits { body["start_units"] = su }
         if let sym = symbol { body["symbol"] = sym }
         if let col = color { body["color"] = col }
+        if let st = syndicateType { body["syndicate_type"] = st }
+        if let ids = leagueIds { body["league_ids"] = ids }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, _) = try await URLSession.shared.data(for: request)
@@ -55,7 +55,7 @@ class SyndicateService {
         return try JSONDecoder().decode(StartResponse.self, from: data).syndicate
     }
 
-    func updateSyndicate(syndicateId: Int, name: String? = nil, symbol: String? = nil, color: String? = nil, config: SyndicateConfig? = nil) async throws -> Syndicate {
+    func updateSyndicate(syndicateId: Int, name: String? = nil, symbol: String? = nil, color: String? = nil, config: SyndicateConfig? = nil, maxRunner: Int? = nil, startUnits: Int? = nil) async throws -> Syndicate {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/\(syndicateId)") else {
             throw URLError(.badURL)
         }
@@ -67,6 +67,8 @@ class SyndicateService {
         if let name = name { body["name"] = name }
         if let sym = symbol { body["symbol"] = sym }
         if let col = color  { body["color"] = col }
+        if let max = maxRunner { body["max_runner"] = max }
+        if let su = startUnits { body["start_units"] = su }
         if let config = config {
             let configData = try JSONEncoder().encode(config)
             body["config"] = try JSONSerialization.jsonObject(with: configData)

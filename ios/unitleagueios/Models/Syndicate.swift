@@ -14,6 +14,8 @@ struct Syndicate: Codable, Identifiable {
     let startUnits: Int?
     let isStarted: Bool
     let config: SyndicateConfig?
+    let syndicateType: String?
+    let leagueIds: [Int]?
 
     enum CodingKeys: String, CodingKey {
         case syndicateId = "syndicate_id"
@@ -29,6 +31,8 @@ struct Syndicate: Codable, Identifiable {
         case startUnits = "start_units"
         case isStarted = "is_started"
         case config
+        case syndicateType = "syndicate_type"
+        case leagueIds = "league_ids"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -42,6 +46,8 @@ struct Syndicate: Codable, Identifiable {
         try c.encodeIfPresent(startUnits, forKey: .startUnits)
         try c.encode(isStarted, forKey: .isStarted)
         try c.encodeIfPresent(config, forKey: .config)
+        try c.encodeIfPresent(syndicateType, forKey: .syndicateType)
+        try c.encodeIfPresent(leagueIds, forKey: .leagueIds)
     }
 
     init(from decoder: Decoder) throws {
@@ -63,6 +69,8 @@ struct Syndicate: Codable, Identifiable {
         startUnits = try c.decodeIfPresent(Int.self, forKey: .startUnits)
         isStarted = try c.decodeIfPresent(Bool.self, forKey: .isStarted) ?? false
         config = try c.decodeIfPresent(SyndicateConfig.self, forKey: .config)
+        syndicateType = try c.decodeIfPresent(String.self, forKey: .syndicateType)
+        leagueIds = try c.decodeIfPresent([Int].self, forKey: .leagueIds)
     }
 }
 
@@ -81,7 +89,9 @@ extension Syndicate {
         color: String? = nil,
         startUnits: Int? = nil,
         isStarted: Bool = false,
-        config: SyndicateConfig? = nil
+        config: SyndicateConfig? = nil,
+        syndicateType: String? = nil,
+        leagueIds: [Int]? = nil
     ) {
         self.syndicateId = syndicateId
         self.name = name
@@ -95,5 +105,7 @@ extension Syndicate {
         self.startUnits = startUnits
         self.isStarted = isStarted
         self.config = config
+        self.syndicateType = syndicateType
+        self.leagueIds = leagueIds
     }
 }

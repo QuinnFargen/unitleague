@@ -317,6 +317,7 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
         )
         SELECT s.syndicate_id, s.name, s.description, s.code, s.is_public, s.max_runner,
                s.created_by_bettor_id, s.symbol, s.color, s.start_units, s.config, s.is_started,
+               s.syndicate_type, s.league_ids,
                COALESCE(rc.active_runner_count, 0) AS active_runner_count
         FROM odd.syndicate s
         LEFT JOIN runner_counts rc ON rc.syndicate_id = s.syndicate_id
@@ -336,13 +337,7 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
 
     if league_id:
         q += """
-            AND (
-                s.config IS NULL
-                OR (s.config::jsonb -> 'league_ids') IS NULL
-                OR (s.config::jsonb -> 'league_ids') = 'null'::jsonb
-                OR (s.config::jsonb -> 'league_ids') = '[]'::jsonb
-                OR (s.config::jsonb -> 'league_ids') @> to_jsonb(:league_id::int)
-            )
+            AND (s.league_ids IS NULL OR s.league_ids = '{}' OR :league_id = ANY(s.league_ids))
         """
         query_params["league_id"] = league_id
 

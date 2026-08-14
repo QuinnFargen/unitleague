@@ -32,28 +32,14 @@ struct CardPlacedParlay: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Spacer()
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(String(format: "%.2f", combinedOdds))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(theme.accent)
-                Text("x")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(theme.accent)
-                Text(txnWagerLabel(legs.first?.unit ?? 0))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(won == false ? theme.loss : .secondary)
-                Image(systemName: "nairasign.circle.fill")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(won == false ? theme.loss : .secondary)
-                if won == true {
-                    Text("=")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.win)
-                    Text(String(format: "%.2f", combinedOdds * (legs.first?.unit ?? 0)))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.win)
-                }
-            }
+            PriceUnitsBlock(
+                price: combinedOdds,
+                unit: legs.first?.unit,
+                won: won,
+                priceEnhanced: legs.first?.priceEnhanced,
+                unitEnhanced: legs.first?.unitEnhanced,
+                priceRowFont: .subheadline.weight(.semibold)
+            )
         }
     }
 

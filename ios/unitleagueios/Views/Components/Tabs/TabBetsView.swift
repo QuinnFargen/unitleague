@@ -143,12 +143,18 @@ struct TabBetsView: View {
         return filtered.sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
 
-    private var activeBetsForDate: [Txn] {
-        txnRecords.filter { $0.canceled != true && $0.gameDate == dateKey }
+    private var selectedTeamAbbr: String? {
+        guard let selectedTeamId else { return nil }
+        return teams.first(where: { $0.id == selectedTeamId })?.abbr
     }
 
-    private var syndicateGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
-        let bySyndicate = Dictionary(grouping: activeBetsForDate, by: \.syndicateId)
+    private func matchesLeagueTeamFilter(_ txn: Txn) -> Bool {
+        (selectedLeagueId == nil || txn.leagueId == selectedLeagueId)
+            && (selectedTeamAbbr == nil || txn.home == selectedTeamAbbr || txn.away == selectedTeamAbbr)
+    }
+
+    private func groupBySyndicate(_ txns: [Txn]) -> [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
+        let bySyndicate = Dictionary(grouping: txns, by: \.syndicateId)
         return bySyndicate.keys.sorted().map { sid in
             let group = bySyndicate[sid] ?? []
             let singles = group.filter { $0.parlayId == nil }
@@ -160,8 +166,21 @@ struct TabBetsView: View {
         }
     }
 
+    private var activeBets: [Txn] {
+        txnRecords.filter { $0.canceled != true && matchesLeagueTeamFilter($0) }
+    }
+
+    private var activeDateSections: [(dateKey: String, groups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])])] {
+        let byDate = Dictionary(grouping: activeBets) { $0.gameDate ?? "" }
+        return byDate.keys.sorted().map { dk in
+            (dateKey: dk, groups: groupBySyndicate(byDate[dk] ?? []))
+        }
+    }
+
     private var historyRecords: [Txn] {
-        completedRecords.sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
+        completedRecords
+            .filter { $0.txnType == "unit" || matchesLeagueTeamFilter($0) }
+            .sorted { ($0.insertDt ?? "") > ($1.insertDt ?? "") }
     }
 
     private var historyGroups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]], units: [Txn])] {
@@ -209,6 +228,58 @@ struct TabBetsView: View {
         }
     }
 
+    private struct HistoryDateEntry {
+        let dateKey: String
+        let syndicateId: Int
+        var singles: [Txn] = []
+        var parlays: [[Txn]] = []
+    }
+
+    private var historyDateSections: [(dateKey: String, groups: [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])])] {
+        var entries: [String: [Int: HistoryDateEntry]] = [:]
+        for group in filteredHistoryGroups {
+            for txn in group.singles {
+                let dk = txn.gameDate ?? ""
+                var entry = entries[dk]?[group.syndicateId] ?? HistoryDateEntry(dateKey: dk, syndicateId: group.syndicateId)
+                entry.singles.append(txn)
+                entries[dk, default: [:]][group.syndicateId] = entry
+            }
+            for legs in group.parlays {
+                let dk = legs.first?.gameDate ?? ""
+                var entry = entries[dk]?[group.syndicateId] ?? HistoryDateEntry(dateKey: dk, syndicateId: group.syndicateId)
+                entry.parlays.append(legs)
+                entries[dk, default: [:]][group.syndicateId] = entry
+            }
+        }
+        return entries.keys.sorted(by: >).map { dk in
+            let bySyndicate = entries[dk] ?? [:]
+            let groups = bySyndicate.keys.sorted().map { sid -> (syndicateId: Int, singles: [Txn], parlays: [[Txn]]) in
+                let e = bySyndicate[sid]!
+                return (syndicateId: sid, singles: e.singles, parlays: e.parlays)
+            }
+            return (dateKey: dk, groups: groups)
+        }
+    }
+
+    private let sectionDateInputFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private let sectionDateOutputFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEE, MMM d"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private func formattedSectionDate(_ raw: String) -> String {
+        guard let d = sectionDateInputFmt.date(from: raw) else { return raw }
+        return sectionDateOutputFmt.string(from: d)
+    }
+
     private var bookmarkSingles: [PlacedBet] {
         betStore.bookmarks.filter { $0.parlayGroupId == nil }
             .sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
@@ -226,7 +297,9 @@ struct TabBetsView: View {
                 theme.appBackground(colorScheme).ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    DateNavigationHeader(selectedDate: $selectedDate)
+                    if selectedBetType != "Active" {
+                        DateNavigationHeader(selectedDate: $selectedDate)
+                    }
 
                     // League filter
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -520,7 +593,7 @@ struct TabBetsView: View {
                 Spacer()
                 ProgressView()
                 Spacer()
-            } else if activeBetsForDate.isEmpty {
+            } else if activeBets.isEmpty {
                 Spacer()
                 Text("No active bets")
                     .font(.subheadline)
@@ -543,30 +616,39 @@ struct TabBetsView: View {
                             .padding(.vertical, 6)
                             .background(theme.chipUnselected(colorScheme))
                             .clipShape(Capsule())
-                            Text("\(activeBetsForDate.count)")
+                            Text("\(activeBets.count)")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 16)
 
-                        ForEach(syndicateGroups, id: \.syndicateId) { group in
+                        ForEach(activeDateSections, id: \.dateKey) { section in
                             VStack(alignment: .leading, spacing: 10) {
-                                SyndicateHeaderRow(
-                                    syndicate: syndicates[group.syndicateId],
-                                    syndicateId: group.syndicateId,
-                                    runner: myRunners[group.syndicateId],
-                                    bettorId: bettorId
-                                )
+                                Text(formattedSectionDate(section.dateKey))
+                                    .font(.subheadline.weight(.bold))
+                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 16)
 
-                                ForEach(group.singles) { txn in
-                                    CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) }, isEditing: isEditingActiveBets)
-                                }
+                                ForEach(section.groups, id: \.syndicateId) { group in
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        SyndicateHeaderRow(
+                                            syndicate: syndicates[group.syndicateId],
+                                            syndicateId: group.syndicateId,
+                                            runner: myRunners[group.syndicateId],
+                                            bettorId: bettorId
+                                        )
 
-                                ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                    CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) }, isEditing: isEditingActiveBets)
+                                        ForEach(group.singles) { txn in
+                                            CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) }, isEditing: isEditingActiveBets)
+                                        }
+
+                                        ForEach(group.parlays, id: \.first?.parlayId) { legs in
+                                            CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) }, isEditing: isEditingActiveBets)
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
                                 }
                             }
-                            .padding(.horizontal, 16)
                         }
                     }
                     .padding(.top, 12)
@@ -661,31 +743,59 @@ struct TabBetsView: View {
                                 .padding(.horizontal, 16)
                         }
 
-                        ForEach(filteredHistoryGroups, id: \.syndicateId) { group in
+                        ForEach(historyDateSections, id: \.dateKey) { section in
                             VStack(alignment: .leading, spacing: 10) {
-                                let syndicate = historySyndicates[group.syndicateId]
-                                HStack(spacing: 6) {
-                                    Image(systemName: syndicate?.symbol ?? "house.fill")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(ProfileOption.color(for: syndicate?.color ?? ""))
-                                    Text(syndicate?.name ?? "Syndicate \(group.syndicateId)")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-                                }
+                                Text(formattedSectionDate(section.dateKey))
+                                    .font(.subheadline.weight(.bold))
+                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 16)
 
-                                ForEach(group.singles) { txn in
-                                    CardPlacedBet(txn: txn, onCancel: nil)
-                                }
+                                ForEach(section.groups, id: \.syndicateId) { group in
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        SyndicateHeaderRow(
+                                            syndicate: historySyndicates[group.syndicateId],
+                                            syndicateId: group.syndicateId,
+                                            runner: myRunners[group.syndicateId],
+                                            bettorId: bettorId
+                                        )
 
-                                ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                    CardPlacedParlay(legs: legs, onCancel: nil)
-                                }
+                                        ForEach(group.singles) { txn in
+                                            CardPlacedBet(txn: txn, onCancel: nil)
+                                        }
 
-                                ForEach(group.units) { txn in
-                                    CardPlacedUnit(txn: txn)
+                                        ForEach(group.parlays, id: \.first?.parlayId) { legs in
+                                            CardPlacedParlay(legs: legs, onCancel: nil)
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
                                 }
                             }
-                            .padding(.horizontal, 16)
+                        }
+
+                        let unitGroups = filteredHistoryGroups.filter { !$0.units.isEmpty }
+                        if !unitGroups.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Account Activity")
+                                    .font(.subheadline.weight(.bold))
+                                    .foregroundStyle(theme.primaryText(colorScheme))
+                                    .padding(.horizontal, 16)
+
+                                ForEach(unitGroups, id: \.syndicateId) { group in
+                                    VStack(alignment: .leading, spacing: 10) {
+                                        SyndicateHeaderRow(
+                                            syndicate: historySyndicates[group.syndicateId],
+                                            syndicateId: group.syndicateId,
+                                            runner: myRunners[group.syndicateId],
+                                            bettorId: bettorId
+                                        )
+
+                                        ForEach(group.units) { txn in
+                                            CardUnits(txn: txn, syndicate: historySyndicates[group.syndicateId])
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                }
+                            }
                         }
                     }
                     .padding(.top, 12)

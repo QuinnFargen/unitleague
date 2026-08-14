@@ -27,6 +27,9 @@ struct Txn: Codable, Identifiable {
     let parlayPriceMult: Double?
     let unitEnhanced: Double?
     let priceEnhanced: Double?
+    let leagueId: Int?
+    let homeScore: Int?
+    let awayScore: Int?
 
     enum CodingKeys: String, CodingKey {
         case txnId           = "txn_id"
@@ -46,5 +49,8 @@ struct Txn: Codable, Identifiable {
         case parlayPriceMult = "parlay_price_mult"
         case unitEnhanced    = "unit_enhanced"
         case priceEnhanced   = "price_enhanced"
+        case leagueId        = "league_id"
+        case homeScore       = "h"
+        case awayScore       = "a"
     }
 }

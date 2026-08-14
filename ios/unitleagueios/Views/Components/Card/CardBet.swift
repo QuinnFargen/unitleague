@@ -17,57 +17,85 @@ struct CardBet: View {
         f.dateFormat = "h:mm a"
         return f
     }()
-    private let dateInputFmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
-        f.locale = Locale(identifier: "en_US_POSIX")
-        return f
-    }()
-    private let dateOutputFmt: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "EEE, MMM d"
-        f.locale = Locale(identifier: "en_US_POSIX")
-        return f
-    }()
 
     private var formattedTime: String? {
         guard let raw = bet.gameTime, let d = timeInputFmt.date(from: raw) else { return nil }
         return timeOutputFmt.string(from: d)
     }
 
-    private var formattedDate: String? {
-        guard let raw = bet.gameDate, let d = dateInputFmt.date(from: raw) else { return nil }
-        return dateOutputFmt.string(from: d)
-    }
+    /// Pre-placement odds-browsing bets use `type == "O/U"` with `side == "Over"/"Under"`;
+    /// placed/graded bets use `type == "OVER"/"UNDER"` directly.
+    private var isOverUnder: Bool { bet.type == "O/U" || bet.type == "OVER" || bet.type == "UNDER" }
+    private var isOver: Bool { bet.type == "OVER" || bet.side == "Over" }
 
-    private func teamCapsule(_ abbr: String) -> some View {
-        Text(abbr)
+    private func teamCapsule(_ text: String) -> some View {
+        Text(text)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
             .background(theme.cardBackgroundProminent(colorScheme))
             .clipShape(Capsule())
     }
 
+    private func capsuleText(_ abbr: String) -> String {
+        guard abbr == bet.team else { return abbr }
+        switch bet.type {
+        case "ML":
+            return "\(abbr) ML"
+        case "SPR":
+            if let p = bet.points { return "\(abbr) \(OddsFormatting.formatPointsSigned(p))" }
+            return "\(abbr) SPR"
+        default:
+            return abbr
+        }
+    }
+
+    @ViewBuilder
+    private var ouCapsule: some View {
+        if isOverUnder, let p = bet.points {
+            HStack(spacing: 4) {
+                Image(systemName: isOver ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
+                Text(OddsFormatting.formatPoints(p))
+            }
+            .font(.caption.weight(.semibold))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 2)
+            .background(theme.cardBackgroundProminent(colorScheme))
+            .clipShape(Capsule())
+        }
+    }
+
     @ViewBuilder
     private var matchupLine: some View {
-        if (bet.type == "ML" || bet.type == "SPR"),
-           let team = bet.team,
-           team == bet.awayAbbr || team == bet.homeAbbr {
-            HStack(spacing: 4) {
-                if team == bet.awayAbbr {
-                    teamCapsule(bet.awayAbbr)
-                    Text("@ " + bet.homeAbbr)
-                } else {
-                    Text(bet.awayAbbr + " @")
-                    teamCapsule(bet.homeAbbr)
-                }
+        HStack(spacing: 4) {
+            if (bet.type == "ML" || bet.type == "SPR"), let team = bet.team, team == bet.awayAbbr {
+                teamCapsule(capsuleText(bet.awayAbbr))
+                Text("@ " + bet.homeAbbr)
+            } else if (bet.type == "ML" || bet.type == "SPR"), let team = bet.team, team == bet.homeAbbr {
+                Text(bet.awayAbbr + " @")
+                teamCapsule(capsuleText(bet.homeAbbr))
+            } else {
+                Text(bet.awayAbbr + " @ " + bet.homeAbbr)
             }
-            .font(.headline)
-            .foregroundStyle(theme.primaryText(colorScheme))
-        } else {
-            Text(bet.awayAbbr + " @ " + bet.homeAbbr)
-                .font(.headline)
-                .foregroundStyle(theme.primaryText(colorScheme))
+            ouCapsule
+        }
+        .font(.headline)
+        .foregroundStyle(theme.primaryText(colorScheme))
+    }
+
+    @ViewBuilder
+    private var scoreOrTimeRow: some View {
+        if let hscore = bet.homeScore, let ascore = bet.awayScore {
+            HStack(spacing: 4) {
+                Text("\(ascore)")
+                Text("–")
+                Text("\(hscore)")
+            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.secondary)
+        } else if let time = formattedTime {
+            Text(time)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -75,50 +103,19 @@ struct CardBet: View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 matchupLine
-                HStack(spacing: 6) {
-                    if let date = formattedDate {
-                        Text(date)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    if let time = formattedTime {
-                        Text(time)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                scoreOrTimeRow
             }
 
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
-                Text(betLabel(for: bet))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(String(format: "%.2f", bet.price))
-                        .font(.title2.weight(.bold))
-                        .foregroundStyle(won == nil ? theme.accent : theme.primaryText(colorScheme))
-                    Text("x")
-                        .font(.headline.weight(.bold))
-                        .foregroundStyle(theme.accent)
-                    if let u = bet.unit {
-                        Text(txnWagerLabel(u))
-                            .font(.headline.weight(.bold))
-                            .foregroundStyle(won == false ? theme.loss : .secondary)
-                        Image(systemName: "nairasign.circle.fill")
-                            .font(.headline.weight(.bold))
-                            .foregroundStyle(won == false ? theme.loss : .secondary)
-                        if won == true {
-                            Text("=")
-                                .font(.title2.weight(.bold))
-                                .foregroundStyle(theme.win)
-                            Text(String(format: "%.2f", bet.price * u))
-                                .font(.title2.weight(.bold))
-                                .foregroundStyle(theme.win)
-                        }
-                    }
-                }
+                PriceUnitsBlock(
+                    price: bet.price,
+                    unit: bet.unit,
+                    won: won,
+                    priceEnhanced: bet.priceEnhanced,
+                    unitEnhanced: bet.unitEnhanced
+                )
                 if let priceMultiplier {
                     Text(String(format: "%.2fx", priceMultiplier))
                         .font(.caption.weight(.semibold))

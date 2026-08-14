@@ -15,6 +15,10 @@ struct SelectedBet: Identifiable {
     var unit: Double? = nil  // when set, CardBet shows unit count after price
     var homeTeamId: Int? = nil
     var awayTeamId: Int? = nil
+    var unitEnhanced: Double? = nil
+    var priceEnhanced: Double? = nil
+    var homeScore: Int? = nil
+    var awayScore: Int? = nil
 }
 
 extension SelectedBet {

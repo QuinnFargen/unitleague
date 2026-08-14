@@ -309,7 +309,7 @@ enum Mock {
           "bet_type": "ML", "points": null, "team": "BOS",
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
-          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "BOS_ML"
+          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "BOS_ML", "league_id": 1
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
@@ -324,7 +324,7 @@ enum Mock {
           "bet_type": "SPR", "points": 5.5, "team": "BOS",
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
-          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "BOS_SPR"
+          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "BOS_SPR", "league_id": 1
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
@@ -339,7 +339,7 @@ enum Mock {
           "bet_type": "OVER", "points": 224.5, "team": null,
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-10T23:30:00+00:00", "game_dt": "2026-06-10",
-          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "TOTAL_OVER"
+          "game_id": 101, "bookmaker": "FanDuel", "bet_concat": "TOTAL_OVER", "league_id": 1
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
@@ -354,7 +354,8 @@ enum Mock {
           "bet_type": "ML", "points": null, "team": "BOS",
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
-          "game_id": 100, "bookmaker": "FanDuel", "bet_concat": "BOS_ML"
+          "game_id": 100, "bookmaker": "FanDuel", "bet_concat": "BOS_ML", "league_id": 1,
+          "h": 104, "a": 112, "unit_enhanced": 3.0, "price_enhanced": 2.35
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
@@ -369,7 +370,8 @@ enum Mock {
           "bet_type": "SPR", "points": -5.5, "team": "LAL",
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
-          "game_id": 100, "bookmaker": "DraftKings", "bet_concat": "LAL_SPR"
+          "game_id": 100, "bookmaker": "DraftKings", "bet_concat": "LAL_SPR", "league_id": 1,
+          "h": 104, "a": 112
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))

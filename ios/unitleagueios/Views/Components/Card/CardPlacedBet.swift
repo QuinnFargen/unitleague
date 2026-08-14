@@ -14,7 +14,11 @@ func selectedBet(from txn: Txn) -> SelectedBet {
         gameTime: txn.gameTime,
         gameDate: txn.gameDate,
         team:     txn.team,
-        unit:     txn.unit
+        unit:     txn.unit,
+        unitEnhanced:  txn.unitEnhanced,
+        priceEnhanced: txn.priceEnhanced,
+        homeScore: txn.homeScore,
+        awayScore: txn.awayScore
     )
 }
 

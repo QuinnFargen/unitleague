@@ -52,6 +52,8 @@ select
     g.game_ts,
     g.home,
     g.away,
+    g.h                                                                   as home_score,
+    g.a                                                                   as away_score,
     b.league_id,
     b.bookmaker,
     b.bet_type,

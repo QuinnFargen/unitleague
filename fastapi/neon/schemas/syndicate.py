@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 
 class SyndicateCreate(BaseModel):
@@ -11,6 +11,8 @@ class SyndicateCreate(BaseModel):
     max_runner: Optional[int] = None
     start_units: Optional[int] = None
     config: Optional[dict] = None
+    syndicate_type: Optional[str] = None
+    league_ids: Optional[List[int]] = None
 
 class RunnerCreate(BaseModel):
     bettor_id: int
@@ -24,6 +26,8 @@ class SyndicateUpdate(BaseModel):
     symbol: Optional[str] = None
     color: Optional[str] = None
     config: Optional[dict] = None
+    max_runner: Optional[int] = None
+    start_units: Optional[int] = None
 
 class RunnerProfile(BaseModel):
     profile_name: Optional[str] = None

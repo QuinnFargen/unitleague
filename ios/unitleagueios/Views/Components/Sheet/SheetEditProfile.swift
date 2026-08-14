@@ -67,10 +67,6 @@ struct SheetEditProfile: View {
         isRunnerMode ? [] : AccentOption.blockedForProfile
     }
 
-    private var availableColorOptions: [AccentOption] {
-        AccentOption.primary.filter { !blockedColors.contains($0) }
-    }
-
     init(runner: Binding<Runner>? = nil) {
         self.runner = runner
         _runnerName = State(initialValue: runner?.wrappedValue.profileName ?? "")
@@ -92,12 +88,6 @@ struct SheetEditProfile: View {
                         if !isRunnerMode {
                             emailSection
                         }
-
-                        colorSection(
-                            title: isRunnerMode ? "Runner Color" : "Accent Color",
-                            options: availableColorOptions,
-                            selection: colorBinding
-                        )
 
                         if !isRunnerMode {
                             notificationsSection
@@ -291,42 +281,6 @@ struct SheetEditProfile: View {
         }
         .tint(theme.accent)
         .padding(.horizontal, 32)
-    }
-
-    @ViewBuilder
-    private func colorSection(title: String, options: [AccentOption], selection: Binding<AccentOption>) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 32)
-
-            HStack(spacing: 12) {
-                ForEach(options) { option in
-                    Button {
-                        selection.wrappedValue = option
-                    } label: {
-                        VStack(spacing: 4) {
-                            Circle()
-                                .fill(option.color)
-                                .frame(width: 36, height: 36)
-                                .overlay(
-                                    Circle()
-                                        .stroke(theme.primaryText(colorScheme), lineWidth: selection.wrappedValue == option ? 2.5 : 0)
-                                )
-                                .shadow(
-                                    color: option.color.opacity(selection.wrappedValue == option ? 0.6 : 0),
-                                    radius: 6
-                                )
-                            Text(option.label)
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, 24)
-        }
     }
 
     private func save() {

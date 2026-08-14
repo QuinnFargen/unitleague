@@ -131,39 +131,6 @@ struct SheetSyndicateEdit: View {
                                 .padding(.top, 4)
                         }
 
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Syndicate Color")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 32)
-
-                            HStack(spacing: 12) {
-                                ForEach(AccentOption.primary) { option in
-                                    Button {
-                                        selectedColor = option
-                                    } label: {
-                                        VStack(spacing: 4) {
-                                            Circle()
-                                                .fill(option.color)
-                                                .frame(width: 36, height: 36)
-                                                .overlay(
-                                                    Circle()
-                                                        .stroke(theme.primaryText(colorScheme), lineWidth: selectedColor == option ? 2.5 : 0)
-                                                )
-                                                .shadow(
-                                                    color: option.color.opacity(selectedColor == option ? 0.6 : 0),
-                                                    radius: 6
-                                                )
-                                            Text(option.label)
-                                                .font(.caption2)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal, 24)
-                        }
-
                         VStack(spacing: 16) {
                             if syndicate.isStarted {
                                 valueRow(title: "Start Units", value: "\(syndicate.startUnits ?? 0)")

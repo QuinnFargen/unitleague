@@ -32,7 +32,7 @@ struct PriceUnitsBlock: View {
     var body: some View {
         if hasEnhanced, let pe = priceEnhanced, let ue = unitEnhanced, let u = unit {
             HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text(String(format: "%.2f", pe))
+                Text(String(format: "%.2fx", pe))
                     .font(priceRowFont)
                     .foregroundStyle(theme.accent)
                 Text("(\(String(format: "%.2f", price)))")
@@ -53,7 +53,7 @@ struct PriceUnitsBlock: View {
             }
         } else {
             HStack(alignment: .firstTextBaseline, spacing: 3) {
-                Text(String(format: "%.2f", price))
+                Text(String(format: "%.2fx", price))
                     .font(priceRowFont)
                     .foregroundStyle(primaryColor)
                 if let u = unit {

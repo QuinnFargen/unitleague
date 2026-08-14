@@ -51,6 +51,7 @@ struct TabSyndicateView: View {
                             NavigationLink(destination: ViewSyndicate(syndicate: soloSyndicate)) {
                                 CardSyndicate(
                                     syndicate: soloSyndicate,
+                                    showDescription: false,
                                     isSelected: selectedSyndicateId == 0
                                 )
                             }
@@ -69,6 +70,7 @@ struct TabSyndicateView: View {
                                     NavigationLink(destination: ViewSyndicate(syndicate: syndicate)) {
                                         CardSyndicate(
                                             syndicate: syndicate,
+                                            showDescription: false,
                                             isSelected: syndicate.syndicateId == selectedSyndicateId
                                         )
                                     }

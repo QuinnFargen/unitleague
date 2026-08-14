@@ -55,7 +55,7 @@ class SyndicateService {
         return try JSONDecoder().decode(StartResponse.self, from: data).syndicate
     }
 
-    func updateSyndicate(syndicateId: Int, name: String? = nil, symbol: String? = nil, color: String? = nil, config: SyndicateConfig? = nil, maxRunner: Int? = nil, startUnits: Int? = nil) async throws -> Syndicate {
+    func updateSyndicate(syndicateId: Int, name: String? = nil, description: String? = nil, symbol: String? = nil, color: String? = nil, config: SyndicateConfig? = nil, maxRunner: Int? = nil, startUnits: Int? = nil) async throws -> Syndicate {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/\(syndicateId)") else {
             throw URLError(.badURL)
         }
@@ -65,6 +65,7 @@ class SyndicateService {
 
         var body: [String: Any] = [:]
         if let name = name { body["name"] = name }
+        if let description = description { body["description"] = description }
         if let sym = symbol { body["symbol"] = sym }
         if let col = color  { body["color"] = col }
         if let max = maxRunner { body["max_runner"] = max }

@@ -13,7 +13,6 @@ struct ViewSyndicate: View {
     var onJoined: (() -> Void)? = nil
     @State private var runners: [Runner] = []
     @State private var activeBets: [Txn] = []
-    @State private var leagues: [League] = []
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingEdit = false
@@ -36,11 +35,6 @@ struct ViewSyndicate: View {
 
     private var sortedRunners: [Runner] {
         runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
-    }
-
-    private var leaguesForSyndicate: [League] {
-        guard let ids = syndicate.leagueIds, !ids.isEmpty else { return [] }
-        return leagues.filter { ids.contains($0.id) }
     }
 
     private func ordinal(_ n: Int) -> String {
@@ -225,67 +219,11 @@ struct ViewSyndicate: View {
     }
 
     private var syndicateBanner: some View {
-        let bannerColor = ProfileOption.color(for: syndicate.color ?? "")
-        let iconName = syndicate.symbol ?? (syndicate.isPublic ? "sparkles" : "person.3.fill")
-
-        return VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .center, spacing: 14) {
-                Image(systemName: iconName)
-                    .font(.system(size: 28, weight: .semibold))
-                    .foregroundStyle(bannerColor)
-                    .frame(width: 48, height: 48)
-                    .background(theme.cardBackgroundProminent(colorScheme))
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(syndicate.name)
-                        .font(.title2).bold()
-                        .foregroundStyle(theme.primaryText(colorScheme))
-
-                    HStack(spacing: 8) {
-                        if syndicate.isPublic {
-                            Text("Public")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(theme.accent)
-                        }
-                        Text("\(runners.count) members")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        if let su = syndicate.startUnits, su > 0 {
-                            Text("\(su) units")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-
-                Spacer()
-
-                if isAdmin {
-                    Button {
-                        showingEdit = true
-                    } label: {
-                        Image(systemName: "pencil.circle")
-                            .font(.title3)
-                            .foregroundStyle(theme.accent)
-                    }
-                }
-            }
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    if let type = syndicate.syndicateType {
-                        tagCapsule(type)
-                    }
-                    if leaguesForSyndicate.isEmpty {
-                        tagCapsule("All Leagues")
-                    } else {
-                        ForEach(leaguesForSyndicate) { league in
-                            tagCapsule(league.abbr)
-                        }
-                    }
-                }
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            CardSyndicate(
+                syndicate: syndicate,
+                onEdit: isAdmin ? { showingEdit = true } : nil
+            )
 
             if isAdmin && !syndicate.isStarted {
                 if let err = startError {
@@ -337,21 +275,8 @@ struct ViewSyndicate: View {
                 .disabled(isJoiningPublic)
             }
         }
-        .padding()
-        .background(theme.cardBackground(colorScheme))
-        .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.horizontal, 16)
         .padding(.top, 16)
-    }
-
-    private func tagCapsule(_ text: String) -> some View {
-        Text(text)
-            .font(.caption2.weight(.semibold))
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .foregroundStyle(.secondary)
-            .background(theme.cardBackgroundProminent(colorScheme))
-            .clipShape(Capsule())
     }
 
     private func rankInSyndicate() -> Int {
@@ -368,10 +293,8 @@ struct ViewSyndicate: View {
         do {
             async let runnersTask = RunnerService().fetchRunner(syndicateId: syndicate.syndicateId)
             async let betsTask = TxnService().fetchActiveBets(syndicateId: syndicate.syndicateId)
-            async let leaguesTask = LeagueService().fetchLeagues()
             runners = try await runnersTask
             activeBets = (try? await betsTask) ?? []
-            leagues = (try? await leaguesTask) ?? []
             if selectedSyndicateId == syndicate.syndicateId {
                 leagueRank = rankInSyndicate()
             }
@@ -413,16 +336,13 @@ private struct RunnerRow: View {
                 .font(.title2)
                 .foregroundStyle(ProfileOption.color(for: runner.color ?? ""))
 
-            VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 6) {
                 Text(runner.profileName ?? "Unknown")
                     .font(.body).fontWeight(isCurrentUser ? .semibold : .regular)
                     .foregroundStyle(theme.primaryText(colorScheme))
 
-                if runner.role == "admin" || isCurrentUser {
-                    HStack(spacing: 4) {
-                        if runner.role == "admin" { badge("admin", prominent: true) }
-                        if isCurrentUser { badge("you", prominent: runner.role != "admin") }
-                    }
+                if runner.role == "admin" {
+                    badge("admin", prominent: true)
                 }
             }
 

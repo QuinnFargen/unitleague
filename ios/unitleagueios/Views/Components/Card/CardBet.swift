@@ -40,8 +40,6 @@ struct CardBet: View {
     private func capsuleText(_ abbr: String) -> String {
         guard abbr == bet.team else { return abbr }
         switch bet.type {
-        case "ML":
-            return "\(abbr) ML"
         case "SPR":
             if let p = bet.points { return "\(abbr) \(OddsFormatting.formatPointsSigned(p))" }
             return "\(abbr) SPR"

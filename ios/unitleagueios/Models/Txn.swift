@@ -50,7 +50,7 @@ struct Txn: Codable, Identifiable {
         case unitEnhanced    = "unit_enhanced"
         case priceEnhanced   = "price_enhanced"
         case leagueId        = "league_id"
-        case homeScore       = "h"
-        case awayScore       = "a"
+        case homeScore       = "home_score"
+        case awayScore       = "away_score"
     }
 }

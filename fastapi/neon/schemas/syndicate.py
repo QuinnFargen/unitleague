@@ -23,6 +23,7 @@ class SyndicateStart(BaseModel):
 
 class SyndicateUpdate(BaseModel):
     name: Optional[str] = None
+    description: Optional[str] = None
     symbol: Optional[str] = None
     color: Optional[str] = None
     config: Optional[dict] = None

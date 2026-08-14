@@ -297,9 +297,7 @@ struct TabBetsView: View {
                 theme.appBackground(colorScheme).ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    if selectedBetType != "Active" {
-                        DateNavigationHeader(selectedDate: $selectedDate)
-                    }
+                    DateNavigationHeader(selectedDate: $selectedDate)
 
                     // League filter
                     ScrollView(.horizontal, showsIndicators: false) {

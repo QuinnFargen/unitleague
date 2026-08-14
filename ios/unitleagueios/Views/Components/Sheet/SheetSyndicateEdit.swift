@@ -12,6 +12,7 @@ struct SheetSyndicateEdit: View {
     @Binding var syndicate: Syndicate
 
     @State private var nameInput: String
+    @State private var descriptionInput: String
     @State private var selectedSymbol: String
     @State private var selectedColor: AccentOption
     @State private var maxRunnerPick: CapsulePick
@@ -54,6 +55,7 @@ struct SheetSyndicateEdit: View {
     init(syndicate: Binding<Syndicate>) {
         _syndicate = syndicate
         _nameInput = State(initialValue: syndicate.wrappedValue.name)
+        _descriptionInput = State(initialValue: syndicate.wrappedValue.description ?? "")
         _selectedSymbol = State(initialValue: syndicate.wrappedValue.symbol ?? SyndicateOption.symbols[0])
         _selectedColor = State(initialValue: AccentOption(rawValue: syndicate.wrappedValue.color ?? "") ?? .green)
 
@@ -130,6 +132,20 @@ struct SheetSyndicateEdit: View {
                                 .foregroundStyle(.secondary)
                                 .padding(.top, 4)
                         }
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Description")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.horizontal, 4)
+
+                            TextField("Add a description", text: $descriptionInput, axis: .vertical)
+                                .lineLimit(2...4)
+                                .padding()
+                                .background(theme.cardBackground(colorScheme))
+                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                        }
+                        .padding(.horizontal, 32)
 
                         VStack(spacing: 16) {
                             if syndicate.isStarted {
@@ -262,11 +278,13 @@ struct SheetSyndicateEdit: View {
         errorMessage = nil
         let id = syndicate.syndicateId
         let startUnitsToSave = syndicate.isStarted ? nil : startUnits
+        let trimmedDescription = descriptionInput.trimmingCharacters(in: .whitespacesAndNewlines)
         Task {
             do {
                 let updated = try await SyndicateService().updateSyndicate(
                     syndicateId: id,
                     name: trimmedName,
+                    description: trimmedDescription.isEmpty ? nil : trimmedDescription,
                     symbol: selectedSymbol,
                     color: selectedColor.rawValue,
                     maxRunner: maxRunner,

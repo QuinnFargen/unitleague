@@ -5,6 +5,7 @@ struct CardBetSlim: View {
     @Environment(\.colorScheme) private var colorScheme
     let txn: Txn
     var runner: Runner? = nil
+    var showEnhanced: Bool = true
 
     private var bet: SelectedBet { selectedBet(from: txn) }
 
@@ -22,22 +23,15 @@ struct CardBetSlim: View {
 
             Spacer(minLength: 8)
 
-            HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(String(format: "%.2f", bet.price))
-                    .font(.subheadline.weight(.bold))
-                    .foregroundStyle(txn.won == nil ? theme.accent : theme.primaryText(colorScheme))
-                Text("x")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(theme.accent)
-                if let u = bet.unit {
-                    Text(txnWagerLabel(u))
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(txn.won == false ? theme.loss : .secondary)
-                    Image(systemName: "nairasign.circle.fill")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(txn.won == false ? theme.loss : .secondary)
-                }
-            }
+            PriceUnitsBlock(
+                price: bet.price,
+                unit: bet.unit,
+                won: txn.won,
+                priceEnhanced: bet.priceEnhanced,
+                unitEnhanced: bet.unitEnhanced,
+                showEnhanced: showEnhanced,
+                priceRowFont: .subheadline.weight(.bold)
+            )
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 8)

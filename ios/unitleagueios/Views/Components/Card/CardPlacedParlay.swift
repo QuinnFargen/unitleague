@@ -6,6 +6,7 @@ struct CardPlacedParlay: View {
     let legs: [Txn]
     var onCancel: (() -> Void)? = nil
     var isEditing: Bool = false
+    var showEnhanced: Bool = true
 
     @State private var showCancelConfirm = false
 
@@ -38,6 +39,7 @@ struct CardPlacedParlay: View {
                 won: won,
                 priceEnhanced: legs.first?.priceEnhanced,
                 unitEnhanced: legs.first?.unitEnhanced,
+                showEnhanced: showEnhanced,
                 priceRowFont: .subheadline.weight(.semibold)
             )
         }
@@ -50,16 +52,16 @@ struct CardPlacedParlay: View {
             Divider()
             ForEach(legs) { leg in
                 if isEditing {
-                    CardBet(bet: legBet(leg), showTime: false)
+                    CardBet(bet: legBet(leg), showTime: false, showEnhanced: showEnhanced)
                 } else if let gameId = leg.gameId {
                     NavigationLink {
                         ViewGameDetailLoader(gameId: gameId)
                     } label: {
-                        CardBet(bet: legBet(leg), showTime: false)
+                        CardBet(bet: legBet(leg), showTime: false, showEnhanced: showEnhanced)
                     }
                     .buttonStyle(.plain)
                 } else {
-                    CardBet(bet: legBet(leg), showTime: false)
+                    CardBet(bet: legBet(leg), showTime: false, showEnhanced: showEnhanced)
                 }
             }
         }

@@ -52,6 +52,7 @@ struct TabSyndicateView: View {
                                 CardSyndicate(
                                     syndicate: soloSyndicate,
                                     showDescription: false,
+                                    showCapsules: false,
                                     isSelected: selectedSyndicateId == 0
                                 )
                             }
@@ -71,6 +72,7 @@ struct TabSyndicateView: View {
                                         CardSyndicate(
                                             syndicate: syndicate,
                                             showDescription: false,
+                                            showCapsules: false,
                                             isSelected: syndicate.syndicateId == selectedSyndicateId
                                         )
                                     }

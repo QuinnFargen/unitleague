@@ -60,6 +60,7 @@ struct CardPlacedBet: View {
     let txn: Txn
     var onCancel: (() -> Void)? = nil
     var isEditing: Bool = false
+    var showEnhanced: Bool = true
 
     @State private var showCancelConfirm = false
 
@@ -67,18 +68,18 @@ struct CardPlacedBet: View {
         Group {
             if isEditing && onCancel != nil {
                 Button { showCancelConfirm = true } label: {
-                    CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false)
+                    CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false, showEnhanced: showEnhanced)
                 }
                 .buttonStyle(.plain)
             } else if let gameId = txn.gameId {
                 NavigationLink {
                     ViewGameDetailLoader(gameId: gameId)
                 } label: {
-                    CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false)
+                    CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false, showEnhanced: showEnhanced)
                 }
                 .buttonStyle(.plain)
             } else {
-                CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false)
+                CardBet(bet: selectedBet(from: txn), won: txn.won, showTime: false, showEnhanced: showEnhanced)
             }
         }
         .confirmationDialog("Cancel this bet?", isPresented: $showCancelConfirm, titleVisibility: .visible) {

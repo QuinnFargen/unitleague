@@ -28,6 +28,8 @@ struct TabBetsView: View {
     @State private var myRunners: [Int: Runner] = [:]
     @State private var isLoadingActive = false
     @State private var isEditingActiveBets = false
+    @State private var showEnhancedActive = true
+    @State private var showEnhancedHistory = true
     @State private var completedRecords: [Txn] = []
     @State private var historyLegs: [Txn] = []
     @State private var historySyndicates: [Int: Syndicate] = [:]
@@ -614,6 +616,9 @@ struct TabBetsView: View {
                             .padding(.vertical, 6)
                             .background(theme.chipUnselected(colorScheme))
                             .clipShape(Capsule())
+                            RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhancedActive, tint: theme.accent) {
+                                showEnhancedActive.toggle()
+                            }
                             Text("\(activeBets.count)")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
@@ -637,11 +642,11 @@ struct TabBetsView: View {
                                         )
 
                                         ForEach(group.singles) { txn in
-                                            CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) }, isEditing: isEditingActiveBets)
+                                            CardPlacedBet(txn: txn, onCancel: { cancelBet(txn) }, isEditing: isEditingActiveBets, showEnhanced: showEnhancedActive)
                                         }
 
                                         ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                            CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) }, isEditing: isEditingActiveBets)
+                                            CardPlacedParlay(legs: legs, onCancel: { cancelParlay(legs) }, isEditing: isEditingActiveBets, showEnhanced: showEnhancedActive)
                                         }
                                     }
                                     .padding(.horizontal, 16)
@@ -726,8 +731,11 @@ struct TabBetsView: View {
                             Text("Bet History")
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
-                            historyFilterCapsules
                             Spacer()
+                            historyFilterCapsules
+                            RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhancedHistory, tint: theme.accent) {
+                                showEnhancedHistory.toggle()
+                            }
                             Text("\(filteredHistoryGroups.reduce(0) { $0 + $1.singles.count + $1.parlays.count + $1.units.count })")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
@@ -758,11 +766,11 @@ struct TabBetsView: View {
                                         )
 
                                         ForEach(group.singles) { txn in
-                                            CardPlacedBet(txn: txn, onCancel: nil)
+                                            CardPlacedBet(txn: txn, onCancel: nil, showEnhanced: showEnhancedHistory)
                                         }
 
                                         ForEach(group.parlays, id: \.first?.parlayId) { legs in
-                                            CardPlacedParlay(legs: legs, onCancel: nil)
+                                            CardPlacedParlay(legs: legs, onCancel: nil, showEnhanced: showEnhancedHistory)
                                         }
                                     }
                                     .padding(.horizontal, 16)

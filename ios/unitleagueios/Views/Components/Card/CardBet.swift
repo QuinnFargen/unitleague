@@ -7,6 +7,7 @@ struct CardBet: View {
     var won: Bool? = nil
     var priceMultiplier: Double? = nil
     var showTime: Bool = true
+    var showEnhanced: Bool = true
 
     private let timeInputFmt: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -113,7 +114,8 @@ struct CardBet: View {
                     unit: bet.unit,
                     won: won,
                     priceEnhanced: bet.priceEnhanced,
-                    unitEnhanced: bet.unitEnhanced
+                    unitEnhanced: bet.unitEnhanced,
+                    showEnhanced: showEnhanced
                 )
                 if let priceMultiplier {
                     Text(String(format: "%.2fx", priceMultiplier))

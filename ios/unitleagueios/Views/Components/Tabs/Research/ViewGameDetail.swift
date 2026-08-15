@@ -22,6 +22,9 @@ struct ViewGameDetail: View {
     @State private var oddMany: [OddMany] = []
     @State private var teamLevels: [Int: Int] = [:]
     @State private var gameBets: [Txn] = []
+    @State private var completedGameBets: [Txn] = []
+    @State private var runners: [Runner] = []
+    @State private var showEnhanced = true
 
     private let oddService = OddsService()
     private let teamService = TeamService()
@@ -112,14 +115,50 @@ struct ViewGameDetail: View {
 
                     if !gameBets.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Bets")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
+                            HStack {
+                                Text("Active Bets")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhanced, tint: theme.accent) {
+                                    showEnhanced.toggle()
+                                }
+                            }
+                            .padding(.horizontal, 4)
 
                             VStack(spacing: 8) {
                                 ForEach(gameBets) { txn in
-                                    CardBetSlim(txn: txn)
+                                    CardBetSlim(
+                                        txn: txn,
+                                        runner: runners.first(where: { $0.bettorId == txn.bettorId && $0.syndicateId == txn.syndicateId }),
+                                        showEnhanced: showEnhanced
+                                    )
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+
+                    if !completedGameBets.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Completed Bets")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhanced, tint: theme.accent) {
+                                    showEnhanced.toggle()
+                                }
+                            }
+                            .padding(.horizontal, 4)
+
+                            VStack(spacing: 8) {
+                                ForEach(completedGameBets) { txn in
+                                    CardBetSlim(
+                                        txn: txn,
+                                        runner: runners.first(where: { $0.bettorId == txn.bettorId && $0.syndicateId == txn.syndicateId }),
+                                        showEnhanced: showEnhanced
+                                    )
                                 }
                             }
                         }
@@ -141,7 +180,7 @@ struct ViewGameDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchData() }
         .task { await loadTeamLevels() }
-        .task { await loadGameBets() }
+        .task { await loadBetsAndRunners() }
         .sheet(item: $selectedBet) { bet in
             SheetConfirmBet(bet: bet, bettorId: bettorId, syndicateId: selectedSyndicateId)
         }
@@ -164,8 +203,22 @@ struct ViewGameDetail: View {
         oddMany = many ?? []
     }
 
-    private func loadGameBets() async {
-        gameBets = (try? await txnService.fetchActiveBets(gameId: gameId)) ?? []
+    private func loadBetsAndRunners() async {
+        async let activeTask = txnService.fetchActiveBets(gameId: gameId)
+        async let completedTask = txnService.fetchCompletedBets(gameId: gameId, bettorId: bettorId)
+        gameBets = (try? await activeTask) ?? []
+        completedGameBets = (try? await completedTask) ?? []
+
+        let syndicateIds = Set(gameBets.map(\.syndicateId)).union(completedGameBets.map(\.syndicateId))
+        guard !syndicateIds.isEmpty else { return }
+        runners = await withTaskGroup(of: [Runner].self) { group in
+            for sid in syndicateIds {
+                group.addTask { (try? await RunnerService().fetchRunner(syndicateId: sid)) ?? [] }
+            }
+            var all: [Runner] = []
+            for await r in group { all.append(contentsOf: r) }
+            return all
+        }
     }
 
     private func loadTeamLevels() async {

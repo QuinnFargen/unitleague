@@ -8,6 +8,7 @@ struct CardSyndicate: View {
     @Environment(\.colorScheme) private var colorScheme
     let syndicate: Syndicate
     var showDescription: Bool = true
+    var showCapsules: Bool = true
     var isSelected: Bool? = nil
     var onEdit: (() -> Void)? = nil
 
@@ -60,18 +61,20 @@ struct CardSyndicate: View {
                 }
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    if let type = syndicate.syndicateType {
-                        tagCapsule(type)
-                    }
-                    tagCapsule(syndicate.isPublic ? "Public" : "Private")
-                    leagueCapsules
-                    if let m = syndicate.maxRunner {
-                        tagCapsule("\(m) losers")
-                    }
-                    if let su = syndicate.startUnits, su > 0 {
-                        tagCapsule(icon: "nairasign.circle.fill", text: "\(su)")
+            if showCapsules {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        if let type = syndicate.syndicateType {
+                            tagCapsule(type)
+                        }
+                        tagCapsule(syndicate.isPublic ? "Public" : "Private")
+                        leagueCapsules
+                        if let m = syndicate.maxRunner {
+                            tagCapsule("\(m) losers")
+                        }
+                        if let su = syndicate.startUnits, su > 0 {
+                            tagCapsule(icon: "nairasign.circle.fill", text: "\(su)")
+                        }
                     }
                 }
             }

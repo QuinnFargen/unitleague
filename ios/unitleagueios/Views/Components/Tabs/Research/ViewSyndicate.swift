@@ -13,6 +13,8 @@ struct ViewSyndicate: View {
     var onJoined: (() -> Void)? = nil
     @State private var runners: [Runner] = []
     @State private var activeBets: [Txn] = []
+    @State private var completedBets: [Txn] = []
+    @State private var showEnhanced = true
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingEdit = false
@@ -91,14 +93,42 @@ struct ViewSyndicate: View {
 
                     if !activeBets.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Bets")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
+                            HStack {
+                                Text("Active Bets")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhanced, tint: theme.accent) {
+                                    showEnhanced.toggle()
+                                }
+                            }
+                            .padding(.horizontal, 4)
 
                             VStack(spacing: 8) {
                                 ForEach(activeBets) { txn in
-                                    CardBetSlim(txn: txn, runner: runners.first(where: { $0.bettorId == txn.bettorId }))
+                                    betRow(txn)
+                                }
+                            }
+                        }
+                        .padding(.horizontal, 16)
+                    }
+
+                    if !completedBets.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("Completed Bets")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                RowCapsuleButton(systemName: "bolt.batteryblock.fill", isSelected: showEnhanced, tint: theme.accent) {
+                                    showEnhanced.toggle()
+                                }
+                            }
+                            .padding(.horizontal, 4)
+
+                            VStack(spacing: 8) {
+                                ForEach(completedBets) { txn in
+                                    betRow(txn)
                                 }
                             }
                         }
@@ -279,6 +309,21 @@ struct ViewSyndicate: View {
         .padding(.top, 16)
     }
 
+    @ViewBuilder
+    private func betRow(_ txn: Txn) -> some View {
+        let card = CardBetSlim(txn: txn, runner: runners.first(where: { $0.bettorId == txn.bettorId }), showEnhanced: showEnhanced)
+        if let gameId = txn.gameId {
+            NavigationLink {
+                ViewGameDetailLoader(gameId: gameId)
+            } label: {
+                card
+            }
+            .buttonStyle(.plain)
+        } else {
+            card
+        }
+    }
+
     private func rankInSyndicate() -> Int {
         let sorted = runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
         if let idx = sorted.firstIndex(where: { $0.bettorId == bettorId }) {
@@ -293,8 +338,10 @@ struct ViewSyndicate: View {
         do {
             async let runnersTask = RunnerService().fetchRunner(syndicateId: syndicate.syndicateId)
             async let betsTask = TxnService().fetchActiveBets(syndicateId: syndicate.syndicateId)
+            async let completedTask = TxnService().fetchCompletedBets(syndicateId: syndicate.syndicateId)
             runners = try await runnersTask
             activeBets = (try? await betsTask) ?? []
+            completedBets = (try? await completedTask) ?? []
             if selectedSyndicateId == syndicate.syndicateId {
                 leagueRank = rankInSyndicate()
             }

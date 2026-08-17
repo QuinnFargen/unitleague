@@ -70,7 +70,7 @@ struct CardSyndicate: View {
                         tagCapsule(syndicate.isPublic ? "Public" : "Private")
                         leagueCapsules
                         if let m = syndicate.maxRunner {
-                            tagCapsule("\(m) losers")
+                            tagCapsule(icon: "figure.pickleball.circle.fill", text: "\(m)")
                         }
                         if let su = syndicate.startUnits, su > 0 {
                             tagCapsule(icon: "nairasign.circle.fill", text: "\(su)")

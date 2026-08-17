@@ -109,7 +109,7 @@ struct CardBet: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: 3) {
-                PriceUnitsBlock(
+                CardPriceUnits(
                     price: bet.price,
                     unit: bet.unit,
                     won: won,

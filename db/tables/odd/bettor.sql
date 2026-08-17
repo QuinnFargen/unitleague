@@ -7,5 +7,6 @@ create table IF NOT EXISTS odd.bettor(
   apple_name          varchar(100),
   profile_name        varchar(100),
   symbol              varchar(100),
-  color               varchar(100)
+  color               varchar(100),
+  favorite_team_id    int references ball.team(team_id)
 );

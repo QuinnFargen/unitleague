@@ -355,7 +355,7 @@ enum Mock {
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
           "game_id": 100, "bookmaker": "FanDuel", "bet_concat": "BOS_ML", "league_id": 1,
-          "h": 104, "a": 112, "unit_enhanced": 3.0, "price_enhanced": 2.35
+          "home_score": 104, "away_score": 112, "unit_enhanced": 3.0, "price_enhanced": 2.35
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))
@@ -371,7 +371,7 @@ enum Mock {
           "home": "LAL", "away": "BOS",
           "game_ts": "2026-06-08T23:30:00+00:00", "game_dt": "2026-06-08",
           "game_id": 100, "bookmaker": "DraftKings", "bet_concat": "LAL_SPR", "league_id": 1,
-          "h": 104, "a": 112
+          "home_score": 104, "away_score": 112
         }
         """
         return try! JSONDecoder().decode(Txn.self, from: Data(json.utf8))

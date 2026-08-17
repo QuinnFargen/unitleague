@@ -1,9 +1,12 @@
 import SwiftUI
 
-/// Shared price/units display: "price x units [symbol]". The price is tinted the accent
-/// color whenever an enhanced price is in effect, regardless of grading state. Once graded,
-/// the units value + symbol turn red on a loss, or green on a win — on a win the symbol moves
-/// to trail a computed payout ("= price x units") instead of sitting next to the units.
+/// Shared price/units display: "price x units [symbol]". Price and units are each tinted the
+/// accent color independently, only when *that* value is actually enhanced (and only while
+/// `showEnhanced` is on) — enhancing one doesn't tint the other. On a loss the units value
+/// reverts to the base (non-enhanced) amount, since a loss only forfeits the base stake, not
+/// the enhancement bonus. Once graded, the symbol turns red on a loss or green on a win; on a
+/// win it trails a computed payout ("= price x units") instead of sitting next to the units.
+/// The "x" and "=" separators are always plain text, never accent- or win/loss-tinted.
 /// Used by `CardBet`'s right-side block, `CardPlacedParlay`'s header, and `CardBetSlim`.
 struct CardPriceUnits: View {
     @EnvironmentObject private var theme: AppTheme
@@ -23,13 +26,25 @@ struct CardPriceUnits: View {
     private var primaryColor: Color { theme.primaryText(colorScheme) }
 
     private var displayPrice: Double { effectivePriceEnhanced ?? price }
-    private var displayUnit: Double? { unit.map { effectiveUnitEnhanced ?? $0 } }
+
+    /// A loss only forfeits the base wagered units, not any enhancement bonus, so the
+    /// enhanced unit value never applies once the bet is graded a loss.
+    private var displayUnit: Double? {
+        won == false ? unit : unit.map { effectiveUnitEnhanced ?? $0 }
+    }
 
     private var priceColor: Color {
         effectivePriceEnhanced != nil ? theme.accent : primaryColor
     }
 
-    private var unitSymbolColor: Color {
+    private var unitColor: Color {
+        switch won {
+        case false?: return theme.loss
+        default:     return effectiveUnitEnhanced != nil ? theme.accent : primaryColor
+        }
+    }
+
+    private var symbolColor: Color {
         switch won {
         case true?:  return theme.win
         case false?: return theme.loss
@@ -48,9 +63,12 @@ struct CardPriceUnits: View {
                     .foregroundStyle(primaryColor)
                 Text(txnWagerLabel(displayUnit))
                     .font(priceRowFont)
-                    .foregroundStyle(unitSymbolColor)
+                    .foregroundStyle(unitColor)
                 if won == true {
-                    Text("= " + String(format: "%.2f", displayPrice * displayUnit))
+                    Text("=")
+                        .font(priceRowFont)
+                        .foregroundStyle(primaryColor)
+                    Text(String(format: "%.2f", displayPrice * displayUnit))
                         .font(priceRowFont)
                         .foregroundStyle(theme.win)
                     Image(systemName: "nairasign.circle.fill")
@@ -59,7 +77,7 @@ struct CardPriceUnits: View {
                 } else {
                     Image(systemName: "nairasign.circle.fill")
                         .font(priceRowFont)
-                        .foregroundStyle(unitSymbolColor)
+                        .foregroundStyle(symbolColor)
                 }
             }
         }

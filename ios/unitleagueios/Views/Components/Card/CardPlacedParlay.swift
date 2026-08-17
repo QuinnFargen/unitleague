@@ -33,7 +33,7 @@ struct CardPlacedParlay: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             Spacer()
-            PriceUnitsBlock(
+            CardPriceUnits(
                 price: combinedOdds,
                 unit: legs.first?.unit,
                 won: won,

@@ -23,7 +23,7 @@ struct CardBetSlim: View {
 
             Spacer(minLength: 8)
 
-            PriceUnitsBlock(
+            CardPriceUnits(
                 price: bet.price,
                 unit: bet.unit,
                 won: txn.won,

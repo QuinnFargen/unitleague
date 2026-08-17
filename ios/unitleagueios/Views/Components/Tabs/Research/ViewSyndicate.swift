@@ -25,6 +25,7 @@ struct ViewSyndicate: View {
     @State private var startError: String?
     @State private var isJoiningPublic = false
     @State private var joinPublicError: String?
+    @State private var selectedRunner: Runner?
 
     private var currentRunner: Runner? { runners.first(where: { $0.bettorId == bettorId }) }
     private var isAdmin: Bool { currentRunner?.role == "admin" }
@@ -74,12 +75,17 @@ struct ViewSyndicate: View {
 
                             VStack(spacing: 0) {
                                 ForEach(Array(sortedRunners.enumerated()), id: \.element.id) { index, runner in
-                                    RunnerRow(
-                                        rank: index + 1,
-                                        runner: runner,
-                                        isCurrentUser: runner.bettorId == bettorId,
-                                        ordinal: ordinal
-                                    )
+                                    Button {
+                                        selectedRunner = runner
+                                    } label: {
+                                        RunnerRow(
+                                            rank: index + 1,
+                                            runner: runner,
+                                            isCurrentUser: runner.bettorId == bettorId,
+                                            ordinal: ordinal
+                                        )
+                                    }
+                                    .buttonStyle(.plain)
                                     if index < sortedRunners.count - 1 {
                                         Divider().padding(.horizontal, 16)
                                     }
@@ -201,6 +207,9 @@ struct ViewSyndicate: View {
             if let binding = currentRunnerBinding {
                 SheetEditProfile(runner: binding)
             }
+        }
+        .sheet(item: $selectedRunner) { runner in
+            SheetRunner(runner: runner)
         }
         .confirmationDialog(
             "Start the league?",

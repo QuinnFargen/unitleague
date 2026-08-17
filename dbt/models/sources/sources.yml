@@ -99,3 +99,9 @@ sources:
             tests: [not_null]
           - name: syndicate_id
             tests: [not_null]
+
+      - name: bettor
+        description: "One row per registered bettor, keyed by their Apple sign-in subject."
+        columns:
+          - name: bettor_id
+            tests: [not_null, unique]

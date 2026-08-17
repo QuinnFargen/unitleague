@@ -13,6 +13,7 @@ class BettorProfile(BaseModel):
     symbol: Optional[str] = None
     color: Optional[str] = None
     apple_email: Optional[str] = None
+    favorite_team_id: Optional[int] = None
 
 class BettorSignin(BaseModel):
     bettor_id: Optional[int] = None

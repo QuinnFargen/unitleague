@@ -35,6 +35,9 @@ struct SheetEditProfile: View {
     @State private var showingSymbolPicker = false
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var favoriteTeamId: Int?
+    @State private var favoriteTeamAbbr: String?
+    @State private var showingFavoriteTeamPicker = false
 
     @State private var runnerName: String
     @State private var runnerSymbol: String
@@ -87,6 +90,10 @@ struct SheetEditProfile: View {
 
                         if !isRunnerMode {
                             emailSection
+                        }
+
+                        if !isRunnerMode {
+                            favoriteTeamSection
                         }
 
                         if !isRunnerMode {
@@ -163,6 +170,19 @@ struct SheetEditProfile: View {
                     blockedColors: blockedColors,
                     title: isRunnerMode ? "Runner Symbol" : "Profile Symbol"
                 )
+            }
+            .sheet(isPresented: $showingFavoriteTeamPicker) {
+                SheetFavoriteTeamPicker(onSelect: { team in
+                    favoriteTeamId = team.id
+                    favoriteTeamAbbr = team.abbr
+                })
+            }
+            .task {
+                guard !isRunnerMode, bettorId != 0 else { return }
+                if let stats = try? await BettorService().fetchStats(bettorId: bettorId) {
+                    favoriteTeamId = stats.favoriteTeamId
+                    favoriteTeamAbbr = stats.favoriteTeamAbbr
+                }
             }
         }
     }
@@ -274,6 +294,32 @@ struct SheetEditProfile: View {
         }
     }
 
+    @ViewBuilder
+    private var favoriteTeamSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Favorite Team")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 32)
+
+            Button {
+                showingFavoriteTeamPicker = true
+            } label: {
+                HStack(spacing: 8) {
+                    Text(favoriteTeamAbbr ?? "Select a team")
+                        .font(.body)
+                        .foregroundStyle(favoriteTeamAbbr == nil ? Color.secondary : theme.primaryText(colorScheme))
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 32)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
     private var notificationsSection: some View {
         Toggle(isOn: $notificationsEnabled) {
             Text("Notifications")
@@ -327,6 +373,7 @@ struct SheetEditProfile: View {
             let symbol = profileSymbol
             let color = theme.accentOption.rawValue
             let email = appleEmail
+            let teamId = favoriteTeamId
             if id != 0 {
                 Task {
                     try? await BettorService().updateProfile(
@@ -334,7 +381,8 @@ struct SheetEditProfile: View {
                         profileName: name,
                         symbol: symbol,
                         color: color,
-                        appleEmail: email.isEmpty ? nil : email
+                        appleEmail: email.isEmpty ? nil : email,
+                        favoriteTeamId: teamId
                     )
                 }
             }

@@ -15,6 +15,10 @@ struct TabProfileView: View {
     @State private var authError: String?
     @State private var showingEditProfile = false
     @State private var showingEducation = false
+    @State private var stats: BettorStats?
+    @State private var syndicateRunners: [Runner] = []
+    @State private var leagueBalances: [BettorLeagueBalance] = []
+    @State private var leagues: [League] = []
 
     private var displayName: String {
         customUserName.isEmpty ? appleUserName : customUserName
@@ -43,7 +47,22 @@ struct TabProfileView: View {
                     showingEditProfile = true
                 }
             }
+            .task(id: bettorId) {
+                await loadProfileData()
+            }
         }
+    }
+
+    private func loadProfileData() async {
+        guard bettorId != 0 else { return }
+        async let statsFetch = try? BettorService().fetchStats(bettorId: bettorId)
+        async let runnersFetch = try? RunnerService().fetchRunner(bettorId: bettorId)
+        async let leagueBalancesFetch = try? BettorService().fetchLeagueBalances(bettorId: bettorId)
+        async let leaguesFetch = try? LeagueService().fetchLeagues()
+        stats = await statsFetch ?? nil
+        syndicateRunners = await runnersFetch ?? []
+        leagueBalances = await leagueBalancesFetch ?? []
+        leagues = await leaguesFetch ?? []
     }
 
     private var signInView: some View {
@@ -115,51 +134,25 @@ struct TabProfileView: View {
         }
     }
 
-    @AppStorage("useLocalAPI") private var useLocalAPI: Bool = false
-
     private var savedProfileView: some View {
         ScrollView {
             VStack(spacing: 24) {
-                HStack(alignment: .center, spacing: 14) {
-                    Image(systemName: profileSymbol)
-                        .font(.system(size: 28, weight: .semibold))
-                        .foregroundStyle(theme.accent)
-                        .frame(width: 48, height: 48)
-                        .background(theme.cardBackgroundProminent(colorScheme))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                CardProfile(
+                    symbol: profileSymbol,
+                    color: theme.accentOption.rawValue,
+                    name: displayName,
+                    favoriteTeamAbbr: stats?.favoriteTeamAbbr,
+                    favoriteLeagueId: stats?.favoriteLeagueId,
+                    careerUnits: stats?.careerBalance,
+                    isEditable: true,
+                    onEdit: { showingEditProfile = true }
+                )
 
-                    Text(displayName)
-                        .font(.title2).bold()
-                        .foregroundStyle(theme.primaryText(colorScheme))
-
-                    Spacer()
-
-                    Button {
-                        showingEditProfile = true
-                    } label: {
-                        Image(systemName: "pencil.circle")
-                            .font(.title3)
-                            .foregroundStyle(theme.accent)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding()
-                .background(theme.cardBackground(colorScheme))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
-
-                HStack {
-                    Image(systemName: "network")
-                        .foregroundStyle(theme.accent)
-                    Text("Use Local API")
-                        .foregroundStyle(theme.primaryText(colorScheme))
-                    Spacer()
-                    Toggle("", isOn: $useLocalAPI)
-                        .labelsHidden()
-                        .tint(theme.accent)
-                }
-                .padding()
-                .background(theme.cardBackground(colorScheme))
-                .clipShape(RoundedRectangle(cornerRadius: 14))
+                CardUnitBreakdown(
+                    syndicateRunners: syndicateRunners,
+                    leagueBalances: leagueBalances,
+                    leagues: leagues
+                )
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Components")

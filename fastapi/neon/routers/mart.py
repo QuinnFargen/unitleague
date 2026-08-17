@@ -351,6 +351,32 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@router.get("/mart/bettor")
+def get_bettor(bettor_id: int = Query(None)):
+    q = "SELECT * FROM mart.bettor WHERE 1=1"
+    query_params = {}
+
+    if bettor_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
+@router.get("/mart/bettor_league")
+def get_bettor_league(bettor_id: int = Query(None)):
+    q = "SELECT * FROM mart.bettor_league WHERE 1=1"
+    query_params = {}
+
+    if bettor_id:
+        q += " AND bettor_id = :bettor_id"
+        query_params["bettor_id"] = bettor_id
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @router.get("/mart/runner")
 def get_runner(syndicate_id: int = Query(None),
                bettor_id: int = Query(None),

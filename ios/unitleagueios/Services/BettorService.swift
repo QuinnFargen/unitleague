@@ -32,7 +32,7 @@ class BettorService {
         }
     }
 
-    func updateProfile(bettorId: Int, profileName: String?, symbol: String?, color: String?, appleEmail: String? = nil) async throws {
+    func updateProfile(bettorId: Int, profileName: String?, symbol: String?, color: String?, appleEmail: String? = nil, favoriteTeamId: Int? = nil) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/\(bettorId)/profile") else {
             throw URLError(.badURL)
         }
@@ -41,15 +41,36 @@ class BettorService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
         var body: [String: Any] = [:]
-        if let name = profileName { body["profile_name"] = name }
-        if let sym = symbol       { body["symbol"] = sym }
-        if let col = color        { body["color"] = col }
-        if let email = appleEmail { body["apple_email"] = email }
+        if let name = profileName         { body["profile_name"] = name }
+        if let sym = symbol               { body["symbol"] = sym }
+        if let col = color                { body["color"] = col }
+        if let email = appleEmail         { body["apple_email"] = email }
+        if let favoriteTeamId             { body["favorite_team_id"] = favoriteTeamId }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (_, response) = try await URLSession.shared.data(for: request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw URLError(.badServerResponse)
         }
+    }
+
+    func fetchStats(bettorId: Int) async throws -> BettorStats? {
+        guard var components = URLComponents(string: "\(APIClient.baseURL)/mart/bettor") else {
+            throw URLError(.badURL)
+        }
+        components.queryItems = [URLQueryItem(name: "bettor_id", value: "\(bettorId)")]
+        guard let url = components.url else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([BettorStats].self, from: data).first
+    }
+
+    func fetchLeagueBalances(bettorId: Int) async throws -> [BettorLeagueBalance] {
+        guard var components = URLComponents(string: "\(APIClient.baseURL)/mart/bettor_league") else {
+            throw URLError(.badURL)
+        }
+        components.queryItems = [URLQueryItem(name: "bettor_id", value: "\(bettorId)")]
+        guard let url = components.url else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode([BettorLeagueBalance].self, from: data)
     }
 }

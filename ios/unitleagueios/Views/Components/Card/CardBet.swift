@@ -92,7 +92,8 @@ struct CardBet: View {
         }
     }
 
-    /// Sits between the matchup and the price/units block once the game has a final score.
+    /// Sits right next to the matchup once the game has a final score — see `matchupAndScore`,
+    /// which drops it to its own line below the matchup if the row is too tight for both.
     @ViewBuilder
     private var scoreRow: some View {
         if let hscore = bet.homeScore, let ascore = bet.awayScore {
@@ -106,16 +107,35 @@ struct CardBet: View {
         }
     }
 
+    /// Keeps the score close to the team names (not crowding the price/units block) by trying
+    /// it inline first, and only wrapping it to a second line when the row is too narrow —
+    /// e.g. long team-capsule text — instead of letting individual numbers break mid-word.
+    @ViewBuilder
+    private var matchupAndScore: some View {
+        if bet.homeScore != nil {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    matchupLine
+                    scoreRow
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    matchupLine
+                    scoreRow
+                }
+            }
+        } else {
+            matchupLine
+        }
+    }
+
     var body: some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                matchupLine
+                matchupAndScore
                 timeRow
             }
 
-            Spacer()
-
-            scoreRow
+            Spacer(minLength: 8)
 
             VStack(alignment: .trailing, spacing: 3) {
                 HStack(spacing: 3) {

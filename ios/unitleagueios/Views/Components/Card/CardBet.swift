@@ -82,8 +82,19 @@ struct CardBet: View {
         .foregroundStyle(theme.primaryText(colorScheme))
     }
 
+    /// Only shown when the game hasn't finished — once there's a score, `scoreRow` takes over.
     @ViewBuilder
-    private var scoreOrTimeRow: some View {
+    private var timeRow: some View {
+        if bet.homeScore == nil, showTime, let time = formattedTime {
+            Text(time)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    /// Sits between the matchup and the price/units block once the game has a final score.
+    @ViewBuilder
+    private var scoreRow: some View {
         if let hscore = bet.homeScore, let ascore = bet.awayScore {
             HStack(spacing: 4) {
                 Text("\(ascore)")
@@ -92,10 +103,6 @@ struct CardBet: View {
             }
             .font(.caption.weight(.semibold))
             .foregroundStyle(.secondary)
-        } else if showTime, let time = formattedTime {
-            Text(time)
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
     }
 
@@ -103,20 +110,29 @@ struct CardBet: View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 matchupLine
-                scoreOrTimeRow
+                timeRow
             }
 
             Spacer()
 
+            scoreRow
+
             VStack(alignment: .trailing, spacing: 3) {
-                CardPriceUnits(
-                    price: bet.price,
-                    unit: bet.unit,
-                    won: won,
-                    priceEnhanced: bet.priceEnhanced,
-                    unitEnhanced: bet.unitEnhanced,
-                    showEnhanced: showEnhanced
-                )
+                HStack(spacing: 3) {
+                    CardPriceUnits(
+                        price: bet.price,
+                        unit: bet.unit,
+                        won: won,
+                        priceEnhanced: bet.priceEnhanced,
+                        unitEnhanced: bet.unitEnhanced,
+                        showEnhanced: showEnhanced
+                    )
+                    if bet.unit == nil {
+                        Text("x")
+                            .font(.headline)
+                            .foregroundStyle(theme.primaryText(colorScheme))
+                    }
+                }
                 if let priceMultiplier {
                     Text(String(format: "%.2fx", priceMultiplier))
                         .font(.caption.weight(.semibold))

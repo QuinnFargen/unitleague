@@ -31,7 +31,7 @@ select
     s.post_start_dt,
     s.champ_series_start_dt,
     s.champ_dt,
-    (current_date between s.reg_start_dt and s.champ_dt)               as active,
+    (current_date between coalesce(s.pre_dt, s.reg_start_dt) and s.champ_dt) as active,
     cg.champ_team_id,
     cg.champ_abbr
 

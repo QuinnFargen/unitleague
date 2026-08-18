@@ -164,10 +164,20 @@ struct SheetRunner: View {
     }
 
     private func loadAll() async {
-        async let mainLoad: () = load()
-        async let weeksLoad: () = weeksStore.load(syndicateId: runner.syndicateId, leagueIds: nil)
-        _ = await (mainLoad, weeksLoad)
+        await load()
+        await weeksStore.load(syndicateId: runner.syndicateId, leagueIds: resolvedLeagueIds())
         updateDefaultWeekIfNeeded()
+    }
+
+    /// Falls back to the leagues actually being bet on when the syndicate itself declares no
+    /// `league_ids` (an empty selection means "every league" per `SheetSyndicateCreate`), so the
+    /// week list can still resolve instead of silently staying empty.
+    private func resolvedLeagueIds() -> [Int]? {
+        if let ids = syndicates.first(where: { $0.syndicateId == runner.syndicateId })?.leagueIds, !ids.isEmpty {
+            return ids
+        }
+        let fromBets = Set(completedBets.compactMap(\.leagueId))
+        return fromBets.isEmpty ? nil : Array(fromBets)
     }
 
     private func updateDefaultWeekIfNeeded() {

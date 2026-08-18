@@ -20,21 +20,17 @@ struct ViewSyndicate: View {
     @State private var showingEdit = false
     @State private var showingStartConfirm = false
     @State private var showingRules = false
-    @State private var showingRunnerEdit = false
     @State private var isStarting = false
     @State private var startError: String?
     @State private var isJoiningPublic = false
     @State private var joinPublicError: String?
     @State private var selectedRunner: Runner?
+    @StateObject private var weeksStore = SyndicateWeeksStore()
+    @State private var selectedWeekId: Int?
 
     private var currentRunner: Runner? { runners.first(where: { $0.bettorId == bettorId }) }
     private var isAdmin: Bool { currentRunner?.role == "admin" }
     private var canJoinPublic: Bool { currentRunner == nil && syndicate.isPublic && !syndicate.isStarted }
-
-    private var currentRunnerBinding: Binding<Runner>? {
-        guard let idx = runners.firstIndex(where: { $0.bettorId == bettorId }) else { return nil }
-        return $runners[idx]
-    }
 
     private var sortedRunners: [Runner] {
         runners.sorted { ($0.balance ?? 0) > ($1.balance ?? 0) }
@@ -132,8 +128,12 @@ struct ViewSyndicate: View {
                             }
                             .padding(.horizontal, 4)
 
+                            if !weeksStore.weeks.isEmpty {
+                                WeekNavigationHeader(weeks: weeksStore.weeks, selectedWeekId: $selectedWeekId)
+                            }
+
                             VStack(spacing: 8) {
-                                ForEach(completedBets) { txn in
+                                ForEach(completedBets.filter { $0.weekId == selectedWeekId }) { txn in
                                     betRow(txn)
                                 }
                             }
@@ -149,31 +149,11 @@ struct ViewSyndicate: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 8) {
-                    Button {
+                    ToolbarCapsuleButton(label: "Rules") {
                         showingRules = true
-                    } label: {
-                        Text("Rules")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(theme.primaryText(colorScheme))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(theme.cardBackgroundProminent(colorScheme))
-                            .clipShape(Capsule())
                     }
 
                     if currentRunner != nil {
-                        Button {
-                            showingRunnerEdit = true
-                        } label: {
-                            Text("Runner")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(theme.primaryText(colorScheme))
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(theme.cardBackgroundProminent(colorScheme))
-                                .clipShape(Capsule())
-                        }
-
                         let isSelected = selectedSyndicateId == syndicate.syndicateId
                         Button {
                             if isSelected {
@@ -196,19 +176,14 @@ struct ViewSyndicate: View {
                 }
             }
         }
-        .task { await load() }
+        .task { await loadAll() }
         .sheet(isPresented: $showingEdit) {
             SheetSyndicateEdit(syndicate: $syndicate)
         }
         .sheet(isPresented: $showingRules) {
             SheetSyndicateRules(syndicate: $syndicate, isAdmin: isAdmin)
         }
-        .sheet(isPresented: $showingRunnerEdit) {
-            if let binding = currentRunnerBinding {
-                SheetEditProfile(runner: binding)
-            }
-        }
-        .sheet(item: $selectedRunner) { runner in
+        .sheet(item: $selectedRunner, onDismiss: { Task { await load() } }) { runner in
             SheetRunner(runner: runner)
         }
         .confirmationDialog(
@@ -339,6 +314,21 @@ struct ViewSyndicate: View {
             return idx + 1
         }
         return 0
+    }
+
+    private func loadAll() async {
+        async let mainLoad: () = load()
+        async let weeksLoad: () = weeksStore.load(syndicateId: syndicate.syndicateId, leagueIds: syndicate.leagueIds)
+        _ = await (mainLoad, weeksLoad)
+        updateDefaultWeekIfNeeded()
+    }
+
+    private func updateDefaultWeekIfNeeded() {
+        guard selectedWeekId == nil else { return }
+        selectedWeekId = weeksStore.weeks
+            .filter { week in completedBets.contains { $0.weekId == week.weekId } }
+            .max { $0.weekStartDt < $1.weekStartDt }?
+            .weekId
     }
 
     private func load() async {

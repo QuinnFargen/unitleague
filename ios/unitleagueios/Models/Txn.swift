@@ -30,6 +30,7 @@ struct Txn: Codable, Identifiable {
     let leagueId: Int?
     let homeScore: Int?
     let awayScore: Int?
+    let weekId: Int?
 
     enum CodingKeys: String, CodingKey {
         case txnId           = "txn_id"
@@ -52,5 +53,6 @@ struct Txn: Codable, Identifiable {
         case leagueId        = "league_id"
         case homeScore       = "home_score"
         case awayScore       = "away_score"
+        case weekId          = "week_id"
     }
 }

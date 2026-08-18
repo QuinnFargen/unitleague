@@ -37,7 +37,6 @@ struct SheetEditProfile: View {
     @State private var errorMessage: String?
     @State private var favoriteTeamId: Int?
     @State private var favoriteTeamAbbr: String?
-    @State private var showingFavoriteTeamPicker = false
 
     @State private var runnerName: String
     @State private var runnerSymbol: String
@@ -171,12 +170,6 @@ struct SheetEditProfile: View {
                     title: isRunnerMode ? "Runner Symbol" : "Profile Symbol"
                 )
             }
-            .sheet(isPresented: $showingFavoriteTeamPicker) {
-                SheetFavoriteTeamPicker(onSelect: { team in
-                    favoriteTeamId = team.id
-                    favoriteTeamAbbr = team.abbr
-                })
-            }
             .task {
                 guard !isRunnerMode, bettorId != 0 else { return }
                 if let stats = try? await BettorService().fetchStats(bettorId: bettorId) {
@@ -302,8 +295,11 @@ struct SheetEditProfile: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 32)
 
-            Button {
-                showingFavoriteTeamPicker = true
+            NavigationLink {
+                FavoriteTeamPicker(onSelect: { team in
+                    favoriteTeamId = team.id
+                    favoriteTeamAbbr = team.abbr
+                })
             } label: {
                 HStack(spacing: 8) {
                     Text(favoriteTeamAbbr ?? "Select a team")
@@ -388,6 +384,94 @@ struct SheetEditProfile: View {
             }
             dismiss()
         }
+    }
+}
+
+// MARK: - FavoriteTeamPicker
+
+/// League-then-team picker for `favoriteTeamSection` above, mirroring the league →
+/// `ViewTeamList(onSelect:)` flow already used by the team-enhancement picker in
+/// `SheetAddJuice`. Pushed onto `SheetEditProfile`'s own `NavigationStack` — `dismiss()` pops
+/// back to `SheetEditProfile` once a team is chosen.
+private struct FavoriteTeamPicker: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
+
+    var onSelect: (Team) -> Void
+
+    @State private var leagues: [League] = []
+    @State private var isLoading = false
+
+    var body: some View {
+        ZStack {
+            theme.appBackground(colorScheme).ignoresSafeArea()
+
+            if isLoading {
+                ProgressView()
+            } else {
+                ScrollView {
+                    VStack(spacing: 10) {
+                        ForEach(leagues) { league in
+                            NavigationLink {
+                                ViewTeamList(
+                                    league: league,
+                                    pickerTitle: "Favorite Team",
+                                    onSelect: { team in
+                                        onSelect(team)
+                                        dismiss()
+                                    }
+                                )
+                            } label: {
+                                leagueRow(league)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding(16)
+                }
+            }
+        }
+        .navigationTitle("Favorite Team")
+        .navigationBarTitleDisplayMode(.inline)
+        .task {
+            isLoading = true
+            leagues = (try? await LeagueService().fetchLeagues()) ?? []
+            isLoading = false
+        }
+    }
+
+    private func leagueRow(_ league: League) -> some View {
+        HStack(spacing: 16) {
+            Image(systemName: league.sportIcon)
+                .font(.title2)
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .frame(width: 44, height: 44)
+                .background(theme.cardBackground(colorScheme))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+            Text(league.abbr)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+        }
+        .padding()
+        .background(theme.cardBackground(colorScheme))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+#Preview("FavoriteTeamPicker") {
+    Color.clear.sheet(isPresented: .constant(true)) {
+        NavigationStack {
+            FavoriteTeamPicker(onSelect: { _ in })
+        }
+        .environmentObject(AppTheme())
     }
 }
 

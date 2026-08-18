@@ -377,6 +377,42 @@ def get_bettor_league(bettor_id: int = Query(None)):
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+@router.get("/mart/season")
+def get_season(league_id: int = Query(None), active: bool = Query(None)):
+    q = "SELECT * FROM mart.season WHERE 1=1"
+    query_params = {}
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
+
+    if active is not None:
+        q += " AND active = :active"
+        query_params["active"] = active
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
+@router.get("/mart/week")
+def get_week(season_id: int = Query(None), league_id: int = Query(None)):
+    q = "SELECT * FROM mart.week WHERE 1=1"
+    query_params = {}
+
+    if season_id:
+        q += " AND season_id = :season_id"
+        query_params["season_id"] = season_id
+
+    if league_id:
+        q += " AND league_id = :league_id"
+        query_params["league_id"] = league_id
+
+    q += " ORDER BY week_start_dt"
+
+    with engine.connect() as conn:
+        result = conn.execute(text(q), query_params)
+        return [dict(row._mapping) for row in result]
+
 @router.get("/mart/runner")
 def get_runner(syndicate_id: int = Query(None),
                bettor_id: int = Query(None),

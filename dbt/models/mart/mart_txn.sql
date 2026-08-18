@@ -55,6 +55,7 @@ select
     g.h                                                                   as home_score,
     g.a                                                                   as away_score,
     b.league_id,
+    w.week_id,
     b.bookmaker,
     b.bet_type,
     b.bet_concat,
@@ -72,5 +73,7 @@ left join {{ ref('mart_game') }} g  on  g.game_id    = b.game_id
 left join parlay_cte              pc on  pc.parlay_id = t.parlay_id
 left join parlay_won              pw on  pw.parlay_id = t.parlay_id
 left join {{ ref('mart_team') }} mt on  mt.team_id   = b.team_id
+left join {{ ref('ball_week') }} w  on  w.league_id  = b.league_id
+                                     and coalesce(g.game_dt, pc.game_dt) between w.week_start_dt and w.week_end_dt
 
 where t.canceled = false

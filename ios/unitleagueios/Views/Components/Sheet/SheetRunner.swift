@@ -1,20 +1,32 @@
 import SwiftUI
 
-/// Shows another syndicate runner's profile card, unit-history breakdown, and just their own
-/// bet history. Opened by tapping a row in `ViewSyndicate`'s Standing list.
+/// Shows a syndicate runner's profile card, their Juice for this syndicate, and just their own
+/// bet history. Opened by tapping a row in `ViewSyndicate`'s Standing list. The cross-syndicate
+/// unit-history breakdown lives one tap away in `SheetProfile`, via the "User" toolbar capsule.
+/// When viewing your own runner, `CardProfile` shows a pencil to edit it via `SheetEditProfile`.
 struct SheetRunner: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("bettorId") private var bettorId: Int = 0
 
-    let runner: Runner
+    @State private var runner: Runner
 
     @State private var stats: BettorStats?
     @State private var syndicateRunners: [Runner] = []
     @State private var leagueBalances: [BettorLeagueBalance] = []
     @State private var leagues: [League] = []
     @State private var completedBets: [Txn] = []
+    @State private var syndicateEnhanced: [Enhanced] = []
     @State private var isLoading = false
+    @State private var showingEditRunner = false
+    @State private var showingProfile = false
+    @StateObject private var weeksStore = SyndicateWeeksStore()
+    @State private var selectedWeekId: Int?
+
+    init(runner: Runner) {
+        _runner = State(initialValue: runner)
+    }
 
     var body: some View {
         NavigationStack {
@@ -34,24 +46,30 @@ struct SheetRunner: View {
                                 name: runner.profileName ?? "Runner",
                                 favoriteTeamAbbr: stats?.favoriteTeamAbbr,
                                 favoriteLeagueId: stats?.favoriteLeagueId,
-                                careerUnits: stats?.careerBalance
+                                careerUnits: stats?.careerBalance,
+                                isEditable: runner.bettorId == bettorId,
+                                onEdit: { showingEditRunner = true }
                             )
 
-                            CardUnitBreakdown(
-                                syndicateRunners: syndicateRunners,
-                                leagueBalances: leagueBalances,
-                                leagues: leagues
-                            )
+                            if !syndicateEnhanced.isEmpty {
+                                juiceSection
+                            }
 
                             if !completedBets.isEmpty {
                                 VStack(alignment: .leading, spacing: 8) {
-                                    Text("Bet History")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-                                        .padding(.horizontal, 4)
+                                    HStack {
+                                        Text("Bet History")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        if !weeksStore.weeks.isEmpty {
+                                            WeekNavigationHeader(weeks: weeksStore.weeks, selectedWeekId: $selectedWeekId)
+                                        }
+                                    }
+                                    .padding(.horizontal, 4)
 
                                     VStack(spacing: 8) {
-                                        ForEach(completedBets) { txn in
+                                        ForEach(completedBets.filter { $0.weekId == selectedWeekId }) { txn in
                                             betRow(txn)
                                         }
                                     }
@@ -68,8 +86,57 @@ struct SheetRunner: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarCapsuleButton(label: "User") { showingProfile = true }
+                }
             }
-            .task { await load() }
+            .task { await loadAll() }
+            .sheet(isPresented: $showingEditRunner) {
+                SheetEditProfile(runner: $runner)
+            }
+            .sheet(isPresented: $showingProfile) {
+                SheetProfile(
+                    title: runner.profileName ?? "Runner",
+                    syndicateRunners: syndicateRunners,
+                    leagueBalances: leagueBalances,
+                    leagues: leagues
+                )
+            }
+        }
+    }
+
+    private var juiceSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Juice")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 4)
+
+            let team = syndicateEnhanced.filter { $0.enhancementType == "team" }.sorted { $0.name < $1.name }
+            let clv  = syndicateEnhanced.filter { $0.enhancementType == "clv" }
+            let edge = syndicateEnhanced.filter { $0.enhancementType == "edge" }.sorted { $0.name < $1.name }
+
+            if !team.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(team) { item in
+                            TeamLevelCapsule(item: item)
+                        }
+                    }
+                }
+            }
+
+            if !clv.isEmpty {
+                CLVLevelLine(items: clv)
+            }
+
+            if !edge.isEmpty {
+                VStack(spacing: 8) {
+                    ForEach(edge) { item in
+                        EdgeEnhancementRow(item: item)
+                    }
+                }
+            }
         }
     }
 
@@ -88,6 +155,21 @@ struct SheetRunner: View {
         }
     }
 
+    private func loadAll() async {
+        async let mainLoad: () = load()
+        async let weeksLoad: () = weeksStore.load(syndicateId: runner.syndicateId, leagueIds: nil)
+        _ = await (mainLoad, weeksLoad)
+        updateDefaultWeekIfNeeded()
+    }
+
+    private func updateDefaultWeekIfNeeded() {
+        guard selectedWeekId == nil else { return }
+        selectedWeekId = weeksStore.weeks
+            .filter { week in completedBets.contains { $0.weekId == week.weekId } }
+            .max { $0.weekStartDt < $1.weekStartDt }?
+            .weekId
+    }
+
     private func load() async {
         isLoading = true
         async let statsFetch = try? BettorService().fetchStats(bettorId: runner.bettorId)
@@ -95,11 +177,13 @@ struct SheetRunner: View {
         async let leagueBalancesFetch = try? BettorService().fetchLeagueBalances(bettorId: runner.bettorId)
         async let leaguesFetch = try? LeagueService().fetchLeagues()
         async let betsFetch = try? TxnService().fetchCompletedBets(bettorId: runner.bettorId)
+        async let enhancedFetch = try? EnhancementService().fetchEnhanced(bettorId: runner.bettorId, syndicateId: runner.syndicateId)
         stats = await statsFetch ?? nil
         syndicateRunners = await runnersFetch ?? []
         leagueBalances = await leagueBalancesFetch ?? []
         leagues = await leaguesFetch ?? []
         completedBets = await betsFetch ?? []
+        syndicateEnhanced = await enhancedFetch ?? []
         isLoading = false
     }
 }

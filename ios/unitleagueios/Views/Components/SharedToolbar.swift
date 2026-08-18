@@ -51,6 +51,79 @@ struct RowCapsuleButton: View {
     }
 }
 
+// MARK: - ToolbarCapsuleButton
+
+struct ToolbarCapsuleButton: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let label: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(theme.cardBackgroundProminent(colorScheme))
+                .clipShape(Capsule())
+        }
+    }
+}
+
+// MARK: - WeekNavigationHeader
+
+/// Chevron-flanked week label used to page a completed-bets list one week at a time.
+/// Steps through every week in `weeks` (not just weeks with bets), disabling at either boundary.
+struct WeekNavigationHeader: View {
+    @EnvironmentObject private var theme: AppTheme
+    @Environment(\.colorScheme) private var colorScheme
+    let weeks: [Week]
+    @Binding var selectedWeekId: Int?
+
+    private var currentIndex: Int? {
+        weeks.firstIndex { $0.weekId == selectedWeekId }
+    }
+    private var currentWeek: Week? {
+        currentIndex.map { weeks[$0] }
+    }
+    private var canStepBack: Bool { (currentIndex ?? 0) > 0 }
+    private var canStepForward: Bool { (currentIndex ?? weeks.count - 1) < weeks.count - 1 }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Button { step(-1) } label: {
+                Image(systemName: "chevron.left").font(.subheadline.weight(.semibold))
+            }
+            .disabled(!canStepBack)
+            .foregroundStyle(canStepBack ? theme.primaryText(colorScheme) : Color.secondary.opacity(0.4))
+
+            Text(currentWeek?.weekName ?? "—")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(theme.primaryText(colorScheme))
+                .frame(minWidth: 90)
+
+            Button { step(1) } label: {
+                Image(systemName: "chevron.right").font(.subheadline.weight(.semibold))
+            }
+            .disabled(!canStepForward)
+            .foregroundStyle(canStepForward ? theme.primaryText(colorScheme) : Color.secondary.opacity(0.4))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(theme.cardBackgroundProminent(colorScheme))
+        .clipShape(Capsule())
+    }
+
+    private func step(_ direction: Int) {
+        guard let idx = currentIndex else { return }
+        let newIdx = idx + direction
+        guard weeks.indices.contains(newIdx) else { return }
+        selectedWeekId = weeks[newIdx].weekId
+    }
+}
+
 // MARK: - SegmentedToggle
 
 struct SegmentedToggle: View {

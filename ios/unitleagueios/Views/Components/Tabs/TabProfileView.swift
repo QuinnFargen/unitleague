@@ -17,6 +17,7 @@ struct TabProfileView: View {
     @State private var showingEducation = false
     @State private var stats: BettorStats?
     @State private var syndicateRunners: [Runner] = []
+    @State private var syndicates: [Syndicate] = []
     @State private var leagueBalances: [BettorLeagueBalance] = []
     @State private var leagues: [League] = []
 
@@ -57,10 +58,12 @@ struct TabProfileView: View {
         guard bettorId != 0 else { return }
         async let statsFetch = try? BettorService().fetchStats(bettorId: bettorId)
         async let runnersFetch = try? RunnerService().fetchRunner(bettorId: bettorId)
+        async let syndicatesFetch = try? SyndicateService().fetchSyndicate(bettorId: bettorId)
         async let leagueBalancesFetch = try? BettorService().fetchLeagueBalances(bettorId: bettorId)
         async let leaguesFetch = try? LeagueService().fetchLeagues()
         stats = await statsFetch ?? nil
         syndicateRunners = await runnersFetch ?? []
+        syndicates = await syndicatesFetch ?? []
         leagueBalances = await leagueBalancesFetch ?? []
         leagues = await leaguesFetch ?? []
     }
@@ -150,6 +153,7 @@ struct TabProfileView: View {
 
                 CardUnitBreakdown(
                     syndicateRunners: syndicateRunners,
+                    syndicates: syndicates,
                     leagueBalances: leagueBalances,
                     leagues: leagues
                 )

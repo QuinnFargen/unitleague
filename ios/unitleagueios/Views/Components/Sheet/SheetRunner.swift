@@ -2,8 +2,9 @@ import SwiftUI
 
 /// Shows a syndicate runner's profile card, their Juice for this syndicate, and just their own
 /// bet history. Opened by tapping a row in `ViewSyndicate`'s Standing list. The cross-syndicate
-/// unit-history breakdown lives one tap away in `SheetProfile`, via the "User" toolbar capsule.
-/// When viewing your own runner, `CardProfile` shows a pencil to edit it via `SheetEditProfile`.
+/// unit-history breakdown lives one tap away in `SheetProfile`, reached via a button on
+/// `CardProfile`: a pencil that opens `SheetEditProfile` when viewing your own runner, or a
+/// pickleball icon that opens `SheetProfile` when viewing an opponent's.
 struct SheetRunner: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
@@ -14,6 +15,7 @@ struct SheetRunner: View {
 
     @State private var stats: BettorStats?
     @State private var syndicateRunners: [Runner] = []
+    @State private var syndicates: [Syndicate] = []
     @State private var leagueBalances: [BettorLeagueBalance] = []
     @State private var leagues: [League] = []
     @State private var completedBets: [Txn] = []
@@ -48,7 +50,9 @@ struct SheetRunner: View {
                                 favoriteLeagueId: stats?.favoriteLeagueId,
                                 careerUnits: stats?.careerBalance,
                                 isEditable: runner.bettorId == bettorId,
-                                onEdit: { showingEditRunner = true }
+                                onEdit: { showingEditRunner = true },
+                                showsViewProfileButton: runner.bettorId != bettorId,
+                                onViewProfile: { showingProfile = true }
                             )
 
                             if !syndicateEnhanced.isEmpty {
@@ -86,9 +90,6 @@ struct SheetRunner: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ToolbarCapsuleButton(label: "User") { showingProfile = true }
-                }
             }
             .task { await loadAll() }
             .sheet(isPresented: $showingEditRunner) {
@@ -97,7 +98,14 @@ struct SheetRunner: View {
             .sheet(isPresented: $showingProfile) {
                 SheetProfile(
                     title: runner.profileName ?? "Runner",
+                    symbol: runner.symbol,
+                    color: runner.color,
+                    name: runner.profileName ?? "Runner",
+                    favoriteTeamAbbr: stats?.favoriteTeamAbbr,
+                    favoriteLeagueId: stats?.favoriteLeagueId,
+                    careerUnits: stats?.careerBalance,
                     syndicateRunners: syndicateRunners,
+                    syndicates: syndicates,
                     leagueBalances: leagueBalances,
                     leagues: leagues
                 )
@@ -174,12 +182,14 @@ struct SheetRunner: View {
         isLoading = true
         async let statsFetch = try? BettorService().fetchStats(bettorId: runner.bettorId)
         async let runnersFetch = try? RunnerService().fetchRunner(bettorId: runner.bettorId)
+        async let syndicatesFetch = try? SyndicateService().fetchSyndicate(bettorId: runner.bettorId)
         async let leagueBalancesFetch = try? BettorService().fetchLeagueBalances(bettorId: runner.bettorId)
         async let leaguesFetch = try? LeagueService().fetchLeagues()
         async let betsFetch = try? TxnService().fetchCompletedBets(bettorId: runner.bettorId)
         async let enhancedFetch = try? EnhancementService().fetchEnhanced(bettorId: runner.bettorId, syndicateId: runner.syndicateId)
         stats = await statsFetch ?? nil
         syndicateRunners = await runnersFetch ?? []
+        syndicates = await syndicatesFetch ?? []
         leagueBalances = await leagueBalancesFetch ?? []
         leagues = await leaguesFetch ?? []
         completedBets = await betsFetch ?? []

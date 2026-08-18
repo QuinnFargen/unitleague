@@ -8,16 +8,18 @@ struct CardUnitBreakdown: View {
     @Environment(\.colorScheme) private var colorScheme
 
     let syndicateRunners: [Runner]
+    var syndicates: [Syndicate] = []
     let leagueBalances: [BettorLeagueBalance]
     let leagues: [League]
 
     private func league(for id: Int) -> League? { leagues.first { $0.id == id } }
+    private func syndicate(for id: Int) -> Syndicate? { syndicates.first { $0.syndicateId == id } }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if !syndicateRunners.isEmpty {
                 section(title: "Syndicates", rows: syndicateRunners) { runner in
-                    row(icon: nil, label: runner.profileName ?? "Runner", value: runner.balance ?? 0)
+                    syndicateRow(runner)
                 }
             }
 
@@ -53,6 +55,31 @@ struct CardUnitBreakdown: View {
         }
     }
 
+    private func syndicateRow(_ runner: Runner) -> some View {
+        let syn = syndicate(for: runner.syndicateId)
+        return HStack(spacing: 12) {
+            Image(systemName: syn?.symbol ?? "house.fill")
+                .foregroundStyle(ProfileOption.color(for: syn?.color ?? ""))
+                .frame(width: 20)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(syn?.name ?? "Syndicate \(runner.syndicateId)")
+                    .foregroundStyle(theme.primaryText(colorScheme))
+
+                HStack(spacing: 4) {
+                    Image(systemName: runner.symbol ?? "person.fill")
+                    Text(runner.profileName ?? "Runner")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+            unitValue(runner.balance ?? 0)
+        }
+        .padding()
+    }
+
     private func row(icon: String?, label: String, value: Double) -> some View {
         HStack {
             if let icon {
@@ -83,6 +110,7 @@ struct CardUnitBreakdown: View {
     ScrollView {
         CardUnitBreakdown(
             syndicateRunners: Mock.runners,
+            syndicates: [Mock.syndicate],
             leagueBalances: [
                 BettorLeagueBalance(bettorId: 42, leagueId: 2, balance: 42),
                 BettorLeagueBalance(bettorId: 42, leagueId: 1, balance: -12)

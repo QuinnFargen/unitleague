@@ -15,6 +15,10 @@ struct CardProfile: View {
     var careerUnits: Double? = nil
     var isEditable: Bool = false
     var onEdit: (() -> Void)? = nil
+    /// Shown instead of the edit pencil when `isEditable` is false — e.g. a link to view this
+    /// runner's full cross-syndicate profile when they're an opponent, not the signed-in bettor.
+    var showsViewProfileButton: Bool = false
+    var onViewProfile: (() -> Void)? = nil
 
     private var iconColor: Color {
         color.map { ProfileOption.color(for: $0) } ?? theme.accent
@@ -41,6 +45,15 @@ struct CardProfile: View {
                         onEdit?()
                     } label: {
                         Image(systemName: "pencil.circle")
+                            .font(.title3)
+                            .foregroundStyle(theme.accent)
+                    }
+                    .buttonStyle(.plain)
+                } else if showsViewProfileButton {
+                    Button {
+                        onViewProfile?()
+                    } label: {
+                        Image(systemName: "figure.pickleball.circle.fill")
                             .font(.title3)
                             .foregroundStyle(theme.accent)
                     }
@@ -110,7 +123,9 @@ struct CardProfile: View {
             name: "Runner Two",
             favoriteTeamAbbr: nil,
             favoriteLeagueId: nil,
-            careerUnits: -46
+            careerUnits: -46,
+            showsViewProfileButton: true,
+            onViewProfile: {}
         )
         CardProfile(symbol: nil, color: nil, name: "Loading…")
     }

@@ -112,14 +112,15 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ## CardGame
 
-**Purpose:** Single game row card — sport icon, away @ home matchup, score (FINAL) or scheduled time.
+**Purpose:** Single game row card — sport icon, away @ home matchup, one odds value for the selected bet type (ML / SPR / O/U, home side, accent-colored when it hits), score (FINAL) or scheduled time.
 
-**Models:** `Game`
+**Models:** `Game`, `Odds`
 
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabBetsView` (game list when bet type is "None")
+- `TabBetsView` (Calendar section)
+- `ViewLeagueSched` (schedule list)
 
 **Sub-components:** None
 
@@ -127,7 +128,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ---
 
-## CardOddSingle
+## CardGameOddSingle
 
 **Purpose:** Odds card for a single bet type (ML / SPR / O/U) — price capsules, implied probability, game time.
 
@@ -136,7 +137,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabBetsView` (SPR / ML / O/U filtered odds list)
+- `TabBetsView` (Slate section, when the odds-type toggle is set to ML / SPR / O/U instead of ALL)
 
 **Sub-components:** None
 

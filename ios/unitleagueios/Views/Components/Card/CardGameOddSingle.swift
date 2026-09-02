@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CardOddSingle: View {
+struct CardGameOddSingle: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     let odd: Odds
@@ -70,7 +70,7 @@ struct CardOddSingle: View {
         .padding(.vertical, 4)
         .frame(width: colW)
         .background(oddsCapsuleColor(price, betHash: betHash, won: won))
-        .clipShape(Capsule())
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     var body: some View {
@@ -195,11 +195,11 @@ struct CardOddSingle: View {
     }
 }
 
-#Preview("CardOddSingle") {
+#Preview("CardGameOddSingle") {
     VStack(spacing: 12) {
-        CardOddSingle(odd: Mock.odds, betType: "ML") { _ in }
-        CardOddSingle(odd: Mock.odds, betType: "SPR") { _ in }
-        CardOddSingle(odd: Mock.odds, betType: "O/U") { _ in }
+        CardGameOddSingle(odd: Mock.odds, betType: "ML") { _ in }
+        CardGameOddSingle(odd: Mock.odds, betType: "SPR") { _ in }
+        CardGameOddSingle(odd: Mock.odds, betType: "O/U") { _ in }
     }
     .padding()
     .environmentObject(AppTheme())

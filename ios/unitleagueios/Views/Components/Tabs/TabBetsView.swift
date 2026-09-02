@@ -11,7 +11,8 @@ struct TabBetsView: View {
     @State private var selectedLeagueId: Int? = nil
     @State private var selectedTeamId: Int? = nil
     @State private var selectedBetType: String = "ALL"
-    @State private var cycleLabel: String = "ML"
+    @State private var selectedOddsType: String = "ALL"
+    @State private var showJuiceOnly: Bool = false
     @State private var selectedBookmarkParlayLegs: [PlacedBet]?
     @State private var odds: [Odds] = []
     @State private var allOdds: [Odds] = []
@@ -38,14 +39,26 @@ struct TabBetsView: View {
     @State private var selectedHistoryBetType: HistoryBetType? = nil
     @State private var selectedHistoryResult: Bool? = nil
 
-    private let cycleOrder = ["ML", "SPR", "O/U"]
+    private let oddsTypeCycle = ["ALL", "ML", "SPR", "O/U"]
 
     private func cycleIcon(for label: String) -> String {
         switch label {
         case "SPR": return "arrow.left.and.line.vertical.and.arrow.right"
         case "O/U": return "arrow.up.and.line.horizontal.and.arrow.down"
+        case "ALL": return "square.grid.3x2"
         default:    return "lines.measurement.vertical" // ML
         }
+    }
+
+    private func advanceOddsType() {
+        let idx = oddsTypeCycle.firstIndex(of: selectedOddsType) ?? 0
+        selectedOddsType = oddsTypeCycle[(idx + 1) % oddsTypeCycle.count]
+    }
+
+    /// The odds type Calendar's `CardGame` cards show — Calendar has no "ALL" concept,
+    /// so it falls back to ML while the shared toggle sits idle.
+    private var effectiveCalendarOddsType: String {
+        selectedOddsType == "ALL" ? "ML" : selectedOddsType
     }
 
     private enum HistoryBetType: String, CaseIterable {
@@ -84,12 +97,11 @@ struct TabBetsView: View {
     }
 
     private var oddsSectionTitle: String {
-        switch selectedBetType {
+        switch selectedOddsType {
         case "ALL":   return "The Slate"
         case "ML":    return "Moneyline Bets"
         case "SPR":   return "Spread Bets"
         case "O/U":   return "Total Bets"
-        case "Juice": return "Juiced Bets"
         default:      return ""
         }
     }
@@ -114,12 +126,12 @@ struct TabBetsView: View {
 
     private var filteredOdds: [Odds] {
         let byType: [Odds]
-        switch selectedBetType {
+        switch selectedOddsType {
         case "SPR": byType = odds.filter { $0.sprAwayPrice != nil && $0.sprHomePrice != nil }
         case "O/U": byType = odds.filter { $0.overPrice != nil && $0.underPrice != nil }
-        default:    byType = odds // "ALL" and "Juice"
+        default:    byType = odds // "ALL" and "ML"
         }
-        let scoped = selectedBetType == "Juice"
+        let scoped = showJuiceOnly
             ? byType.filter { juiceTeamLevels[$0.homeTeamId] != nil || juiceTeamLevels[$0.awayTeamId] != nil }
             : byType
         let teamFiltered: [Odds]
@@ -338,50 +350,40 @@ struct TabBetsView: View {
                         .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
-                    // Capsule row: Calendar, ALL, ML/SPR/O-U cycle, Juice, Bookmarks, Active, History
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            RowCapsuleButton(systemName: "calendar", isSelected: selectedBetType == "Calendar") {
-                                selectedBetType = "Calendar"
-                            }
-
-                            RowCapsuleButton(systemName: "square.grid.3x2", isSelected: selectedBetType == "ALL") {
-                                selectedBetType = "ALL"
-                                cycleLabel = "ML"
-                            }
-
-                            RowCapsuleButton(systemName: cycleIcon(for: cycleLabel), isSelected: selectedBetType == cycleLabel) {
-                                if selectedBetType == cycleLabel {
-                                    let idx = cycleOrder.firstIndex(of: cycleLabel) ?? 0
-                                    cycleLabel = cycleOrder[(idx + 1) % cycleOrder.count]
-                                }
-                                selectedBetType = cycleLabel
-                            }
-
-                            RowCapsuleButton(systemName: "syringe.fill", isSelected: selectedBetType == "Juice") {
-                                selectedBetType = (selectedBetType == "Juice") ? "ALL" : "Juice"
-                            }
-
-                            RowCapsuleButton(
-                                systemName: betStore.bookmarks.isEmpty ? "bookmark" : "bookmark.fill",
-                                isSelected: selectedBetType == "Bookmarks"
-                            ) {
-                                selectedBetType = "Bookmarks"
-                            }
-
-                            RowCapsuleButton(systemName: "receipt.fill", isSelected: selectedBetType == "Active") {
-                                selectedBetType = "Active"
-                                Task { await fetchActiveBetsData() }
-                            }
-
-                            RowCapsuleButton(systemName: "bitcoinsign.bank.building.fill", isSelected: selectedBetType == "History") {
-                                selectedBetType = "History"
-                                Task { await loadHistoryData() }
-                            }
+                    // Capsule row: Calendar, ALL, Bookmarks, Active, History — widened to fill the row
+                    HStack(spacing: 8) {
+                        RowCapsuleButton(systemName: "calendar", isSelected: selectedBetType == "Calendar") {
+                            selectedBetType = "Calendar"
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity)
+
+                        RowCapsuleButton(systemName: "square.grid.3x2", isSelected: selectedBetType == "ALL") {
+                            selectedBetType = "ALL"
+                        }
+                        .frame(maxWidth: .infinity)
+
+                        RowCapsuleButton(
+                            systemName: betStore.bookmarks.isEmpty ? "bookmark" : "bookmark.fill",
+                            isSelected: selectedBetType == "Bookmarks"
+                        ) {
+                            selectedBetType = "Bookmarks"
+                        }
+                        .frame(maxWidth: .infinity)
+
+                        RowCapsuleButton(systemName: "receipt.fill", isSelected: selectedBetType == "Active") {
+                            selectedBetType = "Active"
+                            Task { await fetchActiveBetsData() }
+                        }
+                        .frame(maxWidth: .infinity)
+
+                        RowCapsuleButton(systemName: "bitcoinsign.bank.building.fill", isSelected: selectedBetType == "History") {
+                            selectedBetType = "History"
+                            Task { await loadHistoryData() }
+                        }
+                        .frame(maxWidth: .infinity)
                     }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
 
                     Divider().background(theme.divider(colorScheme))
 
@@ -467,7 +469,7 @@ struct TabBetsView: View {
         }
     }
 
-    // MARK: - Odds content (ALL/ML/SPR/O-U/Juice)
+    // MARK: - Odds content (Slate: ALL/ML/SPR/O-U, with optional Juice filter)
 
     private var oddsContent: some View {
         Group {
@@ -484,6 +486,12 @@ struct TabBetsView: View {
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
+                            RowCapsuleButton(systemName: cycleIcon(for: selectedOddsType), isSelected: true) {
+                                advanceOddsType()
+                            }
+                            RowCapsuleButton(systemName: "syringe.fill", isSelected: showJuiceOnly) {
+                                showJuiceOnly.toggle()
+                            }
                             Text("\(filteredOdds.count)")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
@@ -492,7 +500,7 @@ struct TabBetsView: View {
 
                         LazyVStack(spacing: 12) {
                             ForEach(filteredOdds) { odd in
-                                if selectedBetType == "ALL" || selectedBetType == "Juice" {
+                                if selectedOddsType == "ALL" {
                                     ZStack {
                                         NavigationLink {
                                             ViewGameDetail(
@@ -507,7 +515,7 @@ struct TabBetsView: View {
                                         CardGameOdds(
                                             odd: odd,
                                             teamLevels: juiceTeamLevels,
-                                            showJuiceCapsule: selectedBetType == "Juice"
+                                            showJuiceCapsule: showJuiceOnly
                                         ) { bet in selectedBet = bet }
                                     }
                                 } else {
@@ -522,7 +530,7 @@ struct TabBetsView: View {
                                                 leagueId: odd.leagueId
                                             )
                                         } label: { Color.clear }
-                                        CardOddSingle(odd: odd, betType: selectedBetType) { bet in selectedBet = bet }
+                                        CardGameOddSingle(odd: odd, betType: selectedOddsType) { bet in selectedBet = bet }
                                     }
                                 }
                             }
@@ -553,6 +561,9 @@ struct TabBetsView: View {
                                 .font(.title3.weight(.bold))
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
+                            RowCapsuleButton(systemName: cycleIcon(for: effectiveCalendarOddsType), isSelected: true) {
+                                advanceOddsType()
+                            }
                             Text("\(displayedGames.count)")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
@@ -571,7 +582,7 @@ struct TabBetsView: View {
                                         leagueId: game.leagueId
                                     )
                                 } label: {
-                                    CardGame(game: game, odds: oddsByGameId[game.id])
+                                    CardGame(game: game, odds: oddsByGameId[game.id], oddsType: effectiveCalendarOddsType)
                                 }
                                 .buttonStyle(.plain)
                             }

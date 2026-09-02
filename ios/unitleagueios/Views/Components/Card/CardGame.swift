@@ -5,6 +5,7 @@ struct CardGame: View {
     @Environment(\.colorScheme) private var colorScheme
     let game: Game
     var odds: Odds? = nil
+    var oddsType: String = "ML"
 
     private let timeInputFormatter: ISO8601DateFormatter = {
         let f = ISO8601DateFormatter()
@@ -44,7 +45,7 @@ struct CardGame: View {
                     .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
                     .lineLimit(1)
                     .frame(width: 50, alignment: .leading)
-                oddsGroupView
+                oddsValueView
                     .font(.caption2.weight(.semibold))
             }
             .font(.subheadline.weight(.semibold))
@@ -85,43 +86,23 @@ struct CardGame: View {
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
 
-    private struct OddsSegment {
-        let text: Text
-        let width: CGFloat
-    }
-
-    /// Home team's implied ML%, home team's spread, then the total O/U line — fixed-width
-    /// columns so the values line up vertically across a schedule of many cards.
-    private var oddsSegments: [OddsSegment]? {
+    /// The single home-side odds value for the currently selected `oddsType` — accent-colored
+    /// when it hits (home ML, home covers, or the over).
+    private var oddsValueText: Text? {
         guard let odds else { return nil }
-        var segments: [OddsSegment] = []
-        if let pct = homePctText(odds) {
-            segments.append(OddsSegment(text: pct, width: 30))
+        switch oddsType {
+        case "SPR": return homeSpreadText(odds)
+        case "O/U": return totalOddsText(odds)
+        default:    return homePctText(odds)
         }
-        if let spread = homeSpreadText(odds) {
-            segments.append(OddsSegment(text: spread, width: 40))
-        }
-        if let total = totalOddsText(odds) {
-            segments.append(OddsSegment(text: total, width: 40))
-        }
-        return segments.isEmpty ? nil : segments
     }
 
     @ViewBuilder
-    private var oddsGroupView: some View {
-        if let segments = oddsSegments {
-            HStack(spacing: 0) {
-                ForEach(Array(segments.enumerated()), id: \.offset) { index, segment in
-                    if index > 0 {
-                        Text("|")
-                            .foregroundColor(.secondary)
-                            .frame(width: 8, alignment: .center)
-                    }
-                    segment.text
-                        .monospacedDigit()
-                        .frame(width: segment.width, alignment: .trailing)
-                }
-            }
+    private var oddsValueView: some View {
+        if let text = oddsValueText {
+            text
+                .monospacedDigit()
+                .frame(width: 40, alignment: .trailing)
         }
     }
 
@@ -148,8 +129,9 @@ struct CardGame: View {
 
 #Preview("CardGame") {
     VStack(spacing: 8) {
-        CardGame(game: Mock.gameLive, odds: Mock.oddsCompleted)
-        CardGame(game: Mock.gameUpcoming, odds: Mock.odds)
+        CardGame(game: Mock.gameLive, odds: Mock.oddsCompleted, oddsType: "ML")
+        CardGame(game: Mock.gameUpcoming, odds: Mock.odds, oddsType: "SPR")
+        CardGame(game: Mock.gameUpcoming, odds: Mock.odds, oddsType: "O/U")
         CardGame(game: Mock.gameUpcoming)
     }
     .padding()

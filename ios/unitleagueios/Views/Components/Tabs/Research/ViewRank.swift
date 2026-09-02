@@ -31,6 +31,7 @@ struct ViewRank: View {
     @State private var selectedCategory: String? = nil
     @State private var selectedDiv: String? = nil
     @State private var expandedCategory: RankFilterCategory? = nil
+    @State private var isYearExpanded = false
     @State private var seasons: [TeamSeason] = []
     @State private var records: [TeamOddsRecent] = []
     @State private var teams: [Team] = []
@@ -111,15 +112,54 @@ struct ViewRank: View {
         }
     }
 
-    private func toggleFilterValue(_ category: RankFilterCategory, _ value: String) {
+    private func setCategoryValue(_ category: RankFilterCategory, _ value: String?) {
         switch category {
-        case .conf:
-            selectedConf = (selectedConf == value) ? nil : value
-            selectedDiv = nil
-        case .color:    selectedColor    = (selectedColor == value)    ? nil : value
-        case .region:   selectedRegion   = (selectedRegion == value)   ? nil : value
-        case .category: selectedCategory = (selectedCategory == value) ? nil : value
+        case .conf:     selectedConf = value
+        case .color:    selectedColor = value
+        case .region:   selectedRegion = value
+        case .category: selectedCategory = value
         }
+    }
+
+    /// Wipes a category's whole selection chain (including `selectedDiv` for `.conf`).
+    private func clearCategory(_ category: RankFilterCategory) {
+        setCategoryValue(category, nil)
+        if category == .conf { selectedDiv = nil }
+    }
+
+    private func clearAllCategories() {
+        for category in RankFilterCategory.allCases { clearCategory(category) }
+    }
+
+    /// Tapping the top-level category capsule (or its resolved breadcrumb) either drills in
+    /// (clearing any other active category, so only one facet is ever active) or, if it's
+    /// already the active one, wipes it and returns to showing all categories.
+    private func tapCategory(_ category: RankFilterCategory) {
+        if expandedCategory == category {
+            clearCategory(category)
+            expandedCategory = nil
+        } else {
+            clearAllCategories()
+            expandedCategory = category
+        }
+    }
+
+    private func tapValue(_ category: RankFilterCategory, _ value: String) {
+        setCategoryValue(category, value)
+        if category == .conf { selectedDiv = nil }
+    }
+
+    /// Bottom-up unselect: tapping the currently selected div again steps back up to the
+    /// div options list instead of wiping the whole conf selection.
+    private func tapDiv(_ value: String) {
+        selectedDiv = (selectedDiv == value) ? nil : value
+    }
+
+    private func breadcrumbLabel(for category: RankFilterCategory) -> String {
+        if let value = filterCategoryValue(category) {
+            return "\(displayLabel(for: category)) \(value)"
+        }
+        return displayLabel(for: category)
     }
 
     private static let cfbFBSDivOrder = ["ACC", "B10", "B12", "SEC", "IND"]
@@ -188,12 +228,74 @@ struct ViewRank: View {
         sortBy = order[(idx + 1) % order.count]
     }
 
+    /// Collapsed to just the selected year until tapped; tapping a year in the expanded
+    /// list re-collapses immediately.
+    @ViewBuilder
+    private var yearSegment: some View {
+        if isYearExpanded {
+            ForEach(years, id: \.self) { year in
+                FilterChip(label: String(year), isSelected: selectedYear == year) {
+                    selectedYear = year
+                    isYearExpanded = false
+                }
+            }
+        } else {
+            FilterChip(label: String(selectedYear), isSelected: true) {
+                isYearExpanded = true
+            }
+        }
+    }
+
+    /// Breadcrumb drill-down: at rest, shows all available categories; selecting one replaces
+    /// its siblings with that category's values; Conf additionally drills one level deeper
+    /// into divisions once a conf value is chosen.
+    @ViewBuilder
+    private var filterBreadcrumbSegment: some View {
+        if let category = expandedCategory {
+            FilterChip(label: breadcrumbLabel(for: category), isSelected: true) {
+                tapCategory(category)
+            }
+            if category == .conf {
+                if let div = selectedDiv {
+                    FilterChip(label: div, isSelected: true) {
+                        tapDiv(div)
+                    }
+                } else if selectedConf != nil {
+                    ForEach(divs, id: \.self) { div in
+                        FilterChip(label: div, isSelected: false) {
+                            tapDiv(div)
+                        }
+                    }
+                } else {
+                    ForEach(filterOptions(for: category), id: \.self) { value in
+                        FilterChip(label: value, isSelected: false) {
+                            tapValue(category, value)
+                        }
+                    }
+                }
+            } else if filterCategoryValue(category) == nil {
+                ForEach(filterOptions(for: category), id: \.self) { value in
+                    FilterChip(label: value, isSelected: false) {
+                        tapValue(category, value)
+                    }
+                }
+            }
+        } else {
+            ForEach(availableFilterCategories, id: \.self) { category in
+                FilterChip(label: displayLabel(for: category), isSelected: false) {
+                    tapCategory(category)
+                }
+            }
+        }
+    }
+
     var body: some View {
         ZStack {
             theme.appBackground(colorScheme).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // Year row
+                // Year + filter breadcrumb — a single row, so drilling into a filter never
+                // stacks additional rows below it.
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         if mode == .odds {
@@ -201,66 +303,13 @@ struct ViewRank: View {
                                 advanceSortBy()
                             }
                         }
-                        ForEach(years, id: \.self) { year in
-                            FilterChip(label: String(year), isSelected: selectedYear == year) {
-                                selectedYear = year
-                            }
-                        }
+                        yearSegment
+                        filterBreadcrumbSegment
                     }
                     .padding(.vertical, 8)
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 4)
-
-                // Filter category row
-                if !availableFilterCategories.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(availableFilterCategories, id: \.self) { category in
-                                FilterChip(
-                                    label: displayLabel(for: category),
-                                    isSelected: expandedCategory == category || filterCategoryValue(category) != nil
-                                ) {
-                                    expandedCategory = (expandedCategory == category) ? nil : category
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                }
-
-                // Options row for the expanded filter category
-                if let category = expandedCategory {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(filterOptions(for: category), id: \.self) { value in
-                                FilterChip(label: value, isSelected: filterCategoryValue(category) == value) {
-                                    toggleFilterValue(category, value)
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                }
-
-                // Div row — shown once a Conf is selected, mirrors ViewTeamList
-                if !divs.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(divs, id: \.self) { div in
-                                FilterChip(label: div, isSelected: selectedDiv == div) {
-                                    selectedDiv = (selectedDiv == div) ? nil : div
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                }
 
                 Divider()
                     .background(theme.divider(colorScheme))
@@ -332,6 +381,9 @@ struct ViewRank: View {
                 }
             }
             .animation(.easeInOut(duration: 0.2), value: selectedConf)
+            .animation(.easeInOut(duration: 0.2), value: selectedDiv)
+            .animation(.easeInOut(duration: 0.2), value: expandedCategory)
+            .animation(.easeInOut(duration: 0.2), value: isYearExpanded)
         }
         .navigationTitle("\(league.abbr) \(mode == .rank ? "Ranks" : "Odds")")
         .navigationBarTitleDisplayMode(.inline)

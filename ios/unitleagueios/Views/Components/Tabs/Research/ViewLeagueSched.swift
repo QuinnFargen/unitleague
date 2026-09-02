@@ -11,6 +11,22 @@ struct ViewLeagueSched: View {
     @State private var gameDates: [LeagueGameDate] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var oddsType: String = "ML"
+
+    private let oddsTypeCycle = ["ML", "SPR", "O/U"]
+
+    private func cycleIcon(for label: String) -> String {
+        switch label {
+        case "SPR": return "arrow.left.and.line.vertical.and.arrow.right"
+        case "O/U": return "arrow.up.and.line.horizontal.and.arrow.down"
+        default:    return "lines.measurement.vertical" // ML
+        }
+    }
+
+    private func advanceOddsType() {
+        let idx = oddsTypeCycle.firstIndex(of: oddsType) ?? 0
+        oddsType = oddsTypeCycle[(idx + 1) % oddsTypeCycle.count]
+    }
 
     private let gameService = GameService()
     private let oddsService = OddsService()
@@ -47,7 +63,15 @@ struct ViewLeagueSched: View {
             theme.appBackground(colorScheme).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                DateNavigationHeader(selectedDate: $selectedDate, validDates: validDateSet.isEmpty ? nil : validDateSet)
+                DateNavigationHeader(
+                    selectedDate: $selectedDate,
+                    validDates: validDateSet.isEmpty ? nil : validDateSet,
+                    trailingAccessory: AnyView(
+                        RowCapsuleButton(systemName: cycleIcon(for: oddsType), isSelected: true) {
+                            advanceOddsType()
+                        }
+                    )
+                )
 
                 Divider()
                     .background(theme.divider(colorScheme))
@@ -90,7 +114,7 @@ struct ViewLeagueSched: View {
                                             leagueId: game.leagueId
                                         )
                                     } label: {
-                                        CardGame(game: game, odds: oddsByGameId[game.id])
+                                        CardGame(game: game, odds: oddsByGameId[game.id], oddsType: oddsType)
                                     }
                                     .buttonStyle(.plain)
                                 }

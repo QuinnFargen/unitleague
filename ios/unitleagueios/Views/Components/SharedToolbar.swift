@@ -244,6 +244,8 @@ struct DateNavigationHeader: View {
     /// When non-nil (and non-empty), prior/next navigation jumps to the nearest earlier/later
     /// date in this set instead of stepping by a plain calendar day.
     var validDates: Set<Date>? = nil
+    /// Optional view injected after the "Today" capsule (e.g. an odds-type toggle).
+    var trailingAccessory: AnyView? = nil
     @State private var showDatePicker = false
 
     private let displayFormatter: DateFormatter = {
@@ -319,6 +321,10 @@ struct DateNavigationHeader: View {
                 .padding(.vertical, 6)
                 .background(theme.cardBackground(colorScheme))
                 .clipShape(Capsule())
+
+            if let trailingAccessory {
+                trailingAccessory
+            }
         }
         .padding(.horizontal)
         .padding(.vertical, 10)

@@ -250,7 +250,7 @@ struct ViewRank: View {
     @ViewBuilder
     private var filterBreadcrumbSegment: some View {
         if let category = expandedCategory {
-            FilterChip(label: filterCategoryValue(category) ?? "", icon: categoryIcon(for: category), isSelected: true) {
+            FilterChip(label: filterCategoryValue(category) ?? "", isSelected: true, icon: categoryIcon(for: category)) {
                 tapCategory(category)
             }
             if category == .conf {
@@ -280,7 +280,7 @@ struct ViewRank: View {
             }
         } else {
             ForEach(availableFilterCategories, id: \.self) { category in
-                FilterChip(label: "", icon: categoryIcon(for: category), isSelected: false) {
+                FilterChip(label: "", isSelected: false, icon: categoryIcon(for: category)) {
                     tapCategory(category)
                 }
             }

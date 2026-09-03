@@ -132,25 +132,27 @@ struct CardOddMany: View {
         }
     }
 
+    private func oddsSubtitle(for odd: OddMany) -> String? {
+        if odd.betType == "ML" {
+            return OddsFormatting.impliedPct(odd.price)
+        }
+        guard let pts = odd.points else { return nil }
+        switch odd.betType {
+        case "OVER":  return "O \(OddsFormatting.formatPoints(pts))"
+        case "UNDER": return "U \(OddsFormatting.formatPoints(pts))"
+        case "SPR":   return OddsFormatting.formatPointsSigned(pts)
+        default:      return OddsFormatting.formatPoints(pts)
+        }
+    }
+
     @ViewBuilder
     private func oddsLabel(_ odd: OddMany) -> some View {
         VStack(spacing: 1) {
             Text(OddsFormatting.formatPrice(odd.price))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(theme.primaryText(colorScheme))
-            if odd.betType == "ML" {
-                Text(OddsFormatting.impliedPct(odd.price))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            } else if let pts = odd.points {
-                let label: String
-                switch odd.betType {
-                case "OVER":  label = "O \(OddsFormatting.formatPoints(pts))"
-                case "UNDER": label = "U \(OddsFormatting.formatPoints(pts))"
-                case "SPR":   label = OddsFormatting.formatPointsSigned(pts)
-                default:      label = OddsFormatting.formatPoints(pts)
-                }
-                Text(label)
+            if let subtitle = oddsSubtitle(for: odd) {
+                Text(subtitle)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

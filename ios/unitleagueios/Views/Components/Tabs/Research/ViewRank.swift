@@ -99,8 +99,13 @@ struct ViewRank: View {
         }
     }
 
-    private func displayLabel(for category: RankFilterCategory) -> String {
-        category == .category ? "Mascot" : category.rawValue
+    private func categoryIcon(for category: RankFilterCategory) -> String {
+        switch category {
+        case .conf:     return "figure.and.child.holdinghands"
+        case .color:    return "paint.bucket.classic"
+        case .region:   return "mappin.and.ellipse"
+        case .category: return "theatermasks.fill"
+        }
     }
 
     private func filterCategoryValue(_ category: RankFilterCategory) -> String? {
@@ -153,13 +158,6 @@ struct ViewRank: View {
     /// div options list instead of wiping the whole conf selection.
     private func tapDiv(_ value: String) {
         selectedDiv = (selectedDiv == value) ? nil : value
-    }
-
-    private func breadcrumbLabel(for category: RankFilterCategory) -> String {
-        if let value = filterCategoryValue(category) {
-            return "\(displayLabel(for: category)) \(value)"
-        }
-        return displayLabel(for: category)
     }
 
     private static let cfbFBSDivOrder = ["ACC", "B10", "B12", "SEC", "IND"]
@@ -252,7 +250,7 @@ struct ViewRank: View {
     @ViewBuilder
     private var filterBreadcrumbSegment: some View {
         if let category = expandedCategory {
-            FilterChip(label: breadcrumbLabel(for: category), isSelected: true) {
+            FilterChip(label: filterCategoryValue(category) ?? "", icon: categoryIcon(for: category), isSelected: true) {
                 tapCategory(category)
             }
             if category == .conf {
@@ -282,7 +280,7 @@ struct ViewRank: View {
             }
         } else {
             ForEach(availableFilterCategories, id: \.self) { category in
-                FilterChip(label: displayLabel(for: category), isSelected: false) {
+                FilterChip(label: "", icon: categoryIcon(for: category), isSelected: false) {
                     tapCategory(category)
                 }
             }

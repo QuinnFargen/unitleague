@@ -83,6 +83,7 @@ struct CardGameOddSingle: View {
     private struct SingleData {
         let awayPrice: Double?
         let awayBetLabel: String
+        let awayIcon: String?
         let awayMLPct: String
         let awayBetHash: String?
         let awayWon: Bool?
@@ -90,6 +91,7 @@ struct CardGameOddSingle: View {
         let awaySide: String
         let homePrice: Double?
         let homeBetLabel: String
+        let homeIcon: String?
         let homeMLPct: String
         let homeBetHash: String?
         let homeWon: Bool?
@@ -101,19 +103,21 @@ struct CardGameOddSingle: View {
         switch betType {
         case "ML":
             return SingleData(
-                awayPrice: odd.mlAwayPrice, awayBetLabel: "", awayMLPct: OddsFormatting.impliedPct(odd.mlAwayPrice),
+                awayPrice: odd.mlAwayPrice, awayBetLabel: "", awayIcon: nil, awayMLPct: OddsFormatting.impliedPct(odd.mlAwayPrice),
                 awayBetHash: odd.mlAwayBetHash, awayWon: odd.mlAwayWon, awayPoints: nil, awaySide: "Away",
-                homePrice: odd.mlHomePrice, homeBetLabel: "", homeMLPct: OddsFormatting.impliedPct(odd.mlHomePrice),
+                homePrice: odd.mlHomePrice, homeBetLabel: "", homeIcon: nil, homeMLPct: OddsFormatting.impliedPct(odd.mlHomePrice),
                 homeBetHash: odd.mlHomeBetHash, homeWon: odd.mlHomeWon, homePoints: nil, homeSide: "Home"
             )
         case "SPR":
             return SingleData(
                 awayPrice: odd.sprAwayPrice,
                 awayBetLabel: odd.sprAwayPoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                awayIcon: nil,
                 awayMLPct: OddsFormatting.impliedPct(odd.sprAwayPrice),
                 awayBetHash: odd.sprAwayBetHash, awayWon: odd.sprAwayWon, awayPoints: odd.sprAwayPoints, awaySide: "Away",
                 homePrice: odd.sprHomePrice,
                 homeBetLabel: odd.sprHomePoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                homeIcon: nil,
                 homeMLPct: OddsFormatting.impliedPct(odd.sprHomePrice),
                 homeBetHash: odd.sprHomeBetHash, homeWon: odd.sprHomeWon, homePoints: odd.sprHomePoints, homeSide: "Home"
             )
@@ -121,14 +125,14 @@ struct CardGameOddSingle: View {
             let total = (odd.overPoints ?? odd.underPoints).map(OddsFormatting.formatPoints) ?? ""
             let pts = odd.overPoints ?? odd.underPoints
             return SingleData(
-                awayPrice: odd.overPrice, awayBetLabel: "O \(total)", awayMLPct: OddsFormatting.impliedPct(odd.overPrice),
-                awayBetHash: odd.overBetHash, awayWon: odd.overWon, awayPoints: pts, awaySide: "Over",
-                homePrice: odd.underPrice, homeBetLabel: "U \(total)", homeMLPct: OddsFormatting.impliedPct(odd.underPrice),
-                homeBetHash: odd.underBetHash, homeWon: odd.underWon, homePoints: pts, homeSide: "Under"
+                awayPrice: odd.underPrice, awayBetLabel: "", awayIcon: "arrow.down.circle.fill", awayMLPct: total,
+                awayBetHash: odd.underBetHash, awayWon: odd.underWon, awayPoints: pts, awaySide: "Under",
+                homePrice: odd.overPrice, homeBetLabel: "", homeIcon: "arrow.up.circle.fill", homeMLPct: total,
+                homeBetHash: odd.overBetHash, homeWon: odd.overWon, homePoints: pts, homeSide: "Over"
             )
         default:
-            return SingleData(awayPrice: nil, awayBetLabel: "", awayMLPct: "", awayBetHash: nil, awayWon: nil, awayPoints: nil, awaySide: "",
-                              homePrice: nil, homeBetLabel: "", homeMLPct: "", homeBetHash: nil, homeWon: nil, homePoints: nil, homeSide: "")
+            return SingleData(awayPrice: nil, awayBetLabel: "", awayIcon: nil, awayMLPct: "", awayBetHash: nil, awayWon: nil, awayPoints: nil, awaySide: "",
+                              homePrice: nil, homeBetLabel: "", homeIcon: nil, homeMLPct: "", homeBetHash: nil, homeWon: nil, homePoints: nil, homeSide: "")
         }
     }
 
@@ -161,7 +165,11 @@ struct CardGameOddSingle: View {
                                           homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
             }
 
-            if !d.awayBetLabel.isEmpty {
+            if let icon = d.awayIcon {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            } else if !d.awayBetLabel.isEmpty {
                 Text(d.awayBetLabel)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -178,7 +186,11 @@ struct CardGameOddSingle: View {
             }
             .frame(maxWidth: .infinity)
 
-            if !d.homeBetLabel.isEmpty {
+            if let icon = d.homeIcon {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            } else if !d.homeBetLabel.isEmpty {
                 Text(d.homeBetLabel)
                     .font(.caption2)
                     .foregroundStyle(.secondary)

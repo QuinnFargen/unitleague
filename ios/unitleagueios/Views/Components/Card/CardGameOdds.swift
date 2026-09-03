@@ -91,15 +91,15 @@ struct CardGameOdds: View {
     }
 
     @ViewBuilder
-    private func priceCapsule(_ price: Double?, subtitle: String = "", betHash: String? = nil, won: Bool? = nil, displayOverride: String? = nil, onTap: (() -> Void)? = nil) -> some View {
+    private func priceCapsule(_ price: Double?, subtitle: String = "", betHash: String? = nil, won: Bool? = nil, onTap: (() -> Void)? = nil) -> some View {
         if let p = price {
             if betHash != nil, let onTap {
                 Button(action: onTap) {
-                    priceCapsuleLabel(p, display: displayOverride ?? OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
+                    priceCapsuleLabel(p, display: OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
                 }
                 .buttonStyle(.plain)
             } else {
-                priceCapsuleLabel(p, display: displayOverride ?? OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
+                priceCapsuleLabel(p, display: OddsFormatting.formatPrice(p), subtitle: subtitle, betHash: betHash, won: won)
             }
         } else {
             Text("—")
@@ -126,6 +126,15 @@ struct CardGameOdds: View {
         .frame(width: colW)
         .background(oddsCapsuleColor(price, betHash: betHash, won: won))
         .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+
+    @ViewBuilder
+    private func completedValueText(_ text: String) -> some View {
+        Text(text)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(theme.primaryText(colorScheme))
+            .frame(width: colW)
+            .padding(.vertical, 4)
     }
 
     var body: some View {
@@ -185,31 +194,37 @@ struct CardGameOdds: View {
                                                   gameTime: odd.gameTime, gameDate: odd.gameDt,
                                                   homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
-                    priceCapsule(odd.sprAwayPrice,
-                                 subtitle: sprAwayLost ? "" : (odd.sprAwayPoints.map(OddsFormatting.formatPoints) ?? ""),
-                                 betHash: odd.sprAwayBetHash, won: odd.sprAwayWon,
-                                 displayOverride: sprAwayLost ? odd.margin.map(OddsFormatting.formatPoints) : nil) {
-                        guard let p = odd.sprAwayPrice, let h = odd.sprAwayBetHash else { return }
-                        onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Away", price: p, points: odd.sprAwayPoints,
-                                                  awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                    if sprAwayLost, let marginText = odd.margin.map(OddsFormatting.formatPoints) {
+                        completedValueText(marginText)
+                    } else {
+                        priceCapsule(odd.sprAwayPrice,
+                                     subtitle: odd.sprAwayPoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                                     betHash: odd.sprAwayBetHash, won: odd.sprAwayWon) {
+                            guard let p = odd.sprAwayPrice, let h = odd.sprAwayBetHash else { return }
+                            onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Away", price: p, points: odd.sprAwayPoints,
+                                                      awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                                      gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                      homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                        }
                     }
-                    priceCapsule(
-                        awayIsFav ? odd.underPrice : odd.overPrice,
-                        subtitle: awayOUWon == false ? "" : (awayIsFav ? "U \(ouTotal)" : "O \(ouTotal)"),
-                        betHash: awayIsFav ? odd.underBetHash : odd.overBetHash,
-                        won: awayOUWon,
-                        displayOverride: awayOUWon == false ? odd.total.map(OddsFormatting.formatPoints) : nil
-                    ) {
-                        let price = awayIsFav ? odd.underPrice : odd.overPrice
-                        let hash  = awayIsFav ? odd.underBetHash : odd.overBetHash
-                        let pts   = odd.overPoints ?? odd.underPoints
-                        guard let p = price, let h = hash else { return }
-                        onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Under" : "Over",
-                                                  price: p, points: pts, awayAbbr: odd.awayAbbr,
-                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                    if awayOUWon == false, let totalText = odd.total.map(OddsFormatting.formatPoints) {
+                        completedValueText(totalText)
+                    } else {
+                        priceCapsule(
+                            awayIsFav ? odd.underPrice : odd.overPrice,
+                            subtitle: awayIsFav ? "U \(ouTotal)" : "O \(ouTotal)",
+                            betHash: awayIsFav ? odd.underBetHash : odd.overBetHash,
+                            won: awayOUWon
+                        ) {
+                            let price = awayIsFav ? odd.underPrice : odd.overPrice
+                            let hash  = awayIsFav ? odd.underBetHash : odd.overBetHash
+                            let pts   = odd.overPoints ?? odd.underPoints
+                            guard let p = price, let h = hash else { return }
+                            onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Under" : "Over",
+                                                      price: p, points: pts, awayAbbr: odd.awayAbbr,
+                                                      homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                      homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                        }
                     }
                 }
 
@@ -226,31 +241,37 @@ struct CardGameOdds: View {
                                                   gameTime: odd.gameTime, gameDate: odd.gameDt,
                                                   homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
                     }
-                    priceCapsule(odd.sprHomePrice,
-                                 subtitle: sprHomeLost ? "" : (odd.sprHomePoints.map(OddsFormatting.formatPoints) ?? ""),
-                                 betHash: odd.sprHomeBetHash, won: odd.sprHomeWon,
-                                 displayOverride: sprHomeLost ? odd.margin.map(OddsFormatting.formatPoints) : nil) {
-                        guard let p = odd.sprHomePrice, let h = odd.sprHomeBetHash else { return }
-                        onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Home", price: p, points: odd.sprHomePoints,
-                                                  awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
-                                                  gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                    if sprHomeLost, let marginText = odd.margin.map(OddsFormatting.formatPoints) {
+                        completedValueText(marginText)
+                    } else {
+                        priceCapsule(odd.sprHomePrice,
+                                     subtitle: odd.sprHomePoints.map(OddsFormatting.formatPointsSigned) ?? "",
+                                     betHash: odd.sprHomeBetHash, won: odd.sprHomeWon) {
+                            guard let p = odd.sprHomePrice, let h = odd.sprHomeBetHash else { return }
+                            onBetSelected(SelectedBet(betHash: h, type: "SPR", side: "Home", price: p, points: odd.sprHomePoints,
+                                                      awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
+                                                      gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                      homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                        }
                     }
-                    priceCapsule(
-                        awayIsFav ? odd.overPrice : odd.underPrice,
-                        subtitle: homeOUWon == false ? "" : (awayIsFav ? "O \(ouTotal)" : "U \(ouTotal)"),
-                        betHash: awayIsFav ? odd.overBetHash : odd.underBetHash,
-                        won: homeOUWon,
-                        displayOverride: homeOUWon == false ? odd.total.map(OddsFormatting.formatPoints) : nil
-                    ) {
-                        let price = awayIsFav ? odd.overPrice : odd.underPrice
-                        let hash  = awayIsFav ? odd.overBetHash : odd.underBetHash
-                        let pts   = odd.overPoints ?? odd.underPoints
-                        guard let p = price, let h = hash else { return }
-                        onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Over" : "Under",
-                                                  price: p, points: pts, awayAbbr: odd.awayAbbr,
-                                                  homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
-                                                  homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                    if homeOUWon == false, let totalText = odd.total.map(OddsFormatting.formatPoints) {
+                        completedValueText(totalText)
+                    } else {
+                        priceCapsule(
+                            awayIsFav ? odd.overPrice : odd.underPrice,
+                            subtitle: awayIsFav ? "O \(ouTotal)" : "U \(ouTotal)",
+                            betHash: awayIsFav ? odd.overBetHash : odd.underBetHash,
+                            won: homeOUWon
+                        ) {
+                            let price = awayIsFav ? odd.overPrice : odd.underPrice
+                            let hash  = awayIsFav ? odd.overBetHash : odd.underBetHash
+                            let pts   = odd.overPoints ?? odd.underPoints
+                            guard let p = price, let h = hash else { return }
+                            onBetSelected(SelectedBet(betHash: h, type: "O/U", side: awayIsFav ? "Over" : "Under",
+                                                      price: p, points: pts, awayAbbr: odd.awayAbbr,
+                                                      homeAbbr: odd.homeAbbr, gameTime: odd.gameTime, gameDate: odd.gameDt,
+                                                      homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
+                        }
                     }
                 }
             }

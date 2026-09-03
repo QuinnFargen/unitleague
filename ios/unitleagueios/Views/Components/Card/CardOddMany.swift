@@ -11,7 +11,6 @@ struct CardOddMany: View {
     let homeAbbr: String
     let onBetSelected: (SelectedBet) -> Void
 
-    @State private var isExpanded = false
     @State private var selectedBetType = "ML"
 
     private let colW: CGFloat = 62
@@ -46,57 +45,90 @@ struct CardOddMany: View {
         }
     }
 
-    private var bookmakers: [String] {
-        Array(Set(filteredOdds.map(\.bookmaker))).sorted()
+    // MARK: ML — capsules per team, largest price on top
+
+    private var mlAwayOdds: [OddMany] {
+        filteredOdds.filter { $0.teamAbbr == awayAbbr }.sorted { $0.price > $1.price }
+    }
+
+    private var mlHomeOdds: [OddMany] {
+        filteredOdds.filter { $0.teamAbbr == homeAbbr }.sorted { $0.price > $1.price }
+    }
+
+    // MARK: SPR — unique |spread| values, best price per side
+
+    private var sprAbsValues: [Double] {
+        Array(Set(filteredOdds.compactMap { $0.points.map(abs) })).sorted(by: >)
+    }
+
+    private func bestSprOdd(absPoints: Double, team: String) -> OddMany? {
+        filteredOdds
+            .filter { $0.teamAbbr == team && $0.points.map(abs) == absPoints }
+            .max { $0.price < $1.price }
+    }
+
+    // MARK: O/U — unique total lines, best price per side
+
+    private var ouTotals: [Double] {
+        Array(Set(filteredOdds.compactMap(\.points))).sorted(by: >)
+    }
+
+    private func bestOuOdd(total: Double, side: String) -> OddMany? {
+        filteredOdds
+            .filter { $0.betType == side && $0.points == total }
+            .max { $0.price < $1.price }
     }
 
     @ViewBuilder
-    private func oddsRow(bookmaker: String) -> some View {
-        let lhsBets = filteredOdds.filter { $0.bookmaker == bookmaker && lhsMatch($0) }
-        let rhsBets = filteredOdds.filter { $0.bookmaker == bookmaker && rhsMatch($0) }
-        let lhs = lhsBets.first
-        let rhs = rhsBets.first
-
-        HStack(spacing: 8) {
-            if let bet = lhs {
-                Button { onBetSelected(selectedBet(from: bet)) } label: {
-                    oddsLabel(bet)
-                }
-                .buttonStyle(.plain)
-            } else {
-                Text("—").font(.caption).foregroundStyle(.secondary).frame(width: colW)
+    private func oddsSlot(_ odd: OddMany?) -> some View {
+        if let odd {
+            Button { onBetSelected(selectedBet(from: odd)) } label: {
+                oddsLabel(odd)
             }
+            .buttonStyle(.plain)
+        } else {
+            Text("—").font(.caption).foregroundStyle(.secondary).frame(width: colW)
+        }
+    }
 
-            Text(bookmaker)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .lineLimit(1)
+    @ViewBuilder
+    private var mlColumns: some View {
+        HStack(alignment: .top, spacing: 8) {
+            VStack(spacing: 6) {
+                ForEach(mlAwayOdds) { odd in oddsSlot(odd) }
+            }
+            .frame(width: colW)
+            Spacer()
+            VStack(spacing: 6) {
+                ForEach(mlHomeOdds) { odd in oddsSlot(odd) }
+            }
+            .frame(width: colW)
+        }
+    }
 
-            if let bet = rhs {
-                Button { onBetSelected(selectedBet(from: bet)) } label: {
-                    oddsLabel(bet)
+    @ViewBuilder
+    private var sprRows: some View {
+        VStack(spacing: 6) {
+            ForEach(sprAbsValues, id: \.self) { value in
+                HStack(spacing: 8) {
+                    oddsSlot(bestSprOdd(absPoints: value, team: awayAbbr))
+                    Spacer()
+                    oddsSlot(bestSprOdd(absPoints: value, team: homeAbbr))
                 }
-                .buttonStyle(.plain)
-            } else {
-                Text("—").font(.caption).foregroundStyle(.secondary).frame(width: colW)
             }
         }
     }
 
-    private func lhsMatch(_ odd: OddMany) -> Bool {
-        switch selectedBetType {
-        case "ML", "SPR": return odd.teamAbbr == awayAbbr
-        case "O/U":        return odd.betType == "OVER"
-        default:           return false
-        }
-    }
-
-    private func rhsMatch(_ odd: OddMany) -> Bool {
-        switch selectedBetType {
-        case "ML", "SPR": return odd.teamAbbr == homeAbbr
-        case "O/U":        return odd.betType == "UNDER"
-        default:           return false
+    @ViewBuilder
+    private var ouRows: some View {
+        VStack(spacing: 6) {
+            ForEach(ouTotals, id: \.self) { total in
+                HStack(spacing: 8) {
+                    oddsSlot(bestOuOdd(total: total, side: "UNDER"))
+                    Spacer()
+                    oddsSlot(bestOuOdd(total: total, side: "OVER"))
+                }
+            }
         }
     }
 
@@ -106,9 +138,18 @@ struct CardOddMany: View {
             Text(OddsFormatting.formatPrice(odd.price))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(theme.primaryText(colorScheme))
-            if let pts = odd.points {
-                let prefix = odd.betType == "OVER" ? "O" : (odd.betType == "UNDER" ? "U" : "")
-                let label = prefix.isEmpty ? OddsFormatting.formatPoints(pts) : "\(prefix) \(OddsFormatting.formatPoints(pts))"
+            if odd.betType == "ML" {
+                Text(OddsFormatting.impliedPct(odd.price))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            } else if let pts = odd.points {
+                let label: String
+                switch odd.betType {
+                case "OVER":  label = "O \(OddsFormatting.formatPoints(pts))"
+                case "UNDER": label = "U \(OddsFormatting.formatPoints(pts))"
+                case "SPR":   label = OddsFormatting.formatPointsSigned(pts)
+                default:      label = OddsFormatting.formatPoints(pts)
+                }
                 Text(label)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -118,73 +159,65 @@ struct CardOddMany: View {
         .padding(.vertical, 4)
         .frame(width: colW)
         .background(oddsCapsuleColor(odd.price))
-        .clipShape(Capsule())
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     private var columnHeaders: (String, String) {
         switch selectedBetType {
-        case "O/U": return ("Over", "Under")
+        case "O/U": return ("Under", "Over")
         default:    return (awayAbbr, homeAbbr)
         }
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Button {
-                withAnimation(.easeInOut(duration: 0.2)) { isExpanded.toggle() }
-            } label: {
-                HStack {
-                    Text("All Odds")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(theme.primaryText(colorScheme))
+            HStack {
+                Text("All Odds")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(theme.primaryText(colorScheme))
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+
+            Divider().background(theme.divider(colorScheme))
+
+            VStack(spacing: 10) {
+                HStack(spacing: 8) {
+                    ForEach(["ML", "SPR", "O/U"], id: \.self) { t in
+                        FilterChip(label: t, isSelected: selectedBetType == t) {
+                            selectedBetType = t
+                        }
+                    }
                     Spacer()
-                    Image(systemName: "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .rotationEffect(.degrees(isExpanded ? 0 : -90))
                 }
                 .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-            }
-            .buttonStyle(.plain)
+                .padding(.top, 10)
 
-            if isExpanded {
-                Divider().background(theme.divider(colorScheme))
-
-                VStack(spacing: 10) {
-                    HStack(spacing: 8) {
-                        ForEach(["ML", "SPR", "O/U"], id: \.self) { t in
-                            FilterChip(label: t, isSelected: selectedBetType == t) {
-                                selectedBetType = t
-                            }
-                        }
-                        Spacer()
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.top, 10)
-
-                    let (lhsLabel, rhsLabel) = columnHeaders
-                    HStack(spacing: 8) {
-                        Text(lhsLabel)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                            .frame(width: colW, alignment: .center)
-                        Spacer()
-                        Text(rhsLabel)
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                            .frame(width: colW, alignment: .center)
-                    }
-                    .padding(.horizontal, 14)
-
-                    VStack(spacing: 6) {
-                        ForEach(bookmakers, id: \.self) { bm in
-                            oddsRow(bookmaker: bm)
-                                .padding(.horizontal, 14)
-                        }
-                    }
-                    .padding(.bottom, 12)
+                let (lhsLabel, rhsLabel) = columnHeaders
+                HStack(spacing: 8) {
+                    Text(lhsLabel)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: colW, alignment: .center)
+                    Spacer()
+                    Text(rhsLabel)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(width: colW, alignment: .center)
                 }
+                .padding(.horizontal, 14)
+
+                Group {
+                    switch selectedBetType {
+                    case "ML":  mlColumns
+                    case "SPR": sprRows
+                    case "O/U": ouRows
+                    default:    EmptyView()
+                    }
+                }
+                .padding(.horizontal, 14)
+                .padding(.bottom, 12)
             }
         }
         .background(theme.cardBackground(colorScheme))
@@ -192,7 +225,7 @@ struct CardOddMany: View {
     }
 }
 
-#Preview("AllOddsSection – collapsed") {
+#Preview("AllOddsSection") {
     CardOddMany(
         odds: Mock.oddMany,
         awayAbbr: "BOS",
@@ -201,4 +234,3 @@ struct CardOddMany: View {
     .padding()
     .environmentObject(AppTheme())
 }
-

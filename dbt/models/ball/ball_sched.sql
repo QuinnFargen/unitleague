@@ -1,9 +1,10 @@
 {{
     config(
-        materialized  = 'incremental',
-        unique_key    = ['league_id', 'season_id', 'team_id', 'game_id'],
-        schema        = 'ball',
-        alias         = 'sched'
+        materialized         = 'incremental',
+        unique_key           = ['league_id', 'season_id', 'team_id', 'game_id'],
+        incremental_strategy = 'delete+insert',
+        schema               = 'ball',
+        alias                = 'sched'
     )
 }}
 

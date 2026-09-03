@@ -22,6 +22,7 @@ struct ViewSched: View {
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
 
     @State private var selectedMode: SchedMode = .year
+    @State private var isYearExpanded = false
     @State private var selectedYear: Int = Calendar.current.component(.year, from: .now)
     @State private var selectedOppConf: String? = nil
     @State private var selectedOppColor: String? = nil
@@ -141,29 +142,33 @@ struct ViewSched: View {
                     .padding(.horizontal)
                     .padding(.top, 8)
 
-                // Mode picker
+                // Filter row — single row: year chip (tap to drill into the year list) plus
+                // Recent, with the opponent-filter breadcrumb appended when Recent is active.
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        ForEach(SchedMode.allCases, id: \.self) { mode in
-                            FilterChip(label: mode.rawValue, isSelected: selectedMode == mode) {
-                                selectedMode = mode
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                }
-
-                // Secondary filter row — years, or the opponent filter breadcrumb
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        if selectedMode == .year {
+                        if isYearExpanded {
                             ForEach(years, id: \.self) { year in
                                 FilterChip(label: String(year), isSelected: selectedYear == year) {
                                     selectedYear = year
+                                    isYearExpanded = false
                                 }
                             }
                         } else {
+                            FilterChip(label: String(selectedYear), isSelected: selectedMode == .year) {
+                                if selectedMode == .year {
+                                    isYearExpanded = true
+                                } else {
+                                    selectedMode = .year
+                                }
+                            }
+                        }
+
+                        FilterChip(label: SchedMode.recent.rawValue, isSelected: selectedMode == .recent) {
+                            selectedMode = .recent
+                            isYearExpanded = false
+                        }
+
+                        if selectedMode == .recent {
                             oppFilterBreadcrumbSegment
                         }
                     }
@@ -172,6 +177,7 @@ struct ViewSched: View {
                 }
                 .animation(.easeInOut(duration: 0.2), value: selectedMode)
                 .animation(.easeInOut(duration: 0.2), value: expandedOppCategory)
+                .animation(.easeInOut(duration: 0.2), value: isYearExpanded)
 
                 Divider()
                     .background(theme.divider(colorScheme))
@@ -258,7 +264,9 @@ struct ViewSched: View {
                     limit: 10
                 )
             }
-            schedule = raw.sorted { $0.gameNum > $1.gameNum }
+            var seenIds = Set<String>()
+            let deduped = raw.filter { seenIds.insert($0.id).inserted }
+            schedule = deduped.sorted { $0.gameNum > $1.gameNum }
             scrollTarget = lastFinalId
         } catch {
             errorMessage = error.localizedDescription

@@ -7,12 +7,20 @@ struct FilterChip: View {
     @Environment(\.colorScheme) private var colorScheme
     let label: String
     let isSelected: Bool
+    var icon: String? = nil
     var availabilityTint: Color? = nil
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(label)
+            HStack(spacing: 4) {
+                if let icon {
+                    Image(systemName: icon)
+                }
+                if !label.isEmpty {
+                    Text(label)
+                }
+            }
                 .font(.subheadline.weight(isSelected ? .semibold : .regular))
                 .foregroundStyle(isSelected ? theme.chipSelectedFG(colorScheme) : theme.primaryText(colorScheme))
                 .padding(.horizontal, 14)

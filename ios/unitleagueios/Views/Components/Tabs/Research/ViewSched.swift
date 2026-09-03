@@ -87,6 +87,38 @@ struct ViewSched: View {
         }
     }
 
+    /// Single-row breadcrumb drill-down for the opponent filter (mirrors `ViewRank`'s layering):
+    /// at rest shows all category chips; selecting one replaces the row with a breadcrumb chip for
+    /// that category plus its value chips (kept visible throughout, since multiple categories and
+    /// multiple values within a category can be active at once — unlike `ViewRank`'s single-facet
+    /// filter, this preserves `ViewSched`'s existing multi-select opponent filtering).
+    @ViewBuilder
+    private var oppFilterBreadcrumbSegment: some View {
+        if let category = expandedOppCategory {
+            FilterChip(label: oppBreadcrumbLabel(for: category), isSelected: true) {
+                expandedOppCategory = nil
+            }
+            ForEach(oppOptions(for: category), id: \.self) { value in
+                FilterChip(label: value, isSelected: oppCategoryValue(category) == value) {
+                    toggleOppValue(category, value)
+                }
+            }
+        } else {
+            ForEach(availableOppCategories, id: \.self) { category in
+                FilterChip(label: category.rawValue, isSelected: oppCategoryValue(category) != nil) {
+                    expandedOppCategory = category
+                }
+            }
+        }
+    }
+
+    private func oppBreadcrumbLabel(for category: SchedOppCategory) -> String {
+        if let value = oppCategoryValue(category) {
+            return "\(category.rawValue) \(value)"
+        }
+        return category.rawValue
+    }
+
     private func toggleOppValue(_ category: SchedOppCategory, _ value: String) {
         switch category {
         case .conf:   selectedOppConf   = (selectedOppConf == value)   ? nil : value
@@ -122,7 +154,7 @@ struct ViewSched: View {
                     .padding(.vertical, 8)
                 }
 
-                // Secondary filter row — years, or opponent filter categories
+                // Secondary filter row — years, or the opponent filter breadcrumb
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         if selectedMode == .year {
@@ -132,36 +164,14 @@ struct ViewSched: View {
                                 }
                             }
                         } else {
-                            ForEach(availableOppCategories, id: \.self) { category in
-                                FilterChip(
-                                    label: category.rawValue,
-                                    isSelected: expandedOppCategory == category || oppCategoryValue(category) != nil
-                                ) {
-                                    expandedOppCategory = (expandedOppCategory == category) ? nil : category
-                                }
-                            }
+                            oppFilterBreadcrumbSegment
                         }
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 8)
                 }
                 .animation(.easeInOut(duration: 0.2), value: selectedMode)
-
-                // Tertiary row — options for the expanded opponent filter category
-                if selectedMode == .recent, let category = expandedOppCategory {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(oppOptions(for: category), id: \.self) { value in
-                                FilterChip(label: value, isSelected: oppCategoryValue(category) == value) {
-                                    toggleOppValue(category, value)
-                                }
-                            }
-                        }
-                        .padding(.horizontal)
-                        .padding(.vertical, 8)
-                    }
-                    .transition(.opacity.combined(with: .move(edge: .top)))
-                }
+                .animation(.easeInOut(duration: 0.2), value: expandedOppCategory)
 
                 Divider()
                     .background(theme.divider(colorScheme))

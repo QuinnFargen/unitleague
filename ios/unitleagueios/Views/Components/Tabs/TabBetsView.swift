@@ -55,6 +55,14 @@ struct TabBetsView: View {
         selectedOddsType = oddsTypeCycle[(idx + 1) % oddsTypeCycle.count]
     }
 
+    /// Calendar has no "ALL" state — cycling off the resolved display value (rather than the
+    /// underlying "ALL") avoids a no-op first tap when `selectedOddsType` is still "ALL".
+    private func advanceCalendarOddsType() {
+        let order = ["ML", "SPR", "O/U"]
+        let idx = order.firstIndex(of: effectiveCalendarOddsType) ?? 0
+        selectedOddsType = order[(idx + 1) % order.count]
+    }
+
     /// The odds type Calendar's `CardGame` cards show — Calendar has no "ALL" concept,
     /// so it falls back to ML while the shared toggle sits idle.
     private var effectiveCalendarOddsType: String {
@@ -560,7 +568,7 @@ struct TabBetsView: View {
                                 .foregroundStyle(theme.primaryText(colorScheme))
                             Spacer()
                             RowCapsuleButton(systemName: cycleIcon(for: effectiveCalendarOddsType), isSelected: true) {
-                                advanceOddsType()
+                                advanceCalendarOddsType()
                             }
                             Text("\(displayedGames.count)")
                                 .font(.subheadline.weight(.semibold))

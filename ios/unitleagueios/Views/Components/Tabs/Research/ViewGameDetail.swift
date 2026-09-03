@@ -75,6 +75,28 @@ struct ViewGameDetail: View {
         return Calendar.current.startOfDay(for: date) >= Calendar.current.startOfDay(for: Date())
     }
 
+    private let titleDateInputFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private let titleDateOutputFmt: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEE, MMM d"
+        f.locale = Locale(identifier: "en_US_POSIX")
+        return f
+    }()
+
+    private var titleText: String {
+        guard let raw = odd?.gameDt ?? oddMany.first?.gameDt,
+              let date = titleDateInputFmt.date(from: raw) else {
+            return "\(away) @ \(home)"
+        }
+        return titleDateOutputFmt.string(from: date)
+    }
+
     var body: some View {
         ZStack {
             theme.appBackground(colorScheme).ignoresSafeArea()
@@ -82,14 +104,8 @@ struct ViewGameDetail: View {
             ScrollView {
                 VStack(spacing: 16) {
                     if let odd {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Best Odds")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
-                            CardGameOdds(odd: odd) { bet in selectedBet = bet }
-                        }
-                        .padding(.horizontal)
+                        CardGameOdds(odd: odd) { bet in selectedBet = bet }
+                            .padding(.horizontal)
                     }
 
                     VStack(spacing: 12) {
@@ -176,7 +192,7 @@ struct ViewGameDetail: View {
                 .padding(.bottom, 24)
             }
         }
-        .navigationTitle("\(away) @ \(home)")
+        .navigationTitle(titleText)
         .navigationBarTitleDisplayMode(.inline)
         .task { await fetchData() }
         .task { await loadTeamLevels() }

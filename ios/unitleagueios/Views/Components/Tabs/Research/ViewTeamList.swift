@@ -44,6 +44,37 @@ struct ViewTeamList: View {
         return raw.sorted()
     }
 
+    /// Single-row breadcrumb drill-down (mirrors `ViewRank`'s conf/div layering): at rest shows
+    /// conf chips; selecting a conf replaces the row with a breadcrumb chip for it plus div chips
+    /// (if any); selecting a div swaps in a breadcrumb chip for the div, tap to step back up.
+    @ViewBuilder
+    private var confDivBreadcrumbSegment: some View {
+        if let conf = selectedConf {
+            FilterChip(label: conf, isSelected: true) {
+                selectedConf = nil
+                selectedDiv = nil
+            }
+            if let div = selectedDiv {
+                FilterChip(label: div, isSelected: true) {
+                    selectedDiv = nil
+                }
+            } else {
+                ForEach(divs, id: \.self) { div in
+                    FilterChip(label: div, isSelected: false) {
+                        selectedDiv = div
+                    }
+                }
+            }
+        } else {
+            ForEach(confs, id: \.self) { conf in
+                FilterChip(label: conf, isSelected: false) {
+                    selectedConf = conf
+                    selectedDiv = nil
+                }
+            }
+        }
+    }
+
     private var displayedTeams: [Team] {
         teams.filter { team in
             if team.id == 50000 || team.id == 60000 { return false }
@@ -73,47 +104,15 @@ struct ViewTeamList: View {
                 .padding()
             } else {
                 VStack(spacing: 0) {
-                    // Conf filter
+                    // Conf/Div filter — single-row breadcrumb drill-down
                     if !confs.isEmpty {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
-                                ForEach(confs, id: \.self) { conf in
-                                    FilterChip(
-                                        label: conf,
-                                        isSelected: selectedConf == conf
-                                    ) {
-                                        if selectedConf == conf {
-                                            selectedConf = nil
-                                            selectedDiv = nil
-                                        } else {
-                                            selectedConf = conf
-                                            selectedDiv = nil
-                                        }
-                                    }
-                                }
+                                confDivBreadcrumbSegment
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 8)
                         }
-                    }
-
-                    // Div filter — only shown when a conf is selected and divs exist
-                    if !divs.isEmpty {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 8) {
-                                ForEach(divs, id: \.self) { div in
-                                    FilterChip(
-                                        label: div,
-                                        isSelected: selectedDiv == div
-                                    ) {
-                                        selectedDiv = (selectedDiv == div) ? nil : div
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                        }
-                        .transition(.opacity.combined(with: .move(edge: .top)))
                     }
 
                     if !confs.isEmpty {
@@ -146,6 +145,7 @@ struct ViewTeamList: View {
                     }
                 }
                 .animation(.easeInOut(duration: 0.2), value: selectedConf)
+                .animation(.easeInOut(duration: 0.2), value: selectedDiv)
             }
         }
         .navigationTitle(pickerTitle ?? league.abbr)

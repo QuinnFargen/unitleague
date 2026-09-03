@@ -41,14 +41,18 @@ struct CardGame: View {
                     .frame(width: 50, alignment: .leading)
                 Text("@")
                     .foregroundStyle(.secondary)
+                    .fixedSize()
                 Text(game.home)
                     .foregroundStyle(game.winner == game.home ? theme.accent : theme.primaryText(colorScheme))
                     .lineLimit(1)
                     .frame(width: 50, alignment: .leading)
-                oddsValueView
-                    .font(.caption2.weight(.semibold))
             }
             .font(.subheadline.weight(.semibold))
+
+            Spacer(minLength: 4)
+
+            oddsValueView
+                .font(.caption2.weight(.semibold))
 
             Spacer(minLength: 8)
 

@@ -53,15 +53,11 @@ struct CardGameOdds: View {
     }
 
     @ViewBuilder
-    private func scoreCapsule(_ value: Int) -> some View {
+    private func scoreText(_ value: Int) -> some View {
         Text("\(value)")
             .font(.caption.weight(.semibold))
             .foregroundStyle(theme.primaryText(colorScheme))
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
             .frame(width: scoreW)
-            .background(theme.chipUnselected(colorScheme))
-            .clipShape(Capsule())
     }
 
     @ViewBuilder
@@ -129,7 +125,7 @@ struct CardGameOdds: View {
         .padding(.vertical, 4)
         .frame(width: colW)
         .background(oddsCapsuleColor(price, betHash: betHash, won: won))
-        .clipShape(Capsule())
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     var body: some View {
@@ -180,7 +176,7 @@ struct CardGameOdds: View {
                 HStack(spacing: 4) {
                     teamAbbrCapsule(odd.awayAbbr, teamId: odd.awayTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    if let s = scores { scoreCapsule(s.away) }
+                    if let s = scores { scoreText(s.away) }
                     priceCapsule(odd.mlAwayPrice, subtitle: OddsFormatting.impliedPct(odd.mlAwayPrice),
                                  betHash: odd.mlAwayBetHash, won: odd.mlAwayWon) {
                         guard let p = odd.mlAwayPrice, let h = odd.mlAwayBetHash else { return }
@@ -221,7 +217,7 @@ struct CardGameOdds: View {
                 HStack(spacing: 4) {
                     teamAbbrCapsule(odd.homeAbbr, teamId: odd.homeTeamId)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    if let s = scores { scoreCapsule(s.home) }
+                    if let s = scores { scoreText(s.home) }
                     priceCapsule(odd.mlHomePrice, subtitle: OddsFormatting.impliedPct(odd.mlHomePrice),
                                  betHash: odd.mlHomeBetHash, won: odd.mlHomeWon) {
                         guard let p = odd.mlHomePrice, let h = odd.mlHomeBetHash else { return }

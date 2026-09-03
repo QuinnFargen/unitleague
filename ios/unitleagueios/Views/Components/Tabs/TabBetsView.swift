@@ -472,75 +472,73 @@ struct TabBetsView: View {
     // MARK: - Odds content (Slate: ALL/ML/SPR/O-U, with optional Juice filter)
 
     private var oddsContent: some View {
-        Group {
-            if filteredOdds.isEmpty {
-                Spacer()
-                Text("No odds available")
-                    .foregroundStyle(.secondary)
-                Spacer()
-            } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        HStack {
-                            Text(oddsSectionTitle)
-                                .font(.title3.weight(.bold))
-                                .foregroundStyle(theme.primaryText(colorScheme))
-                            Spacer()
-                            RowCapsuleButton(systemName: cycleIcon(for: selectedOddsType), isSelected: true) {
-                                advanceOddsType()
-                            }
-                            RowCapsuleButton(systemName: "syringe.fill", isSelected: showJuiceOnly) {
-                                showJuiceOnly.toggle()
-                            }
-                            Text("\(filteredOdds.count)")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.horizontal, 16)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                HStack {
+                    Text(oddsSectionTitle)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(theme.primaryText(colorScheme))
+                    Spacer()
+                    RowCapsuleButton(systemName: cycleIcon(for: selectedOddsType), isSelected: true) {
+                        advanceOddsType()
+                    }
+                    RowCapsuleButton(systemName: "syringe.fill", isSelected: showJuiceOnly) {
+                        showJuiceOnly.toggle()
+                    }
+                    Text("\(filteredOdds.count)")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 16)
 
-                        LazyVStack(spacing: 12) {
-                            ForEach(filteredOdds) { odd in
-                                if selectedOddsType == "ALL" {
-                                    ZStack {
-                                        NavigationLink {
-                                            ViewGameDetail(
-                                                gameId: odd.gameId,
-                                                home: odd.homeAbbr,
-                                                away: odd.awayAbbr,
-                                                homeTeamId: odd.homeTeamId,
-                                                awayTeamId: odd.awayTeamId,
-                                                leagueId: odd.leagueId
-                                            )
-                                        } label: { Color.clear }
-                                        CardGameOdds(
-                                            odd: odd,
-                                            teamLevels: juiceTeamLevels,
-                                            showJuiceCapsule: showJuiceOnly
-                                        ) { bet in selectedBet = bet }
-                                    }
-                                } else {
-                                    ZStack {
-                                        NavigationLink {
-                                            ViewGameDetail(
-                                                gameId: odd.gameId,
-                                                home: odd.homeAbbr,
-                                                away: odd.awayAbbr,
-                                                homeTeamId: odd.homeTeamId,
-                                                awayTeamId: odd.awayTeamId,
-                                                leagueId: odd.leagueId
-                                            )
-                                        } label: { Color.clear }
-                                        CardGameOddSingle(odd: odd, betType: selectedOddsType) { bet in selectedBet = bet }
-                                    }
+                if filteredOdds.isEmpty {
+                    Text("No odds available")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 16)
+                } else {
+                    LazyVStack(spacing: 12) {
+                        ForEach(filteredOdds) { odd in
+                            if selectedOddsType == "ALL" {
+                                ZStack {
+                                    NavigationLink {
+                                        ViewGameDetail(
+                                            gameId: odd.gameId,
+                                            home: odd.homeAbbr,
+                                            away: odd.awayAbbr,
+                                            homeTeamId: odd.homeTeamId,
+                                            awayTeamId: odd.awayTeamId,
+                                            leagueId: odd.leagueId
+                                        )
+                                    } label: { Color.clear }
+                                    CardGameOdds(
+                                        odd: odd,
+                                        teamLevels: juiceTeamLevels,
+                                        showJuiceCapsule: showJuiceOnly
+                                    ) { bet in selectedBet = bet }
+                                }
+                            } else {
+                                ZStack {
+                                    NavigationLink {
+                                        ViewGameDetail(
+                                            gameId: odd.gameId,
+                                            home: odd.homeAbbr,
+                                            away: odd.awayAbbr,
+                                            homeTeamId: odd.homeTeamId,
+                                            awayTeamId: odd.awayTeamId,
+                                            leagueId: odd.leagueId
+                                        )
+                                    } label: { Color.clear }
+                                    CardGameOddSingle(odd: odd, betType: selectedOddsType) { bet in selectedBet = bet }
                                 }
                             }
                         }
-                        .padding(.horizontal, 16)
                     }
-                    .padding(.top, 12)
-                    .padding(.bottom, 24)
+                    .padding(.horizontal, 16)
                 }
             }
+            .padding(.top, 12)
+            .padding(.bottom, 24)
         }
     }
 

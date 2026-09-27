@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "UNIT League",
+  title: { default: "UNIT", template: "%s · UNIT" },
   description: "Fantasy-style betting leagues with fake units. No real money.",
 };
 

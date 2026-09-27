@@ -4,8 +4,9 @@ const GROUPS = [
   {
     title: "Learn",
     links: [
-      { href: "/learn/how-it-works", label: "How It Works" },
-      { href: "/learn/scoring", label: "Scoring & Rules" },
+      { href: "/learn/about", label: "About" },
+      { href: "/learn/unit-league", label: "How It Works" },
+      { href: "/learn/danger", label: "The Danger" },
       { href: "/learn/faq", label: "FAQ" },
     ],
   },
@@ -60,8 +61,8 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <p>UNIT League is a free-to-play game using fake units. No real money is wagered.</p>
-          <p>© {new Date().getFullYear()} UNIT League</p>
+          <p>Unit League is a game played with fake units. No real money is wagered.</p>
+          <p>© {new Date().getFullYear()} Unit League</p>
         </div>
       </div>
     </footer>

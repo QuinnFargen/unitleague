@@ -1,30 +1,26 @@
 # UnitLeague Web
 
-One Next.js app serving both sites:
+Two independent Next.js apps:
 
-| Host | Routes |
-|------|--------|
-| `unitleague.com` | `app/page.js` (and everything outside `app/admin`) |
-| `admin.unitleague.com` | `app/admin/*` — `proxy.js` rewrites by host |
+| Folder | Domain | Dev URL |
+|--------|--------|---------|
+| `main/` | `unitleague.com` | http://localhost:3000 |
+| `admin/` | `admin.unitleague.com` | http://localhost:3001 |
 
-Data comes from the FastAPI service (`API_URL`, defaults to `https://api.unitleague.com`).
+Both read from the FastAPI service (`API_URL`, defaults to `https://api.unitleague.com`).
 
 ## Run
 
 Requires Node 20.9+.
 
 ```bash
+cd main   # or admin
 npm install
 npm run dev
 ```
 
-- Base site: http://localhost:3000
-- Admin site: http://admin.localhost:3000
-
-To point at a local API: `API_URL=http://localhost:8000 npm run dev`.
-
 ## Deploy
 
-Deploy the `web/` directory (e.g. Vercel with root directory `web`) and attach both `unitleague.com` and `admin.unitleague.com` to the same project.
+Deploy each folder as its own project (e.g. Vercel root directory `web/main` and `web/admin`) and attach its domain.
 
-Note: the admin site has no auth yet.
+Note: the admin app has no auth yet.

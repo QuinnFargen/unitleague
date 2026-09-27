@@ -3,14 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LEARN_SECTIONS } from "@/lib/learn";
 
 const NAV = [
-  { href: "/bets", label: "Bets" },
+  { href: "/bets", label: "Bet" },
   { href: "/syndicate", label: "Syndicate" },
   { href: "/research", label: "Research" },
   { href: "/juice", label: "Juice" },
   { href: "/profile", label: "Profile" },
-  { href: "/learn", label: "Learn" },
+  { href: "/learn", label: "Learn", children: LEARN_SECTIONS },
 ];
 
 export default function Header() {
@@ -44,16 +45,36 @@ export default function Header() {
         <div id="site-nav" className={`site-nav${open ? " open" : ""}`}>
           <nav aria-label="Main">
             <ul>
-              {NAV.map(({ href, label }) => (
-                <li key={href}>
+              {NAV.map(({ href, label, children }) => (
+                <li key={href} className={children ? "has-menu" : undefined}>
                   <Link
                     href={href}
                     className={isActive(href) ? "active" : undefined}
-                    aria-current={isActive(href) ? "page" : undefined}
+                    aria-current={pathname === href ? "page" : undefined}
                     onClick={close}
                   >
                     {label}
                   </Link>
+                  {children && (
+                    <ul className="nav-menu" aria-label={`${label} sections`}>
+                      {children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className={pathname === child.href ? "active" : undefined}
+                            aria-current={pathname === child.href ? "page" : undefined}
+                            onClick={(e) => {
+                              close();
+                              // Drop focus so :focus-within doesn't hold the menu open after navigating.
+                              e.currentTarget.blur();
+                            }}
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>

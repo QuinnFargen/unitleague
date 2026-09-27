@@ -1,27 +1,21 @@
-const API_URL = process.env.API_URL ?? "https://api.unitleague.com";
+import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+const SECTIONS = [
+  { href: "/api", title: "API", description: "Browse FastAPI endpoints, fill in parameters, and inspect the JSON response." },
+];
 
-export default async function AdminHome() {
-  const leagues = await fetch(`${API_URL}/mart/league`).then((r) => r.json());
-
+export default function AdminHome() {
   return (
     <main>
-      <img src="/logo-black.png" alt="UNIT League" height={40} />
       <h1>Admin</h1>
-      <h2>Leagues</h2>
-      <table border="1" cellPadding="6" style={{ borderCollapse: "collapse" }}>
-        <thead>
-          <tr><th>ID</th><th>Abbr</th><th>Name</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          {leagues.map((l) => (
-            <tr key={l.league_id}>
-              <td>{l.league_id}</td><td>{l.abbr}</td><td>{l.name}</td><td>{l.status}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="section-cards">
+        {SECTIONS.map(({ href, title, description }) => (
+          <Link key={href} href={href} className="section-card">
+            <h2>{title}</h2>
+            <p>{description}</p>
+          </Link>
+        ))}
+      </div>
     </main>
   );
 }

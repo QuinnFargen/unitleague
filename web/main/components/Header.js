@@ -1,11 +1,10 @@
-export default function Header({ label }) {
+export default function Header() {
   return (
-    <header className="header">
+    <header>
       <picture>
         <source srcSet="/logo-white.png" media="(prefers-color-scheme: dark)" />
         <img src="/logo-black.png" alt="UNIT League" className="logo" />
       </picture>
-      {label && <span className="badge">{label}</span>}
     </header>
   );
 }

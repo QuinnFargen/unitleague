@@ -1,5 +1,5 @@
 {
-  "name": "unitleague-web",
+  "name": "unitleague-main",
   "private": true,
   "scripts": {
     "dev": "next dev",

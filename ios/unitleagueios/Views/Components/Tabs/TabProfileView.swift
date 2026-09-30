@@ -14,7 +14,6 @@ struct TabProfileView: View {
     @AppStorage("appleEmail")          private var appleEmail: String      = ""
     @State private var authError: String?
     @State private var showingEditProfile = false
-    @State private var showingEducation = false
     @State private var stats: BettorStats?
 
     private var displayName: String {
@@ -35,9 +34,6 @@ struct TabProfileView: View {
             .tabToolbar()
             .sheet(isPresented: $showingEditProfile) {
                 SheetEditProfile()
-            }
-            .sheet(isPresented: $showingEducation) {
-                SheetEducation()
             }
             .onAppear {
                 if !appleUserName.isEmpty && !profileSaved {
@@ -158,19 +154,6 @@ struct TabProfileView: View {
                         }
                         .buttonStyle(.plain)
                     }
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Components")
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(theme.primaryText(colorScheme))
-
-                    Button {
-                        showingEducation = true
-                    } label: {
-                        NavCardRow(icon: "graduationcap.fill", title: "Education")
-                    }
-                    .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 16)

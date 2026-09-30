@@ -16,10 +16,6 @@ struct TabProfileView: View {
     @State private var showingEditProfile = false
     @State private var showingEducation = false
     @State private var stats: BettorStats?
-    @State private var syndicateRunners: [Runner] = []
-    @State private var syndicates: [Syndicate] = []
-    @State private var leagueBalances: [BettorLeagueBalance] = []
-    @State private var leagues: [League] = []
 
     private var displayName: String {
         customUserName.isEmpty ? appleUserName : customUserName
@@ -56,16 +52,7 @@ struct TabProfileView: View {
 
     private func loadProfileData() async {
         guard bettorId != 0 else { return }
-        async let statsFetch = try? BettorService().fetchStats(bettorId: bettorId)
-        async let runnersFetch = try? RunnerService().fetchRunner(bettorId: bettorId)
-        async let syndicatesFetch = try? SyndicateService().fetchSyndicate(bettorId: bettorId)
-        async let leagueBalancesFetch = try? BettorService().fetchLeagueBalances(bettorId: bettorId)
-        async let leaguesFetch = try? LeagueService().fetchLeagues()
-        stats = await statsFetch ?? nil
-        syndicateRunners = await runnersFetch ?? []
-        syndicates = await syndicatesFetch ?? []
-        leagueBalances = await leagueBalancesFetch ?? []
-        leagues = await leaguesFetch ?? []
+        stats = try? await BettorService().fetchStats(bettorId: bettorId)
     }
 
     private var signInView: some View {
@@ -151,12 +138,27 @@ struct TabProfileView: View {
                     onEdit: { showingEditProfile = true }
                 )
 
-                CardUnitBreakdown(
-                    syndicateRunners: syndicateRunners,
-                    syndicates: syndicates,
-                    leagueBalances: leagueBalances,
-                    leagues: leagues
-                )
+                NavigationLink {
+                    ViewPerformance()
+                } label: {
+                    NavCardRow(icon: "chart.line.uptrend.xyaxis", title: "Performance")
+                }
+                .buttonStyle(.plain)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Learn")
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(theme.primaryText(colorScheme))
+
+                    ForEach(LearnSection.allCases) { section in
+                        NavigationLink {
+                            section.destination
+                        } label: {
+                            NavCardRow(icon: section.icon, title: section.label)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
 
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Components")
@@ -166,19 +168,7 @@ struct TabProfileView: View {
                     Button {
                         showingEducation = true
                     } label: {
-                        HStack {
-                            Image(systemName: "graduationcap.fill")
-                                .foregroundStyle(theme.accent)
-                            Text("Education")
-                                .foregroundStyle(theme.primaryText(colorScheme))
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding()
-                        .background(theme.cardBackground(colorScheme))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        NavCardRow(icon: "graduationcap.fill", title: "Education")
                     }
                     .buttonStyle(.plain)
                 }

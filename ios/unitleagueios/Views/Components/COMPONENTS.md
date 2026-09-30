@@ -93,6 +93,40 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ---
 
+## ViewPerformance
+
+**Purpose:** The signed-in bettor's unit history — per-syndicate runner balances and per-league balances (moved out of `TabProfileView`).
+
+**Models:** `Runner`, `Syndicate`, `BettorLeagueBalance`, `League`
+
+**Data source:** `RunnerService`, `SyndicateService`, `BettorService.fetchLeagueBalances`, `LeagueService` — fetched in parallel on `.task(id: bettorId)`.
+
+**Used in:**
+- `TabProfileView` (Performance NavigationLink)
+
+**Sub-components:** `CardUnitBreakdown`
+
+**Environment:** `AppTheme`, `@AppStorage("bettorId")`
+
+---
+
+## Learn pages (`Tabs/Learn/`)
+
+**Purpose:** Native versions of the website's Learn section (`web/main/app/learn`): `ViewLearnAbout`, `ViewLearnUnitLeague`, `ViewLearnTerms` (searchable glossary, data copied from `web/main/lib/terms.js`), `ViewLearnResource`, `ViewLearnFAQ`. Keep copy in sync with the web pages.
+
+**Models:** `LearnSection` (enum driving the profile buttons), `LearnTerm`
+
+**Data source:** Static content — no network calls.
+
+**Used in:**
+- `TabProfileView` (Learn section, one NavigationLink per `LearnSection`)
+
+**Sub-components:** `LearnPage`, `LearnText` (inline markdown), `LearnHeading`, `LearnBullets`, `LearnCallout`, `LearnTable`, `NavCardRow` — all in `LearnComponents.swift`; `FilterChip`
+
+**Environment:** `AppTheme`
+
+---
+
 ## SheetSyndicateEdit
 
 **Purpose:** Syndicate edit sheet — rename, pick symbol and color; shows join code for admins.

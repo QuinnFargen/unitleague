@@ -30,6 +30,18 @@ struct CardBet: View {
     private var isOverUnder: Bool { bet.type == "O/U" || bet.type == "OVER" || bet.type == "UNDER" }
     private var isOver: Bool { bet.type == "OVER" || bet.side == "Over" }
 
+    /// Placed bets carry the picked team abbr in `team`; slate bets only carry `side`
+    /// ("Away"/"Home"), so fall back to that to know which side of an ML/SPR was taken.
+    private var pickedTeam: String? {
+        guard bet.type == "ML" || bet.type == "SPR" else { return nil }
+        if let team = bet.team { return team }
+        switch bet.side {
+        case "Away": return bet.awayAbbr
+        case "Home": return bet.homeAbbr
+        default:     return nil
+        }
+    }
+
     private func teamCapsule(_ text: String) -> some View {
         Text(text)
             .padding(.horizontal, 8)
@@ -39,7 +51,7 @@ struct CardBet: View {
     }
 
     private func capsuleText(_ abbr: String) -> String {
-        guard abbr == bet.team else { return abbr }
+        guard abbr == pickedTeam else { return abbr }
         switch bet.type {
         case "SPR":
             if let p = bet.points { return "\(abbr) \(OddsFormatting.formatPointsSigned(p))" }
@@ -67,10 +79,10 @@ struct CardBet: View {
     @ViewBuilder
     private var matchupLine: some View {
         HStack(spacing: 4) {
-            if (bet.type == "ML" || bet.type == "SPR"), let team = bet.team, team == bet.awayAbbr {
+            if let team = pickedTeam, team == bet.awayAbbr {
                 teamCapsule(capsuleText(bet.awayAbbr))
                 Text("@ " + bet.homeAbbr)
-            } else if (bet.type == "ML" || bet.type == "SPR"), let team = bet.team, team == bet.homeAbbr {
+            } else if let team = pickedTeam, team == bet.homeAbbr {
                 Text(bet.awayAbbr + " @")
                 teamCapsule(capsuleText(bet.homeAbbr))
             } else {

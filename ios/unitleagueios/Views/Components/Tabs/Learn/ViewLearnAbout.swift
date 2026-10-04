@@ -1,10 +1,10 @@
 import SwiftUI
 
-/// Learn > About. Mirrors `web/main/app/learn/about/page.js`.
+/// Learn > About Gambling. Mirrors `web/main/app/learn/about/page.js`.
 struct ViewLearnAbout: View {
     var body: some View {
         LearnPage(
-            title: "About",
+            title: "About Gambling",
             lede: "A fantasy-style betting league where the only thing on the line is bragging rights."
         ) {
             LearnText("UNIT League lets you and your friends make picks on real games, at real odds, and track who comes out ahead over a season. You never wager money, and you can never win or lose money on a pick. Everyone plays with **units** instead.")

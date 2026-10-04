@@ -59,6 +59,14 @@ struct SheetConfirmBet: View {
         let clv = enhancements.first { $0.enhancementType == "clv" && $0.name == bet.type }
         return Enhanced.clvMultiplier(level: clv?.level)
     }
+    private var teamJuice: [Enhanced] {
+        enhancements
+            .filter { $0.enhancementType == "team" && relevantTeamIds.contains($0.teamId) }
+            .sorted { $0.name < $1.name }
+    }
+    private var clvJuice: [Enhanced] {
+        enhancements.filter { $0.enhancementType == "clv" }
+    }
     private var effectivePrice: Double { bet.price * priceMultiplier }
     private var totalRiskedUnits: Double { wagerUnits + Double(teamBonus) }
     private var potentialReturn: Double { totalRiskedUnits * effectivePrice }
@@ -262,6 +270,8 @@ struct SheetConfirmBet: View {
                             .background(Color.secondary.opacity(0.10))
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
+
+                        juiceSection
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 16)
@@ -331,6 +341,46 @@ struct SheetConfirmBet: View {
         runner       = runners?.first
         syndicate    = syndicates?.first
         enhancements = enhanced ?? []
+    }
+
+    /// The CLV and Team Juice that apply to this bet, laid out like `TabJuiceView`.
+    @ViewBuilder
+    private var juiceSection: some View {
+        if CLVLevelLine.order.contains(bet.type) || !teamJuice.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Juice", systemImage: "syringe.fill")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(theme.primaryText(colorScheme))
+
+                if !teamJuice.isEmpty {
+                    let teamsByLeague = Dictionary(grouping: teamJuice, by: { $0.leagueId ?? 0 })
+                    ForEach(teamsByLeague.keys.sorted(), id: \.self) { lid in
+                        HStack(alignment: .center, spacing: 12) {
+                            Image(systemName: League.sportIcon(for: lid))
+                                .font(.title2)
+                                .foregroundStyle(theme.primaryText(colorScheme))
+                                .frame(width: 44, height: 44)
+                                .background(theme.cardBackground(colorScheme))
+                                .clipShape(RoundedRectangle(cornerRadius: 10))
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(teamsByLeague[lid] ?? []) { item in
+                                        TeamLevelCapsule(item: item)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if CLVLevelLine.order.contains(bet.type) {
+                    CLVLevelLine(items: clvJuice, names: [bet.type])
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+        }
     }
 
     @ViewBuilder

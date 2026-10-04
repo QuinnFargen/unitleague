@@ -44,7 +44,7 @@ struct ViewPerformance: View {
                 .padding(.bottom, 32)
             }
         }
-        .navigationTitle("Performance")
+        .navigationTitle("Pick Performance")
         .navigationBarTitleDisplayMode(.inline)
         .task(id: bettorId) {
             await loadData()

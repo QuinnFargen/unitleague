@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TabBetsView: View {
+struct TabPicksView: View {
     @EnvironmentObject private var theme: AppTheme
     @EnvironmentObject private var betStore: BetStore
     @Environment(\.colorScheme) private var colorScheme
@@ -10,6 +10,8 @@ struct TabBetsView: View {
     @State private var selectedDate: Date = .now
     @State private var selectedLeagueId: Int? = nil
     @State private var selectedTeamId: Int? = nil
+    @State private var selectedConf: String? = nil
+    @State private var selectedDiv: String? = nil
     @State private var selectedBetType: String = "ALL"
     @State private var selectedOddsType: String = "ALL"
     @State private var showJuiceOnly: Bool = false
@@ -121,7 +123,7 @@ struct TabBetsView: View {
 
     private var filteredTeams: [Team] {
         let gameTeamIds = Set(odds.flatMap { [$0.homeTeamId, $0.awayTeamId] })
-        return teams.filter { gameTeamIds.contains($0.id) }
+        return teams.filter { gameTeamIds.contains($0.id) && matchesConfDiv($0) }
     }
 
     private var availabilityTint: (Int) -> Color? {
@@ -132,6 +134,138 @@ struct TabBetsView: View {
         }
     }
 
+    // MARK: - Conf / Div secondary filters
+
+    private static let cfbFBSDivOrder = ["ACC", "B10", "B12", "SEC", "IND"]
+
+    /// Excludes the placeholder "other" teams (e.g. non-FBS/FCS opponents), matching `ViewRank`.
+    private var leagueTeams: [Team] {
+        teams.filter { $0.id != 50000 && $0.id != 60000 }
+    }
+
+    private var confs: [String] {
+        Array(Set(leagueTeams.compactMap(\.conf))).sorted()
+    }
+
+    private var divs: [String] {
+        guard let conf = selectedConf else { return [] }
+        let raw = Array(Set(leagueTeams.filter { $0.conf == conf }.compactMap(\.div)))
+        if selectedLeagueId == 5 && conf == "FBS" {
+            let priority = Self.cfbFBSDivOrder
+            return raw.sorted {
+                let li = priority.firstIndex(of: $0) ?? Int.max
+                let ri = priority.firstIndex(of: $1) ?? Int.max
+                return li == ri ? $0 < $1 : li < ri
+            }
+        }
+        return raw.sorted()
+    }
+
+    private func matchesConfDiv(_ team: Team) -> Bool {
+        if let conf = selectedConf, team.conf != conf { return false }
+        if let div = selectedDiv, team.div != div { return false }
+        return true
+    }
+
+    /// Team ids allowed by the Conf/Div capsules, or nil when neither is set (no filtering).
+    private var confDivTeamIds: Set<Int>? {
+        guard selectedConf != nil else { return nil }
+        return Set(teams.filter(matchesConfDiv).map(\.id))
+    }
+
+    private var confDivTeamAbbrs: Set<String>? {
+        guard selectedConf != nil else { return nil }
+        return Set(teams.filter(matchesConfDiv).map(\.abbr))
+    }
+
+    private func matchesConfDiv(homeTeamId: Int, awayTeamId: Int) -> Bool {
+        guard let ids = confDivTeamIds else { return true }
+        return ids.contains(homeTeamId) || ids.contains(awayTeamId)
+    }
+
+    /// Team ids playing in the content below — odds for the Slate, games for Calendar.
+    private var teamIdsWithContent: Set<Int> {
+        selectedBetType == "Calendar"
+            ? Set(games.flatMap { [$0.homeTeamId, $0.awayTeamId] })
+            : Set(odds.flatMap { [$0.homeTeamId, $0.awayTeamId] })
+    }
+
+    private func confDivTint(conf: String, div: String? = nil) -> Color {
+        let available = leagueTeams.contains { team in
+            team.conf == conf && (div == nil || team.div == div) && teamIdsWithContent.contains(team.id)
+        }
+        return available ? theme.win : theme.loss
+    }
+
+    private func tapLeague(_ id: Int) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedLeagueId = (selectedLeagueId == id) ? nil : id
+            selectedTeamId = nil
+            selectedConf = nil
+            selectedDiv = nil
+        }
+    }
+
+    /// Tapping the selected conf again wipes the conf + div chain and returns to the conf list.
+    private func tapConf(_ conf: String) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedConf = (selectedConf == conf) ? nil : conf
+            selectedDiv = nil
+            selectedTeamId = nil
+        }
+    }
+
+    /// Bottom-up unselect: tapping the selected div again steps back to the div list.
+    private func tapDiv(_ div: String) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedDiv = (selectedDiv == div) ? nil : div
+            selectedTeamId = nil
+        }
+    }
+
+    /// Breadcrumb row: all six leagues at rest; once one is picked the others drop away and
+    /// its Conf values (then the chosen conf's Div values) fill in to the right.
+    @ViewBuilder
+    private var leagueFilterSegment: some View {
+        if let leagueId = selectedLeagueId, let league = leagues.first(where: { $0.id == leagueId }) {
+            FilterChip(label: league.label, isSelected: true, availabilityTint: availabilityTint(league.id)) {
+                tapLeague(league.id)
+            }
+            if let conf = selectedConf {
+                FilterChip(label: conf, isSelected: true, availabilityTint: confDivTint(conf: conf)) {
+                    tapConf(conf)
+                }
+                if let div = selectedDiv {
+                    FilterChip(label: div, isSelected: true, availabilityTint: confDivTint(conf: conf, div: div)) {
+                        tapDiv(div)
+                    }
+                } else {
+                    ForEach(divs, id: \.self) { div in
+                        FilterChip(label: div, isSelected: false, availabilityTint: confDivTint(conf: conf, div: div)) {
+                            tapDiv(div)
+                        }
+                    }
+                }
+            } else {
+                ForEach(confs, id: \.self) { conf in
+                    FilterChip(label: conf, isSelected: false, availabilityTint: confDivTint(conf: conf)) {
+                        tapConf(conf)
+                    }
+                }
+            }
+        } else {
+            ForEach(leagues, id: \.label) { league in
+                FilterChip(
+                    label: league.label,
+                    isSelected: false,
+                    availabilityTint: availabilityTint(league.id)
+                ) {
+                    tapLeague(league.id)
+                }
+            }
+        }
+    }
+
     private var filteredOdds: [Odds] {
         let byType: [Odds]
         switch selectedOddsType {
@@ -139,9 +273,10 @@ struct TabBetsView: View {
         case "O/U": byType = odds.filter { $0.overPrice != nil && $0.underPrice != nil }
         default:    byType = odds // "ALL" and "ML"
         }
+        let confDivScoped = byType.filter { matchesConfDiv(homeTeamId: $0.homeTeamId, awayTeamId: $0.awayTeamId) }
         let scoped = showJuiceOnly
-            ? byType.filter { juiceTeamLevels[$0.homeTeamId] != nil || juiceTeamLevels[$0.awayTeamId] != nil }
-            : byType
+            ? confDivScoped.filter { juiceTeamLevels[$0.homeTeamId] != nil || juiceTeamLevels[$0.awayTeamId] != nil }
+            : confDivScoped
         let teamFiltered: [Odds]
         if let teamId = selectedTeamId {
             teamFiltered = scoped.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
@@ -160,7 +295,7 @@ struct TabBetsView: View {
         if let teamId = selectedTeamId {
             filtered = games.filter { $0.homeTeamId == teamId || $0.awayTeamId == teamId }
         } else {
-            filtered = games
+            filtered = games.filter { matchesConfDiv(homeTeamId: $0.homeTeamId, awayTeamId: $0.awayTeamId) }
         }
         return filtered.sorted { parseGameTime($0.gameTime) < parseGameTime($1.gameTime) }
     }
@@ -173,6 +308,7 @@ struct TabBetsView: View {
     private func matchesLeagueTeamFilter(_ txn: Txn) -> Bool {
         (selectedLeagueId == nil || txn.leagueId == selectedLeagueId)
             && (selectedTeamAbbr == nil || txn.home == selectedTeamAbbr || txn.away == selectedTeamAbbr)
+            && (confDivTeamAbbrs.map { abbrs in txn.home.map(abbrs.contains) == true || txn.away.map(abbrs.contains) == true } ?? true)
     }
 
     private func groupBySyndicate(_ txns: [Txn]) -> [(syndicateId: Int, singles: [Txn], parlays: [[Txn]])] {
@@ -321,19 +457,10 @@ struct TabBetsView: View {
                 VStack(spacing: 0) {
                     DateNavigationHeader(selectedDate: $selectedDate)
 
-                    // League filter
+                    // League filter — collapses to the picked league, then Conf → Div capsules
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
-                            ForEach(leagues, id: \.label) { league in
-                                FilterChip(
-                                    label: league.label,
-                                    isSelected: selectedLeagueId == league.id,
-                                    availabilityTint: availabilityTint(league.id)
-                                ) {
-                                    selectedLeagueId = (selectedLeagueId == league.id) ? nil : league.id
-                                    selectedTeamId = nil
-                                }
-                            }
+                            leagueFilterSegment
                         }
                         .padding(.horizontal)
                         .padding(.vertical, 8)
@@ -472,6 +599,8 @@ struct TabBetsView: View {
                 } else {
                     teams = []
                     selectedTeamId = nil
+                    selectedConf = nil
+                    selectedDiv = nil
                 }
             }
         }
@@ -1022,7 +1151,7 @@ struct TabBetsView: View {
 }
 
 #Preview {
-    TabBetsView()
+    TabPicksView()
         .environmentObject(AppTheme())
         .environmentObject(BetStore())
 }

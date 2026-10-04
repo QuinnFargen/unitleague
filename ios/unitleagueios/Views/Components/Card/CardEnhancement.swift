@@ -162,15 +162,16 @@ struct TeamLevelCapsule: View {
     }
 }
 
-/// Three side-by-side CLV multiplier pills (ML/SPR/O-U). Used by `TabJuiceView` and
-/// `SheetRunner`'s syndicate-scoped Juice section.
+/// Side-by-side CLV multiplier pills (ML/SPR/O-U). Used by `TabJuiceView`, `SheetRunner`'s
+/// syndicate-scoped Juice section, and `SheetConfirmBet` (narrowed to the bet's type via `names`).
 struct CLVLevelLine: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
 
     let items: [Enhanced]
+    var names: [String] = CLVLevelLine.order
 
-    private static let order = ["ML", "SPR", "O/U"]
+    static let order = ["ML", "SPR", "O/U"]
 
     private func level(for name: String) -> Int? {
         items.first { $0.name == name }?.level
@@ -187,7 +188,7 @@ struct CLVLevelLine: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            ForEach(Self.order, id: \.self) { name in
+            ForEach(names, id: \.self) { name in
                 let mult = multiplier(level(for: name))
                 HStack(spacing: 4) {
                     Text(name)

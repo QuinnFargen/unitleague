@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Learn > Resource. Mirrors `web/main/app/learn/resource/page.js`.
+/// Learn > Gambling Resources. Mirrors `web/main/app/learn/resource/page.js`.
 /// Videos open in YouTube rather than embedding a player.
 struct ViewLearnResource: View {
     var body: some View {
         LearnPage(
-            title: "Resource",
+            title: "Gambling Resources",
             lede: "Worth your time before you put real money on a game."
         ) {
             LearnHeading("Addiction")

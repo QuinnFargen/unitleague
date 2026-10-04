@@ -68,7 +68,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** `OddsService`, `OddManyService`, `TeamService`, `LeagueService` — all fetched in parallel on `.task`.
 
 **Used in:**
-- `TabBetsView` (primary odds browsing destination)
+- `TabPicksView` (primary odds browsing destination)
 
 **Sub-components:** `CardBet`, `GameOddsCard`, `AllOddsSection` (private), `ViewTeamBanner`, `ViewSched` (NavigationLink), `SheetConfirmBet`
 
@@ -153,7 +153,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabBetsView` (Calendar section)
+- `TabPicksView` (Calendar section)
 - `ViewLeagueSched` (schedule list)
 
 **Sub-components:** None
@@ -171,7 +171,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabBetsView` (Slate section, when the odds-type toggle is set to ML / SPR / O/U instead of ALL)
+- `TabPicksView` (Slate section, when the odds-type toggle is set to ML / SPR / O/U instead of ALL)
 
 **Sub-components:** None
 
@@ -279,7 +279,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 **Used in:**
 - `ViewGameDetail` (sheet on bet tap)
-- `TabBetsView` (bet tap, including bookmarked-bet tap)
+- `TabPicksView` (bet tap, including bookmarked-bet tap)
 
 **Sub-components:** `CardBet`, `SheetSyndicateSelector`, `SheetConfirmParlay`
 
@@ -297,7 +297,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 **Used in:**
 - `SheetConfirmBet` (Add to Parlay action)
-- `TabBetsView` (bookmarked parlay tap)
+- `TabPicksView` (bookmarked parlay tap)
 
 **Sub-components:** `CardBet`, `SheetSyndicateSelector`
 
@@ -307,14 +307,14 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ## CardBookmarkSingle / CardBookmarkParlay
 
-**Purpose:** Bookmarked bets shown inline in `TabBetsView`'s "Bookmarks" capsule — straight bets (`CardBookmarkSingle`, wraps `CardBet`) and parlay groups (`CardBookmarkParlay`, header + per-leg `CardBet`). Tap opens the confirm sheet; long-press opens a confirmationDialog to remove the bookmark.
+**Purpose:** Bookmarked bets shown inline in `TabPicksView`'s "Bookmarks" capsule — straight bets (`CardBookmarkSingle`, wraps `CardBet`) and parlay groups (`CardBookmarkParlay`, header + per-leg `CardBet`). Tap opens the confirm sheet; long-press opens a confirmationDialog to remove the bookmark.
 
 **Models:** `PlacedBet`
 
 **Data source:** `BetStore` (local `UserDefaults`-backed). No network calls.
 
 **Used in:**
-- `TabBetsView` (Bookmarks capsule content)
+- `TabPicksView` (Bookmarks capsule content)
 
 **Sub-components:** `CardBet`
 

@@ -137,7 +137,7 @@ struct TabProfileView: View {
                 NavigationLink {
                     ViewPerformance()
                 } label: {
-                    NavCardRow(icon: "chart.line.uptrend.xyaxis", title: "Performance")
+                    NavCardRow(icon: "chart.line.uptrend.xyaxis", title: "Pick Performance")
                 }
                 .buttonStyle(.plain)
 

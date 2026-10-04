@@ -15,7 +15,7 @@ unitleagueiosApp
     ├── TabSyndicateView
     ├── TabResearchView
     ├── TabGamesView
-    ├── TabBetsView
+    ├── TabPicksView
     └── TabProfileView
 ```
 
@@ -28,7 +28,7 @@ unitleagueiosApp
 | File | Types | Used By |
 |------|-------|---------|
 | `Models/Game.swift` | `Game` | `TabGamesView`, `ViewGameDetail` |
-| `Models/Odds.swift` | `Odds` | `TabBetsView`, `ViewGameDetail` |
+| `Models/Odds.swift` | `Odds` | `TabPicksView`, `ViewGameDetail` |
 | `Models/Team.swift` | `Team` (+ `teamColor`, `categoryIcon`, `regionIcon`) | `TabGamesView`, `ViewGameDetail`, `ViewTeamList`, `ViewTeamBanner` |
 | `Models/League.swift` | `League` (+ `sportIcon(for:)`) | `TabResearchView`, `TabSyndicateView`, `ViewGameDetail` |
 | `Models/Bettor.swift` | `Bettor` | `TabProfileView` |
@@ -46,7 +46,7 @@ All services use `async/await` and hit the base URL defined in `Services/APIClie
 |------|-----------|-----------|
 | `Services/APIClient.swift` | Base URL config | All services |
 | `Services/GameService.swift` | `fetchGames(date:leagueId:)` | `TabGamesView` |
-| `Services/OddsService.swift` | `fetchOddBest(gameId:gameDt:leagueId:)` | `TabBetsView`, `ViewGameDetail` |
+| `Services/OddsService.swift` | `fetchOddBest(gameId:gameDt:leagueId:)` | `TabPicksView`, `ViewGameDetail` |
 | `Services/TeamService.swift` | `fetchTeams(leagueId:)` | `TabGamesView`, `ViewGameDetail`, `ViewTeamList` |
 | `Services/LeagueService.swift` | `fetchLeagues()` | `TabResearchView`, `ViewGameDetail` |
 | `Services/SchedService.swift` | `fetchSchedule(teamId:leagueId:yr:)` | `ViewSched` |
@@ -72,7 +72,7 @@ All services use `async/await` and hit the base URL defined in `Services/APIClie
 | File | Purpose | Models Used | Services Used | Navigates To |
 |------|---------|-------------|---------------|--------------|
 | `Views/Tabs/TabGamesView.swift` | Browse games by date and league | `Game`, `Team` | `GameService`, `TeamService` | `ViewGameDetail` |
-| `Views/Tabs/TabBetsView.swift` | Browse best odds by date, league, bet type | `Odds` | `OddsService` | `ViewGameDetail` |
+| `Views/Tabs/TabPicksView.swift` | Browse best odds by date, league, bet type | `Odds` | `OddsService` | `ViewGameDetail` |
 | `Views/Tabs/TabResearchView.swift` | Explore leagues → teams → schedules | `League` | `LeagueService` | `ViewTeamList` |
 | `Views/Tabs/TabSyndicateView.swift` | Manage syndicates (view/join/create) | `Syndicate`, `Runner` | `SyndicateService`, `RunnerService` | `ViewSyndicate` |
 | `Views/Tabs/TabProfileView.swift` | Apple Sign-In, profile name/symbol/color | `Bettor` | `BettorService` | — |
@@ -106,7 +106,7 @@ TabGamesView → GameService.fetchGames(date, leagueId)
                           → LeagueService.fetchLeagues() (concurrent)
                           → ViewSched (per team)
 
-TabBetsView  → OddsService.fetchOddBest(date, leagueId, betType)
+TabPicksView  → OddsService.fetchOddBest(date, leagueId, betType)
              → OddBestCard → ViewGameDetail
 ```
 

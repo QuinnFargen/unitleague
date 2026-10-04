@@ -3,38 +3,44 @@ import SwiftUI
 /// Building blocks shared by the Learn pages (`ViewLearnAbout`, `ViewLearnUnitLeague`,
 /// `ViewLearnTerms`, `ViewLearnResource`, `ViewLearnFAQ`). Content mirrors `web/main/app/learn`.
 enum LearnSection: String, CaseIterable, Identifiable {
-    case about, unitLeague, terms, resource, faq
+    case about, unitLeague, syndicateTypes, terms, resource, legal, faq
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
-        case .about:      return "About"
-        case .unitLeague: return "Unit League"
-        case .terms:      return "Terms"
-        case .resource:   return "Resource"
-        case .faq:        return "FAQ"
+        case .about:          return "About Gambling"
+        case .unitLeague:     return "Unit League"
+        case .syndicateTypes: return "Syndicate Types"
+        case .terms:          return "Terms"
+        case .resource:       return "Gambling Resources"
+        case .legal:          return "Legal"
+        case .faq:            return "FAQ"
         }
     }
 
     var icon: String {
         switch self {
-        case .about:      return "info.circle.fill"
-        case .unitLeague: return "trophy.fill"
-        case .terms:      return "character.book.closed.fill"
-        case .resource:   return "lifepreserver.fill"
-        case .faq:        return "questionmark.circle.fill"
+        case .about:          return "info.circle.fill"
+        case .unitLeague:     return "trophy.fill"
+        case .syndicateTypes: return "square.stack.3d.up.fill"
+        case .terms:          return "character.book.closed.fill"
+        case .resource:       return "lifepreserver.fill"
+        case .legal:          return "building.columns.fill"
+        case .faq:            return "questionmark.circle.fill"
         }
     }
 
     @ViewBuilder
     var destination: some View {
         switch self {
-        case .about:      ViewLearnAbout()
-        case .unitLeague: ViewLearnUnitLeague()
-        case .terms:      ViewLearnTerms()
-        case .resource:   ViewLearnResource()
-        case .faq:        ViewLearnFAQ()
+        case .about:          ViewLearnAbout()
+        case .unitLeague:     ViewLearnUnitLeague()
+        case .syndicateTypes: ViewLearnSyndicateTypes()
+        case .terms:          ViewLearnTerms()
+        case .resource:       ViewLearnResource()
+        case .legal:          ViewLearnLegal()
+        case .faq:            ViewLearnFAQ()
         }
     }
 }

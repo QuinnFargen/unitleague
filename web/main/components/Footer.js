@@ -33,6 +33,7 @@ const GROUPS = [
       { href: "/terms", label: "Terms of Service" },
       { href: "/privacy", label: "Privacy Policy" },
       { href: "/responsible-play", label: "Responsible Play" },
+      { href: "/delete-account", label: "Delete Account" },
     ],
   },
 ];

@@ -85,14 +85,22 @@ enum Mock {
         syndicateId: 1, name: "Sharp Unit",
         description: "We find the edge.",
         isPublic: true, maxRunner: 10, createdByBettorId: 42,
-        code: "SHARP7", symbol: "chart.line.uptrend.xyaxis", color: "Green"
+        code: "SHARP7", symbol: "chart.line.uptrend.xyaxis", color: "Green",
+        startUnits: 100, syndicateType: "H2H", leagueId: 2, yr: 2026, sortOrder: 1
     )
     static let syndicate2 = Syndicate(
         syndicateId: 2, name: "The Books",
         isPublic: false, maxRunner: nil, createdByBettorId: 99,
-        code: "BOOK9", symbol: "book.fill", color: "Blue"
+        code: "BOOK9", symbol: "book.fill", color: "Blue",
+        leagueId: 1, yr: 2027, sortOrder: 2
     )
-    static var syndicates: [Syndicate] { [syndicate, syndicate2] }
+    static let syndicateHidden = Syndicate(
+        syndicateId: 3, name: "Old Pucks",
+        isPublic: false, maxRunner: 6, createdByBettorId: 42,
+        code: "PUCK3", symbol: "hockey.puck.fill", color: "Red",
+        leagueId: 3, yr: 2025, sortOrder: nil
+    )
+    static var syndicates: [Syndicate] { [syndicate, syndicate2, syndicateHidden] }
 
     // MARK: Runners
 

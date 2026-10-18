@@ -18,6 +18,7 @@ struct ViewSyndicate: View {
     @State private var isLoading = false
     @State private var fetchError: String?
     @State private var showingEdit = false
+    @State private var capsulesExpanded = false
     @State private var showingStartConfirm = false
     @State private var showingRules = false
     @State private var isStarting = false
@@ -234,10 +235,16 @@ struct ViewSyndicate: View {
 
     private var syndicateBanner: some View {
         VStack(alignment: .leading, spacing: 12) {
+            // Tapping anywhere but the admin edit button enlarges the capsules.
             CardSyndicate(
                 syndicate: syndicate,
+                style: capsulesExpanded ? .expanded : .regular,
                 onEdit: isAdmin ? { showingEdit = true } : nil
             )
+            .contentShape(Rectangle())
+            .onTapGesture {
+                withAnimation(.snappy) { capsulesExpanded.toggle() }
+            }
 
             if isAdmin && !syndicate.isStarted {
                 if let err = startError {
@@ -322,11 +329,11 @@ struct ViewSyndicate: View {
         updateDefaultWeekIfNeeded()
     }
 
-    /// Falls back to the leagues actually being bet on when the syndicate itself declares no
-    /// `league_ids` (an empty selection means "every league" per `SheetSyndicateCreate`), so the
-    /// week list can still resolve instead of silently staying empty.
+    /// Falls back to the leagues actually being bet on when the syndicate has no `league_id`
+    /// (e.g. Solo Loser or older syndicates), so the week list can still resolve instead of
+    /// silently staying empty.
     private func resolvedLeagueIds() -> [Int]? {
-        if let ids = syndicate.leagueIds, !ids.isEmpty { return ids }
+        if let id = syndicate.leagueId { return [id] }
         let fromBets = Set(completedBets.compactMap(\.leagueId)).union(activeBets.compactMap(\.leagueId))
         return fromBets.isEmpty ? nil : Array(fromBets)
     }

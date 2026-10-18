@@ -9,5 +9,6 @@ create table IF NOT EXISTS odd.runner(
   active       boolean default (true),
   start_ts     timestamp,
   end_ts       timestamp,
-  insert_ts    timestamp not null default now()
+  insert_ts    timestamp not null default now(),
+  sort_order   int -- position in the bettor's Syndicate tab; NULL = hidden
 );

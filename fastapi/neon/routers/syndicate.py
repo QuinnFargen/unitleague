@@ -10,23 +10,37 @@ from schemas.syndicate import (
     SyndicateStart,
     SyndicateUpdate,
     RunnerProfile,
+    RunnerOrder,
 )
 
 router = APIRouter(tags=["syndicate"])
+
+# Season year for a league, via mart.league.current_season_id.
+SEASON_YR_SQL = """
+    (SELECT se.yr FROM mart.league l
+     JOIN ball.season se ON se.season_id = l.current_season_id
+     WHERE l.league_id = :league_id)
+"""
+
+# New syndicates land at the bottom of the bettor's Syndicate tab.
+NEXT_SORT_ORDER_SQL = """
+    coalesce((SELECT max(sort_order) FROM odd.runner
+              WHERE bettor_id = :bettor_id AND active = true), 0) + 1
+"""
 
 
 @router.post("/odd/syndicate")
 def create_syndicate(syndicate: SyndicateCreate):
     with engine.begin() as conn:
-        syndicate_row = conn.execute(text("""
-            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config, syndicate_type, league_ids)
-            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id, :start_units, :config, :syndicate_type, :league_ids)
+        syndicate_row = conn.execute(text(f"""
+            INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config, syndicate_type, league_id, yr, symbol, color)
+            VALUES (:name, :description, :is_public, :password, :max_runner, :bettor_id, :start_units, :config, :syndicate_type, :league_id, {SEASON_YR_SQL}, :symbol, :color)
             RETURNING *
         """), {**syndicate.model_dump(), "config": json.dumps(syndicate.config) if syndicate.config else None}).fetchone()
 
-        runner_row = conn.execute(text("""
-            INSERT INTO odd.runner (bettor_id, syndicate_id, role)
-            VALUES (:bettor_id, :syndicate_id, 'admin')
+        runner_row = conn.execute(text(f"""
+            INSERT INTO odd.runner (bettor_id, syndicate_id, role, sort_order)
+            VALUES (:bettor_id, :syndicate_id, 'admin', {NEXT_SORT_ORDER_SQL})
             RETURNING *
         """), {"bettor_id": syndicate.bettor_id, "syndicate_id": syndicate_row._mapping["syndicate_id"]}).fetchone()
 
@@ -62,9 +76,9 @@ def join_syndicate(code: str, body: RunnerCreate):
             if count >= syndicate.max_runner:
                 raise HTTPException(status_code=409, detail="Syndicate is full")
 
-        runner_row = conn.execute(text("""
-            INSERT INTO odd.runner (bettor_id, syndicate_id, role)
-            VALUES (:bettor_id, :syndicate_id, 'member')
+        runner_row = conn.execute(text(f"""
+            INSERT INTO odd.runner (bettor_id, syndicate_id, role, sort_order)
+            VALUES (:bettor_id, :syndicate_id, 'member', {NEXT_SORT_ORDER_SQL})
             RETURNING *
         """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate.syndicate_id}).fetchone()
 
@@ -165,6 +179,28 @@ def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
         if row is None:
             raise HTTPException(status_code=404, detail="Syndicate not found")
         return dict(row._mapping)
+
+@router.put("/odd/runner/order")
+def set_runner_order(body: RunnerOrder):
+    with engine.begin() as conn:
+        conn.execute(text("""
+            UPDATE odd.runner SET sort_order = NULL
+            WHERE bettor_id = :bettor_id AND active = true
+        """), {"bettor_id": body.bettor_id})
+
+        for index, syndicate_id in enumerate(body.syndicate_ids):
+            conn.execute(text("""
+                UPDATE odd.runner SET sort_order = :sort_order
+                WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id AND active = true
+            """), {"bettor_id": body.bettor_id, "syndicate_id": syndicate_id, "sort_order": index + 1})
+
+        rows = conn.execute(text("""
+            SELECT * FROM odd.runner
+            WHERE bettor_id = :bettor_id AND active = true
+            ORDER BY sort_order NULLS LAST, syndicate_id
+        """), {"bettor_id": body.bettor_id}).fetchall()
+
+    return [dict(row._mapping) for row in rows]
 
 @router.patch("/odd/runner/{runner_id}")
 def set_runner_profile(runner_id: int, profile: RunnerProfile):

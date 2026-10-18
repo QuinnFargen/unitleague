@@ -12,7 +12,7 @@ class SyndicateService {
         return try JSONDecoder().decode([Syndicate].self, from: data)
     }
 
-    func createSyndicate(bettorId: Int, name: String, description: String? = nil, isPublic: Bool = false, password: String? = nil, symbol: String? = nil, color: String? = nil, syndicateType: String? = nil, leagueIds: [Int]? = nil) async throws -> Syndicate {
+    func createSyndicate(bettorId: Int, name: String, description: String? = nil, isPublic: Bool = false, password: String? = nil, symbol: String? = nil, color: String? = nil, syndicateType: String? = nil, leagueId: Int) async throws -> Syndicate {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate") else {
             throw URLError(.badURL)
         }
@@ -20,13 +20,12 @@ class SyndicateService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        var body: [String: Any] = ["bettor_id": bettorId, "name": name, "is_public": isPublic]
+        var body: [String: Any] = ["bettor_id": bettorId, "name": name, "is_public": isPublic, "league_id": leagueId]
         if let desc = description { body["description"] = desc }
         if let pw = password { body["password"] = pw }
         if let sym = symbol { body["symbol"] = sym }
         if let col = color { body["color"] = col }
         if let st = syndicateType { body["syndicate_type"] = st }
-        if let ids = leagueIds { body["league_ids"] = ids }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
         let (data, _) = try await URLSession.shared.data(for: request)
@@ -78,6 +77,23 @@ class SyndicateService {
 
         let (data, _) = try await URLSession.shared.data(for: request)
         return try JSONDecoder().decode(Syndicate.self, from: data)
+    }
+
+    /// Saves the bettor's Syndicate tab layout: `syndicateIds` are the visible syndicates in order;
+    /// every other syndicate the bettor is in becomes hidden.
+    func updateRunnerOrder(bettorId: Int, syndicateIds: [Int]) async throws {
+        guard let url = URL(string: "\(APIClient.baseURL)/odd/runner/order") else {
+            throw URLError(.badURL)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: ["bettor_id": bettorId, "syndicate_ids": syndicateIds])
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+        if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+            throw SyndicateError.message("Unable to save syndicate order.")
+        }
     }
 
     func joinSyndicate(bettorId: Int, code: String, password: String? = nil) async throws -> Runner {

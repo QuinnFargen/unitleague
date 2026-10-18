@@ -1,6 +1,6 @@
 import Foundation
 
-/// Resolves a syndicate's active season(s) (via its `league_ids`) and fetches/caches the list
+/// Resolves a syndicate's active season(s) (via its `league_id`) and fetches/caches the list
 /// of weeks for those seasons, so completed-bet lists can be paged week-by-week without
 /// refetching the season/week lookup on every view.
 @MainActor
@@ -31,7 +31,7 @@ final class SyndicateWeeksStore: ObservableObject {
         UserDefaults.standard.set(data, forKey: cacheKey(syndicateId: syndicateId))
     }
 
-    /// `leagueIds`: pass the syndicate's known `league_ids` if already available (e.g. `ViewSyndicate`
+    /// `leagueIds`: pass the syndicate's known `league_id` (or bet leagues) if already available (e.g. `ViewSyndicate`
     /// already has the `Syndicate` object); pass `nil` to have this fetch the `Syndicate` itself first
     /// (e.g. `SheetRunner`, which only has a `syndicateId`).
     func load(syndicateId: Int, leagueIds: [Int]?) async {
@@ -47,7 +47,7 @@ final class SyndicateWeeksStore: ObservableObject {
             ids = leagueIds
         } else {
             let syndicates = (try? await SyndicateService().fetchSyndicate(syndicateId: syndicateId)) ?? []
-            ids = syndicates.first?.leagueIds ?? []
+            ids = syndicates.first?.leagueId.map { [$0] } ?? []
         }
         guard !ids.isEmpty else { return }
 

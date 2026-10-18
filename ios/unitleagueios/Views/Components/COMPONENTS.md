@@ -254,14 +254,15 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ## CardSyndicate
 
-**Purpose:** Syndicate list row — icon, name, optional description or "Public" label, selected checkmark or chevron.
+**Purpose:** Syndicate summary card with three `style`s — `.compact` (slim Syndicate tab row: symbol-height card with name and league symbol/year capsule, selected checkmark or chevron), `.regular` (detail banner with description and capsules, optional admin edit button), `.expanded` (detail banner with larger capsules, toggled by tapping the card).
 
-**Models:** `Syndicate`
+**Models:** `Syndicate`, `League` (sport icon)
 
 **Data source:** Passed in by parent — no network calls.
 
 **Used in:**
-- `TabSyndicateView` (syndicate list)
+- `TabSyndicateView` (syndicate list and edit mode, `.compact`)
+- `ViewSyndicate` (header banner, `.regular` / `.expanded`)
 
 **Sub-components:** None
 
@@ -345,7 +346,7 @@ Reusable views used across the app's tab structure. Each file ends with a `#Prev
 
 ## SheetCreateSyndicate
 
-**Purpose:** New syndicate creation form — name, description, privacy toggle, max runners, symbol and color pickers.
+**Purpose:** New syndicate creation form — name, a single required league (the server stores that league's current season `yr`), syndicate type, description, privacy toggle, password, symbol and color pickers.
 
 **Models:** `AccentOption`, `SyndicateOption`
 
@@ -455,9 +456,10 @@ All preview mock data lives in `PreviewMocks.swift` inside a `#if DEBUG` block. 
 | `Mock.teamBOS` | `Team` | Celtics — Green, East/Atlantic |
 | `Mock.teamGSW` | `Team` | Warriors — Gold, West/Pacific |
 | `Mock.teamsNBA` | `[Team]` | LAL, BOS, GSW |
-| `Mock.syndicate` | `Syndicate` | "Sharp Unit" — public, Green |
-| `Mock.syndicate2` | `Syndicate` | "The Books" — private, Blue |
-| `Mock.syndicates` | `[Syndicate]` | Both syndicates |
+| `Mock.syndicate` | `Syndicate` | "Sharp Unit" — public, Green, NFL 2026, sort 1 |
+| `Mock.syndicate2` | `Syndicate` | "The Books" — private, Blue, NBA 2027, sort 2 |
+| `Mock.syndicateHidden` | `Syndicate` | "Old Pucks" — private, Red, NHL 2025, hidden (`sortOrder: nil`) |
+| `Mock.syndicates` | `[Syndicate]` | All three syndicates |
 | `Mock.runnerAdmin` | `Runner` | bettorId 42, 250 balance, admin role |
 | `Mock.runnerMember` | `Runner` | bettorId 77, 180 balance, member role |
 | `Mock.runners` | `[Runner]` | Both runners |

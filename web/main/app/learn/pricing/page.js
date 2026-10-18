@@ -45,7 +45,7 @@ export default function Page() {
 
       <h2>Why charge anything?</h2>
       <p>
-        Unit League doesn't take a cut of any bet. Small entry fees, subscriptions, and donations
+        Unit League doesn't take a cut of any pick. Small entry fees, subscriptions, and donations
         cover the cost of running it.
       </p>
 

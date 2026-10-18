@@ -55,7 +55,7 @@ export default function Page() {
       <h2>Syndicate settings</h2>
       <p>Admins can tune a syndicate to their group:</p>
       <ul>
-        <li><strong>Minimum wagers / minimum units</strong>: stop anyone from sitting on a lead by not betting.</li>
+        <li><strong>Minimum wagers / minimum units</strong>: stop anyone from sitting on a lead by not picking.</li>
         <li><strong>Juice cost multiplier</strong>: 2x, 3x, or 4x the cost of every enhancement.</li>
         <li><strong>Max active Edges</strong>: cap how many Edge cards a runner holds at once.</li>
         <li><strong>Max CLV / Team level</strong>: cap how far those enhancements can be stacked.</li>
@@ -77,11 +77,11 @@ export default function Page() {
 
       <h3>CLV Juice</h3>
       <p>
-        Named after <Term id="clv">closing line value</Term>. There is one for each bet type:
+        Named after <Term id="clv">closing line value</Term>. There is one for each pick type:
         <strong> ML</strong> (<Term id="moneyline">moneyline</Term>),
         <strong> SPR</strong> (<Term id="spread">spread</Term>), and
         <strong> O/U</strong> (<Term id="total">totals</Term>). Leveling one up strengthens your
-        bonus on that type of bet. CLV Juice is always on offer.
+        bonus on that type of pick. CLV Juice is always on offer.
       </p>
 
       <h3>Team Juice</h3>
@@ -100,10 +100,10 @@ export default function Page() {
         <strong>team</strong>. A few examples:
       </p>
       <ul>
-        <li><strong>Line Shopper</strong> (price): +0.10 decimal odds on every bet.</li>
-        <li><strong>Vig Cutter</strong> (balance): losing bets refund 20% of stake.</li>
+        <li><strong>Line Shopper</strong> (price): +0.10 decimal odds on every pick.</li>
+        <li><strong>Vig Cutter</strong> (balance): losing picks refund 20% of stake.</li>
         <li><strong>Hot Hand</strong> (trigger): +0.10 odds per consecutive win, resets on a loss.</li>
-        <li><strong>Lock of the Day</strong> (risk): one bet gets 2x odds, but costs 15 units if it loses.</li>
+        <li><strong>Lock of the Day</strong> (risk): one pick gets 2x odds, but costs 15 units if it loses.</li>
         <li><strong>Degenerate</strong> (risk): 3x odds on everything, but you must stake half your balance every round.</li>
       </ul>
       <p>If you hit your syndicate's Edge limit, you sell one you hold to make room.</p>

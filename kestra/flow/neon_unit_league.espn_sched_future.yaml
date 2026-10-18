@@ -66,7 +66,7 @@ tasks:
           Determine the date window to fetch for a season row.
 
           Modes:
-            FULL_REG  — has_reg=false, reg_start within 3 months or season already underway
+            FULL_REG  — has_reg=false, reg_start within 3 months (forward only)
                         → fetch reg_start..reg_end via ESPN calendar
             FULL_POST — has_post=false, post_start imminent or already in progress
                         → fetch post_start..champ_dt+14 via ESPN calendar
@@ -86,8 +86,7 @@ tasks:
               not has_reg
               and reg_start is not None
               and reg_end   is not None
-              and reg_start <= today + timedelta(days=REG_LOOKAHEAD)
-              and reg_end   >= today
+              and today < reg_start <= today + timedelta(days=REG_LOOKAHEAD)
           )
           full_post = (
               not has_post
@@ -121,6 +120,7 @@ tasks:
           away = next((c for c in competitors if c.get("homeAway") == "away"), {})
 
           season = event.get("season", {})
+          status = event.get("status", {})
 
           return {
               "league_id":     league_id,
@@ -131,9 +131,7 @@ tasks:
               "season_year":   season.get("year"),
               "season_type":   season.get("type"),
               "season_slug":   season.get("slug"),
-              # Always 0: already-played games picked up by a FULL_REG/FULL_POST catch-up
-              # must match etl.v_fetch_espn_sched_update so the backfill flows score them
-              "status_period": 0,
+              "status_period": status.get("period", 0),
               "home_score":    None,
               "home_team":     home.get("team", {}).get("displayName"),
               "home_abbr":     home.get("team", {}).get("abbreviation"),
@@ -183,27 +181,17 @@ tasks:
           league_meta  = r.json().get("leagues", [{}])[0]
           raw_calendar = league_meta.get("calendar", [])
 
-          # Calendar is a whitelist of game days for most leagues, but MLB returns
-          # calendarIsWhitelist=false: the listed dates are the days WITHOUT games
-          is_whitelist = league_meta.get("calendarIsWhitelist", True)
-
-          calendar_dates = set()
+          # Filter calendar dates to [fetch_start, fetch_end]
+          future_dates = []
           for iso in raw_calendar:
               try:
-                  calendar_dates.add(pd.to_datetime(iso).date())
+                  d_obj = pd.to_datetime(iso).date()
+                  if fetch_start <= d_obj <= fetch_end:
+                      future_dates.append(d_obj.strftime("%Y%m%d"))
               except Exception:
                   continue
 
-          # Filter to [fetch_start, fetch_end]
-          if is_whitelist:
-              window_dates = [d for d in calendar_dates if fetch_start <= d <= fetch_end]
-          else:
-              window_dates = [
-                  d.date() for d in pd.date_range(fetch_start, fetch_end)
-                  if d.date() not in calendar_dates
-              ]
-
-          future_dates = sorted({d.strftime("%Y%m%d") for d in window_dates})
+          future_dates = sorted(set(future_dates))
           print(f"[{season_label}] {len(future_dates)} game day(s) to fetch")
 
           if not future_dates:

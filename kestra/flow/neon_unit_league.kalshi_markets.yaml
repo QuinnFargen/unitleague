@@ -139,7 +139,7 @@ tasks:
           networkMode: compose_default
         commands:
           - dbt deps --project-dir dbt --profiles-dir .
-          - dbt run --project-dir dbt --profiles-dir . --select odd_bet
+          - dbt run --project-dir dbt --profiles-dir . --select odd_bet+
         profiles: |
           unitleague:
             outputs:

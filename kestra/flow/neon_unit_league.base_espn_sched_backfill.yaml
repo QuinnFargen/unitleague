@@ -209,7 +209,7 @@ tasks:
           networkMode: compose_default
         commands:
           - dbt deps --project-dir dbt --profiles-dir .
-          - dbt run --project-dir dbt --profiles-dir . --select ball_game ball_sched
+          - dbt run --project-dir dbt --profiles-dir . --select ball_game+
         profiles: |
           unitleague:
             outputs:

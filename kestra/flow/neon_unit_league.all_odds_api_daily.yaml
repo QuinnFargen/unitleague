@@ -111,7 +111,7 @@ tasks:
           networkMode: compose_default
         commands:
           - dbt deps --project-dir dbt --profiles-dir .
-          - dbt run --project-dir dbt --profiles-dir . --select odd_bet
+          - dbt run --project-dir dbt --profiles-dir . --select odd_bet+
         profiles: |
           unitleague:
             outputs:
@@ -138,5 +138,5 @@ pluginDefaults:
 triggers:
   - id: schedule
     type: io.kestra.plugin.core.trigger.Schedule
-    cron: "0 11 * * *"
+    cron: "30 10 * * *"
     recoverMissedSchedules: NONE

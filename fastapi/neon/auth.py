@@ -40,6 +40,11 @@ def _unauthorized(detail: str) -> HTTPException:
     return HTTPException(status_code=401, detail=detail, headers={"WWW-Authenticate": "Bearer"})
 
 
+def require_configured() -> None:
+    """503 before doing any work if session tokens can't be issued."""
+    _session_secret()
+
+
 def _session_secret() -> str:
     secret = os.getenv("SESSION_SECRET")
     if not secret:

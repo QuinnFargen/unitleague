@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { LEARN_SECTIONS } from "@/lib/learn";
 
 const NAV = [
-  { href: "/bets", label: "Bet" },
+  { href: "/pick", label: "Pick" },
   { href: "/syndicate", label: "Syndicate" },
   { href: "/research", label: "Research" },
   { href: "/juice", label: "Juice" },

@@ -8,7 +8,7 @@ export default function Page() {
     <>
       <h1>About UNIT League</h1>
       <p className="lede">
-        A fantasy-style betting league where the only thing on the line is bragging rights.
+        A fantasy-style picking league where the only thing on the line is bragging rights.
       </p>
 
       <p>
@@ -26,7 +26,7 @@ export default function Page() {
       <ul>
         <li>Every runner in a <Term id="syndicate">syndicate</Term> starts with the same number of units.</li>
         <li>You stake units on <Term id="moneyline">moneylines</Term>, <Term id="spread">spreads</Term>, <Term id="total">totals</Term>, and <Term id="parlay">parlays</Term> at real market odds.</li>
-        <li>Winning bets add units and losing bets subtract them. Most units at the end wins.</li>
+        <li>Winning picks add units and losing picks subtract them. Most units at the end wins.</li>
         <li>Units can't be bought, sold, withdrawn, or exchanged for anything.</li>
       </ul>
       <p>
@@ -73,7 +73,7 @@ export default function Page() {
           <tr><th></th><th>Sportsbook</th><th>Prediction market</th><th>UNIT League</th></tr>
         </thead>
         <tbody>
-          <tr><td>Who you bet against</td><td>The house</td><td>Other traders</td><td>Not betting</td></tr>
+          <tr><td>Who you bet against</td><td>The house</td><td>Other traders</td><td>Not picking</td></tr>
           <tr><td>How it makes money</td><td>Vig and hold</td><td>Trading fees</td><td>$1</td></tr>
           <tr><td>Real money at risk</td><td>Yes</td><td>Yes</td><td>No</td></tr>
           <tr><td>Limits winners</td><td>Yes</td><td>Rarely</td><td>Never</td></tr>

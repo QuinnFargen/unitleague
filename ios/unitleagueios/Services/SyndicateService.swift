@@ -8,7 +8,8 @@ class SyndicateService {
         if let bettorId    { queryItems.append(URLQueryItem(name: "bettor_id",    value: "\(bettorId)")) }
         if !queryItems.isEmpty { components.queryItems = queryItems }
         guard let url = components.url else { throw URLError(.badURL) }
-        let (data, _) = try await URLSession.shared.data(from: url)
+        // Signed in, the API includes join codes for syndicates this bettor belongs to.
+        let (data, _) = try await URLSession.shared.data(for: APIClient.authorizedRequest(url, method: "GET"))
         return try JSONDecoder().decode([Syndicate].self, from: data)
     }
 

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query
 from sqlalchemy import text
 
+from auth import ViewerBettor
 from db import engine
 
 router = APIRouter(tags=["mart"])
@@ -287,15 +288,24 @@ def get_mart_txn_bets(bettor_id: int = Query(None), syndicate_id: int = Query(No
         result = conn.execute(text(q), query_params)
         return [dict(row._mapping) for row in result]
 
+# Never returns the join password. The join code is only shown for public syndicates or to
+# an active member (identified by the optional bearer token), since syndicate ids are guessable.
 @router.get("/mart/syndicate")
-def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None)):
+def get_syndicate(viewer: ViewerBettor, syndicate_id: int = Query(None), bettor_id: int = Query(None)):
     q = """
-        SELECT s.*, r.sort_order
+        SELECT s.syndicate_id, s.name, s.description, s.is_public, s.max_runner,
+               s.created_by_bettor_id, s.symbol, s.color, s.start_units, s.config, s.is_started,
+               s.insert_ts, s.syndicate_type, s.league_id, s.yr,
+               CASE WHEN s.is_public OR EXISTS (
+                        SELECT 1 FROM odd.runner me
+                        WHERE me.syndicate_id = s.syndicate_id AND me.bettor_id = :viewer_id AND me.active = true
+                    ) THEN s.code END AS code,
+               r.sort_order
         FROM odd.syndicate s
         JOIN odd.runner r ON s.syndicate_id = r.syndicate_id
         WHERE r.active = true
     """
-    query_params = {}
+    query_params = {"viewer_id": viewer}
 
     if syndicate_id:
         q += " AND s.syndicate_id = :syndicate_id"

@@ -103,6 +103,18 @@ def current_bettor_id(creds: Annotated[HTTPAuthorizationCredentials | None, Depe
 CurrentBettor = Annotated[int, Depends(current_bettor_id)]
 
 
+def optional_bettor_id(creds: Annotated[HTTPAuthorizationCredentials | None, Depends(_bearer)]) -> int | None:
+    """For public reads that show more to the signed-in bettor: the bettor_id, or None when
+    there is no valid token. Never raises, so reads keep working signed out."""
+    try:
+        return current_bettor_id(creds)
+    except HTTPException:
+        return None
+
+
+ViewerBettor = Annotated[int | None, Depends(optional_bettor_id)]
+
+
 def require_self(bettor_id: int, current: int) -> None:
     """403 unless the bettor_id named in the path or body is the signed-in bettor."""
     if bettor_id != current:

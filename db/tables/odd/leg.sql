@@ -6,5 +6,3 @@ CREATE TABLE IF NOT EXISTS odd.leg (
   price     float,
   price_enhanced float
 );
-
-ALTER TABLE odd.leg ADD COLUMN IF NOT EXISTS price_enhanced float;

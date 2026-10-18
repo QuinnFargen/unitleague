@@ -20,7 +20,7 @@ struct SheetSyndicateCreate: View {
     @State private var isPublic = false
     @State private var selectedSymbol: String = SyndicateOption.symbols[0]
     @State private var selectedColor: AccentOption = .green
-    @State private var selectedLeagueIds: Set<Int> = []
+    @State private var selectedLeagueId: Int?
     @State private var syndicateType: String?
     @State private var leagues: [League] = []
     @State private var isEditingName = false
@@ -30,10 +30,11 @@ struct SheetSyndicateCreate: View {
     @State private var showingSymbolPicker = false
 
     private var isValid: Bool {
-        !name.trimmingCharacters(in: .whitespaces).isEmpty
+        !name.trimmingCharacters(in: .whitespaces).isEmpty && selectedLeagueId != nil
     }
 
     private func create() {
+        guard let leagueId = selectedLeagueId else { return }
         isLoading = true
         errorMessage = nil
         Task {
@@ -47,7 +48,7 @@ struct SheetSyndicateCreate: View {
                     symbol: selectedSymbol,
                     color: selectedColor.rawValue,
                     syndicateType: syndicateType,
-                    leagueIds: selectedLeagueIds.isEmpty ? nil : Array(selectedLeagueIds).sorted()
+                    leagueId: leagueId
                 )
                 dismiss()
             } catch {
@@ -115,7 +116,7 @@ struct SheetSyndicateCreate: View {
 
                         VStack(spacing: 16) {
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("Leagues")
+                                Text("League")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                     .padding(.horizontal, 4)
@@ -125,16 +126,12 @@ struct SheetSyndicateCreate: View {
                                 } else {
                                     LazyVGrid(columns: [GridItem(.adaptive(minimum: 80), spacing: 8)], spacing: 8) {
                                         ForEach(leagues) { league in
-                                            capsuleChip(title: league.abbr, isSelected: selectedLeagueIds.contains(league.id)) {
-                                                if selectedLeagueIds.contains(league.id) {
-                                                    selectedLeagueIds.remove(league.id)
-                                                } else {
-                                                    selectedLeagueIds.insert(league.id)
-                                                }
+                                            capsuleChip(title: league.abbr, isSelected: selectedLeagueId == league.id) {
+                                                selectedLeagueId = (selectedLeagueId == league.id) ? nil : league.id
                                             }
                                         }
                                     }
-                                    Text("No leagues selected allows every league.")
+                                    Text("Pick the one league this syndicate plays in.")
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                 }

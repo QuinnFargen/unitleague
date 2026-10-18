@@ -6,13 +6,13 @@
     )
 }}
 
--- syndicate.config stores league_ids as a JSON array: {"league_ids": [1, 2]}
+-- Each syndicate is confined to a single league (odd.syndicate.league_id)
 with syndicate_leagues as (
     select
         syndicate_id,
-        (json_array_elements_text(config -> 'league_ids'))::int as league_id
+        league_id
     from {{ source('odd', 'syndicate') }}
-    where config -> 'league_ids' is not null
+    where league_id is not null
 ),
 
 -- Distinct attribute values available per league from the team table

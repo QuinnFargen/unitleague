@@ -20,6 +20,20 @@ with season_status as (
     order by league_id, champ_dt desc
 ),
 
+-- Current season per league: the earliest season whose champ_dt hasn't happened yet,
+-- falling back to the latest season when none are upcoming.
+current_season as (
+    select distinct on (league_id)
+        league_id,
+        season_id as current_season_id
+    from {{ ref('season') }}
+    order by
+        league_id,
+        (champ_dt >= current_date) is true desc,
+        case when champ_dt >= current_date then champ_dt end,
+        yr desc
+),
+
 season_max_yr as (
     select
         league_id,
@@ -52,6 +66,7 @@ select
     l.sport,
     l.yr_orig,
     my.yr_data,
+    cs.current_season_id,
     l.weather,
     coalesce(s.status, 'offseason')                                 as status,
     ss.season_start_dt,
@@ -64,5 +79,6 @@ select
 from {{ ref('league') }} l
 left join season_status s on s.league_id = l.league_id
 left join season_max_yr my on my.league_id = l.league_id
+left join current_season cs on cs.league_id = l.league_id
 left join season_start ss on ss.league_id = l.league_id
 left join game_dates_summary gd on gd.league_id = l.league_id

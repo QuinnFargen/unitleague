@@ -14,8 +14,6 @@ create table IF NOT EXISTS odd.syndicate(
   is_started            boolean not null default false,
   insert_ts             timestamp not null default now(),
   syndicate_type        text,
-  league_ids            int[]
+  league_id             smallint,
+  yr                    smallint -- ball.season.yr of the league's season at creation
 );
-
-ALTER TABLE odd.syndicate ADD COLUMN IF NOT EXISTS syndicate_type text;
-ALTER TABLE odd.syndicate ADD COLUMN IF NOT EXISTS league_ids int[];

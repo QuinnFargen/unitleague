@@ -12,7 +12,9 @@ class SyndicateCreate(BaseModel):
     start_units: Optional[int] = None
     config: Optional[dict] = None
     syndicate_type: Optional[str] = None
-    league_ids: Optional[List[int]] = None
+    league_id: int
+    symbol: Optional[str] = None
+    color: Optional[str] = None
 
 class RunnerCreate(BaseModel):
     bettor_id: int
@@ -29,6 +31,10 @@ class SyndicateUpdate(BaseModel):
     config: Optional[dict] = None
     max_runner: Optional[int] = None
     start_units: Optional[int] = None
+
+class RunnerOrder(BaseModel):
+    bettor_id: int
+    syndicate_ids: List[int]  # visible syndicates in display order; the bettor's others become hidden
 
 class RunnerProfile(BaseModel):
     profile_name: Optional[str] = None

@@ -4,5 +4,3 @@ CREATE TABLE IF NOT EXISTS odd.parlay (
   price_mult float,
   unit_enhanced float
 );
-
-ALTER TABLE odd.parlay ADD COLUMN IF NOT EXISTS unit_enhanced float;

@@ -290,7 +290,7 @@ def get_mart_txn_bets(bettor_id: int = Query(None), syndicate_id: int = Query(No
 @router.get("/mart/syndicate")
 def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None)):
     q = """
-        SELECT s.*
+        SELECT s.*, r.sort_order
         FROM odd.syndicate s
         JOIN odd.runner r ON s.syndicate_id = r.syndicate_id
         WHERE r.active = true
@@ -305,7 +305,7 @@ def get_syndicate(syndicate_id: int = Query(None), bettor_id: int = Query(None))
         q += " AND r.bettor_id = :bettor_id"
         query_params["bettor_id"] = bettor_id
 
-    q += " ORDER BY s.syndicate_id"
+    q += " ORDER BY r.sort_order NULLS LAST, s.syndicate_id"
 
     with engine.connect() as conn:
         result = conn.execute(text(q), query_params)
@@ -321,7 +321,7 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
         )
         SELECT s.syndicate_id, s.name, s.description, s.code, s.is_public, s.max_runner,
                s.created_by_bettor_id, s.symbol, s.color, s.start_units, s.config, s.is_started,
-               s.syndicate_type, s.league_ids,
+               s.syndicate_type, s.league_id, s.yr,
                COALESCE(rc.active_runner_count, 0) AS active_runner_count
         FROM odd.syndicate s
         LEFT JOIN runner_counts rc ON rc.syndicate_id = s.syndicate_id
@@ -341,7 +341,7 @@ def get_public_syndicates(bettor_id: int = Query(None), league_id: int = Query(N
 
     if league_id:
         q += """
-            AND (s.league_ids IS NULL OR s.league_ids = '{}' OR :league_id = ANY(s.league_ids))
+            AND s.league_id = :league_id
         """
         query_params["league_id"] = league_id
 

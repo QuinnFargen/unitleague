@@ -15,7 +15,12 @@ struct Syndicate: Codable, Identifiable {
     let isStarted: Bool
     let config: SyndicateConfig?
     let syndicateType: String?
-    let leagueIds: [Int]?
+    let leagueId: Int?
+    let yr: Int?
+    /// Position in the bettor's Syndicate tab (from their runner row); nil means hidden.
+    var sortOrder: Int?
+
+    var isHidden: Bool { sortOrder == nil }
 
     enum CodingKeys: String, CodingKey {
         case syndicateId = "syndicate_id"
@@ -32,7 +37,9 @@ struct Syndicate: Codable, Identifiable {
         case isStarted = "is_started"
         case config
         case syndicateType = "syndicate_type"
-        case leagueIds = "league_ids"
+        case leagueId = "league_id"
+        case yr
+        case sortOrder = "sort_order"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -43,11 +50,16 @@ struct Syndicate: Codable, Identifiable {
         try c.encode(isPublic, forKey: .isPublic)
         try c.encodeIfPresent(maxRunner, forKey: .maxRunner)
         try c.encode(createdByBettorId, forKey: .createdByBettorId)
+        try c.encodeIfPresent(code, forKey: .code)
+        try c.encodeIfPresent(symbol, forKey: .symbol)
+        try c.encodeIfPresent(color, forKey: .color)
         try c.encodeIfPresent(startUnits, forKey: .startUnits)
         try c.encode(isStarted, forKey: .isStarted)
         try c.encodeIfPresent(config, forKey: .config)
         try c.encodeIfPresent(syndicateType, forKey: .syndicateType)
-        try c.encodeIfPresent(leagueIds, forKey: .leagueIds)
+        try c.encodeIfPresent(leagueId, forKey: .leagueId)
+        try c.encodeIfPresent(yr, forKey: .yr)
+        try c.encodeIfPresent(sortOrder, forKey: .sortOrder)
     }
 
     init(from decoder: Decoder) throws {
@@ -70,7 +82,9 @@ struct Syndicate: Codable, Identifiable {
         isStarted = try c.decodeIfPresent(Bool.self, forKey: .isStarted) ?? false
         config = try c.decodeIfPresent(SyndicateConfig.self, forKey: .config)
         syndicateType = try c.decodeIfPresent(String.self, forKey: .syndicateType)
-        leagueIds = try c.decodeIfPresent([Int].self, forKey: .leagueIds)
+        leagueId = try c.decodeIfPresent(Int.self, forKey: .leagueId)
+        yr = try c.decodeIfPresent(Int.self, forKey: .yr)
+        sortOrder = try c.decodeIfPresent(Int.self, forKey: .sortOrder)
     }
 }
 
@@ -91,7 +105,9 @@ extension Syndicate {
         isStarted: Bool = false,
         config: SyndicateConfig? = nil,
         syndicateType: String? = nil,
-        leagueIds: [Int]? = nil
+        leagueId: Int? = nil,
+        yr: Int? = nil,
+        sortOrder: Int? = 1
     ) {
         self.syndicateId = syndicateId
         self.name = name
@@ -106,6 +122,8 @@ extension Syndicate {
         self.isStarted = isStarted
         self.config = config
         self.syndicateType = syndicateType
-        self.leagueIds = leagueIds
+        self.leagueId = leagueId
+        self.yr = yr
+        self.sortOrder = sortOrder
     }
 }

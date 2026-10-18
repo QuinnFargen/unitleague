@@ -212,6 +212,7 @@ struct SheetSyndicateCreate: View {
             }
             .navigationTitle("Create Syndicate")
             .navigationBarTitleDisplayMode(.inline)
+            .keyboardDismissButton()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

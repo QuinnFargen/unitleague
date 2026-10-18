@@ -193,6 +193,7 @@ struct SheetSyndicateEdit: View {
             }
             .navigationTitle("Edit Syndicate")
             .navigationBarTitleDisplayMode(.inline)
+            .keyboardDismissButton()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }

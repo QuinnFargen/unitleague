@@ -6,6 +6,9 @@ struct TabSyndicateView: View {
     @AppStorage("bettorId")            private var bettorId: Int = 0
     @AppStorage("selectedSyndicateId") private var selectedSyndicateId: Int = 0
     @AppStorage("profileSymbol")       private var profileSymbol: String = ProfileOption.symbols[0]
+    @AppStorage("leagueSymbol")        private var leagueSymbol: String = "person.circle.fill"
+    @AppStorage("leagueColorName")     private var leagueColorName: String = AccentOption.allCases[0].rawValue
+    @AppStorage("leagueRank")          private var leagueRank: Int = 0
 
     @State private var syndicates: [Syndicate] = SyndicateCache.load()
     @State private var isLoading = false
@@ -197,6 +200,13 @@ struct TabSyndicateView: View {
     }
 
     private func hide(_ syndicate: Syndicate) {
+        // A hidden syndicate can't stay active, or new bets would default to it.
+        if selectedSyndicateId == syndicate.syndicateId {
+            selectedSyndicateId = 0
+            leagueSymbol = profileSymbol
+            leagueColorName = theme.accentOption.rawValue
+            leagueRank = 0
+        }
         applyOrder(visibleSyndicates.map(\.syndicateId).filter { $0 != syndicate.syndicateId })
     }
 

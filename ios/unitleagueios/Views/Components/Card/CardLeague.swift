@@ -71,6 +71,7 @@ private struct LeagueOptionIcon: View {
     }
 }
 
+#if DEBUG
 #Preview("CardLeague") {
     VStack(spacing: 12) {
         CardLeague(league: Mock.leagueNBA)
@@ -79,3 +80,4 @@ private struct LeagueOptionIcon: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

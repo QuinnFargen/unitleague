@@ -181,9 +181,11 @@ private enum GameDatesCache {
     }
 }
 
+#if DEBUG
 #Preview("ViewLeagueSched") {
     NavigationStack {
         ViewLeagueSched(league: Mock.leagueNBA)
     }
     .environmentObject(AppTheme())
 }
+#endif

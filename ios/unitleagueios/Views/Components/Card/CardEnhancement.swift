@@ -231,6 +231,7 @@ struct EdgeEnhancementRow: View {
     }
 }
 
+#if DEBUG
 #Preview("CardEnhancement") {
     VStack(spacing: 12) {
         CardEnhancement(option: Mock.enhanceOptionCLV)
@@ -240,3 +241,4 @@ struct EdgeEnhancementRow: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

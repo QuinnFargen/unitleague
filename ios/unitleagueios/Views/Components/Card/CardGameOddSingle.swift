@@ -207,6 +207,7 @@ struct CardGameOddSingle: View {
     }
 }
 
+#if DEBUG
 #Preview("CardGameOddSingle") {
     VStack(spacing: 12) {
         CardGameOddSingle(odd: Mock.odds, betType: "ML") { _ in }
@@ -216,3 +217,4 @@ struct CardGameOddSingle: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

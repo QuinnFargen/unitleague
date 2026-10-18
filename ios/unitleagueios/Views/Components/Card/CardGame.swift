@@ -131,6 +131,7 @@ struct CardGame: View {
     }
 }
 
+#if DEBUG
 #Preview("CardGame") {
     VStack(spacing: 8) {
         CardGame(game: Mock.gameLive, odds: Mock.oddsCompleted, oddsType: "ML")
@@ -141,3 +142,4 @@ struct CardGame: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

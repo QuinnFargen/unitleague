@@ -149,6 +149,7 @@ struct CardSyndicate: View {
     }
 }
 
+#if DEBUG
 #Preview("CardSyndicate") {
     ScrollView {
         VStack(alignment: .leading, spacing: 12) {
@@ -171,3 +172,4 @@ struct CardSyndicate: View {
     }
     .environmentObject(AppTheme())
 }
+#endif

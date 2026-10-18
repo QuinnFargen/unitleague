@@ -227,6 +227,7 @@ struct CardOddMany: View {
     }
 }
 
+#if DEBUG
 #Preview("AllOddsSection") {
     CardOddMany(
         odds: Mock.oddMany,
@@ -236,3 +237,4 @@ struct CardOddMany: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

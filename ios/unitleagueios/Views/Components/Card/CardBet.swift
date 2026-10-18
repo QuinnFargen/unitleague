@@ -178,6 +178,7 @@ struct CardBet: View {
     }
 }
 
+#if DEBUG
 #Preview("CardBet") {
     VStack(spacing: 12) {
         CardBet(bet: Mock.selectedBetML)
@@ -187,3 +188,4 @@ struct CardBet: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

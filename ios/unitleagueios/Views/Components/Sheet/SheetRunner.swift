@@ -208,9 +208,11 @@ struct SheetRunner: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetRunner") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetRunner(runner: Mock.runnerAdmin)
             .environmentObject(AppTheme())
     }
 }
+#endif

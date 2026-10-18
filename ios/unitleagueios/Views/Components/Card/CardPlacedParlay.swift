@@ -92,6 +92,7 @@ struct CardPlacedParlay: View {
     }
 }
 
+#if DEBUG
 #Preview("CardPlacedParlay") {
     VStack(spacing: 12) {
         CardPlacedParlay(legs: Mock.txnParlay)
@@ -102,3 +103,4 @@ struct CardPlacedParlay: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

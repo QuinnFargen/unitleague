@@ -22,8 +22,10 @@ struct CardBookmarkSingle: View {
     }
 }
 
+#if DEBUG
 #Preview("CardBookmarkSingle") {
     CardBookmarkSingle(bookmark: Mock.placedBetML, onTap: {}, onRemove: {})
         .padding()
         .environmentObject(AppTheme())
 }
+#endif

@@ -47,6 +47,7 @@ struct CardUnits: View {
     }
 }
 
+#if DEBUG
 #Preview("CardUnits") {
     VStack(spacing: 12) {
         CardUnits(txn: Mock.txnUnitDeposit)
@@ -55,3 +56,4 @@ struct CardUnits: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

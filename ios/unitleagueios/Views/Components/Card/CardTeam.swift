@@ -93,6 +93,7 @@ struct TeamMetaRow: View {
     }
 }
 
+#if DEBUG
 #Preview("ViewTeamBanner") {
     VStack(spacing: 16) {
         CardTeam(team: Mock.teamLAL, league: Mock.leagueNBA)
@@ -101,3 +102,4 @@ struct TeamMetaRow: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

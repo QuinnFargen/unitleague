@@ -422,9 +422,11 @@ private struct RunnerRow: View {
     }
 }
 
+#if DEBUG
 #Preview("ViewSyndicate") {
     NavigationStack {
         ViewSyndicate(syndicate: Mock.syndicate)
     }
     .environmentObject(AppTheme())
 }
+#endif

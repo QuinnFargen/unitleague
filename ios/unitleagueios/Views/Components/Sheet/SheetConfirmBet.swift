@@ -395,6 +395,7 @@ struct SheetConfirmBet: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetConfirmBet – ML") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetConfirmBet(
@@ -418,3 +419,4 @@ struct SheetConfirmBet: View {
         .environmentObject(BetStore())
     }
 }
+#endif

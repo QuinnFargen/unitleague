@@ -91,6 +91,7 @@ struct CardPlacedBet: View {
     }
 }
 
+#if DEBUG
 #Preview("CardPlacedBet") {
     VStack(spacing: 12) {
         CardPlacedBet(txn: Mock.txnML)
@@ -102,3 +103,4 @@ struct CardPlacedBet: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

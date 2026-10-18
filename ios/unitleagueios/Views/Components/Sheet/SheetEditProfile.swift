@@ -41,6 +41,7 @@ struct SheetEditProfile: View {
     @State private var favoriteTeamId: Int?
     @State private var favoriteTeamAbbr: String?
     @State private var showingTeamPicker = false
+    @State private var didLoadStats = false
 
     @State private var runnerName: String
     @State private var runnerSymbol: String
@@ -202,7 +203,10 @@ struct SheetEditProfile: View {
                 )
             }
             .task {
-                guard !isRunnerMode, bettorId != 0 else { return }
+                // .task re-runs every time this view reappears, including when popping back from
+                // the team picker; load once so a server fetch doesn't overwrite an unsaved pick.
+                guard !isRunnerMode, bettorId != 0, !didLoadStats else { return }
+                didLoadStats = true
                 if let stats = try? await BettorService().fetchStats(bettorId: bettorId) {
                     favoriteTeamId = stats.favoriteTeamId
                     favoriteTeamAbbr = stats.favoriteTeamAbbr

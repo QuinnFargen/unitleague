@@ -98,6 +98,7 @@ struct CardRank: View {
     }
 }
 
+#if DEBUG
 #Preview("CardRank") {
     VStack(spacing: 12) {
         CardRank(rank: 1, season: Mock.teamSeasonLAL)
@@ -106,3 +107,4 @@ struct CardRank: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

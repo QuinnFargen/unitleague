@@ -405,6 +405,7 @@ struct SheetConfirmParlay: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetConfirmParlay – from bookmarks") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetConfirmParlay(
@@ -429,3 +430,4 @@ struct SheetConfirmParlay: View {
         .environmentObject(BetStore())
     }
 }
+#endif

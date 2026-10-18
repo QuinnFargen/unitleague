@@ -4,16 +4,25 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy import text
 
 import apple
+from auth import CurrentBettor, issue_session_token, require_self, verify_apple_identity_token
 from db import engine
-from schemas.bettor import BettorCreate, BettorDelete, BettorProfile, BettorSignin
+from schemas.bettor import BettorCreate, BettorDelete, BettorProfile
 
 log = logging.getLogger(__name__)
 
 router = APIRouter(tags=["bettor"])
 
 
+# Sign in with Apple. The bettor is keyed on the `sub` of the verified identity token,
+# never on anything else the client sends. Returns the bettor plus a session_token.
 @router.post("/odd/bettor")
 def create_bettor(bettor: BettorCreate):
+    claims = verify_apple_identity_token(bettor.identity_token)
+    params = {
+        "apple_sub": claims["sub"],
+        "apple_email": bettor.apple_email or claims.get("email"),
+        "apple_name": bettor.apple_name,
+    }
     q = """
         INSERT INTO odd.bettor (apple_sub, apple_email, apple_name)
         VALUES (:apple_sub, :apple_email, :apple_name)
@@ -24,7 +33,7 @@ def create_bettor(bettor: BettorCreate):
         RETURNING *, (xmax = 0) AS is_new
     """
     with engine.begin() as conn:
-        result = conn.execute(text(q), bettor.model_dump())
+        result = conn.execute(text(q), params)
         row = result.fetchone()
         mapping = dict(row._mapping)
         if mapping.pop("is_new"):
@@ -32,30 +41,23 @@ def create_bettor(bettor: BettorCreate):
                 INSERT INTO odd.txn (bettor_id, syndicate_id, unit, price, txn_type_id, description)
                 VALUES (:bettor_id, 0, 100, 1.0, 3, 'initial units')
             """), {"bettor_id": mapping["bettor_id"]})
-        return mapping
+    mapping["session_token"] = issue_session_token(mapping["bettor_id"])
+    return mapping
 
+# Called on app launch with the stored session token: records the login and hands back
+# a fresh token so active users never hit the expiry.
 @router.post("/odd/bettor/signin")
-def signin_bettor(signin: BettorSignin):
-    if signin.bettor_id is None and signin.apple_sub is None:
-        raise HTTPException(status_code=400, detail="bettor_id or apple_sub required")
-
-    if signin.bettor_id is not None:
-        where = "bettor_id = :bettor_id"
-        params = {"bettor_id": signin.bettor_id}
-    else:
-        where = "apple_sub = :apple_sub"
-        params = {"apple_sub": signin.apple_sub}
-
-    q = f"UPDATE odd.bettor SET last_login_ts = now() WHERE {where} RETURNING *"
-
+def signin_bettor(current: CurrentBettor):
+    q = "UPDATE odd.bettor SET last_login_ts = now() WHERE bettor_id = :bettor_id RETURNING *"
     with engine.begin() as conn:
-        row = conn.execute(text(q), params).fetchone()
-        if row is None:
-            raise HTTPException(status_code=404, detail="Bettor not found")
-        return dict(row._mapping)
+        row = conn.execute(text(q), {"bettor_id": current}).fetchone()
+    if row is None:
+        raise HTTPException(status_code=404, detail="Bettor not found")
+    return {**dict(row._mapping), "session_token": issue_session_token(current)}
 
 @router.patch("/odd/bettor/{bettor_id}/profile")
-def set_bettor_profile(bettor_id: int, profile: BettorProfile):
+def set_bettor_profile(bettor_id: int, profile: BettorProfile, current: CurrentBettor):
+    require_self(bettor_id, current)
     updates = {k: v for k, v in profile.model_dump().items() if v is not None}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields provided to update")
@@ -85,11 +87,11 @@ def set_bettor_profile(bettor_id: int, profile: BettorProfile):
 #     created_by_bettor_id moves to them, so the league keeps running;
 #   - nobody else is active -> the syndicate and all its rows are deleted.
 #
-# TODO(auth): once sessions are verified, require the caller to be bettor_id.
-# Until then the Apple authorization_code check below is the only proof of
-# identity, so the app always sends one for Apple-linked accounts.
+# The caller must be signed in as bettor_id. The Apple authorization_code is only
+# used to revoke the Apple token (its sub must still match the bettor).
 @router.delete("/odd/bettor/{bettor_id}")
-def delete_bettor(bettor_id: int, body: BettorDelete | None = None):
+def delete_bettor(bettor_id: int, current: CurrentBettor, body: BettorDelete | None = None):
+    require_self(bettor_id, current)
     with engine.connect() as conn:
         bettor = conn.execute(text("SELECT bettor_id, apple_sub FROM odd.bettor WHERE bettor_id = :bettor_id"),
                               {"bettor_id": bettor_id}).fetchone()

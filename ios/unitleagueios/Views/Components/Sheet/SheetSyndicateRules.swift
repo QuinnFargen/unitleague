@@ -366,6 +366,7 @@ struct SheetSyndicateRules: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetSyndicateRules - Admin") {
     SheetSyndicateRules(syndicate: .constant(Mock.syndicate), isAdmin: true)
         .environmentObject(AppTheme())
@@ -375,3 +376,4 @@ struct SheetSyndicateRules: View {
     SheetSyndicateRules(syndicate: .constant(Mock.syndicate), isAdmin: false)
         .environmentObject(AppTheme())
 }
+#endif

@@ -311,9 +311,11 @@ struct ViewSchedLoader: View {
 }
 
 
+#if DEBUG
 #Preview("ViewSched") {
     NavigationStack {
         ViewSched(team: Mock.teamLAL, league: Mock.leagueNBA)
     }
     .environmentObject(AppTheme())
 }
+#endif

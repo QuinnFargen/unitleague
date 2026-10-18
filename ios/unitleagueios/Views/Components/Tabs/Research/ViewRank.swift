@@ -443,9 +443,11 @@ private enum TeamListCache {
     }
 }
 
+#if DEBUG
 #Preview("ViewRank") {
     NavigationStack {
         ViewRank(league: Mock.leagueNBA)
     }
     .environmentObject(AppTheme())
 }
+#endif

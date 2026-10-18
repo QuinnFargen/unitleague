@@ -4,6 +4,7 @@ struct MainTabView: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @AppStorage("bettorId") private var bettorId: Int = 0
+    @AppStorage("appleUserName") private var appleUserName: String = ""
     @State private var selectedTab = 2
 
     var body: some View {
@@ -39,10 +40,29 @@ struct MainTabView: View {
                 .tag(4)
         }
         .tint(theme.accent)
-        .task {
-            guard bettorId > 0 else { return }
-            try? await BettorService().signin(bettorId: bettorId)
+        .task { await refreshSession() }
+    }
+
+    /// Refreshes the session token on launch. With no valid token (an install from before API auth,
+    /// or an expired/revoked session) the bettor is signed out locally so the Profile tab asks them
+    /// to Sign in with Apple again; their profile comes back from the API.
+    private func refreshSession() async {
+        guard bettorId > 0 else {
+            SessionToken.clear()  // Keychain outlives app deletion; drop a token from a previous install.
+            return
         }
+        if SessionToken.load() != nil {
+            do {
+                try await BettorService().signin()
+                return
+            } catch APIError.unauthorized {
+                // Fall through to sign out.
+            } catch {
+                return  // Offline or server error: keep the session and try again next launch.
+            }
+        }
+        bettorId = 0
+        appleUserName = ""
     }
 }
 

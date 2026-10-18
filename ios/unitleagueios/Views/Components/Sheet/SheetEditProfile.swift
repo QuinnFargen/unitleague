@@ -229,6 +229,7 @@ struct SheetEditProfile: View {
         }
 
         LocalAccountData.wipe()
+        SessionToken.clear()
         betStore.clearBookmarks()
         theme.accentOption = AccentOption.defaultProfileColor
         appleUserName = ""
@@ -543,6 +544,7 @@ private struct FavoriteTeamPicker: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetEditProfile - Runner") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetEditProfile(runner: .constant(Mock.runnerAdmin))
@@ -550,3 +552,4 @@ private struct FavoriteTeamPicker: View {
             .environmentObject(BetStore())
     }
 }
+#endif

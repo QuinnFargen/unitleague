@@ -1,7 +1,9 @@
 import Foundation
 
 class BettorService {
-    func createBettor(appleSub: String, appleEmail: String?, appleName: String?) async throws -> Bettor {
+    /// Signs in with the `identityToken` from Sign in with Apple. The API verifies it with Apple,
+    /// creates or loads the bettor for its `sub`, and returns a session token, stored in the Keychain.
+    func createBettor(identityToken: String, appleEmail: String?, appleName: String?) async throws -> Bettor {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor") else {
             throw URLError(.badURL)
         }
@@ -9,26 +11,34 @@ class BettorService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
-        var body: [String: Any] = ["apple_sub": appleSub]
+        var body: [String: Any] = ["identity_token": identityToken]
         if let email = appleEmail { body["apple_email"] = email }
         if let name = appleName   { body["apple_name"] = name }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, _) = try await URLSession.shared.data(for: request)
-        return try JSONDecoder().decode(Bettor.self, from: data)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+            throw URLError(.userAuthenticationRequired)
+        }
+        let bettor = try JSONDecoder().decode(Bettor.self, from: data)
+        guard let token = bettor.sessionToken else { throw URLError(.userAuthenticationRequired) }
+        SessionToken.save(token)
+        return bettor
     }
 
-    func signin(bettorId: Int) async throws {
+    /// Records the login and swaps the stored session token for a fresh one.
+    /// Throws `APIError.unauthorized` (and drops the token) when the session is no longer valid.
+    func signin() async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/signin") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: ["bettor_id": bettorId])
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let request = APIClient.authorizedRequest(url, method: "POST")
+        let (data, response) = try await APIClient.send(request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw URLError(.badServerResponse)
+        }
+        if let token = try JSONDecoder().decode(Bettor.self, from: data).sessionToken {
+            SessionToken.save(token)
         }
     }
 
@@ -36,9 +46,7 @@ class BettorService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/\(bettorId)/profile") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "PATCH")
 
         var body: [String: Any] = [:]
         if let name = profileName         { body["profile_name"] = name }
@@ -48,7 +56,7 @@ class BettorService {
         if let favoriteTeamId             { body["favorite_team_id"] = favoriteTeamId }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await APIClient.send(request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
             throw URLError(.badServerResponse)
         }
@@ -60,15 +68,13 @@ class BettorService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/\(bettorId)") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "DELETE"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "DELETE")
 
         var body: [String: Any] = [:]
         if let authorizationCode { body["authorization_code"] = authorizationCode }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await APIClient.send(request)
         // 404 = already gone server-side; treat as deleted.
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode), http.statusCode != 404 {
             throw URLError(.badServerResponse)

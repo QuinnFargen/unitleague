@@ -16,9 +16,7 @@ class RunnerService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/runner/\(runnerId)") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "PATCH")
 
         var body: [String: Any] = [:]
         if let name = profileName { body["profile_name"] = name }
@@ -26,7 +24,7 @@ class RunnerService {
         if let col = color        { body["color"] = col }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await APIClient.send(request)
         return try JSONDecoder().decode(Runner.self, from: data)
     }
 }

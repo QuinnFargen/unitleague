@@ -106,6 +106,7 @@ struct CardUnitBreakdown: View {
     }
 }
 
+#if DEBUG
 #Preview("CardUnitBreakdown") {
     ScrollView {
         CardUnitBreakdown(
@@ -121,3 +122,4 @@ struct CardUnitBreakdown: View {
     }
     .environmentObject(AppTheme())
 }
+#endif

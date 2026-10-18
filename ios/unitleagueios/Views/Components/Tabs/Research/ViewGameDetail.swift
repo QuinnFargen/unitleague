@@ -282,6 +282,7 @@ struct ViewGameDetailLoader: View {
     }
 }
 
+#if DEBUG
 #Preview("ViewGameDetail") {
     NavigationStack {
         ViewGameDetail(
@@ -301,3 +302,4 @@ struct ViewGameDetailLoader: View {
     .environmentObject(AppTheme())
     .environmentObject(BetStore())
 }
+#endif

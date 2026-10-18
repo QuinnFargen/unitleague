@@ -8,7 +8,8 @@ class SyndicateService {
         if let bettorId    { queryItems.append(URLQueryItem(name: "bettor_id",    value: "\(bettorId)")) }
         if !queryItems.isEmpty { components.queryItems = queryItems }
         guard let url = components.url else { throw URLError(.badURL) }
-        let (data, _) = try await URLSession.shared.data(from: url)
+        // Signed in, the API includes join codes for syndicates this bettor belongs to.
+        let (data, _) = try await URLSession.shared.data(for: APIClient.authorizedRequest(url, method: "GET"))
         return try JSONDecoder().decode([Syndicate].self, from: data)
     }
 
@@ -16,9 +17,7 @@ class SyndicateService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "POST")
 
         var body: [String: Any] = ["bettor_id": bettorId, "name": name, "is_public": isPublic, "league_id": leagueId]
         if let desc = description { body["description"] = desc }
@@ -28,7 +27,7 @@ class SyndicateService {
         if let st = syndicateType { body["syndicate_type"] = st }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await APIClient.send(request)
 
         struct CreateSyndicateResponse: Codable {
             let syndicate: Syndicate
@@ -41,12 +40,10 @@ class SyndicateService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/\(syndicateId)/start") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "PATCH")
         request.httpBody = try JSONSerialization.data(withJSONObject: ["bettor_id": bettorId])
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await APIClient.send(request)
 
         struct StartResponse: Codable {
             let syndicate: Syndicate
@@ -58,9 +55,7 @@ class SyndicateService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/\(syndicateId)") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "PATCH")
 
         var body: [String: Any] = [:]
         if let name = name { body["name"] = name }
@@ -75,7 +70,7 @@ class SyndicateService {
         }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, _) = try await APIClient.send(request)
         return try JSONDecoder().decode(Syndicate.self, from: data)
     }
 
@@ -85,12 +80,10 @@ class SyndicateService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/runner/order") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "PUT")
         request.httpBody = try JSONSerialization.data(withJSONObject: ["bettor_id": bettorId, "syndicate_ids": syndicateIds])
 
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await APIClient.send(request)
         if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
             throw SyndicateError.message("Unable to save syndicate order.")
         }
@@ -100,15 +93,13 @@ class SyndicateService {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/syndicate/join/\(code)") else {
             throw URLError(.badURL)
         }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "POST")
 
         var body: [String: Any] = ["bettor_id": bettorId]
         if let pw = password { body["password"] = pw }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await APIClient.send(request)
         if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
             let detail = (try? JSONDecoder().decode([String: String].self, from: data))?["detail"]
             throw SyndicateError.message(detail ?? "Unable to join syndicate.")

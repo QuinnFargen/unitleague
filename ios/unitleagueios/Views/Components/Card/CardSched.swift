@@ -98,6 +98,7 @@ struct CardSched: View {
 }
 
 
+#if DEBUG
 #Preview("SchedCard") {
         // Winning
     CardSched(entry: Mock.schedItems[0], isHighlighted: true)
@@ -112,3 +113,4 @@ struct CardSched: View {
         .padding()
         .environmentObject(AppTheme())
 }
+#endif

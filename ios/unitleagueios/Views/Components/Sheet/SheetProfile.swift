@@ -58,6 +58,7 @@ struct SheetProfile: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetProfile") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetProfile(
@@ -79,3 +80,4 @@ struct SheetProfile: View {
         .environmentObject(AppTheme())
     }
 }
+#endif

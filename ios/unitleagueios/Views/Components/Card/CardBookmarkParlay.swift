@@ -51,8 +51,10 @@ struct CardBookmarkParlay: View {
     }
 }
 
+#if DEBUG
 #Preview("CardBookmarkParlay") {
     CardBookmarkParlay(legs: [Mock.placedBetML, Mock.placedBetSPR], onTap: {}, onRemove: {})
         .padding()
         .environmentObject(AppTheme())
 }
+#endif

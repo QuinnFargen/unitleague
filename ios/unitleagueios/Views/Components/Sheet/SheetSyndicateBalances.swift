@@ -169,6 +169,7 @@ struct SheetSyndicateBalances: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetSyndicateBalances") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetSyndicateBalances(
@@ -182,3 +183,4 @@ struct SheetSyndicateBalances: View {
         .environmentObject(AppTheme())
     }
 }
+#endif

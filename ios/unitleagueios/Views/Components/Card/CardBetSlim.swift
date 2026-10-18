@@ -40,6 +40,7 @@ struct CardBetSlim: View {
     }
 }
 
+#if DEBUG
 #Preview("CardBetSlim") {
     VStack(spacing: 8) {
         CardBetSlim(txn: Mock.txnML, runner: Mock.runnerAdmin)
@@ -49,3 +50,4 @@ struct CardBetSlim: View {
     .padding()
     .environmentObject(AppTheme())
 }
+#endif

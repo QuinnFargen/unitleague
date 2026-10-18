@@ -282,6 +282,7 @@ struct CardGameOdds: View {
     }
 }
 
+#if DEBUG
 #Preview("GameOddsCard – upcoming") {
     CardGameOdds(odd: Mock.odds) { _ in }
         .padding()
@@ -303,3 +304,4 @@ struct CardGameOdds: View {
         .padding()
         .environmentObject(AppTheme())
 }
+#endif

@@ -63,6 +63,11 @@ struct TabProfileView: View {
                 switch result {
                 case .success(let auth):
                     guard let credential = auth.credential as? ASAuthorizationAppleIDCredential else { return }
+                    guard let tokenData = credential.identityToken,
+                          let identityToken = String(data: tokenData, encoding: .utf8) else {
+                        authError = "Sign in failed: Apple didn't return an identity token."
+                        return
+                    }
                     // Apple only returns fullName and email on the very first authorization.
                     // Persist them so subsequent sign-ins still have the values.
                     let first = credential.fullName?.givenName ?? ""
@@ -74,15 +79,17 @@ struct TabProfileView: View {
                     if let email = credential.email { appleEmail = email }
                     let storedEmail = appleEmail.isEmpty ? nil : appleEmail
                     let storedName = appleUserName == "Player" ? nil : appleUserName
-                    
+
                     Task {
                         do {
                             let bettor = try await BettorService().createBettor(
-                                appleSub: appleSub,
+                                identityToken: identityToken,
                                 appleEmail: storedEmail,
                                 appleName: storedName
                             )
                             bettorId = bettor.bettorId
+                            // Apple only sends the name once; on later sign-ins use the one the API kept.
+                            if appleUserName == "Player", let an = bettor.appleName, !an.isEmpty { appleUserName = an }
                             if let pn = bettor.profileName, !pn.isEmpty { customUserName = pn }
                             if let sym = bettor.symbol, !sym.isEmpty    { profileSymbol = sym }
                             if let col = bettor.color,

@@ -249,9 +249,11 @@ struct EnhancementGroupHeader: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetAddJuice") {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetAddJuice(bettorId: 1, syndicates: Mock.syndicates)
             .environmentObject(AppTheme())
     }
 }
+#endif

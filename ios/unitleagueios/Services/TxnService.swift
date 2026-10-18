@@ -5,9 +5,7 @@ struct TxnService {
     func submitBet(bettorId: Int, syndicateId: Int, betHash: String, unit: Double, price: Double, gameDt: String?,
                    priceEnhanced: Double? = nil, unitEnhanced: Double? = nil) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/txn") else { throw URLError(.badURL) }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "POST")
         var body: [String: Any] = [
             "bettor_id": bettorId,
             "syndicate_id": syndicateId,
@@ -19,7 +17,7 @@ struct TxnService {
         if let priceEnhanced { body["price_enhanced"] = priceEnhanced }
         if let unitEnhanced { body["unit_enhanced"] = unitEnhanced }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await APIClient.send(request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw URLError(.badServerResponse)
         }
@@ -29,9 +27,7 @@ struct TxnService {
                       legs: [(betHash: String, price: Double, priceEnhanced: Double?)], gameDt: String?,
                       unitEnhanced: Double? = nil) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/parlay") else { throw URLError(.badURL) }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "POST")
         let legsArray = legs.map { leg -> [String: Any] in
             var legDict: [String: Any] = ["bet_hash": leg.betHash, "price": leg.price]
             if let priceEnhanced = leg.priceEnhanced { legDict["price_enhanced"] = priceEnhanced }
@@ -46,7 +42,7 @@ struct TxnService {
         if let gameDt { body["game_dt"] = gameDt }
         if let unitEnhanced { body["unit_enhanced"] = unitEnhanced }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let (_, response) = try await APIClient.send(request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw URLError(.badServerResponse)
         }
@@ -113,9 +109,8 @@ struct TxnService {
 
     func cancelTxn(txnId: Int) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/txn/\(txnId)/cancel") else { throw URLError(.badURL) }
-        var request = URLRequest(url: url)
-        request.httpMethod = "PATCH"
-        let (_, response) = try await URLSession.shared.data(for: request)
+        let request = APIClient.authorizedRequest(url, method: "PATCH")
+        let (_, response) = try await APIClient.send(request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw URLError(.badServerResponse)
         }

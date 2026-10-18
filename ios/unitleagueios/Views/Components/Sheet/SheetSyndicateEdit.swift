@@ -300,7 +300,9 @@ struct SheetSyndicateEdit: View {
     }
 }
 
+#if DEBUG
 #Preview("SheetSyndicateEdit") {
     SheetSyndicateEdit(syndicate: .constant(Mock.syndicate))
         .environmentObject(AppTheme())
 }
+#endif

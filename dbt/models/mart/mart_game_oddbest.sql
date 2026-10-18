@@ -49,6 +49,15 @@ games as (
             from {{ this }}
         )
     )
+    -- Completed games get no new odds, so also pick up rows whose result changed in mart_game
+    or game_id in (
+        select t.game_id
+        from {{ this }} t
+        join {{ ref('mart_game') }} mg on mg.game_id = t.game_id
+        where t.winner is distinct from mg.winner
+           or t.margin is distinct from mg.margin
+           or t.total  is distinct from mg.total
+    )
     {% endif %}
 )
 

@@ -27,6 +27,20 @@ struct CardGameOddSingle: View {
         return timeOutputFormatter.string(from: date)
     }
 
+    /// Final score derived from winner/margin/total (same approach as `CardGameOdds`); nil until the game is complete.
+    private var scores: (away: Int, home: Int)? {
+        guard let total = odd.total else { return nil }
+        guard let margin = odd.margin, let winner = odd.winner else {
+            let half = Int((total / 2.0).rounded())
+            return (away: half, home: half)
+        }
+        let hi = Int(((total + margin) / 2.0).rounded())
+        let lo = Int(((total - margin) / 2.0).rounded())
+        return winner == odd.homeAbbr ? (away: lo, home: hi) : (away: hi, home: lo)
+    }
+
+    private var isComplete: Bool { scores != nil }
+
     private func oddsCapsuleColor(_ price: Double, betHash: String?, won: Bool?) -> Color {
         guard betHash != nil else { return theme.accent.opacity(0.2) }
         if let won { return won ? theme.accent.opacity(0.7) : theme.chipUnselected(colorScheme) }
@@ -136,9 +150,26 @@ struct CardGameOddSingle: View {
         }
     }
 
+    /// SPR/O-U label or arrow next to a capsule; once final, only the winning side keeps it.
+    @ViewBuilder
+    private func betMarker(icon: String?, label: String, won: Bool?) -> some View {
+        if !(isComplete && won != true) {
+            if let icon {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            } else if !label.isEmpty {
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
     @ViewBuilder
     private var singleModeLayout: some View {
         let d = singleData()
+        let scores = scores
         HStack(spacing: 8) {
             NavigationLink {
                 ViewGameDetail(
@@ -157,52 +188,40 @@ struct CardGameOddSingle: View {
             }
             .buttonStyle(.plain)
 
-            priceCapsule(d.awayPrice, subtitle: d.awayMLPct, betHash: d.awayBetHash, won: d.awayWon) {
+            priceCapsule(d.awayPrice, subtitle: d.awayMLPct, betHash: d.awayBetHash, won: d.awayWon, onTap: isComplete ? nil : {
                 guard let p = d.awayPrice, let h = d.awayBetHash else { return }
                 onBetSelected(SelectedBet(betHash: h, type: betType, side: d.awaySide, price: p, points: d.awayPoints,
                                           awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
                                           gameTime: odd.gameTime, gameDate: odd.gameDt,
                                           homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
-            }
+            })
 
-            if let icon = d.awayIcon {
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            } else if !d.awayBetLabel.isEmpty {
-                Text(d.awayBetLabel)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
+            betMarker(icon: d.awayIcon, label: d.awayBetLabel, won: d.awayWon)
 
             VStack(spacing: 2) {
                 Text(odd.awayAbbr + " @ " + odd.homeAbbr)
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(theme.primaryText(colorScheme))
                     .multilineTextAlignment(.center)
-                if let time = formattedTime {
+                if let s = scores {
+                    Text("\(s.away) - \(s.home)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(theme.primaryText(colorScheme))
+                } else if let time = formattedTime {
                     Text(time).font(.caption2).foregroundStyle(.secondary)
                 }
             }
             .frame(maxWidth: .infinity)
 
-            if let icon = d.homeIcon {
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            } else if !d.homeBetLabel.isEmpty {
-                Text(d.homeBetLabel)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
+            betMarker(icon: d.homeIcon, label: d.homeBetLabel, won: d.homeWon)
 
-            priceCapsule(d.homePrice, subtitle: d.homeMLPct, betHash: d.homeBetHash, won: d.homeWon) {
+            priceCapsule(d.homePrice, subtitle: d.homeMLPct, betHash: d.homeBetHash, won: d.homeWon, onTap: isComplete ? nil : {
                 guard let p = d.homePrice, let h = d.homeBetHash else { return }
                 onBetSelected(SelectedBet(betHash: h, type: betType, side: d.homeSide, price: p, points: d.homePoints,
                                           awayAbbr: odd.awayAbbr, homeAbbr: odd.homeAbbr,
                                           gameTime: odd.gameTime, gameDate: odd.gameDt,
                                           homeTeamId: odd.homeTeamId, awayTeamId: odd.awayTeamId))
-            }
+            })
         }
     }
 }
@@ -213,6 +232,9 @@ struct CardGameOddSingle: View {
         CardGameOddSingle(odd: Mock.odds, betType: "ML") { _ in }
         CardGameOddSingle(odd: Mock.odds, betType: "SPR") { _ in }
         CardGameOddSingle(odd: Mock.odds, betType: "O/U") { _ in }
+        CardGameOddSingle(odd: Mock.oddsCompleted, betType: "ML") { _ in }
+        CardGameOddSingle(odd: Mock.oddsCompleted, betType: "SPR") { _ in }
+        CardGameOddSingle(odd: Mock.oddsCompleted, betType: "O/U") { _ in }
     }
     .padding()
     .environmentObject(AppTheme())

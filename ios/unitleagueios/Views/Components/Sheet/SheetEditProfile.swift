@@ -40,6 +40,7 @@ struct SheetEditProfile: View {
     @State private var errorMessage: String?
     @State private var favoriteTeamId: Int?
     @State private var favoriteTeamAbbr: String?
+    @State private var showingTeamPicker = false
 
     @State private var runnerName: String
     @State private var runnerSymbol: String
@@ -356,11 +357,8 @@ struct SheetEditProfile: View {
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 32)
 
-            NavigationLink {
-                FavoriteTeamPicker(onSelect: { team in
-                    favoriteTeamId = team.id
-                    favoriteTeamAbbr = team.abbr
-                })
+            Button {
+                showingTeamPicker = true
             } label: {
                 HStack(spacing: 8) {
                     Text(favoriteTeamAbbr ?? "Select a team")
@@ -374,6 +372,13 @@ struct SheetEditProfile: View {
                 .padding(.horizontal, 32)
             }
             .buttonStyle(.plain)
+            .navigationDestination(isPresented: $showingTeamPicker) {
+                FavoriteTeamPicker(onSelect: { team in
+                    favoriteTeamId = team.id
+                    favoriteTeamAbbr = team.abbr
+                    showingTeamPicker = false  // pops the league list and team list together
+                })
+            }
         }
     }
 
@@ -424,16 +429,23 @@ struct SheetEditProfile: View {
                 isSaving = false
             }
         } else {
-            profileSaved = true
             let id = bettorId
             let name = customUserName.isEmpty ? appleUserName : customUserName
             let symbol = profileSymbol
             let color = theme.accentOption.rawValue
             let email = appleEmail
             let teamId = favoriteTeamId
-            if id != 0 {
-                Task {
-                    try? await BettorService().updateProfile(
+            // No bettor (e.g. the local test user): the profile only lives on this device.
+            guard id != 0 else {
+                profileSaved = true
+                dismiss()
+                return
+            }
+            isSaving = true
+            errorMessage = nil
+            Task {
+                do {
+                    try await BettorService().updateProfile(
                         bettorId: id,
                         profileName: name,
                         symbol: symbol,
@@ -441,9 +453,13 @@ struct SheetEditProfile: View {
                         appleEmail: email.isEmpty ? nil : email,
                         favoriteTeamId: teamId
                     )
+                    profileSaved = true
+                    dismiss()
+                } catch {
+                    errorMessage = "Couldn't save profile: \(error.localizedDescription)"
                 }
+                isSaving = false
             }
-            dismiss()
         }
     }
 }
@@ -452,12 +468,12 @@ struct SheetEditProfile: View {
 
 /// League-then-team picker for `favoriteTeamSection` above, mirroring the league →
 /// `ViewTeamList(onSelect:)` flow already used by the team-enhancement picker in
-/// `SheetAddJuice`. Pushed onto `SheetEditProfile`'s own `NavigationStack` — `dismiss()` pops
-/// back to `SheetEditProfile` once a team is chosen.
+/// `SheetAddJuice`. Pushed onto `SheetEditProfile`'s own `NavigationStack`; the parent pops it
+/// (and the team list above it) from `onSelect`. Calling `dismiss()` here instead, from two
+/// levels down, dismissed the whole sheet.
 private struct FavoriteTeamPicker: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.dismiss) private var dismiss
 
     var onSelect: (Team) -> Void
 
@@ -478,10 +494,7 @@ private struct FavoriteTeamPicker: View {
                                 ViewTeamList(
                                     league: league,
                                     pickerTitle: "Favorite Team",
-                                    onSelect: { team in
-                                        onSelect(team)
-                                        dismiss()
-                                    }
+                                    onSelect: onSelect
                                 )
                             } label: {
                                 leagueRow(league)

@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy import text
 
 import apple
-from auth import CurrentBettor, issue_session_token, require_self, verify_apple_identity_token
+from auth import CurrentBettor, issue_session_token, require_configured, require_self, verify_apple_identity_token
 from db import engine
 from schemas.bettor import BettorCreate, BettorDelete, BettorProfile
 
@@ -17,6 +17,7 @@ router = APIRouter(tags=["bettor"])
 # never on anything else the client sends. Returns the bettor plus a session_token.
 @router.post("/odd/bettor")
 def create_bettor(bettor: BettorCreate):
+    require_configured()  # don't create the bettor if we can't hand back a session
     claims = verify_apple_identity_token(bettor.identity_token)
     params = {
         "apple_sub": claims["sub"],

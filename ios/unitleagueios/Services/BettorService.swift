@@ -18,7 +18,7 @@ class BettorService {
 
         let (data, response) = try await URLSession.shared.data(for: request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-            throw URLError(.userAuthenticationRequired)
+            throw APIError.from(response, data: data)
         }
         let bettor = try JSONDecoder().decode(Bettor.self, from: data)
         guard let token = bettor.sessionToken else { throw URLError(.userAuthenticationRequired) }
@@ -56,9 +56,9 @@ class BettorService {
         if let favoriteTeamId             { body["favorite_team_id"] = favoriteTeamId }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (_, response) = try await APIClient.send(request)
+        let (data, response) = try await APIClient.send(request)
         if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-            throw URLError(.badServerResponse)
+            throw APIError.from(response, data: data)
         }
     }
 

@@ -39,10 +39,18 @@ enum APIClient {
 
 enum APIError: LocalizedError {
     case unauthorized
+    case server(status: Int, detail: String?)
+
+    /// Builds `.server` from a non-2xx response, using FastAPI's `{"detail": "..."}` when present.
+    static func from(_ response: URLResponse, data: Data) -> APIError {
+        let detail = (try? JSONSerialization.jsonObject(with: data) as? [String: Any])?["detail"] as? String
+        return .server(status: (response as? HTTPURLResponse)?.statusCode ?? 0, detail: detail)
+    }
 
     var errorDescription: String? {
         switch self {
         case .unauthorized: return "Your session expired. Sign in again from the Profile tab."
+        case .server(let status, let detail): return "Server error \(status)" + (detail.map { ": \($0)" } ?? "")
         }
     }
 }

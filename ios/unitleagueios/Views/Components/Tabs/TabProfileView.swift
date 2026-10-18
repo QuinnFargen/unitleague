@@ -73,28 +73,28 @@ struct TabProfileView: View {
                     let first = credential.fullName?.givenName ?? ""
                     let last = credential.fullName?.familyName ?? ""
                     let name = [first, last].filter { !$0.isEmpty }.joined(separator: " ")
-                    if !name.isEmpty { appleUserName = name }
-                    if appleUserName.isEmpty { appleUserName = "Player" }
-                    appleSub = credential.user
                     if let email = credential.email { appleEmail = email }
                     let storedEmail = appleEmail.isEmpty ? nil : appleEmail
-                    let storedName = appleUserName == "Player" ? nil : appleUserName
+                    authError = nil
 
                     Task {
                         do {
                             let bettor = try await BettorService().createBettor(
                                 identityToken: identityToken,
                                 appleEmail: storedEmail,
-                                appleName: storedName
+                                appleName: name.isEmpty ? nil : name
                             )
+                            appleSub = credential.user
                             bettorId = bettor.bettorId
-                            // Apple only sends the name once; on later sign-ins use the one the API kept.
-                            if appleUserName == "Player", let an = bettor.appleName, !an.isEmpty { appleUserName = an }
                             if let pn = bettor.profileName, !pn.isEmpty { customUserName = pn }
                             if let sym = bettor.symbol, !sym.isEmpty    { profileSymbol = sym }
                             if let col = bettor.color,
                                let accent = AccentOption(rawValue: col)  { theme.accentOption = accent }
                             if !customUserName.isEmpty                   { profileSaved = true }
+                            // Set last: a non-empty name switches this tab to the signed-in profile, so it
+                            // only happens once the API has issued a session. Apple only sends the name on the
+                            // first authorization; after that use the one the API kept.
+                            appleUserName = [name, bettor.appleName ?? ""].first { !$0.isEmpty } ?? "Player"
                         } catch {
                             authError = "Account setup failed: \(error.localizedDescription)"
                         }

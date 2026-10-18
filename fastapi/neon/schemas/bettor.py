@@ -18,3 +18,8 @@ class BettorProfile(BaseModel):
 class BettorSignin(BaseModel):
     bettor_id: Optional[int] = None
     apple_sub: Optional[str] = None
+
+class BettorDelete(BaseModel):
+    # Fresh Sign in with Apple authorizationCode from the app; exchanged for a
+    # refresh token so it can be revoked, and its sub must match the bettor.
+    authorization_code: Optional[str] = None

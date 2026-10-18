@@ -54,6 +54,27 @@ class BettorService {
         }
     }
 
+    /// Permanently deletes the bettor and their data. `authorizationCode` is a fresh Sign in
+    /// with Apple code the API uses to revoke the app's Apple token.
+    func deleteBettor(bettorId: Int, authorizationCode: String?) async throws {
+        guard let url = URL(string: "\(APIClient.baseURL)/odd/bettor/\(bettorId)") else {
+            throw URLError(.badURL)
+        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        var body: [String: Any] = [:]
+        if let authorizationCode { body["authorization_code"] = authorizationCode }
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+        // 404 = already gone server-side; treat as deleted.
+        if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode), http.statusCode != 404 {
+            throw URLError(.badServerResponse)
+        }
+    }
+
     func fetchStats(bettorId: Int) async throws -> BettorStats? {
         guard var components = URLComponents(string: "\(APIClient.baseURL)/mart/bettor") else {
             throw URLError(.badURL)

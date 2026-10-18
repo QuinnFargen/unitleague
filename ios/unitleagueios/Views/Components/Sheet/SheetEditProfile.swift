@@ -15,6 +15,7 @@ struct SheetEditProfile: View {
     @EnvironmentObject private var theme: AppTheme
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var betStore: BetStore
     @AppStorage("appleUserName")  private var appleUserName: String  = ""
     @AppStorage("customUserName") private var customUserName: String = ""
     @AppStorage("profileSymbol")  private var profileSymbol: String  = ProfileOption.symbols[0]
@@ -34,6 +35,8 @@ struct SheetEditProfile: View {
     @State private var emailInput = ""
     @State private var showingSymbolPicker = false
     @State private var isSaving = false
+    @State private var showingDeleteConfirm = false
+    @State private var isDeleting = false
     @State private var errorMessage: String?
     @State private var favoriteTeamId: Int?
     @State private var favoriteTeamAbbr: String?
@@ -143,6 +146,33 @@ struct SheetEditProfile: View {
                                         .background(theme.error.opacity(0.12))
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
                                 }
+
+                                Button(role: .destructive) {
+                                    showingDeleteConfirm = true
+                                } label: {
+                                    HStack(spacing: 8) {
+                                        if isDeleting { ProgressView().scaleEffect(0.8) }
+                                        Text("Delete Account")
+                                            .font(.footnote)
+                                            .fontWeight(.medium)
+                                    }
+                                    .foregroundStyle(theme.error)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                                }
+                                .disabled(isDeleting)
+                                .confirmationDialog(
+                                    "Delete your account?",
+                                    isPresented: $showingDeleteConfirm,
+                                    titleVisibility: .visible
+                                ) {
+                                    Button("Delete Account", role: .destructive) {
+                                        Task { await deleteAccount() }
+                                    }
+                                    Button("Cancel", role: .cancel) {}
+                                } message: {
+                                    Text("This permanently deletes your profile, units, picks, and edges, and removes you from every syndicate. Syndicates you run are handed to another member. This can't be undone.")
+                                }
                             }
                         }
                         .padding(.horizontal, 32)
@@ -178,6 +208,36 @@ struct SheetEditProfile: View {
                 }
             }
         }
+    }
+
+    private func deleteAccount() async {
+        isDeleting = true
+        errorMessage = nil
+        defer { isDeleting = false }
+
+        if bettorId != 0 {
+            do {
+                // Apple-linked accounts re-authenticate so the API can revoke the Apple token.
+                let code = appleSub.isEmpty ? nil : try await AppleReauthorizer().authorizationCode()
+                try await BettorService().deleteBettor(bettorId: bettorId, authorizationCode: code)
+            } catch let error as ASAuthorizationError where error.code == .canceled {
+                return
+            } catch {
+                errorMessage = "Couldn't delete account: \(error.localizedDescription)"
+                return
+            }
+        }
+
+        LocalAccountData.wipe()
+        betStore.clearBookmarks()
+        theme.accentOption = AccentOption.defaultProfileColor
+        appleUserName = ""
+        customUserName = ""
+        appleEmail = ""
+        appleSub = ""
+        bettorId = 0
+        profileSaved = false
+        dismiss()
     }
 
     private var symbolHeader: some View {
@@ -479,6 +539,7 @@ private struct FavoriteTeamPicker: View {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetEditProfile()
             .environmentObject(AppTheme())
+            .environmentObject(BetStore())
     }
 }
 
@@ -486,5 +547,6 @@ private struct FavoriteTeamPicker: View {
     Color.clear.sheet(isPresented: .constant(true)) {
         SheetEditProfile(runner: .constant(Mock.runnerAdmin))
             .environmentObject(AppTheme())
+            .environmentObject(BetStore())
     }
 }

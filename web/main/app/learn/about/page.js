@@ -74,7 +74,7 @@ export default function Page() {
         </thead>
         <tbody>
           <tr><td>Who you bet against</td><td>The house</td><td>Other traders</td><td>Not betting</td></tr>
-          <tr><td>How it makes money</td><td>Vig and hold</td><td>Trading fees</td><td>Subscriptions &amp; donations</td></tr>
+          <tr><td>How it makes money</td><td>Vig and hold</td><td>Trading fees</td><td>$1</td></tr>
           <tr><td>Real money at risk</td><td>Yes</td><td>Yes</td><td>No</td></tr>
           <tr><td>Limits winners</td><td>Yes</td><td>Rarely</td><td>Never</td></tr>
         </tbody>

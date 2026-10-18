@@ -1,5 +1,29 @@
 import SwiftUI
 
+// MARK: - KeyboardDismiss
+
+/// Adds a "Done" button above the keyboard (and swipe-down-to-dismiss on scroll views) so text
+/// entry can end without pressing Return. Apply inside a sheet's NavigationStack.
+struct KeyboardDismiss: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .scrollDismissesKeyboard(.interactively)
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+    }
+}
+
+extension View {
+    func keyboardDismissButton() -> some View { modifier(KeyboardDismiss()) }
+}
+
 // MARK: - FilterChip
 
 struct FilterChip: View {

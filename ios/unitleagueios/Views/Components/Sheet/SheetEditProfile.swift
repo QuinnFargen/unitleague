@@ -185,6 +185,7 @@ struct SheetEditProfile: View {
             }
             .navigationTitle(isRunnerMode ? "Edit Runner" : "Edit Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .keyboardDismissButton()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {

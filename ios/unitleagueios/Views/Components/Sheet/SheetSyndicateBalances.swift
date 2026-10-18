@@ -160,7 +160,10 @@ struct SheetSyndicateBalances: View {
         async let txnsTask = txnService.fetchActiveBets(bettorId: bettorId)
         let raw = (try? await syndicatesTask) ?? []
         var seen = Set<Int>()
-        syndicates = [soloSyndicate] + raw.filter { seen.insert($0.syndicateId).inserted }
+        let visible = raw
+            .filter { !$0.isHidden && seen.insert($0.syndicateId).inserted }
+            .sorted { ($0.sortOrder ?? .max, $0.syndicateId) < ($1.sortOrder ?? .max, $1.syndicateId) }
+        syndicates = [soloSyndicate] + visible
         let runnerList = (try? await runnersTask) ?? []
         var runnerMap = Dictionary(runnerList.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first })
         runnerMap[0] = soloRunner

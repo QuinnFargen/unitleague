@@ -93,6 +93,7 @@ struct SheetSyndicateJoin: View {
             }
             .navigationTitle("Join Syndicate")
             .navigationBarTitleDisplayMode(.inline)
+            .keyboardDismissButton()
             .toolbar {
                 if mode == .privateMode {
                     ToolbarItem(placement: .confirmationAction) {

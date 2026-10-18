@@ -141,7 +141,10 @@ struct SheetSyndicateSelector: View {
             async let runnersTask = RunnerService().fetchRunner(bettorId: bettorId)
             let raw = try await syndicatesTask
             var seen = Set<Int>()
-            syndicates = raw.filter { seen.insert($0.syndicateId).inserted }
+            // Hidden syndicates (hidden in the Syndicate tab) can't be picked, so no bets go to them.
+            syndicates = raw
+                .filter { !$0.isHidden && seen.insert($0.syndicateId).inserted }
+                .sorted { ($0.sortOrder ?? .max, $0.syndicateId) < ($1.sortOrder ?? .max, $1.syndicateId) }
             let runners = (try? await runnersTask) ?? []
             myRunners = Dictionary(runners.map { ($0.syndicateId, $0) }, uniquingKeysWith: { first, _ in first })
         } catch {

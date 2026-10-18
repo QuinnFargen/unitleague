@@ -4,11 +4,9 @@ import Term from "@/components/learn/Term";
 export const metadata = { title: "Pricing" };
 
 const PLANS = [
-  { name: "Solo play", price: "Free", body: "Make picks and track your units on your own, as long as you like." },
   { name: "First syndicate", price: "Free", body: "Everyone can join one syndicate at no cost." },
-  { name: "Each additional syndicate", price: "$1 per runner", body: "Each runner pays $1 to join a syndicate after their free one." },
-  { name: "Lifetime syndicate entries", price: "$10 once", body: "Join as many syndicates as you want, forever." },
-  { name: "Podcaster runner", price: "$1", body: "Add a podcaster's or analyst's picks to your syndicate as a runner, and see how they stack up against your group." },
+  { name: "Season", price: "$1", body: "Each sports season is $1 for unlimited syndicates." },
+  { name: "Data", price: "$?", body: "Extra costs for proprietary data and edge for placing picks." },
 ];
 
 export default function Page() {

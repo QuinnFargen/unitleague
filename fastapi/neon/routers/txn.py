@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException
 from sqlalchemy import text
 
+from auth import CurrentBettor, require_self
 from db import engine
 from schemas.txn import TxnCreate, ParlayLeg, ParlayCreate
 
@@ -8,7 +9,8 @@ router = APIRouter(tags=["txn"])
 
 
 @router.post("/odd/txn")
-def create_txn(txn: TxnCreate):
+def create_txn(txn: TxnCreate, current: CurrentBettor):
+    require_self(txn.bettor_id, current)
     q = """
         INSERT INTO odd.txn (bettor_id, syndicate_id, bet_hash, unit, price, unit_enhanced, price_enhanced, game_dt, txn_type_id)
         VALUES (:bettor_id, :syndicate_id, :bet_hash, :unit, :price, :unit_enhanced, :price_enhanced, :game_dt, 1)
@@ -19,7 +21,8 @@ def create_txn(txn: TxnCreate):
         return dict(row._mapping)
 
 @router.post("/odd/parlay")
-def create_parlay(parlay: ParlayCreate):
+def create_parlay(parlay: ParlayCreate, current: CurrentBettor):
+    require_self(parlay.bettor_id, current)
     if not parlay.legs:
         raise HTTPException(status_code=400, detail="At least one leg required")
 
@@ -71,15 +74,15 @@ def create_parlay(parlay: ParlayCreate):
     }
 
 @router.patch("/odd/txn/{txn_id}/cancel")
-def cancel_txn(txn_id: int):
+def cancel_txn(txn_id: int, current: CurrentBettor):
     q = """
         UPDATE odd.txn
         SET canceled = true, cancel_ts = now()
-        WHERE txn_id = :txn_id AND canceled = false
+        WHERE txn_id = :txn_id AND bettor_id = :bettor_id AND canceled = false
         RETURNING *
     """
     with engine.begin() as conn:
-        row = conn.execute(text(q), {"txn_id": txn_id}).fetchone()
+        row = conn.execute(text(q), {"txn_id": txn_id, "bettor_id": current}).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Transaction not found or already canceled")
         return dict(row._mapping)

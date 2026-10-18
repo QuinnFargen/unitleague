@@ -229,6 +229,7 @@ struct SheetEditProfile: View {
         }
 
         LocalAccountData.wipe()
+        SessionToken.clear()
         betStore.clearBookmarks()
         theme.accentOption = AccentOption.defaultProfileColor
         appleUserName = ""

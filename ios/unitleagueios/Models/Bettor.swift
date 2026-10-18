@@ -9,6 +9,8 @@ struct Bettor: Codable {
     let symbol: String?
     let color: String?
     let favoriteTeamId: Int?
+    /// API session token; only present on sign-in responses.
+    let sessionToken: String?
 
     enum CodingKeys: String, CodingKey {
         case bettorId = "bettor_id"
@@ -19,6 +21,7 @@ struct Bettor: Codable {
         case symbol
         case color
         case favoriteTeamId = "favorite_team_id"
+        case sessionToken = "session_token"
     }
 }
 

@@ -3,6 +3,7 @@ import json
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import text
 
+from auth import CurrentBettor, require_self
 from db import engine
 from schemas.syndicate import (
     SyndicateCreate,
@@ -29,8 +30,19 @@ NEXT_SORT_ORDER_SQL = """
 """
 
 
+def _require_admin(conn, syndicate_id: int, bettor_id: int) -> None:
+    admin = conn.execute(text("""
+        SELECT 1 FROM odd.runner
+        WHERE bettor_id = :bettor_id AND syndicate_id = :syndicate_id
+          AND role = 'admin' AND active = true
+    """), {"bettor_id": bettor_id, "syndicate_id": syndicate_id}).fetchone()
+    if admin is None:
+        raise HTTPException(status_code=403, detail="Only an active admin can edit the syndicate")
+
+
 @router.post("/odd/syndicate")
-def create_syndicate(syndicate: SyndicateCreate):
+def create_syndicate(syndicate: SyndicateCreate, current: CurrentBettor):
+    require_self(syndicate.bettor_id, current)
     with engine.begin() as conn:
         syndicate_row = conn.execute(text(f"""
             INSERT INTO odd.syndicate (name, description, is_public, password, max_runner, created_by_bettor_id, start_units, config, syndicate_type, league_id, yr, symbol, color)
@@ -47,7 +59,8 @@ def create_syndicate(syndicate: SyndicateCreate):
     return {"syndicate": dict(syndicate_row._mapping), "runner": dict(runner_row._mapping)}
 
 @router.post("/odd/syndicate/join/{code}")
-def join_syndicate(code: str, body: RunnerCreate):
+def join_syndicate(code: str, body: RunnerCreate, current: CurrentBettor):
+    require_self(body.bettor_id, current)
     with engine.begin() as conn:
         syndicate = conn.execute(text("""
             SELECT syndicate_id, password, max_runner FROM odd.syndicate
@@ -85,7 +98,8 @@ def join_syndicate(code: str, body: RunnerCreate):
     return dict(runner_row._mapping)
 
 @router.patch("/odd/syndicate/{syndicate_id}/start")
-def start_syndicate(syndicate_id: int, body: SyndicateStart):
+def start_syndicate(syndicate_id: int, body: SyndicateStart, current: CurrentBettor):
+    require_self(body.bettor_id, current)
     with engine.begin() as conn:
         admin = conn.execute(text("""
             SELECT runner_id FROM odd.runner
@@ -161,7 +175,7 @@ def start_syndicate(syndicate_id: int, body: SyndicateStart):
     return {"syndicate": dict(syndicate_row._mapping), "txns": txn_pairs}
 
 @router.patch("/odd/syndicate/{syndicate_id}")
-def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
+def update_syndicate(syndicate_id: int, body: SyndicateUpdate, current: CurrentBettor):
     updates = {k: v for k, v in body.model_dump().items() if v is not None}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields provided to update")
@@ -175,13 +189,15 @@ def update_syndicate(syndicate_id: int, body: SyndicateUpdate):
     q = f"UPDATE odd.syndicate SET {set_clause} WHERE syndicate_id = :syndicate_id RETURNING *"
 
     with engine.begin() as conn:
+        _require_admin(conn, syndicate_id, current)
         row = conn.execute(text(q), updates).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Syndicate not found")
         return dict(row._mapping)
 
 @router.put("/odd/runner/order")
-def set_runner_order(body: RunnerOrder):
+def set_runner_order(body: RunnerOrder, current: CurrentBettor):
+    require_self(body.bettor_id, current)
     with engine.begin() as conn:
         conn.execute(text("""
             UPDATE odd.runner SET sort_order = NULL
@@ -203,15 +219,17 @@ def set_runner_order(body: RunnerOrder):
     return [dict(row._mapping) for row in rows]
 
 @router.patch("/odd/runner/{runner_id}")
-def set_runner_profile(runner_id: int, profile: RunnerProfile):
+def set_runner_profile(runner_id: int, profile: RunnerProfile, current: CurrentBettor):
     updates = {k: v for k, v in profile.model_dump().items() if v is not None}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields provided to update")
 
     set_clause = ", ".join(f"{k} = :{k}" for k in updates)
     updates["runner_id"] = runner_id
+    updates["current_bettor_id"] = current
 
-    q = f"UPDATE odd.runner SET {set_clause} WHERE runner_id = :runner_id RETURNING *"
+    # Only the bettor who owns the runner may edit it; anyone else gets the same 404.
+    q = f"UPDATE odd.runner SET {set_clause} WHERE runner_id = :runner_id AND bettor_id = :current_bettor_id RETURNING *"
 
     with engine.begin() as conn:
         row = conn.execute(text(q), updates).fetchone()

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Query, HTTPException
 from sqlalchemy import text
 
+from auth import CurrentBettor, require_self
 from db import engine
 from schemas.enhancement import EnhancedCreate
 
@@ -60,7 +61,8 @@ def get_enhanced(bettor_id: int = Query(None), syndicate_id: int = Query(None)):
         return [dict(row._mapping) for row in result]
 
 @router.post("/odd/enhanced")
-def choose_enhancement(body: EnhancedCreate):
+def choose_enhancement(body: EnhancedCreate, current: CurrentBettor):
+    require_self(body.bettor_id, current)
     with engine.begin() as conn:
         option = conn.execute(text("""
             SELECT option_hash, enhancement_type FROM odd.enhance_options

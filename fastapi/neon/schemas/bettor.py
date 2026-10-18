@@ -3,10 +3,11 @@ from typing import Optional
 
 
 class BettorCreate(BaseModel):
-    apple_sub: str
+    # Sign in with Apple identityToken (JWT); the bettor's apple_sub comes from it.
+    identity_token: str
+    # Apple only sends name/email to the app on the first authorization.
     apple_email: Optional[str] = None
     apple_name: Optional[str] = None
-    apple_refresh_token: Optional[str] = None
 
 class BettorProfile(BaseModel):
     profile_name: Optional[str] = None
@@ -14,10 +15,6 @@ class BettorProfile(BaseModel):
     color: Optional[str] = None
     apple_email: Optional[str] = None
     favorite_team_id: Optional[int] = None
-
-class BettorSignin(BaseModel):
-    bettor_id: Optional[int] = None
-    apple_sub: Optional[str] = None
 
 class BettorDelete(BaseModel):
     # Fresh Sign in with Apple authorizationCode from the app; exchanged for a

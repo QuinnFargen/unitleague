@@ -50,9 +50,7 @@ class EnhancementService {
         teamId: Int, level: Int, optionHash: String, sellEnhancedId: Int? = nil
     ) async throws {
         guard let url = URL(string: "\(APIClient.baseURL)/odd/enhanced") else { throw URLError(.badURL) }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var request = APIClient.authorizedRequest(url, method: "POST")
         var body: [String: Any] = [
             "bettor_id":      bettorId,
             "syndicate_id":   syndicateId,
@@ -65,7 +63,7 @@ class EnhancementService {
         if let sellEnhancedId { body["sell_enhanced_id"] = sellEnhancedId }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await APIClient.send(request)
         guard let http = response as? HTTPURLResponse else { throw URLError(.badServerResponse) }
         if http.statusCode == 409 { throw EnhancementError.limitReached }
         if !(200..<300).contains(http.statusCode) {

@@ -27,7 +27,7 @@ from db import engine
 
 APPLE_ISSUER = "https://appleid.apple.com"
 APPLE_JWKS_URL = f"{APPLE_ISSUER}/auth/keys"
-DEFAULT_BUNDLE_ID = "Quinn.unitleagueios"
+DEFAULT_BUNDLE_ID = "com.unitleague.app"
 
 SESSION_ISSUER = "unitleague-api"
 SESSION_TTL_SECONDS = 90 * 24 * 3600  # refreshed on every app launch via /odd/bettor/signin

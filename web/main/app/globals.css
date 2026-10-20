@@ -4,6 +4,7 @@
   --muted: #666666;
   --border: #e5e5e5;
   --accent: #c5543f;
+  --yellow: #d8b061;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -115,6 +116,9 @@ th { color: var(--muted); font-weight: 500; }
 .site-nav .btn-ghost:hover { background: var(--border); }
 .site-nav .btn-primary { color: #fff; background: var(--accent); }
 .site-nav .btn-primary:hover { filter: brightness(1.1); }
+
+.learn-content .btn-download { color: #111; background: var(--yellow); text-decoration: none; }
+.learn-content .btn-download:hover { filter: brightness(1.1); }
 
 .nav-toggle {
   display: none;

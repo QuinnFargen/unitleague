@@ -12,6 +12,7 @@ const NAV = [
   { href: "/juice", label: "Juice" },
   { href: "/profile", label: "Profile" },
   { href: "/learn", label: "Learn", children: LEARN_SECTIONS },
+  { href: "/download", label: "Download" },
 ];
 
 export default function Header() {

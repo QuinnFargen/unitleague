@@ -51,7 +51,7 @@ with odds_api as (
     join {{ ref('ball_game') }} g
         on  g.home_team_id = ht.team_id
         and g.away_team_id = at.team_id
-        and g.game_dt      = o.commence_ts::date
+        and g.game_dt      = (o.commence_ts AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York')::date
 
     {% if is_incremental() %}
     where o.id in (
